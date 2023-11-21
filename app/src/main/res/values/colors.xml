@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#8852f4</color>
+    <color name="colorPrimaryDark">#5123c0</color>
+    <color name="colorAccent">#000</color>
+
+    <color name="textColorSecondary">@color/textDarkSecondary</color>
+
+    <!-- Dark Text Color for Light Background -->
+    <!--DE for %87 opacity-->
+    <color name="textDarkSecondary">#99000000</color> <!--8A for %54 opacity-->
+    <!--61 for %38 opacity-->
+
+    <!-- White Text Color for Dark Background -->
+    <!--%100 opacity-->
+    <color name="textLightSecondary">#B2FFFFFF</color> <!--B2 for %70 opacity-->
+    <!--80 for %50 opacity-->
+
+    <color name="divider">#28000000</color>
+    <color name="windowBackground">#FAFAFA</color>
+    <color name="textColorPrimary">#202020</color>
+    <color name="colorControlNormal">@color/black</color>
+
+    <color name="green">#00cc00</color>
+    <color name="red">#ca4137</color>
+
+    <color name="buttonSelectedBackground">#48000000</color>
+
+    <color name="freeAdRed">#F44336</color>
+
+    <color name="backgroundHeader">#F3F3F3</color>
+</resources>
