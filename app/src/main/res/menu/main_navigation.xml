@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/recents"
+        android:icon="@drawable/icon_00"
+        android:title="@string/recents" />
+    <item
+        android:id="@+id/contacts"
+        android:icon="@drawable/icon_01"
+        android:title="@string/contacts" />
+
+    <item
+        android:id="@+id/profile"
+        android:icon="@drawable/icon_03"
+        android:title="@string/profile" />
+</menu>

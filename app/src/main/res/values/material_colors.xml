@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Google Material Design Color Palette for Android http://www.google.com/design/spec/style/color.html#color-ui-color-palette
+    Spreadsheet used to create this reosurce - http://bit.ly/mdcolor_spreadsheet
+    Link to this colors.xml resource file - http://bit.ly/mdcolorsxml
+
+    Harshad Kale
+    https://github.com/kalehv
+-->
+
+
+<resources>
+
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- Colors for the app -->
+
+    <!--Light Background Dark Text-->
+
+    <!--Dark Background Light Text-->
+    <color name="dark_bg_light_primary_text">#FFFFFFFF</color>
+
+</resources>

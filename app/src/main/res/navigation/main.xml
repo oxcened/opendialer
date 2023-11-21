@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main.xml"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="dev.alenajam.opendialer.features.main.MainFragment"
+        android:label="MainFragment">
+        <action
+            android:id="@+id/action_homeFragment_to_callDetailFragment"
+            app:destination="@id/callDetailFragment">
+            <argument
+                android:name="call"
+                app:argType="dev.alenajam.opendialer.features.dialer.calls.DialerCall" />
+        </action>
+        <action
+            android:id="@+id/action_homeFragment_to_searchContactsFragment"
+            app:destination="@id/searchContactsFragment">
+            <argument
+                android:name="initiationType"
+                app:argType="dev.alenajam.opendialer.features.dialer.searchContacts.SearchContactsFragment$InitiationType" />
+            <argument
+                android:name="prefilledNumber"
+                android:defaultValue="@null"
+                app:argType="string"
+                app:nullable="true" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/callDetailFragment"
+        android:name="dev.alenajam.opendialer.features.dialer.calls.detailCall.CallDetailFragment"
+        android:label="CallDetailFragment" />
+    <fragment
+        android:id="@+id/searchContactsFragment"
+        android:name="dev.alenajam.opendialer.features.dialer.searchContacts.SearchContactsFragment"
+        android:label="SearchContactsFragment" />
+</navigation>

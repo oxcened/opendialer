@@ -1,0 +1,18 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/white</item>
+        <item name="bottomSheetDialogTheme">@style/Theme.Design.BottomSheetDialog</item>
+        <item name="android:navigationBarColor">#000001</item>
+        <item name="android:imeOptions">flagNoFullscreen</item>
+    </style>
+
+    <style name="AppTheme.Main" parent="AppTheme.NoActionBar">
+        <item name="android:statusBarColor">@color/windowBackground</item>
+    </style>
+
+</resources>
