@@ -15,7 +15,6 @@
     <string name="call_disconnecting_title">挂断中</string>
     <string name="call_holding_title">等待中</string>
     <string name="call_ringing_title">来电</string>
-    <string name="call_disconnected_title">Disconnected</string>
     <string name="channel_incoming_calls">来电</string>
     <string name="channel_ongoing_calls">来电</string>
     <string name="channel_outgoing_calls">呼出电话</string>
@@ -38,9 +37,7 @@
     <string name="new_quick_response">新来电拒接短信</string>
     <string name="notification_incoming_call_title">当前通话： %1$s</string>
     <string name="notification_ongoing_call_title">来电： %1$s</string>
-    <string name="notification_on_hold_call_title">On hold call: %1$s</string>
     <string name="notification_outgoing_call_title">呼叫： %1$s</string>
-    <string name="option_short" comment="option_short&#10;&#10;This is used on the incoming call screen, on one of the four buttons. It needs to be short since the font is very wide.">Option</string>
     <string name="option" comment="option&#10;&#10;This is used as the toolbar title for the settings screen.">选项</string>
     <string name="outgoing_call">拨出电话</string>
     <string name="profile">个人资料</string>
@@ -68,21 +65,4 @@
     <string name="info">信息</string>
     <string name="searchContacts">搜索联系人</string>
     <string name="choose_sim_card">为当前通话选择SIM卡</string>
-    <string name="nothingHere">Mmh..nothing here</string>
-    <string name="conferenceCall">Conference Call</string>
-    <string name="split">Split</string>
-    <string name="manageConferenceCall">Manage conference call</string>
-    <string name="dialer">Dialer</string>
-    <string name="manageBlockedNumbers">Manage blocked numbers</string>
-    <string name="blockThisCaller">Block this caller</string>
-    <string name="unblockThisCaller">Unblock this caller</string>
-    <string name="numberBlocked">%1$s blocked</string>
-    <string name="numberUnblocked">%1$s unblocked</string>
-    <string name="notificationSettings">Notification Settings</string>
-    <string name="searchContactsHeader">All contacts</string>
-    <string name="searchContactsActionMakeCall">Call %1$s</string>
-    <string name="profile_label_about">About OpenDialer</string>
-    <string name="profile_desc_about">Learn more about the app</string>
-    <string name="profile_label_options">Options</string>
-    <string name="profile_desc_options">Let\'s tweak it a little bit!</string>
 </resources>
