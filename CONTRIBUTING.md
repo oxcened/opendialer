@@ -35,3 +35,7 @@ Please do not open pull request for feature requests unless previously discussed
 ## Reviewing pull requests
 
 Feel free to give feedback on someone else's PR.
+
+## Translating
+
+If you are interested in contributing to translations, you can do so in the [Crowdin project](https://crowdin.com/project/opendialer).
