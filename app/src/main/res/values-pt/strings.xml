@@ -15,7 +15,7 @@
     <string name="call_disconnecting_title">Desconexão</string>
     <string name="call_holding_title">Em espera</string>
     <string name="call_ringing_title">Chamada em entrada</string>
-    <string name="call_disconnected_title">Disconnected</string>
+    <string name="call_disconnected_title">Desconectado</string>
     <string name="channel_incoming_calls">Chamadas em entrada</string>
     <string name="channel_ongoing_calls">Chamadas em progresso</string>
     <string name="channel_outgoing_calls">Chamadas em saída</string>
@@ -38,7 +38,7 @@
     <string name="new_quick_response">Nova resposta rapida</string>
     <string name="notification_incoming_call_title">Chamada da: %1$s</string>
     <string name="notification_ongoing_call_title">Chamada com: %1$s</string>
-    <string name="notification_on_hold_call_title">On hold call: %1$s</string>
+    <string name="notification_on_hold_call_title">Chamada em espera: %1$s</string>
     <string name="notification_outgoing_call_title">Chamada a: %1$s</string>
     <string name="option_short" comment="option_short&#10;&#10;This is used on the incoming call screen, on one of the four buttons. It needs to be short since the font is very wide.">Opção</string>
     <string name="option" comment="option&#10;&#10;This is used as the toolbar title for the settings screen.">Opção</string>
@@ -68,21 +68,21 @@
     <string name="info">Info</string>
     <string name="searchContacts">Busca contatos</string>
     <string name="choose_sim_card">Escolha o CHIP para essa chamada</string>
-    <string name="nothingHere">Mmh..nothing here</string>
-    <string name="conferenceCall">Conference Call</string>
-    <string name="split">Split</string>
-    <string name="manageConferenceCall">Manage conference call</string>
-    <string name="dialer">Dialer</string>
-    <string name="manageBlockedNumbers">Manage blocked numbers</string>
-    <string name="blockThisCaller">Block this caller</string>
-    <string name="unblockThisCaller">Unblock this caller</string>
-    <string name="numberBlocked">%1$s blocked</string>
-    <string name="numberUnblocked">%1$s unblocked</string>
-    <string name="notificationSettings">Notification Settings</string>
-    <string name="searchContactsHeader">All contacts</string>
-    <string name="searchContactsActionMakeCall">Call %1$s</string>
-    <string name="profile_label_about">About OpenDialer</string>
-    <string name="profile_desc_about">Learn more about the app</string>
-    <string name="profile_label_options">Options</string>
-    <string name="profile_desc_options">Let\'s tweak it a little bit!</string>
+    <string name="nothingHere">Mmh.. nada aqui</string>
+    <string name="conferenceCall">Chamada em grupo</string>
+    <string name="split">Dividir</string>
+    <string name="manageConferenceCall">Gerir chamada em grupo</string>
+    <string name="dialer">Marcador</string>
+    <string name="manageBlockedNumbers">Gerir números bloqueados</string>
+    <string name="blockThisCaller">Bloquear este contacto</string>
+    <string name="unblockThisCaller">Desbloquear este contacto</string>
+    <string name="numberBlocked">%1$s bloqueado</string>
+    <string name="numberUnblocked">%1$s desbloqueado</string>
+    <string name="notificationSettings">Definições de notificações</string>
+    <string name="searchContactsHeader">Todos os contactos</string>
+    <string name="searchContactsActionMakeCall">Ligar para %1$s</string>
+    <string name="profile_label_about">Sobre OpenDialer</string>
+    <string name="profile_desc_about">Aprende mais sobre a aplicação</string>
+    <string name="profile_label_options">Opções</string>
+    <string name="profile_desc_options">Vamos ajustá-lo um pouco!</string>
 </resources>
