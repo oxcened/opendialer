@@ -65,14 +65,12 @@
     <string name="placeholder_quick_responses">Tippe oben rechts auf + um deine Schnellantworten anzupassen</string>
     <string name="placeholder_search_permissions">Um Vorschläge zu erhalten, erteile die Berechtigung in den Einstellungen deines Handys</string>
     <string name="sound_vibration">Ton und Vibration</string>
-    <string name="info">Info</string>
     <string name="searchContacts">Kontakte durchsuchen</string>
     <string name="choose_sim_card">Wähle die SIM für den Anruf</string>
     <string name="nothingHere">Mmh..Hier ist nichts</string>
     <string name="conferenceCall">Telefonkonferenz</string>
     <string name="split">Teilen</string>
     <string name="manageConferenceCall">Telefonkonferenz verwalten</string>
-    <string name="dialer">Dialer</string>
     <string name="manageBlockedNumbers">Blockierte Rufnummern verwalten</string>
     <string name="blockThisCaller">Diesen Anrufer sperren</string>
     <string name="unblockThisCaller">Diesen Anrufer entsperren</string>
