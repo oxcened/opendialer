@@ -55,7 +55,6 @@
     <string name="voicemail_call">Telefonsvarer Opkald</string>
     <string name="write_your_own">Skriv dit eget…</string>
     <string name="your_text_here">Skriv tekst her</string>
-    <string name="inCall" comment="inCall&#10;&#10;This is used in the settings screen, as header for the group of settings which are call related">In-Call</string>
     <string name="placeholder_call_log">Slå telefontilladelserne til for at se din opkaldslog</string>
     <string name="placeholder_contacts">For at se dine kontaktpersoner, skal du give adgang til dine kontakter</string>
     <string name="turn_on">Slå til</string>
@@ -65,7 +64,6 @@
     <string name="placeholder_quick_responses">Tryk på TILFØJ i øverste højre hjørne for at begynde at tilpasse dine hurtige svar</string>
     <string name="placeholder_search_permissions">Slå telefontilladelserne til for at se forslag</string>
     <string name="sound_vibration">Lyde og vibration</string>
-    <string name="info">Info</string>
     <string name="searchContacts">Søg i kontakter</string>
     <string name="choose_sim_card">Vælg SIM-kort til dette opkald</string>
     <string name="nothingHere">Mmh..intet her</string>
