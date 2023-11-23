@@ -55,7 +55,6 @@
     <string name="voicemail_call">Telefonsvarer samtale</string>
     <string name="write_your_own">Skriv din egen…</string>
     <string name="your_text_here">Din tekst her</string>
-    <string name="inCall" comment="inCall&#10;&#10;This is used in the settings screen, as header for the group of settings which are call related">In-Call</string>
     <string name="placeholder_call_log">For å se samtaleloggen din, slå på telefontillatelser</string>
     <string name="placeholder_contacts">For å se kontaktene dine, slå på kontakttillatelsene dine</string>
     <string name="turn_on">Skru på</string>
@@ -65,7 +64,6 @@
     <string name="placeholder_quick_responses">Trykk på legg til knappen i høyre hjørne for å starte å tilpasse dine hurtigsvar</string>
     <string name="placeholder_search_permissions">For å se forslag, slå på telefonens tillatelser</string>
     <string name="sound_vibration">Lyd og vibrasjon</string>
-    <string name="info">Info</string>
     <string name="searchContacts">Søk i kontakter</string>
     <string name="choose_sim_card">Velg SIM for denne samtalen</string>
     <string name="nothingHere">Mmh..ingenting her</string>
@@ -81,8 +79,4 @@
     <string name="notificationSettings">Innstillinger for varsling</string>
     <string name="searchContactsHeader">Alle kontakter</string>
     <string name="searchContactsActionMakeCall">Ring %1$s</string>
-    <string name="profile_label_about">About OpenDialer</string>
-    <string name="profile_desc_about">Learn more about the app</string>
-    <string name="profile_label_options">Options</string>
-    <string name="profile_desc_options">Let\'s tweak it a little bit!</string>
 </resources>
