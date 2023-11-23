@@ -19,7 +19,6 @@
     <string name="channel_incoming_calls">Appels entrants</string>
     <string name="channel_ongoing_calls">Appel en cours</string>
     <string name="channel_outgoing_calls">Appel sortant</string>
-    <string name="contacts">Contacts</string>
     <string name="copy_number">Copier le numéro</string>
     <string name="create_new_contact">Créer un nouveau contact</string>
     <string name="customize_quick_responses">Customiser les réponses rapides</string>
@@ -40,8 +39,6 @@
     <string name="notification_ongoing_call_title">Appel en cours : %1$s</string>
     <string name="notification_on_hold_call_title">Appel en attente: %1$s</string>
     <string name="notification_outgoing_call_title">Appel : %1$s</string>
-    <string name="option_short" comment="option_short&#10;&#10;This is used on the incoming call screen, on one of the four buttons. It needs to be short since the font is very wide.">Option</string>
-    <string name="option" comment="option&#10;&#10;This is used as the toolbar title for the settings screen.">Option</string>
     <string name="outgoing_call">Appel sortant</string>
     <string name="profile">Profil</string>
     <string name="recents">Récents</string>
@@ -83,6 +80,5 @@
     <string name="searchContactsActionMakeCall">Appeler %1$s</string>
     <string name="profile_label_about">À propos de OpenDialer</string>
     <string name="profile_desc_about">En savoir plus à propos de l\'application</string>
-    <string name="profile_label_options">Options</string>
     <string name="profile_desc_options">Modifions-le un peu !</string>
 </resources>
