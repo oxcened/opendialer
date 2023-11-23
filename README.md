@@ -2,6 +2,7 @@
 
 This project aims to be an open, clean and modern dialer for Android.
 
+![Static Badge](https://img.shields.io/badge/24%2B-brightgreen?logo=android&label=API)
 [![repository license](https://img.shields.io/github/license/oxcened/opendialer)](./LICENSE)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](./CONTRIBUTING.md)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
@@ -9,6 +10,7 @@ This project aims to be an open, clean and modern dialer for Android.
 **Table of Contents**
 
 - [Features](#features)
+- [Tech Stack](#tech-stack)
 - [Roadmap](#roadmap)
 - [Changelog](#changelog)
 - [Contributing](#contributing)
@@ -22,6 +24,16 @@ This project aims to be an open, clean and modern dialer for Android.
 - In-Call interface
 - Call conferences
 - Hang up with customized quick answers
+
+## Tech Stack
+
+- JDK 8
+- Android API 24+
+- Clean Architecture
+- MVVM pattern
+- ViewModel and LiveData
+- Kotlin Coroutines and Flow (v1)
+- Dagger (v2)
 
 ## Roadmap
 
