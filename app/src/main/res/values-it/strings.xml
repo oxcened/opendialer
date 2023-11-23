@@ -65,14 +65,12 @@
     <string name="placeholder_quick_responses">Premi il tasto AGGIUNGI in alto a destra per iniziare a personalizzare le tue risposte rapide</string>
     <string name="placeholder_search_permissions">Per vedere i suggerimenti, attiva i permessi del telefono</string>
     <string name="sound_vibration">Suoni e vibrazioni</string>
-    <string name="info">Info</string>
     <string name="searchContacts">Cerca contatti</string>
     <string name="choose_sim_card">Scegli la SIM per questa chiamata</string>
     <string name="nothingHere">Mmh..niente</string>
     <string name="conferenceCall">Conferenza</string>
     <string name="split">Separa</string>
     <string name="manageConferenceCall">Gestisci conferenza</string>
-    <string name="dialer">Dialer</string>
     <string name="manageBlockedNumbers">Gestisci numeri bloccati</string>
     <string name="blockThisCaller">Blocca questo numero</string>
     <string name="unblockThisCaller">Sblocca questo numero</string>
