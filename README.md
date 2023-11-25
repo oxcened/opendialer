@@ -4,9 +4,11 @@ This project aims to be an open, clean and modern dialer for Android.
 
 ![Static Badge](https://img.shields.io/badge/24%2B-brightgreen?logo=android&label=API)
 [![repository license](https://img.shields.io/github/license/oxcened/opendialer)](./LICENSE)
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
+
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](./CONTRIBUTING.md)
 [![Crowdin](https://badges.crowdin.net/opendialer/localized.svg)](https://crowdin.com/project/opendialer)
-[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
+[![Discord server](https://dcbadge.vercel.app/api/server/hKXzFFMTFN?style=flat)](https://discord.gg/hKXzFFMTFN)
 
 **Table of Contents**
 
