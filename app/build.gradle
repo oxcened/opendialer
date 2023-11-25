@@ -24,7 +24,6 @@ android {
         }
     }
     compileSdkVersion 30
-    buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "dev.alenajam.opendialer"
         minSdkVersion 24
@@ -58,6 +57,7 @@ android {
     buildFeatures {
         dataBinding true
     }
+    namespace 'dev.alenajam.opendialer'
 }
 
 dependencies {
@@ -107,6 +107,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
 }
+
 repositories {
     mavenCentral()
 }
