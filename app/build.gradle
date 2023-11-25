@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -56,6 +55,7 @@ android {
     }
     buildFeatures {
         dataBinding true
+        viewBinding true
     }
     namespace 'dev.alenajam.opendialer'
 }

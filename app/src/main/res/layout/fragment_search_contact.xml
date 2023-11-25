@@ -9,7 +9,9 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include layout="@layout/toolbar" />
+        <include
+            android:id="@+id/toolbar_layout"
+            layout="@layout/toolbar" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -60,5 +62,7 @@
         android:visibility="gone"
         app:backgroundTint="@color/colorPrimary" />
 
-    <include layout="@layout/fragment_search_dialpad" />
+    <include
+        android:id="@+id/dialpad_layout"
+        layout="@layout/fragment_search_dialpad" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -7,10 +7,10 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import dev.alenajam.opendialer.R
 import dev.alenajam.opendialer.core.functional.safeNavigate
 import dev.alenajam.opendialer.databinding.FragmentHomeBinding
@@ -22,11 +22,6 @@ import dev.alenajam.opendialer.features.profile.ProfileFragment
 import dev.alenajam.opendialer.model.OnStatusBarColorChange
 import dev.alenajam.opendialer.model.SearchOpenChangeListener
 import dev.alenajam.opendialer.model.ToolbarListener
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.fragment_home.bottomNavigation
-import kotlinx.android.synthetic.main.fragment_home.fab
-import kotlinx.android.synthetic.main.fragment_home.viewPager
-import javax.inject.Inject
 
 class MainFragment :
   Fragment(),
@@ -37,13 +32,11 @@ class MainFragment :
     fun newInstance() = MainFragment()
   }
 
-  @Inject
-  lateinit var viewModelFactory: ViewModelProvider.Factory
-
   private lateinit var viewPagerAdapter: FragmentStateAdapterImpl
-
   private var toolbarListener: ToolbarListener? = null
   private var onStatusBarColorChange: OnStatusBarColorChange? = null
+  private var _binding: FragmentHomeBinding? = null
+  private val binding get() = _binding!!
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -58,10 +51,17 @@ class MainFragment :
   }
 
   override fun onCreateView(
-    inflater: LayoutInflater, container: ViewGroup?,
+    inflater: LayoutInflater,
+    container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View {
-    return FragmentHomeBinding.inflate(inflater).root
+    _binding = FragmentHomeBinding.inflate(inflater, container, false)
+    return binding.root
+  }
+
+  override fun onDestroyView() {
+    super.onDestroyView()
+    _binding = null
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,13 +69,13 @@ class MainFragment :
 
     onStatusBarColorChange?.onColorChange(view.context.getColor(R.color.windowBackground))
 
-    bottomNavigation.setOnNavigationItemSelectedListener(this)
-    bottomNavigation.itemIconTintList = null
+    binding.bottomNavigation.setOnNavigationItemSelectedListener(this)
+    binding.bottomNavigation.itemIconTintList = null
 
-    fab.setOnClickListener(this)
+    binding.fab.setOnClickListener(this)
 
     viewPagerAdapter = FragmentStateAdapterImpl(this)
-    viewPager.apply {
+    binding.viewPager.apply {
       adapter = viewPagerAdapter
       isUserInputEnabled = false
       registerOnPageChangeCallback(OnPageChange())
@@ -83,11 +83,11 @@ class MainFragment :
   }
 
   private fun setPage(fragment: Tab) {
-    viewPager.setCurrentItem(fragment.ordinal, false)
+    binding.viewPager.setCurrentItem(fragment.ordinal, false)
   }
 
   override fun onClick(v: View?) {
-    if (v?.id == fab.id) {
+    if (v?.id == binding.fab.id) {
       val action =
         actionHomeFragmentToSearchContactsFragment(SearchContactsFragment.InitiationType.DIALPAD)
       findNavController().safeNavigate(action)
@@ -126,7 +126,7 @@ class MainFragment :
       }
 
       /** Handle fab visibility */
-      fab.visibility = when (position) {
+      binding.fab.visibility = when (position) {
         Tab.RECENTS.ordinal,
         Tab.CONTACTS.ordinal -> View.VISIBLE
 

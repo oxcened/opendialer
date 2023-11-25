@@ -17,30 +17,34 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import dev.alenajam.opendialer.R
-import kotlinx.android.synthetic.main.fragment_in_call.*
-import kotlinx.android.synthetic.main.in_call_active_run_button.*
-import kotlinx.android.synthetic.main.incoming_buttons.*
+import dev.alenajam.opendialer.databinding.FragmentInCallBinding
+import dev.alenajam.opendialer.view.DtmfKeypadBottomDialog
+import dev.alenajam.opendialer.view.RefuseWithMessageDialog
 import java.util.*
 import java.util.concurrent.*
 import javax.inject.Inject
 
-class InCallFragment : Fragment(), dev.alenajam.opendialer.view.DtmfKeypadBottomDialog.OnKeyClickListener, View.OnClickListener,
-  dev.alenajam.opendialer.view.RefuseWithMessageDialog.RefuseWithMessageDialogChoiceListener {
+class InCallFragment : Fragment(),
+  DtmfKeypadBottomDialog.OnKeyClickListener, View.OnClickListener,
+  RefuseWithMessageDialog.RefuseWithMessageDialogChoiceListener {
   @Inject
   lateinit var viewModelFactory: ViewModelProvider.Factory
   private lateinit var viewModel: InCallViewModel
   private var telecomManager: TelecomManager? = null
-  private var dtmfKeypadBottomDialog: dev.alenajam.opendialer.view.DtmfKeypadBottomDialog? = null
-  private var refuseWithMessageDialog: dev.alenajam.opendialer.view.RefuseWithMessageDialog? = null
-
+  private var dtmfKeypadBottomDialog: DtmfKeypadBottomDialog? = null
+  private var refuseWithMessageDialog: RefuseWithMessageDialog? = null
   private lateinit var callTimeScheduler: ScheduledExecutorService
   lateinit var callTimeHandler: ScheduledFuture<*>
+  private var _binding: FragmentInCallBinding? = null
+  private val binding get() = _binding!!
   private val callTimeRunnable: Runnable = Runnable {
     getPrimaryCall()?.let {
       if (it !== dev.alenajam.opendialer.model.OngoingCall.ONGOING_CALL_NULL && it.state == Call.STATE_ACTIVE) {
-        val differenceTime = dev.alenajam.opendialer.util.CommonUtils.getCurrentTime() - it.startTime + it.totalTime
+        val differenceTime =
+          dev.alenajam.opendialer.util.CommonUtils.getCurrentTime() - it.startTime + it.totalTime
         activity?.runOnUiThread {
-          subtitle?.text = dev.alenajam.opendialer.util.CommonUtils.getDurationTimeString(differenceTime)
+          binding.subtitle.text =
+            dev.alenajam.opendialer.util.CommonUtils.getDurationTimeString(differenceTime)
         }
       }
     }
@@ -59,9 +63,13 @@ class InCallFragment : Fragment(), dev.alenajam.opendialer.view.DtmfKeypadBottom
   }
 
   override fun onCreateView(
-    inflater: LayoutInflater, container: ViewGroup?,
+    inflater: LayoutInflater,
+    container: ViewGroup?,
     savedInstanceState: Bundle?
-  ): View = inflater.inflate(R.layout.fragment_in_call, container, false)
+  ): View {
+    _binding = FragmentInCallBinding.inflate(inflater, container, false)
+    return binding.root
+  }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
@@ -78,17 +86,14 @@ class InCallFragment : Fragment(), dev.alenajam.opendialer.view.DtmfKeypadBottom
     viewModel.primaryCall.observe(viewLifecycleOwner, callObserver)
     viewModel.secondaryCall.observe(viewLifecycleOwner, callObserver)
 
-    viewModel.audioState.observe(viewLifecycleOwner, Observer { renderAudioState(it) })
-    viewModel.canAddCall.observe(viewLifecycleOwner, Observer { renderCanAddCall(it) })
+    viewModel.audioState.observe(viewLifecycleOwner, { renderAudioState(it) })
+    viewModel.canAddCall.observe(viewLifecycleOwner, { renderCanAddCall(it) })
 
-    listOf(fight, run, option, hide, runSingle).map { it.setOnClickListener(this) }
-    inCallButtons.setListener(this::onCallButtonClick)
-
-    if (savedInstanceState == null) {
-      /*childFragmentManager.beginTransaction()
-          .replace(R.id.splash, InCallSplashFragment.newInstance())
-          .commitNow()*/
+    with(binding.inCallButtons.incomingButtons) {
+      listOf(fight, run, option, hide).map { it.setOnClickListener(this@InCallFragment) }
     }
+    binding.inCallButtons.activeEndCallButton.runSingle.setOnClickListener(this)
+    binding.inCallButtons.setListener(this::onCallButtonClick)
 
     context?.let { telecomManager = getSystemService(it, TelecomManager::class.java) }
 
@@ -124,7 +129,7 @@ class InCallFragment : Fragment(), dev.alenajam.opendialer.view.DtmfKeypadBottom
   }
 
   private fun keypadClick() {
-    dtmfKeypadBottomDialog = dev.alenajam.opendialer.view.DtmfKeypadBottomDialog(context)
+    dtmfKeypadBottomDialog = DtmfKeypadBottomDialog(context)
     dtmfKeypadBottomDialog?.apply {
       listener = this@InCallFragment
       keysText = getPrimaryCall()?.keypadText
@@ -134,31 +139,32 @@ class InCallFragment : Fragment(), dev.alenajam.opendialer.view.DtmfKeypadBottom
 
   override fun onClick(v: View?) {
     getPrimaryCall()?.let {
-      when (v) {
-        run -> viewModel.hangup(it)
-        fight -> viewModel.answer(it)
-        option -> {
-          refuseWithMessageDialog =
-            dev.alenajam.opendialer.view.RefuseWithMessageDialog(context, this)
-          refuseWithMessageDialog?.show()
-        }
+      with(binding.inCallButtons) {
+        when (v) {
+          incomingButtons.run -> viewModel.hangup(it)
+          incomingButtons.fight -> viewModel.answer(it)
+          incomingButtons.option -> {
+            refuseWithMessageDialog = RefuseWithMessageDialog(context, this@InCallFragment)
+            refuseWithMessageDialog?.show()
+          }
 
-        hide -> finish()
-        runSingle -> viewModel.hangup(it)
-        else -> Unit
+          incomingButtons.hide -> finish()
+          activeEndCallButton.runSingle -> viewModel.hangup(it)
+          else -> Unit
+        }
       }
     }
   }
 
   @SuppressLint("MissingPermission")
   private fun renderMainCall(call: dev.alenajam.opendialer.model.OngoingCall) = call.let {
-    title.text = it.callerName
+    binding.title.text = it.callerName
 
     if (dev.alenajam.opendialer.util.PermissionUtils.hasMakeCallPermission(context) && (telecomManager?.callCapablePhoneAccounts?.size
         ?: 0) > 1
     ) {
-      simContainer.visibility = View.VISIBLE
-      sim.text = telecomManager?.getPhoneAccount(it.call.details.accountHandle)?.label
+      binding.simContainer.visibility = View.VISIBLE
+      binding.sim.text = telecomManager?.getPhoneAccount(it.call.details.accountHandle)?.label
     }
   }
 
@@ -173,7 +179,7 @@ class InCallFragment : Fragment(), dev.alenajam.opendialer.view.DtmfKeypadBottom
 
         }
 
-        else -> subtitle.text = when (state) {
+        else -> binding.subtitle.text = when (state) {
           Call.STATE_RINGING -> getString(R.string.call_ringing_title)
           Call.STATE_CONNECTING -> getString(R.string.call_connecting_title)
           Call.STATE_HOLDING -> getString(R.string.call_holding_title)
@@ -195,7 +201,7 @@ class InCallFragment : Fragment(), dev.alenajam.opendialer.view.DtmfKeypadBottom
   }
 
   private fun updateButtons() {
-    inCallButtons.updateButtons(
+    binding.inCallButtons.updateButtons(
       getPrimaryCall(),
       getSecondaryCall(),
       viewModel.canAddCall.value,
@@ -223,10 +229,11 @@ class InCallFragment : Fragment(), dev.alenajam.opendialer.view.DtmfKeypadBottom
   }
 
   override fun onDestroyView() {
+    super.onDestroyView()
     if (refuseWithMessageDialog?.isShowing == true) refuseWithMessageDialog?.hide()
     if (dtmfKeypadBottomDialog?.isShowing == true) dtmfKeypadBottomDialog?.hide()
     callTimeHandler.cancel(true)
     callTimeScheduler.shutdown()
-    super.onDestroyView()
+    _binding = null
   }
 }

@@ -15,6 +15,8 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dev.alenajam.opendialer.R
+import dev.alenajam.opendialer.databinding.InCallActiveRunButtonBinding
+import dev.alenajam.opendialer.databinding.IncomingButtonsBinding
 
 class InCallActiveButton(val id: InCallActiveButtonId, var checked: Boolean = false) {
   enum class InCallActiveButtonId {
@@ -31,18 +33,19 @@ class InCallActiveButton(val id: InCallActiveButtonId, var checked: Boolean = fa
 }
 
 class InCallButtons(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
-  private val incomingButtons: View = inflate(context, R.layout.incoming_buttons, null)
+  //private val incomingButtons: View = inflate(context, R.layout.incoming_buttons, null)
+  val incomingButtons = IncomingButtonsBinding.inflate(LayoutInflater.from(context), this, false)
   private val activeButtons = InCallActiveButtons(context)
-  private val activeEndCallButton = inflate(context, R.layout.in_call_active_run_button, null)
+  val activeEndCallButton = InCallActiveRunButtonBinding.inflate(LayoutInflater.from(context), this, false)
   private var listener: ((button: InCallActiveButton) -> Unit)? = null
 
   init {
-    addView(incomingButtons)
+    addView(incomingButtons.root)
     activeButtons.layoutParams =
       LayoutParams(LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f)
     activeButtons.setListener { b -> listener?.invoke(b) }
     addView(activeButtons)
-    addView(activeEndCallButton)
+    addView(activeEndCallButton.root)
     clear()
   }
 
@@ -101,12 +104,12 @@ class InCallButtons(context: Context, attrs: AttributeSet) : LinearLayout(contex
   }
 
   private fun showIncomingButtons(show: Boolean) {
-    incomingButtons.visibility = if (show) View.VISIBLE else View.GONE
+    incomingButtons.root.visibility = if (show) View.VISIBLE else View.GONE
   }
 
   private fun showActiveButtons(show: Boolean) {
     activeButtons.visibility = if (show) View.VISIBLE else View.GONE
-    activeEndCallButton.visibility = if (show) View.VISIBLE else View.GONE
+    activeEndCallButton.root.visibility = if (show) View.VISIBLE else View.GONE
   }
 
   private fun showActiveButton(buttonId: InCallActiveButton.InCallActiveButtonId, show: Boolean) {
