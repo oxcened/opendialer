@@ -17,6 +17,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import dev.alenajam.opendialer.R;
@@ -26,7 +27,7 @@ import dev.alenajam.opendialer.util.CommonUtils;
 import dev.alenajam.opendialer.util.CommonUtilsKt;
 
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHolder> {
-  private final List<Integer> colorList = List.of(
+  private final List<Integer> colorList = Arrays.asList(
       Color.parseColor("#4FAF44"),
       Color.parseColor("#F6D145"),
       Color.parseColor("#FF9526"),

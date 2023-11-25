@@ -18,9 +18,9 @@
             android:id="@+id/icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:tint="?android:attr/colorControlNormal"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:tint="?android:attr/colorControlNormal" />
 
         <TextView
             android:id="@+id/title"

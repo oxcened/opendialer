@@ -53,10 +53,10 @@ abstract class SearchContactsDialpadData {
       val list = mutableListOf<DialerSearchContactEntity>()
       if (cursor.moveToFirst()) {
         do {
-          val name = cursor.getString(cursor.getColumnIndex(Phone.DISPLAY_NAME))
-          val number = cursor.getString(cursor.getColumnIndex(Phone.NUMBER))
-          val lookupKey = cursor.getString(cursor.getColumnIndex(Phone.LOOKUP_KEY))
-          val contactId = cursor.getLong(cursor.getColumnIndex(Phone.CONTACT_ID))
+          val name = cursor.getString(cursor.getColumnIndexOrThrow(Phone.DISPLAY_NAME))
+          val number = cursor.getString(cursor.getColumnIndexOrThrow(Phone.NUMBER))
+          val lookupKey = cursor.getString(cursor.getColumnIndexOrThrow(Phone.LOOKUP_KEY))
+          val contactId = cursor.getLong(cursor.getColumnIndexOrThrow(Phone.CONTACT_ID))
 
           val contactMatch =
             dev.alenajam.opendialer.util.smartDialUtils.ContactMatch(lookupKey, contactId)
@@ -71,11 +71,11 @@ abstract class SearchContactsDialpadData {
             duplicates.add(contactMatch)
             list.add(
               DialerSearchContactEntity(
-                id = cursor.getInt(cursor.getColumnIndex(Phone.CONTACT_ID)),
+                id = cursor.getInt(cursor.getColumnIndexOrThrow(Phone.CONTACT_ID)),
                 name = name,
-                photoUri = cursor.getString(cursor.getColumnIndex(Phone.PHOTO_THUMBNAIL_URI))
+                photoUri = cursor.getString(cursor.getColumnIndexOrThrow(Phone.PHOTO_THUMBNAIL_URI))
                   ?.takeIf { it.isNotBlank() },
-                label = cursor.getString(cursor.getColumnIndex(Phone.LABEL)),
+                label = cursor.getString(cursor.getColumnIndexOrThrow(Phone.LABEL)),
                 contactId = contactId.toInt(),
                 number = number
               )

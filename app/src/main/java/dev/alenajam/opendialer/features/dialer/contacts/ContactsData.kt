@@ -39,11 +39,11 @@ abstract class ContactsData {
         do {
           list.add(
             DialerContactEntity(
-              id = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)),
-              name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)),
-              photoUri = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI))
+              id = cursor.getInt(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)),
+              name = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)),
+              photoUri = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI))
                 ?.takeIf { it.isNotBlank() },
-              starred = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.STARRED))
+              starred = cursor.getInt(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.STARRED))
             )
           )
         } while (cursor.moveToNext())
@@ -82,24 +82,24 @@ abstract class ContactsData {
       )?.let {
         if (it.moveToFirst()) {
           val lookupKey =
-            it.getString(it.getColumnIndex(ContactsContract.PhoneLookup.LOOKUP_KEY))
+            it.getString(it.getColumnIndexOrThrow(ContactsContract.PhoneLookup.LOOKUP_KEY))
           val contactId =
-            it.getLong(it.getColumnIndex(ContactsContract.PhoneLookup.CONTACT_ID))
+            it.getLong(it.getColumnIndexOrThrow(ContactsContract.PhoneLookup.CONTACT_ID))
           return ContactInfo(
-            name = it.getString(it.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME)),
-            number = it.getString(it.getColumnIndex(ContactsContract.PhoneLookup.NUMBER)),
-            photoUri = it.getString(it.getColumnIndex(ContactsContract.PhoneLookup.PHOTO_URI))
+            name = it.getString(it.getColumnIndexOrThrow(ContactsContract.PhoneLookup.DISPLAY_NAME)),
+            number = it.getString(it.getColumnIndexOrThrow(ContactsContract.PhoneLookup.NUMBER)),
+            photoUri = it.getString(it.getColumnIndexOrThrow(ContactsContract.PhoneLookup.PHOTO_URI))
               ?.takeIf { uri -> uri.isNotBlank() },
-            type = it.getInt(it.getColumnIndex(ContactsContract.PhoneLookup.TYPE)),
-            label = it.getString(it.getColumnIndex(ContactsContract.PhoneLookup.LABEL)),
+            type = it.getInt(it.getColumnIndexOrThrow(ContactsContract.PhoneLookup.TYPE)),
+            label = it.getString(it.getColumnIndexOrThrow(ContactsContract.PhoneLookup.LABEL)),
             lookupUri = dev.alenajam.opendialer.util.UriUtils.uriToString(
               ContactsContract.Contacts.getLookupUri(
                 contactId,
                 lookupKey
               )
             ),
-            normalizedNumber = it.getString(it.getColumnIndex(ContactsContract.PhoneLookup.NORMALIZED_NUMBER)),
-            photoId = it.getLong(it.getColumnIndex(ContactsContract.PhoneLookup.PHOTO_ID))
+            normalizedNumber = it.getString(it.getColumnIndexOrThrow(ContactsContract.PhoneLookup.NORMALIZED_NUMBER)),
+            photoId = it.getLong(it.getColumnIndexOrThrow(ContactsContract.PhoneLookup.PHOTO_ID))
           )
         }
         it.close()
