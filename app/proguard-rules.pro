@@ -20,7 +20,8 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class com.android.vending.billing.**
 -keep class org.ocpsoft.prettytime.**
 -keep class dev.alenajam.opendialer.model.** { *; }
 -keep class kotlin.Metadata { *; }
+-dontwarn org.conscrypt.Conscrypt
+-dontwarn org.conscrypt.OpenSSLProvider
