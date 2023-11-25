@@ -61,7 +61,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_sim_card_black_24dp"
-                android:tint="?android:attr/colorControlNormal" />
+                app:tint="?android:attr/colorControlNormal" />
 
             <TextView
                 android:id="@+id/sim"

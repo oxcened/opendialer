@@ -64,29 +64,27 @@ abstract class CallsData {
       val list = mutableListOf<DialerCallEntity>()
       if (cursor.moveToFirst()) {
         do {
-          val number: String? = cursor.getString(cursor.getColumnIndex(Calls.NUMBER))
-
           list.add(
             DialerCallEntity(
-              id = cursor.getInt(cursor.getColumnIndex(Calls._ID)),
-              number = number,
-              name = cursor.getString(cursor.getColumnIndex(Calls.CACHED_NAME)),
-              date = cursor.getLong(cursor.getColumnIndex(Calls.DATE)),
-              duration = cursor.getLong(cursor.getColumnIndex(Calls.DURATION)),
-              type = cursor.getInt(cursor.getColumnIndex(Calls.TYPE)),
-              isNew = cursor.getInt(cursor.getColumnIndex(Calls.NEW)),
-              photoUri = cursor.getString(cursor.getColumnIndex(Calls.CACHED_PHOTO_URI))
+              id = cursor.getInt(cursor.getColumnIndexOrThrow(Calls._ID)),
+              number = cursor.getString(cursor.getColumnIndexOrThrow(Calls.NUMBER)),
+              name = cursor.getString(cursor.getColumnIndexOrThrow(Calls.CACHED_NAME)),
+              date = cursor.getLong(cursor.getColumnIndexOrThrow(Calls.DATE)),
+              duration = cursor.getLong(cursor.getColumnIndexOrThrow(Calls.DURATION)),
+              type = cursor.getInt(cursor.getColumnIndexOrThrow(Calls.TYPE)),
+              isNew = cursor.getInt(cursor.getColumnIndexOrThrow(Calls.NEW)),
+              photoUri = cursor.getString(cursor.getColumnIndexOrThrow(Calls.CACHED_PHOTO_URI))
                 ?.takeIf { it.isNotBlank() },
-              countryIso = cursor.getString(cursor.getColumnIndex(Calls.COUNTRY_ISO)),
-              label = cursor.getString(cursor.getColumnIndex(Calls.CACHED_NUMBER_LABEL)),
-              photoId = cursor.getLong(cursor.getColumnIndex(Calls.CACHED_PHOTO_ID)),
-              geoDescription = cursor.getString(cursor.getColumnIndex(Calls.GEOCODED_LOCATION)),
-              formattedNumber = cursor.getString(cursor.getColumnIndex(Calls.CACHED_FORMATTED_NUMBER)),
-              normalizedNumber = cursor.getString(cursor.getColumnIndex(Calls.CACHED_NORMALIZED_NUMBER)),
-              lookupUri = cursor.getString(cursor.getColumnIndex(Calls.CACHED_LOOKUP_URI)),
-              postDialDigits = cursor.getString(cursor.getColumnIndex(Calls.POST_DIAL_DIGITS)),
-              matchedNumber = cursor.getString(cursor.getColumnIndex(Calls.CACHED_MATCHED_NUMBER)),
-              numberType = cursor.getInt(cursor.getColumnIndex(Calls.CACHED_NUMBER_TYPE))
+              countryIso = cursor.getString(cursor.getColumnIndexOrThrow(Calls.COUNTRY_ISO)),
+              label = cursor.getString(cursor.getColumnIndexOrThrow(Calls.CACHED_NUMBER_LABEL)),
+              photoId = cursor.getLong(cursor.getColumnIndexOrThrow(Calls.CACHED_PHOTO_ID)),
+              geoDescription = cursor.getString(cursor.getColumnIndexOrThrow(Calls.GEOCODED_LOCATION)),
+              formattedNumber = cursor.getString(cursor.getColumnIndexOrThrow(Calls.CACHED_FORMATTED_NUMBER)),
+              normalizedNumber = cursor.getString(cursor.getColumnIndexOrThrow(Calls.CACHED_NORMALIZED_NUMBER)),
+              lookupUri = cursor.getString(cursor.getColumnIndexOrThrow(Calls.CACHED_LOOKUP_URI)),
+              postDialDigits = cursor.getString(cursor.getColumnIndexOrThrow(Calls.POST_DIAL_DIGITS)),
+              matchedNumber = cursor.getString(cursor.getColumnIndexOrThrow(Calls.CACHED_MATCHED_NUMBER)),
+              numberType = cursor.getInt(cursor.getColumnIndexOrThrow(Calls.CACHED_NUMBER_TYPE))
             )
           )
         } while (cursor.moveToNext())

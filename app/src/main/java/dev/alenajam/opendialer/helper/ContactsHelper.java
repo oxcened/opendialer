@@ -36,10 +36,10 @@ public abstract class ContactsHelper {
 
     if (cursor != null && cursor.moveToFirst()) {
       Contact contact = new Contact(
-          cursor.getInt(cursor.getColumnIndex(ContactsContract.PhoneLookup._ID)),
-          cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME)),
+          cursor.getInt(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID)),
+          cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.DISPLAY_NAME)),
           phoneNumber,
-          cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.PHOTO_URI))
+          cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.PHOTO_URI))
       );
       cursor.close();
       return contact;
