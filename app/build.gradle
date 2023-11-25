@@ -50,6 +50,9 @@ android {
         viewBinding true
     }
     namespace 'dev.alenajam.opendialer'
+    lint {
+        disable 'MissingTranslation'
+    }
 }
 
 dependencies {
