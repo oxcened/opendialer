@@ -23,9 +23,9 @@ android {
             }
         }
     }
-    compileSdkVersion 30
     defaultConfig {
         applicationId "dev.alenajam.opendialer"
+        compileSdk 31
         minSdkVersion 24
         targetSdkVersion 30
         versionCode 1
