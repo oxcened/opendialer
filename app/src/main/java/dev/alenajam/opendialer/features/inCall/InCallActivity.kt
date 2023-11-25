@@ -7,14 +7,11 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import dev.alenajam.opendialer.R
-
-private val MANAGE_CONFERENCE_TAG = InCallManageConferenceFragment::class.java.canonicalName
+import dev.alenajam.opendialer.util.CallsHandler
 
 class InCallActivity : AppCompatActivity() {
   var visibility: Boolean = false
     private set
-
-  private var manageConferenceFragment: InCallManageConferenceFragment? = null
 
   companion object {
     fun start(context: Context) {
@@ -25,11 +22,8 @@ class InCallActivity : AppCompatActivity() {
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-
-    dev.alenajam.opendialer.util.CallsHandler.setInCallActivity(this)
-
     requestWindowFeature(Window.FEATURE_NO_TITLE)
+    CallsHandler.setInCallActivity(this)
     val flags = WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
       WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
       WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or
@@ -38,6 +32,7 @@ class InCallActivity : AppCompatActivity() {
       WindowManager.LayoutParams.FLAG_IGNORE_CHEEK_PRESSES
     window.addFlags(flags)
     supportActionBar?.hide()
+    super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_in_call)
   }
 
@@ -52,8 +47,7 @@ class InCallActivity : AppCompatActivity() {
   }
 
   override fun onDestroy() {
-    dev.alenajam.opendialer.util.CallsHandler.clearInCallActivity(this)
-
     super.onDestroy()
+    CallsHandler.clearInCallActivity(this)
   }
 }

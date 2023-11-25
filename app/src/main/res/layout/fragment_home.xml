@@ -1,42 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginBottom="56dp" />
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/viewPager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="56dp" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            android:src="@drawable/icon_15_light"
+            app:backgroundTint="@color/colorPrimary"
+            app:layout_anchor="@id/bottomNavigation"
+            app:layout_anchorGravity="end" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/fab_margin"
-                android:src="@drawable/icon_15_light"
-                app:backgroundTint="@color/colorPrimary"
-                app:layout_anchor="@id/bottomNavigation"
-                app:layout_anchorGravity="end" />
-
-            <dev.alenajam.opendialer.view.BottomNavigationBadged
-                android:id="@+id/bottomNavigation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:background="?android:attr/windowBackground"
-                app:itemTextColor="@color/bottom_nav_text_color"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_insetEdge="bottom"
-                app:menu="@menu/main_navigation" />
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
-    </FrameLayout>
-
-</layout>
+        <dev.alenajam.opendialer.view.BottomNavigationBadged
+            android:id="@+id/bottomNavigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="?android:attr/windowBackground"
+            app:itemTextColor="@color/bottom_nav_text_color"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_insetEdge="bottom"
+            app:menu="@menu/main_navigation" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</FrameLayout>

@@ -14,28 +14,21 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import dev.alenajam.opendialer.R
+import dev.alenajam.opendialer.databinding.FragmentRecentsBinding
 import dev.alenajam.opendialer.features.dialer.DialerViewModel
-import dev.alenajam.opendialer.features.dialer.calls.cache.CacheRepositoryImpl
-import kotlinx.android.synthetic.main.fragment_recents.buttonPermission
-import kotlinx.android.synthetic.main.fragment_recents.permissionPrompt
-import kotlinx.android.synthetic.main.fragment_recents.recycler_view_call_log
+import dev.alenajam.opendialer.util.PermissionUtils
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
 class RecentsFragment : Fragment() {
   @Inject
   lateinit var viewModelFactory: ViewModelProvider.Factory
-
-  @Inject
-  lateinit var cacheRepository: CacheRepositoryImpl
-
   private val viewModel by activityViewModels<DialerViewModel> { viewModelFactory }
-
   lateinit var adapter: RecentsAdapter
-
   private var notCalledNumber = ""
   private var refreshNeeded = false
+  private var _binding: FragmentRecentsBinding? = null
+  private val binding get() = _binding!!
 
   @ExperimentalCoroutinesApi
   private val requestPermissions =
@@ -43,7 +36,7 @@ class RecentsFragment : Fragment() {
       /** Ensure that all permissions were allowed */
       if (dev.alenajam.opendialer.util.PermissionUtils.recentsPermissions.all { data[it] == true }) {
         /** Hide permission prompt */
-        permissionPrompt.visibility = View.GONE
+        binding.permissionPrompt.visibility = View.GONE
 
         observeCalls()
       }
@@ -64,8 +57,14 @@ class RecentsFragment : Fragment() {
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?
-  ): View? {
-    return inflater.inflate(R.layout.fragment_recents, container, false)
+  ): View {
+    _binding = FragmentRecentsBinding.inflate(inflater, container, false)
+    return binding.root
+  }
+
+  override fun onDestroyView() {
+    super.onDestroyView()
+    _binding = null
   }
 
   override fun onAttach(context: Context) {
@@ -90,28 +89,28 @@ class RecentsFragment : Fragment() {
     context?.let {
       adapter = RecentsAdapter(
         it,
-        recycler_view_call_log,
+        binding.recyclerViewCallLog,
         coroutineScope = lifecycleScope,
         onCallClick = { call -> call.contactInfo.number?.let { num -> makeCall(num) } },
         onContactClick = { call -> openContact(call) },
         onOptionClick = { call, option -> activity?.handleOptionClick(call, option) },
         updateContactInfo = viewModel::updateContactInfo
       )
-      recycler_view_call_log.adapter = adapter
-      recycler_view_call_log.layoutManager = LinearLayoutManager(context)
+      binding.recyclerViewCallLog.adapter = adapter
+      binding.recyclerViewCallLog.layoutManager = LinearLayoutManager(context)
     }
 
-    if (dev.alenajam.opendialer.util.PermissionUtils.hasRecentsPermission(context)) {
+    if (PermissionUtils.hasRecentsPermission(context)) {
       observeCalls()
     } else {
       /** Show permission prompt */
-      permissionPrompt.visibility = View.VISIBLE
-      buttonPermission.setOnClickListener {
-        requestPermissions.launch(dev.alenajam.opendialer.util.PermissionUtils.recentsPermissions)
+      binding.permissionPrompt.visibility = View.VISIBLE
+      binding.buttonPermission.setOnClickListener {
+        requestPermissions.launch(PermissionUtils.recentsPermissions)
       }
     }
 
-    if (dev.alenajam.opendialer.util.PermissionUtils.hasContactsPermission(context)) {
+    if (PermissionUtils.hasContactsPermission(context)) {
       observeContacts()
     }
   }
@@ -125,10 +124,10 @@ class RecentsFragment : Fragment() {
   private fun observeCalls() {
     /** Ensure that observable isn't observed already */
     if (!viewModel.calls.hasObservers()) {
-      viewModel.calls.observe(viewLifecycleOwner, Observer {
+      viewModel.calls.observe(viewLifecycleOwner) {
         handleCalls(it)
         refreshNeeded = true
-      })
+      }
     }
   }
 
@@ -140,12 +139,12 @@ class RecentsFragment : Fragment() {
   }
 
   private fun makeCall(number: String) {
-    if (dev.alenajam.opendialer.util.PermissionUtils.hasMakeCallPermission(context)) {
+    if (PermissionUtils.hasMakeCallPermission(context)) {
       activity?.let { viewModel.makeCall(it, number) }
       notCalledNumber = ""
     } else {
       notCalledNumber = number
-      requestMakeCallPermissions.launch(dev.alenajam.opendialer.util.PermissionUtils.makeCallPermissions)
+      requestMakeCallPermissions.launch(PermissionUtils.makeCallPermissions)
     }
   }
 

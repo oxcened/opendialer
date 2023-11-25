@@ -26,13 +26,7 @@ import dev.alenajam.opendialer.util.getContactImagePlaceholder
 import com.amulyakhare.textdrawable.util.ColorGenerator
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
-import kotlinx.android.synthetic.main.fragment_call_detail.callButton
-import kotlinx.android.synthetic.main.fragment_call_detail.contactIcon
-import kotlinx.android.synthetic.main.fragment_call_detail.recycler_view_call_details
-import kotlinx.android.synthetic.main.fragment_call_detail.recycler_view_call_details_options
-import kotlinx.android.synthetic.main.fragment_call_detail.subtitle
-import kotlinx.android.synthetic.main.fragment_call_detail.title
-import kotlinx.android.synthetic.main.toolbar.toolbar
+import dev.alenajam.opendialer.databinding.FragmentCallDetailBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
@@ -50,15 +44,14 @@ private val generator = ColorGenerator.create(colorList)
 class CallDetailFragment : Fragment(), View.OnClickListener {
   @Inject
   lateinit var viewModelFactory: ViewModelProvider.Factory
-
   private val viewModel by activityViewModels<DialerViewModel> { viewModelFactory }
-
   lateinit var adapter: RecentsAdapter
-
   private lateinit var call: DialerCall
   private var optionsAdapter: CallOptionsAdapter? = null
   private var toolbarListener: ToolbarListener? = null
   private var onStatusBarColorChange: OnStatusBarColorChange? = null
+  private var _binding: FragmentCallDetailBinding? = null
+  private val binding get() = _binding!!
 
   private val requestMakeCallPermissions =
     registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { data ->
@@ -99,8 +92,14 @@ class CallDetailFragment : Fragment(), View.OnClickListener {
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?
-  ): View? {
-    return inflater.inflate(R.layout.fragment_call_detail, container, false)
+  ): View {
+    _binding = FragmentCallDetailBinding.inflate(inflater, container, false)
+    return binding.root
+  }
+
+  override fun onDestroyView() {
+    super.onDestroyView()
+    _binding = null
   }
 
   @ExperimentalCoroutinesApi
@@ -110,10 +109,10 @@ class CallDetailFragment : Fragment(), View.OnClickListener {
     onStatusBarColorChange?.onColorChange(view.context.getColor(R.color.colorPrimaryDark))
     toolbarListener?.hideToolbar(false)
 
-    toolbar.setNavigationOnClickListener { goBack() }
-    context?.let { toolbar.setTitle(R.string.call_details) }
+    binding.toolbarLayout.toolbar.setNavigationOnClickListener { goBack() }
+    context?.let { binding.toolbarLayout.toolbar.setTitle(R.string.call_details) }
 
-    viewModel.detailOptions.observe(viewLifecycleOwner, Observer { handleOptions(it) })
+    viewModel.detailOptions.observe(viewLifecycleOwner) { handleOptions(it) }
     viewModel.deletedDetailCalls.observe(viewLifecycleOwner, EventObserver { goBack() })
     viewModel.blockedCaller.observe(
       viewLifecycleOwner,
@@ -122,8 +121,8 @@ class CallDetailFragment : Fragment(), View.OnClickListener {
       viewLifecycleOwner,
       EventObserver { handleBlockedCaller(false) })
 
-    callButton.setOnClickListener(this)
-    contactIcon.setOnClickListener(this)
+    binding.callButton.setOnClickListener(this)
+    binding.contactIcon.setOnClickListener(this)
 
     context?.let { context ->
       viewModel.getDetailOptions(call)
@@ -132,34 +131,34 @@ class CallDetailFragment : Fragment(), View.OnClickListener {
         .load(call.contactInfo.photoUri)
         .placeholder(context.getContactImagePlaceholder(call, generator))
         .transform(circleTransform)
-        .into(contactIcon)
+        .into(binding.contactIcon)
     }
 
     when {
       call.isAnonymous() -> {
-        title.text = context?.getString(R.string.anonymous)
-        subtitle.visibility = View.GONE
-        callButton.visibility = View.GONE
+        binding.title.text = context?.getString(R.string.anonymous)
+        binding.subtitle.visibility = View.GONE
+        binding.callButton.visibility = View.GONE
       }
 
       call.contactInfo.name.isNullOrBlank() -> {
-        title.text = call.contactInfo.number
-        subtitle.visibility = View.GONE
+        binding.title.text = call.contactInfo.number
+        binding.subtitle.visibility = View.GONE
       }
 
       else -> {
-        title.text = call.contactInfo.name
-        subtitle.text = call.contactInfo.number
+        binding.title.text = call.contactInfo.name
+        binding.subtitle.text = call.contactInfo.number
       }
     }
 
-    recycler_view_call_details.layoutManager = LinearLayoutManager(context)
-    recycler_view_call_details.adapter =
+    binding.recyclerViewCallDetails.layoutManager = LinearLayoutManager(context)
+    binding.recyclerViewCallDetails.adapter =
       dev.alenajam.opendialer.adapter.CallDetailsAdapter(call.childCalls, context)
 
-    recycler_view_call_details_options.layoutManager = LinearLayoutManager(context)
+    binding.recyclerViewCallDetailsOptions.layoutManager = LinearLayoutManager(context)
     optionsAdapter = CallOptionsAdapter { option -> handleOptionClick(option) }
-    recycler_view_call_details_options.adapter = optionsAdapter
+    binding.recyclerViewCallDetailsOptions.adapter = optionsAdapter
   }
 
   private fun handleOptions(options: List<dev.alenajam.opendialer.model.CallOption>) {
@@ -204,9 +203,9 @@ class CallDetailFragment : Fragment(), View.OnClickListener {
   }
 
   override fun onClick(v: View?) {
-    if (v?.id == callButton.id) {
+    if (v?.id == binding.callButton.id) {
       activity?.let { makeCall() }
-    } else if (v?.id == contactIcon.id) {
+    } else if (v?.id == binding.contactIcon.id) {
       activity?.let { viewModel.openContact(it, call) }
     }
   }

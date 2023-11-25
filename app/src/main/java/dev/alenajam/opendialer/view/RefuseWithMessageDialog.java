@@ -46,7 +46,7 @@ public class RefuseWithMessageDialog extends MyBottomSheetDialog implements Quic
     }.getType());
     quickResponseList.add(context.getString(R.string.write_your_own));
 
-    recyclerView.setAdapter(new QuickResponseAdapter(quickResponseList, context, this));
+    recyclerView.setAdapter(new QuickResponseAdapter(quickResponseList, this));
   }
 
   @Override

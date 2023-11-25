@@ -52,7 +52,7 @@ public abstract class NotificationHelper {
     Intent intent = new Intent(Intent.ACTION_MAIN, null);
     intent.setFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
     intent.setClass(context, InCallActivity.class);
-    PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, 0);
+    PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_IMMUTABLE);
 
     final Notification.Builder builder;
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -62,10 +62,9 @@ public abstract class NotificationHelper {
     }
 
     builder.setPriority(priority);
-
     builder.setContentIntent(pendingIntent);
-
     builder.setFullScreenIntent(pendingIntent, true);
+    builder.setSmallIcon(R.drawable.ic_notification_call);
 
     RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.notification_call);
     remoteView.setImageViewBitmap(R.id.text_view, CommonUtils.textToBitmap(context, notificationText.toUpperCase(), 15, Color.BLACK));
@@ -76,13 +75,13 @@ public abstract class NotificationHelper {
     remoteViewHeadsUp.setImageViewBitmap(R.id.buttonLeft, CommonUtils.textToBitmap(context, context.getString(R.string.fight).toUpperCase(), 15, context.getColor(R.color.green)));
     Intent buttonLeftIntent = new Intent(context, CallButtonsListener.class);
     buttonLeftIntent.setAction(INTENT_ACTION_CALL_BUTTON_CLICK_ACCEPT);
-    PendingIntent buttonLeftPendingIntent = PendingIntent.getBroadcast(context, 0, buttonLeftIntent, 0);
+    PendingIntent buttonLeftPendingIntent = PendingIntent.getBroadcast(context, 0, buttonLeftIntent, PendingIntent.FLAG_IMMUTABLE);
     remoteViewHeadsUp.setOnClickPendingIntent(R.id.buttonLeft, buttonLeftPendingIntent);
 
     remoteViewHeadsUp.setImageViewBitmap(R.id.buttonRight, CommonUtils.textToBitmap(context, context.getString(R.string.run).toUpperCase(), 15, context.getColor(R.color.red)));
     Intent buttonRightIntent = new Intent(context, CallButtonsListener.class);
     buttonRightIntent.setAction(INTENT_ACTION_CALL_BUTTON_CLICK_DECLINE);
-    PendingIntent buttonRightPendingIntent = PendingIntent.getBroadcast(context, 0, buttonRightIntent, 0);
+    PendingIntent buttonRightPendingIntent = PendingIntent.getBroadcast(context, 0, buttonRightIntent, PendingIntent.FLAG_IMMUTABLE);
     remoteViewHeadsUp.setOnClickPendingIntent(R.id.buttonRight, buttonRightPendingIntent);
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

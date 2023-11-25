@@ -10,8 +10,6 @@ import dev.alenajam.opendialer.helper.ProximitySensor;
 import dev.alenajam.opendialer.util.CallsHandler;
 import dev.alenajam.opendialer.util.TelecomAdapter;
 
-import dev.alenajam.opendialer.util.TelecomAdapter;
-
 public class InCallServiceImpl extends InCallService {
   private final TelecomAdapter telecomAdapter = TelecomAdapter.INSTANCE;
   CallsHandler callHandler = CallsHandler.getInstance();

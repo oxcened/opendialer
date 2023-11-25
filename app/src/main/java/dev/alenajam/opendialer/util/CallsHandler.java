@@ -9,13 +9,6 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
-import dev.alenajam.opendialer.features.inCall.InCallActivity;
-import dev.alenajam.opendialer.helper.NotificationHelper;
-import dev.alenajam.opendialer.helper.OngoingCallHelper;
-import dev.alenajam.opendialer.helper.ProximitySensor;
-import dev.alenajam.opendialer.model.OngoingCall;
-import dev.alenajam.opendialer.service.InCallServiceImpl;
-
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +17,11 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import dev.alenajam.opendialer.features.inCall.InCallActivity;
+import dev.alenajam.opendialer.helper.NotificationHelper;
+import dev.alenajam.opendialer.helper.OngoingCallHelper;
+import dev.alenajam.opendialer.helper.ProximitySensor;
+import dev.alenajam.opendialer.model.OngoingCall;
+import dev.alenajam.opendialer.service.InCallServiceImpl;
 
 @Singleton
 public class CallsHandler {
@@ -121,7 +119,6 @@ public class CallsHandler {
       handleCallNotification(primary, primary.getState());
       if (primary.getState() == Call.STATE_DIALING) attemptStartActivity();
       updateProximitySensor(primary);
-
       OngoingCall secondary = getCallToDisplay(primary);
       if (secondary == null) secondaryCall.postValue(OngoingCall.ONGOING_CALL_NULL);
       else secondaryCall.postValue(secondary);

@@ -49,7 +49,7 @@ public class CustomizeQuickResponsesActivity extends AppCompatActivity implement
     quickResponses = gson.fromJson(json, new TypeToken<List<String>>() {
     }.getType());
 
-    recyclerView.setAdapter(new QuickResponseAdapter(quickResponses, this, this, findViewById(R.id.placeholder)));
+    recyclerView.setAdapter(new QuickResponseAdapter(quickResponses, this, findViewById(R.id.placeholder)));
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
   }
 

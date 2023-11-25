@@ -11,11 +11,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.Keep
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import dev.alenajam.opendialer.R
+import dev.alenajam.opendialer.databinding.FragmentSearchContactBinding
 import dev.alenajam.opendialer.features.dialer.searchContacts.SearchContactsAdapter.Item
 import dev.alenajam.opendialer.model.BackPressedListener
 import dev.alenajam.opendialer.model.KeyboardSearchListener
@@ -24,14 +25,6 @@ import dev.alenajam.opendialer.model.OpenSearchListener
 import dev.alenajam.opendialer.model.SearchListener
 import dev.alenajam.opendialer.model.SearchOpenChangeListener
 import dev.alenajam.opendialer.model.ToolbarListener
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.android.synthetic.main.fragment_search_contact.buttonPermission
-import kotlinx.android.synthetic.main.fragment_search_contact.fab
-import kotlinx.android.synthetic.main.fragment_search_contact.permissionPrompt
-import kotlinx.android.synthetic.main.fragment_search_contact.placeholder
-import kotlinx.android.synthetic.main.fragment_search_contact.recyclerView
-import kotlinx.android.synthetic.main.fragment_search_dialpad.dialpad
-import kotlinx.android.synthetic.main.toolbar.toolbar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
@@ -42,21 +35,18 @@ class SearchContactsFragment : Fragment(), BackPressedListener, SearchListener,
   SearchOpenChangeListener, View.OnTouchListener {
   @Inject
   lateinit var viewModelFactory: ViewModelProvider.Factory
-
   private val viewModel by viewModels<SearchContactsViewModel> { viewModelFactory }
-
   lateinit var adapter: SearchContactsAdapter
-
   lateinit var initiationType: InitiationType
   var prefilledNumber: String? = null
-
   private var toolbarListener: ToolbarListener? = null
   private var openSearchListener: OpenSearchListener? = null
   private var keyboardSearchListener: KeyboardSearchListener? = null
   private var onStatusBarColorChange: OnStatusBarColorChange? = null
-
   private var notExecutedQuery = ""
   private var notCalledNumber = ""
+  private var _binding: FragmentSearchContactBinding? = null
+  private val binding get() = _binding!!
 
   @ExperimentalCoroutinesApi
   private val requestPermissions =
@@ -64,7 +54,7 @@ class SearchContactsFragment : Fragment(), BackPressedListener, SearchListener,
       /** Ensure that all permissions were allowed */
       if (dev.alenajam.opendialer.util.PermissionUtils.searchPermissions.all { data[it] == true }) {
         /** Hide permission prompt */
-        permissionPrompt.visibility = View.GONE
+        binding.permissionPrompt.visibility = View.GONE
 
         /** Retry query, if necessary */
         if (notExecutedQuery.isNotBlank()) {
@@ -118,21 +108,25 @@ class SearchContactsFragment : Fragment(), BackPressedListener, SearchListener,
   }
 
   override fun onCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return inflater.inflate(R.layout.fragment_search_contact, container, false)
+    inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+  ): View {
+    _binding = FragmentSearchContactBinding.inflate(inflater, container, false)
+    return binding.root
+  }
+
+  override fun onDestroyView() {
+    super.onDestroyView()
+    _binding = null
   }
 
   override fun onStart() {
     super.onStart()
-    dialpad.init()
+    binding.dialpadLayout.dialpad.init()
   }
 
   override fun onStop() {
     super.onStop()
-    dialpad.tearDown()
+    binding.dialpadLayout.dialpad.tearDown()
   }
 
   @ExperimentalCoroutinesApi
@@ -148,18 +142,15 @@ class SearchContactsFragment : Fragment(), BackPressedListener, SearchListener,
         } else if (item is Item.Action) {
           when (item.type) {
             Item.Action.ActionType.CREATE_NEW_CONTACT -> viewModel.createContact(
-              it,
-              adapter.query
+              it, adapter.query
             )
 
             Item.Action.ActionType.ADD_TO_CONTACT -> viewModel.addToContact(
-              it,
-              adapter.query
+              it, adapter.query
             )
 
             Item.Action.ActionType.SEND_MESSAGE -> viewModel.sendMessage(
-              it,
-              adapter.query
+              it, adapter.query
             )
 
             Item.Action.ActionType.MAKE_CALL -> viewModel.makeCall(it, adapter.query)
@@ -167,35 +158,38 @@ class SearchContactsFragment : Fragment(), BackPressedListener, SearchListener,
         }
       }
     }
-    recyclerView.adapter = adapter
-    recyclerView.layoutManager = LinearLayoutManager(context)
-    // recyclerView.setOnTouchListener(this)
+    binding.recyclerView.adapter = adapter
+    binding.recyclerView.layoutManager = LinearLayoutManager(context)
 
-    viewModel.result.observe(viewLifecycleOwner, Observer { handleResult(it) })
+    viewModel.result.observe(viewLifecycleOwner, { handleResult(it) })
 
     if (!dev.alenajam.opendialer.util.PermissionUtils.hasSearchPermission(context)) {
-      placeholder.text = getString(R.string.placeholder_search_permissions)
-      permissionPrompt.visibility = View.VISIBLE
-      buttonPermission.setOnClickListener {
+      binding.placeholder.text = getString(R.string.placeholder_search_permissions)
+      binding.permissionPrompt.visibility = View.VISIBLE
+      binding.buttonPermission.setOnClickListener {
         requestPermissions.launch(dev.alenajam.opendialer.util.PermissionUtils.searchPermissions)
       }
     }
 
     if (!isRegularSearch()) {
-      context?.getColor(R.color.windowBackground)?.let { toolbar.setBackgroundColor(it) }
-      toolbar.setNavigationOnClickListener { goBack() }
-      toolbar.visibility = View.VISIBLE
+      context?.getColor(R.color.windowBackground)
+        ?.let { binding.toolbarLayout.toolbar.setBackgroundColor(it) }
+      binding.toolbarLayout.toolbar.setNavigationOnClickListener { goBack() }
+      binding.toolbarLayout.toolbar.visibility = View.VISIBLE
 
       toolbarListener?.hideToolbar(false)
 
-      dialpad.apply {
-        bottomSheetBehavior = BottomSheetBehavior.from(dialpad)
+      binding.dialpadLayout.dialpad.apply {
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.dialpadLayout.dialpad)
 
         setTextChangeListener {
           if (isRegularSearch()) return@setTextChangeListener
 
           /** Dialpad search */
-          val normalized = dev.alenajam.opendialer.util.smartDialUtils.SmartDialNameMatcher.normalizeNumber(context, it)
+          val normalized =
+            dev.alenajam.opendialer.util.smartDialUtils.SmartDialNameMatcher.normalizeNumber(
+              context, it
+            )
           search(normalized)
         }
 
@@ -212,12 +206,12 @@ class SearchContactsFragment : Fragment(), BackPressedListener, SearchListener,
         open()
       }
 
-      fab.visibility = View.VISIBLE
+      binding.fab.visibility = View.VISIBLE
     } else {
-      toolbar.visibility = View.GONE
+      binding.toolbarLayout.toolbar.visibility = View.GONE
     }
 
-    fab.setOnClickListener { dialpad.open() }
+    binding.fab.setOnClickListener { binding.dialpadLayout.dialpad.open() }
   }
 
   private fun handleResult(result: SearchContactsViewModel.Result) {
@@ -288,12 +282,12 @@ class SearchContactsFragment : Fragment(), BackPressedListener, SearchListener,
     if (isRegularSearch()) {
       /** Close search */
       openSearchListener?.closeSearch()
-    } else if (dialpad.text.isBlank() || dialpad.isClosed) {
+    } else if (binding.dialpadLayout.dialpad.text.isBlank() || binding.dialpadLayout.dialpad.isClosed) {
       /** Close search */
       return true
     } else {
       /** Close dialpad */
-      dialpad.close()
+      binding.dialpadLayout.dialpad.close()
     }
 
     return false
@@ -325,7 +319,7 @@ class SearchContactsFragment : Fragment(), BackPressedListener, SearchListener,
         keyboardSearchListener?.closeSearchKeyboard()
       } else {
         /** Close dialpad */
-        dialpad.close()
+        binding.dialpadLayout.dialpad.close()
       }
     }
 
@@ -336,7 +330,6 @@ class SearchContactsFragment : Fragment(), BackPressedListener, SearchListener,
 
   @Keep
   enum class InitiationType {
-    REGULAR,
-    DIALPAD
+    REGULAR, DIALPAD
   }
 }
