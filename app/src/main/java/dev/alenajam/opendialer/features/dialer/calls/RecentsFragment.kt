@@ -14,10 +14,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import dev.alenajam.opendialer.R
-import dev.alenajam.opendialer.databinding.FragmentCallDetailBinding
 import dev.alenajam.opendialer.databinding.FragmentRecentsBinding
 import dev.alenajam.opendialer.features.dialer.DialerViewModel
+import dev.alenajam.opendialer.util.PermissionUtils
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
@@ -101,17 +100,17 @@ class RecentsFragment : Fragment() {
       binding.recyclerViewCallLog.layoutManager = LinearLayoutManager(context)
     }
 
-    if (dev.alenajam.opendialer.util.PermissionUtils.hasRecentsPermission(context)) {
+    if (PermissionUtils.hasRecentsPermission(context)) {
       observeCalls()
     } else {
       /** Show permission prompt */
       binding.permissionPrompt.visibility = View.VISIBLE
       binding.buttonPermission.setOnClickListener {
-        requestPermissions.launch(dev.alenajam.opendialer.util.PermissionUtils.recentsPermissions)
+        requestPermissions.launch(PermissionUtils.recentsPermissions)
       }
     }
 
-    if (dev.alenajam.opendialer.util.PermissionUtils.hasContactsPermission(context)) {
+    if (PermissionUtils.hasContactsPermission(context)) {
       observeContacts()
     }
   }
@@ -125,10 +124,10 @@ class RecentsFragment : Fragment() {
   private fun observeCalls() {
     /** Ensure that observable isn't observed already */
     if (!viewModel.calls.hasObservers()) {
-      viewModel.calls.observe(viewLifecycleOwner, Observer {
+      viewModel.calls.observe(viewLifecycleOwner) {
         handleCalls(it)
         refreshNeeded = true
-      })
+      }
     }
   }
 
@@ -140,12 +139,12 @@ class RecentsFragment : Fragment() {
   }
 
   private fun makeCall(number: String) {
-    if (dev.alenajam.opendialer.util.PermissionUtils.hasMakeCallPermission(context)) {
+    if (PermissionUtils.hasMakeCallPermission(context)) {
       activity?.let { viewModel.makeCall(it, number) }
       notCalledNumber = ""
     } else {
       notCalledNumber = number
-      requestMakeCallPermissions.launch(dev.alenajam.opendialer.util.PermissionUtils.makeCallPermissions)
+      requestMakeCallPermissions.launch(PermissionUtils.makeCallPermissions)
     }
   }
 

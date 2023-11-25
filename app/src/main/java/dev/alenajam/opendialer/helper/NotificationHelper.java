@@ -62,10 +62,9 @@ public abstract class NotificationHelper {
     }
 
     builder.setPriority(priority);
-
     builder.setContentIntent(pendingIntent);
-
     builder.setFullScreenIntent(pendingIntent, true);
+    builder.setSmallIcon(R.drawable.ic_notification_call);
 
     RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.notification_call);
     remoteView.setImageViewBitmap(R.id.text_view, CommonUtils.textToBitmap(context, notificationText.toUpperCase(), 15, Color.BLACK));

@@ -45,7 +45,6 @@ android {
             versionNameSuffix '-debug'
         }
     }
-    sourceSets { main { res.srcDirs = ['src/main/res', 'src/main/res/layout/activity'] } }
     buildFeatures {
         dataBinding true
         viewBinding true
