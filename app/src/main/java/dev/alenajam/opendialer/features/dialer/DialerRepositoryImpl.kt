@@ -34,7 +34,7 @@ class DialerRepositoryImpl
       val observer = object : ContentObserver(null) {
         override fun onChange(selfChange: Boolean) {
           CallsData.getCursor(contentResolver)?.let {
-            offer(CallsData.getData(it))
+            trySend(CallsData.getData(it))
             it.close()
           }
         }
@@ -43,7 +43,7 @@ class DialerRepositoryImpl
       contentResolver.registerContentObserver(CallsData.URI, true, observer)
 
       CallsData.getCursor(contentResolver)?.let {
-        offer(CallsData.getData(it))
+        trySend(CallsData.getData(it))
         it.close()
       }
 
@@ -58,7 +58,7 @@ class DialerRepositoryImpl
       val observer = object : ContentObserver(null) {
         override fun onChange(selfChange: Boolean) {
           ContactsData.getCursor(contentResolver)?.let {
-            offer(ContactsData.getData(it))
+            trySend(ContactsData.getData(it))
             it.close()
           }
         }
@@ -67,7 +67,7 @@ class DialerRepositoryImpl
       contentResolver.registerContentObserver(ContactsData.URI, true, observer)
 
       ContactsData.getCursor(contentResolver)?.let {
-        offer(ContactsData.getData(it))
+        trySend(ContactsData.getData(it))
         it.close()
       }
 
@@ -102,15 +102,15 @@ class DialerRepositoryImpl
     return Either.Left(Failure.NoData)
   }
 
-  override suspend fun getDetailOptions(call: DialerCall): Either<Failure, List<dev.alenajam.opendialer.model.CallOption>> {
+  override suspend fun getDetailOptions(call: DialerCall): Either<Failure, List<CallOption>> {
     return with(app) {
-      val options = mutableListOf<dev.alenajam.opendialer.model.CallOption>()
+      val options = mutableListOf<CallOption>()
 
       if (!call.isAnonymous()) {
         options.addAll(
           listOf(
-            dev.alenajam.opendialer.model.CallOption(CallOption.ID_COPY_NUMBER, R.drawable.icon_06),
-            dev.alenajam.opendialer.model.CallOption(
+            CallOption(CallOption.ID_COPY_NUMBER, R.drawable.icon_06),
+            CallOption(
               CallOption.ID_EDIT_BEFORE_CALL,
               R.drawable.icon_07
             )
@@ -119,7 +119,7 @@ class DialerRepositoryImpl
       }
 
       options.add(
-        dev.alenajam.opendialer.model.CallOption(
+        CallOption(
           CallOption.ID_DELETE,
           R.drawable.icon_11
         )
@@ -132,8 +132,8 @@ class DialerRepositoryImpl
           if (hasDefault && canUserBlockNumbers) {
             val isBlocked =
               BlockedNumberContract.isBlocked(this, call.contactInfo.number)
-            val blockOption = dev.alenajam.opendialer.model.CallOption(
-              if (isBlocked) dev.alenajam.opendialer.model.CallOption.ID_UNBLOCK_CALLER else dev.alenajam.opendialer.model.CallOption.ID_BLOCK_CALLER,
+            val blockOption = CallOption(
+              if (isBlocked) CallOption.ID_UNBLOCK_CALLER else CallOption.ID_BLOCK_CALLER,
               R.drawable.icon_10
             )
             options.add(blockOption)

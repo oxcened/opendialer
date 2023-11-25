@@ -24,7 +24,7 @@ android {
     }
     defaultConfig {
         applicationId "dev.alenajam.opendialer"
-        compileSdk 33
+        compileSdk 34
         minSdkVersion 24
         targetSdkVersion 30
         versionCode 1
@@ -73,8 +73,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
     implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:2.3.1"
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.4'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.4'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.5'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.7.5'
     implementation 'androidx.preference:preference-ktx:1.1.1'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
 

@@ -112,7 +112,7 @@ class CallDetailFragment : Fragment(), View.OnClickListener {
     binding.toolbarLayout.toolbar.setNavigationOnClickListener { goBack() }
     context?.let { binding.toolbarLayout.toolbar.setTitle(R.string.call_details) }
 
-    viewModel.detailOptions.observe(viewLifecycleOwner, Observer { handleOptions(it) })
+    viewModel.detailOptions.observe(viewLifecycleOwner) { handleOptions(it) }
     viewModel.deletedDetailCalls.observe(viewLifecycleOwner, EventObserver { goBack() })
     viewModel.blockedCaller.observe(
       viewLifecycleOwner,
