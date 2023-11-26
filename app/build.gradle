@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs.kotlin'
+    id 'com.google.dagger.hilt.android'
 }
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -86,6 +87,15 @@ dependencies {
     api 'com.google.dagger:dagger:2.28.3'
     kapt 'com.google.dagger:dagger-compiler:2.24'
 
+    implementation 'com.google.dagger:hilt-android:2.48.1'
+    kapt 'com.google.dagger:hilt-compiler:2.48.1'
+    // For instrumentation tests
+    androidTestImplementation  'com.google.dagger:hilt-android-testing:2.48.1'
+    kaptAndroidTest 'com.google.dagger:hilt-compiler:2.48.1'
+    // For local unit tests
+    testImplementation 'com.google.dagger:hilt-android-testing:2.48.1'
+    kaptTest 'com.google.dagger:hilt-compiler:2.48.1'
+
     implementation 'io.reactivex.rxjava3:rxjava:3.0.0-RC7'
     implementation 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
@@ -100,4 +110,12 @@ repositories {
 
 kotlin {
     jvmToolchain 17
+}
+
+kapt {
+    correctErrorTypes true
+}
+
+hilt {
+    enableAggregatingTask = true
 }
