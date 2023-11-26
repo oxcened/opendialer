@@ -2,13 +2,16 @@
 
 This project aims to be an open, clean and modern dialer for Android.
 
+[![Latest Version](https://img.shields.io/github/v/release/oxcened/opendialer)](https://github.com/oxcened/opendialer/releases)
+[![Build Workflow Status](https://img.shields.io/github/actions/workflow/status/oxcened/opendialer/android.yml)](https://github.com/oxcened/opendialer/actions)
+
 ![Static Badge](https://img.shields.io/badge/24%2B-brightgreen?logo=android&label=API)
-[![repository license](https://img.shields.io/github/license/oxcened/opendialer)](./LICENSE)
+[![Repository License](https://img.shields.io/github/license/oxcened/opendialer)](./LICENSE)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
 
-[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](./CONTRIBUTING.md)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](./CONTRIBUTING.md)
 [![Crowdin](https://badges.crowdin.net/opendialer/localized.svg)](https://crowdin.com/project/opendialer)
-[![Discord server](https://dcbadge.vercel.app/api/server/hKXzFFMTFN?style=flat)](https://discord.gg/hKXzFFMTFN)
+[![Discord Server](https://dcbadge.vercel.app/api/server/hKXzFFMTFN?style=flat)](https://discord.gg/hKXzFFMTFN)
 
 **Table of Contents**
 
