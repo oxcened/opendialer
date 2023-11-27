@@ -6,13 +6,16 @@ import android.telecom.CallAudioState
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.R
 import dev.alenajam.opendialer.core.platform.BaseViewModel
+import dev.alenajam.opendialer.util.CallsHandler
 import dev.alenajam.opendialer.util.TelecomAdapter
 import javax.inject.Inject
 
+@HiltViewModel
 class InCallViewModel
-@Inject constructor(callHandler: dev.alenajam.opendialer.util.CallsHandler) : BaseViewModel() {
+@Inject constructor(callHandler: CallsHandler) : BaseViewModel() {
   override val TAG = InCallViewModel::class.simpleName
 
   val primaryCall: MutableLiveData<dev.alenajam.opendialer.model.OngoingCall> = callHandler.primaryCall

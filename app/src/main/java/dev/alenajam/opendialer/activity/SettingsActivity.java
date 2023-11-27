@@ -7,8 +7,6 @@ import static dev.alenajam.opendialer.helper.SharedPreferenceHelper.KEY_SETTING_
 import static dev.alenajam.opendialer.helper.SharedPreferenceHelper.KEY_SETTING_SOUND_VIBRATION;
 import static dev.alenajam.opendialer.helper.SharedPreferenceHelper.KEY_SETTING_THEME;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -24,7 +22,6 @@ import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
-import dev.alenajam.opendialer.App;
 import dev.alenajam.opendialer.R;
 import dev.alenajam.opendialer.util.CommonUtils;
 import dev.alenajam.opendialer.util.DefaultPhoneUtils;
@@ -56,14 +53,6 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-      Activity activity = getActivity();
-      if (activity != null) {
-        Application app = activity.getApplication();
-        if (app != null) {
-          ((App) app).getApplicationComponent().inject(this);
-        }
-      }
-
       if (getContext() != null) {
         telecomManager = (TelecomManager) getContext().getSystemService(TELECOM_SERVICE);
       }

@@ -1,6 +1,7 @@
 package dev.alenajam.opendialer.features.dialer
 
 import android.app.Activity
+import android.app.Application
 import android.content.Intent
 import android.net.Uri
 import android.telecom.PhoneAccount
@@ -9,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.core.functional.Event
 import dev.alenajam.opendialer.core.platform.BaseViewModel
 import dev.alenajam.opendialer.features.dialer.calls.DialerCall
@@ -29,10 +31,11 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+@HiltViewModel
 class DialerViewModel
 @Inject constructor(
   dialerRepository: DialerRepositoryImpl,
-  private val app: dev.alenajam.opendialer.App,
+  private val app: Application,
   private val getDetailOptions: GetDetailOptions,
   private val deleteCallsUseCase: DeleteCalls,
   private val blockCallerUseCase: BlockCaller,
@@ -57,7 +60,8 @@ class DialerViewModel
     .flowOn(Dispatchers.IO)
     .asLiveData()
 
-  val detailOptions: MutableLiveData<List<dev.alenajam.opendialer.model.CallOption>> = MutableLiveData()
+  val detailOptions: MutableLiveData<List<dev.alenajam.opendialer.model.CallOption>> =
+    MutableLiveData()
   val deletedDetailCalls: MutableLiveData<Event<Unit>> = MutableLiveData()
   val blockedCaller: MutableLiveData<Event<Unit>> = MutableLiveData()
   val unblockedCaller: MutableLiveData<Event<Unit>> = MutableLiveData()
@@ -129,7 +133,9 @@ class DialerViewModel
     cacheRepository.invalidate()
   }
 
-  private fun handleDetailOptions(options: List<dev.alenajam.opendialer.model.CallOption>) = detailOptions.postValue(options)
+  private fun handleDetailOptions(options: List<dev.alenajam.opendialer.model.CallOption>) =
+    detailOptions.postValue(options)
+
   private fun handleDeletedDetailCalls(unit: Unit) = deletedDetailCalls.postValue(Event(Unit))
   private fun handleBlockCaller(unit: Unit) = blockedCaller.postValue(Event(Unit))
   private fun handleUnblockCaller(unit: Unit) = unblockedCaller.postValue(Event(Unit))

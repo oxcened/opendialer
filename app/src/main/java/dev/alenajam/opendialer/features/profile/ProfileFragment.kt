@@ -8,15 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import dagger.hilt.android.AndroidEntryPoint
 import dev.alenajam.opendialer.databinding.FragmentProfileBinding
 import dev.alenajam.opendialer.model.OnStatusBarColorChange
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
 class ProfileFragment : Fragment(), View.OnClickListener {
-  @Inject
-  lateinit var viewModelFactory: ViewModelProvider.Factory
-
   private lateinit var binding: FragmentProfileBinding
   private var onStatusBarColorChange: OnStatusBarColorChange? = null
 
@@ -27,7 +25,6 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         onStatusBarColorChange = context
       }
     }
-    (activity?.application as dev.alenajam.opendialer.App).applicationComponent.inject(this)
   }
 
   override fun onCreateView(

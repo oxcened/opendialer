@@ -1,7 +1,6 @@
 package dev.alenajam.opendialer.features.dialer.calls
 
 import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,20 +9,18 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
 import dev.alenajam.opendialer.databinding.FragmentRecentsBinding
 import dev.alenajam.opendialer.features.dialer.DialerViewModel
 import dev.alenajam.opendialer.util.PermissionUtils
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import javax.inject.Inject
 
+@AndroidEntryPoint
 class RecentsFragment : Fragment() {
-  @Inject
-  lateinit var viewModelFactory: ViewModelProvider.Factory
-  private val viewModel by activityViewModels<DialerViewModel> { viewModelFactory }
+  private val viewModel: DialerViewModel by activityViewModels()
   lateinit var adapter: RecentsAdapter
   private var notCalledNumber = ""
   private var refreshNeeded = false
@@ -65,11 +62,6 @@ class RecentsFragment : Fragment() {
   override fun onDestroyView() {
     super.onDestroyView()
     _binding = null
-  }
-
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    (activity?.application as? dev.alenajam.opendialer.App)?.applicationComponent?.inject(this)
   }
 
   override fun onStart() {
@@ -150,11 +142,22 @@ class RecentsFragment : Fragment() {
 
   private fun openContact(call: DialerCall) = activity?.let { viewModel.openContact(it, call) }
 
-  private fun Activity.handleOptionClick(call: DialerCall, option: dev.alenajam.opendialer.model.CallOption) =
+  private fun Activity.handleOptionClick(
+    call: DialerCall,
+    option: dev.alenajam.opendialer.model.CallOption
+  ) =
     when (option.id) {
       dev.alenajam.opendialer.model.CallOption.ID_SEND_MESSAGE -> viewModel.sendMessage(this, call)
-      dev.alenajam.opendialer.model.CallOption.ID_CALL_DETAILS -> viewModel.callDetail(findNavController(), call)
-      dev.alenajam.opendialer.model.CallOption.ID_CREATE_CONTACT -> viewModel.createContact(this, call)
+      dev.alenajam.opendialer.model.CallOption.ID_CALL_DETAILS -> viewModel.callDetail(
+        findNavController(),
+        call
+      )
+
+      dev.alenajam.opendialer.model.CallOption.ID_CREATE_CONTACT -> viewModel.createContact(
+        this,
+        call
+      )
+
       dev.alenajam.opendialer.model.CallOption.ID_ADD_EXISTING -> viewModel.addToContact(this, call)
       else -> Unit
     }

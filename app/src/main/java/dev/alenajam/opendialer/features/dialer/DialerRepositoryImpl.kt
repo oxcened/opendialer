@@ -1,5 +1,6 @@
 package dev.alenajam.opendialer.features.dialer
 
+import android.app.Application
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.database.ContentObserver
@@ -27,7 +28,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
 class DialerRepositoryImpl
-@Inject constructor(private val app: dev.alenajam.opendialer.App) : DialerRepository {
+@Inject constructor(private val app: Application) : DialerRepository {
   @ExperimentalCoroutinesApi
   override fun getCalls(contentResolver: ContentResolver): Flow<List<DialerCallEntity>> =
     callbackFlow {

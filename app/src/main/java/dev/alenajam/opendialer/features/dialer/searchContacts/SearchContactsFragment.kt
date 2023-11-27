@@ -11,10 +11,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.Keep
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import dagger.hilt.android.AndroidEntryPoint
 import dev.alenajam.opendialer.R
 import dev.alenajam.opendialer.databinding.FragmentSearchContactBinding
 import dev.alenajam.opendialer.features.dialer.searchContacts.SearchContactsAdapter.Item
@@ -26,19 +26,17 @@ import dev.alenajam.opendialer.model.SearchListener
 import dev.alenajam.opendialer.model.SearchOpenChangeListener
 import dev.alenajam.opendialer.model.ToolbarListener
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import javax.inject.Inject
 
 private const val PARAM_INITIATION_TYPE = "initiationType"
 private const val PARAM_PREFILLED_NUMBER = "prefilledNumber"
 
+@AndroidEntryPoint
 class SearchContactsFragment : Fragment(), BackPressedListener, SearchListener,
   SearchOpenChangeListener, View.OnTouchListener {
-  @Inject
-  lateinit var viewModelFactory: ViewModelProvider.Factory
-  private val viewModel by viewModels<SearchContactsViewModel> { viewModelFactory }
+  private val viewModel: SearchContactsViewModel by viewModels()
   lateinit var adapter: SearchContactsAdapter
-  lateinit var initiationType: InitiationType
-  var prefilledNumber: String? = null
+  private lateinit var initiationType: InitiationType
+  private var prefilledNumber: String? = null
   private var toolbarListener: ToolbarListener? = null
   private var openSearchListener: OpenSearchListener? = null
   private var keyboardSearchListener: KeyboardSearchListener? = null
@@ -84,7 +82,6 @@ class SearchContactsFragment : Fragment(), BackPressedListener, SearchListener,
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    (activity?.application as? dev.alenajam.opendialer.App)?.applicationComponent?.inject(this)
     if (context is ToolbarListener) {
       toolbarListener = context
     }

@@ -1,6 +1,5 @@
 package dev.alenajam.opendialer.features.dialer.contacts
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,18 +7,17 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
 import dev.alenajam.opendialer.adapter.ContactAdapter
 import dev.alenajam.opendialer.databinding.FragmentContactsBinding
 import dev.alenajam.opendialer.features.dialer.DialerViewModel
+import dev.alenajam.opendialer.util.PermissionUtils
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import javax.inject.Inject
 
+@AndroidEntryPoint
 class ContactsFragment : Fragment() {
-  @Inject
-  lateinit var viewModelFactory: ViewModelProvider.Factory
-  private val viewModel by activityViewModels<DialerViewModel> { viewModelFactory }
+  private val viewModel: DialerViewModel by activityViewModels()
   lateinit var adapter: ContactAdapter
   private var _binding: FragmentContactsBinding? = null
   private val binding get() = _binding!!
@@ -28,10 +26,9 @@ class ContactsFragment : Fragment() {
   private val requestPermissions =
     registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { data ->
       /** Ensure that all permissions were allowed */
-      if (dev.alenajam.opendialer.util.PermissionUtils.contactsPermissions.all { data[it] == true }) {
+      if (PermissionUtils.contactsPermissions.all { data[it] == true }) {
         /** Hide permission promp */
         binding.permissionPrompt.visibility = View.GONE
-
         observeContacts()
       }
     }
@@ -48,11 +45,6 @@ class ContactsFragment : Fragment() {
   override fun onDestroyView() {
     super.onDestroyView()
     _binding = null
-  }
-
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    (activity?.application as? dev.alenajam.opendialer.App)?.applicationComponent?.inject(this)
   }
 
   @ExperimentalCoroutinesApi

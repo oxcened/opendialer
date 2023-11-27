@@ -10,12 +10,15 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.amulyakhare.textdrawable.util.ColorGenerator
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Transformation
+import dagger.hilt.android.AndroidEntryPoint
 import dev.alenajam.opendialer.R
 import dev.alenajam.opendialer.core.functional.EventObserver
+import dev.alenajam.opendialer.databinding.FragmentCallDetailBinding
 import dev.alenajam.opendialer.features.dialer.DialerViewModel
 import dev.alenajam.opendialer.features.dialer.calls.CallOptionsAdapter
 import dev.alenajam.opendialer.features.dialer.calls.DialerCall
@@ -23,12 +26,7 @@ import dev.alenajam.opendialer.features.dialer.calls.RecentsAdapter
 import dev.alenajam.opendialer.model.OnStatusBarColorChange
 import dev.alenajam.opendialer.model.ToolbarListener
 import dev.alenajam.opendialer.util.getContactImagePlaceholder
-import com.amulyakhare.textdrawable.util.ColorGenerator
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Transformation
-import dev.alenajam.opendialer.databinding.FragmentCallDetailBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import javax.inject.Inject
 
 private const val PARAM_CALL = "call"
 private val circleTransform: Transformation = dev.alenajam.opendialer.util.CircleTransform()
@@ -41,10 +39,9 @@ private val colorList = listOf(
 )
 private val generator = ColorGenerator.create(colorList)
 
+@AndroidEntryPoint
 class CallDetailFragment : Fragment(), View.OnClickListener {
-  @Inject
-  lateinit var viewModelFactory: ViewModelProvider.Factory
-  private val viewModel by activityViewModels<DialerViewModel> { viewModelFactory }
+  private val viewModel: DialerViewModel by activityViewModels()
   lateinit var adapter: RecentsAdapter
   private lateinit var call: DialerCall
   private var optionsAdapter: CallOptionsAdapter? = null
@@ -52,7 +49,6 @@ class CallDetailFragment : Fragment(), View.OnClickListener {
   private var onStatusBarColorChange: OnStatusBarColorChange? = null
   private var _binding: FragmentCallDetailBinding? = null
   private val binding get() = _binding!!
-
   private val requestMakeCallPermissions =
     registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { data ->
       /** Ensure that all permissions were allowed */
@@ -72,7 +68,6 @@ class CallDetailFragment : Fragment(), View.OnClickListener {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    (activity?.application as? dev.alenajam.opendialer.App)?.applicationComponent?.inject(this)
     if (context is ToolbarListener) {
       toolbarListener = context
     }
