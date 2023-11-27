@@ -29,7 +29,7 @@ android {
         applicationId "dev.alenajam.opendialer"
         compileSdk 34
         minSdkVersion 24
-        targetSdkVersion 32
+        targetSdkVersion 33
         versionCode 1
         versionName "0.1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
