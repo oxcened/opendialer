@@ -1,14 +1,17 @@
 package dev.alenajam.opendialer.features.dialer.searchContacts
 
 import android.app.Activity
+import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.core.platform.BaseViewModel
 import javax.inject.Inject
 
+@HiltViewModel
 class SearchContactsViewModel
 @Inject constructor(
-  private val app: dev.alenajam.opendialer.App,
+  private val app: Application,
   private val searchContactsUseCase: SearchContacts,
   private val searchContactsDialpadUseCase: SearchContactsDialpad
 ) : BaseViewModel() {

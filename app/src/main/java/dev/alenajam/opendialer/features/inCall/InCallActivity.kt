@@ -6,9 +6,11 @@ import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import dagger.hilt.android.AndroidEntryPoint
 import dev.alenajam.opendialer.R
 import dev.alenajam.opendialer.util.CallsHandler
 
+@AndroidEntryPoint
 class InCallActivity : AppCompatActivity() {
   var visibility: Boolean = false
     private set

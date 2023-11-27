@@ -2,8 +2,6 @@ package dev.alenajam.opendialer.features.inCall
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.telecom.Call
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -13,36 +11,23 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
 import dev.alenajam.opendialer.R
-import javax.inject.Inject
 
+@AndroidEntryPoint
 class InCallManageConferenceFragment : Fragment() {
-  @Inject
-  lateinit var viewModelFactory: ViewModelProvider.Factory
-  private lateinit var viewModel: InCallViewModel
-
+  private val viewModel: InCallViewModel by activityViewModels()
   private lateinit var calls: InCallManageConferenceCalls
-
   private var popBackstackInProgress = false
 
   companion object {
     fun newInstance() = InCallFragment()
-    val handler = Handler(Looper.getMainLooper())
-  }
-
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    (activity?.application as? dev.alenajam.opendialer.App)?.applicationComponent?.inject(this)
-    val viewModel by activityViewModels<InCallViewModel> { viewModelFactory }
-    this.viewModel = viewModel
   }
 
   override fun onCreateView(
@@ -156,8 +141,6 @@ class InCallManageConferenceAdapter(private val onItemClick: (call: dev.alenajam
         false
       )
     ) {
-    //private val image: ImageView = itemView.findViewById(R.id.inCallButtonImage)
-    private val layout: ConstraintLayout = itemView.findViewById(R.id.layout)
     private val caller: TextView = itemView.findViewById(R.id.callerTextView)
     private val hangup: dev.alenajam.opendialer.view.MyButton = itemView.findViewById(R.id.hangupButton)
     private val split: dev.alenajam.opendialer.view.MyButton = itemView.findViewById(R.id.splitButton)

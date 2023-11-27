@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
-import dev.alenajam.opendialer.App;
+import dagger.hilt.android.AndroidEntryPoint;
 import dev.alenajam.opendialer.R;
 import dev.alenajam.opendialer.features.dialer.searchContacts.SearchContactsFragment;
 import dev.alenajam.opendialer.model.BackPressedListener;
@@ -24,6 +24,7 @@ import dev.alenajam.opendialer.model.ToolbarListener;
 import dev.alenajam.opendialer.util.CommonUtilsKt;
 import dev.alenajam.opendialer.view.SearchView;
 
+@AndroidEntryPoint
 public class MainActivity extends AppCompatActivity implements
     ToolbarListener,
     OpenSearchListener,
@@ -38,13 +39,8 @@ public class MainActivity extends AppCompatActivity implements
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    App app = (App) getApplication();
-    app.getApplicationComponent().inject(this);
-
     setContentView(R.layout.activity_main);
-
     searchView = findViewById(R.id.searchView);
-
     navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
 
     searchView.setOpenListener(isOpen -> {

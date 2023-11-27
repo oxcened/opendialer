@@ -6,10 +6,12 @@ import android.telecom.Call;
 import android.telecom.CallAudioState;
 import android.telecom.InCallService;
 
+import dagger.hilt.android.AndroidEntryPoint;
 import dev.alenajam.opendialer.helper.ProximitySensor;
 import dev.alenajam.opendialer.util.CallsHandler;
 import dev.alenajam.opendialer.util.TelecomAdapter;
 
+@AndroidEntryPoint
 public class InCallServiceImpl extends InCallService {
   private final TelecomAdapter telecomAdapter = TelecomAdapter.INSTANCE;
   CallsHandler callHandler = CallsHandler.getInstance();

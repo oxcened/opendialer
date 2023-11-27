@@ -1,7 +1,6 @@
 package dev.alenajam.opendialer.features.inCall
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -15,26 +14,24 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import dagger.hilt.android.AndroidEntryPoint
 import dev.alenajam.opendialer.R
 import dev.alenajam.opendialer.databinding.FragmentInCallBinding
 import dev.alenajam.opendialer.view.DtmfKeypadBottomDialog
 import dev.alenajam.opendialer.view.RefuseWithMessageDialog
 import java.util.*
 import java.util.concurrent.*
-import javax.inject.Inject
 
+@AndroidEntryPoint
 class InCallFragment : Fragment(),
   DtmfKeypadBottomDialog.OnKeyClickListener, View.OnClickListener,
   RefuseWithMessageDialog.RefuseWithMessageDialogChoiceListener {
-  @Inject
-  lateinit var viewModelFactory: ViewModelProvider.Factory
-  private lateinit var viewModel: InCallViewModel
+  private val viewModel: InCallViewModel by activityViewModels()
   private var telecomManager: TelecomManager? = null
   private var dtmfKeypadBottomDialog: DtmfKeypadBottomDialog? = null
   private var refuseWithMessageDialog: RefuseWithMessageDialog? = null
   private lateinit var callTimeScheduler: ScheduledExecutorService
-  lateinit var callTimeHandler: ScheduledFuture<*>
+  private lateinit var callTimeHandler: ScheduledFuture<*>
   private var _binding: FragmentInCallBinding? = null
   private val binding get() = _binding!!
   private val callTimeRunnable: Runnable = Runnable {
@@ -53,13 +50,6 @@ class InCallFragment : Fragment(),
   companion object {
     fun newInstance() = InCallFragment()
     val handler = Handler(Looper.getMainLooper())
-  }
-
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    (activity?.application as? dev.alenajam.opendialer.App)?.applicationComponent?.inject(this)
-    val viewModel by activityViewModels<InCallViewModel> { viewModelFactory }
-    this.viewModel = viewModel
   }
 
   override fun onCreateView(

@@ -46,8 +46,6 @@ class MainFragment :
     if (context is OnStatusBarColorChange) {
       onStatusBarColorChange = context
     }
-
-    (activity?.application as? dev.alenajam.opendialer.App)?.applicationComponent?.inject(this)
   }
 
   override fun onCreateView(

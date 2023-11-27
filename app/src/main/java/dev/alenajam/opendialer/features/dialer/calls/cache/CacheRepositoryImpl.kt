@@ -1,5 +1,6 @@
 package dev.alenajam.opendialer.features.dialer.calls.cache
 
+import android.app.Application
 import dev.alenajam.opendialer.core.exception.Failure
 import dev.alenajam.opendialer.core.functional.Either
 import dev.alenajam.opendialer.features.dialer.contacts.ContactsData
@@ -11,7 +12,7 @@ import javax.inject.Singleton
 
 @Singleton
 class CacheRepositoryImpl
-@Inject constructor(private val app: dev.alenajam.opendialer.App) : CacheRepository {
+@Inject constructor(private val app: Application) : CacheRepository {
   companion object {
     private val TAG = CacheRepositoryImpl::class.simpleName
   }
