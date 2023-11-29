@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="add_to_a_contact">Adaugă un nou contact</string>
+    <string name="anonymous">Anonim</string>
+    <string name="call_details">Detalii de apel</string>
+    <string name="copy_number">Copiază numerul</string>
+    <string name="create_new_contact">crează un nou contact</string>
+    <string name="delete">Eliminează</string>
+    <string name="edit_number_before_call">Modifică numerul înainte de a Apela</string>
+    <string name="send_message">Trimite un mesaj</string>
+    <string name="placeholder_call_log">To see your call log, turn on the phone permissions</string>
+    <string name="turn_on">Turn on</string>
+    <string name="nothingHere">Mmh..nothing here</string>
+    <string name="blockThisCaller">Block this caller</string>
+    <string name="unblockThisCaller">Unblock this caller</string>
+</resources>

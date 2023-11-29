@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="add_to_a_contact">Føj til en kontaktperson</string>
+    <string name="anonymous">Anonym</string>
+    <string name="call_details">Opkaldsoplysninger</string>
+    <string name="copy_number">Kopiér nummer</string>
+    <string name="create_new_contact">Opret ny kontakt</string>
+    <string name="delete">Slet</string>
+    <string name="edit_number_before_call">Redigér nummer før opkald</string>
+    <string name="send_message">Send besked</string>
+    <string name="placeholder_call_log">Slå telefontilladelserne til for at se din opkaldslog</string>
+    <string name="turn_on">Slå til</string>
+    <string name="nothingHere">Mmh..intet her</string>
+    <string name="blockThisCaller">Blokér dette nummer</string>
+    <string name="unblockThisCaller">Fjern blokering af dette nummer</string>
+</resources>

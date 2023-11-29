@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="add_to_a_contact">Añadir a un contacto</string>
+    <string name="anonymous">Anónimo</string>
+    <string name="call_details">Detalles de la llamada</string>
+    <string name="copy_number">Copiar número</string>
+    <string name="create_new_contact">Crear nuevo contacto</string>
+    <string name="delete">Borrar</string>
+    <string name="edit_number_before_call">Editar número antes de llamar</string>
+    <string name="send_message">Enviar mensaje</string>
+    <string name="placeholder_call_log">Para ver el registro de llamadas, debes activar los permisos</string>
+    <string name="turn_on">Activar</string>
+    <string name="nothingHere">Mmh..No hay nada aquí</string>
+    <string name="blockThisCaller">Bloquear este número</string>
+    <string name="unblockThisCaller">Desbloquear este número</string>
+</resources>

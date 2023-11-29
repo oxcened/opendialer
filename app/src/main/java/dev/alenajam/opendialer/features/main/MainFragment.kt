@@ -14,7 +14,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import dev.alenajam.opendialer.R
 import dev.alenajam.opendialer.core.functional.safeNavigate
 import dev.alenajam.opendialer.databinding.FragmentHomeBinding
-import dev.alenajam.opendialer.features.dialer.calls.RecentsFragment
+import dev.alenajam.opendialer.feature.calls.RecentsFragment
 import dev.alenajam.opendialer.features.dialer.contacts.ContactsFragment
 import dev.alenajam.opendialer.features.dialer.searchContacts.SearchContactsFragment
 import dev.alenajam.opendialer.features.main.MainFragmentDirections.Companion.actionHomeFragmentToSearchContactsFragment

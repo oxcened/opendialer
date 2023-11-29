@@ -62,6 +62,11 @@ android {
 }
 
 dependencies {
+    implementation(project(":mylibrary"))
+    implementation(project(":core:common"))
+    implementation(project(":data:calls"))
+    implementation(project(":feature:calls"))
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation 'androidx.annotation:annotation:1.7.0'

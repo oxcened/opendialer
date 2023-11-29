@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="call_log_item_subtitle_number" translatable="false">(%1$d) %2$s</string>
+    <string name="call_log_item_subtitle" translatable="false">%1$s</string>
+    <string name="copy_number">Copy number</string>
+    <string name="create_new_contact">Create new contact</string>
+    <string name="add_to_a_contact">Add to a contact</string>
+    <string name="send_message">Send message</string>
+    <string name="call_details">Call details</string>
+    <string name="edit_number_before_call">Edit number before call</string>
+    <string name="blockThisCaller">Block this caller</string>
+    <string name="unblockThisCaller">Unblock this caller</string>
+    <string name="delete">Delete</string>
+    <string name="anonymous">Anonymous</string>
+    <string name="placeholder_call_log">To see your call log, turn on the phone permissions</string>
+    <string name="nothingHere">Mmh..nothing here</string>
+    <string name="turn_on">Turn on</string>
+</resources>
