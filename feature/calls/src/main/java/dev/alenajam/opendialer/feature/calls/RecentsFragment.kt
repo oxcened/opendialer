@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.data.calls.CallOption
-import dev.alenajam.opendialer.data.calls.ContactInfo
 import dev.alenajam.opendialer.data.calls.DialerCall
 import dev.alenajam.opendialer.feature.calls.databinding.FragmentRecentsBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -66,12 +65,12 @@ class RecentsFragment : Fragment() {
 
   override fun onStart() {
     super.onStart()
-    //viewModel.startCache()
+    viewModel.startCache()
   }
 
   override fun onStop() {
     super.onStop()
-    //viewModel.stopCache()
+    viewModel.stopCache()
   }
 
   @ExperimentalCoroutinesApi
@@ -86,7 +85,7 @@ class RecentsFragment : Fragment() {
         onCallClick = { call -> call.contactInfo.number?.let { num -> makeCall(num) } },
         onContactClick = { call -> openContact(call) },
         onOptionClick = { call, option -> activity?.handleOptionClick(call, option) },
-        updateContactInfo = { s: String?, s1: String?, contactInfo: ContactInfo -> } // viewModel::updateContactInfo
+        updateContactInfo = viewModel::updateContactInfo
       )
       binding.recyclerViewCallLog.adapter = adapter
       binding.recyclerViewCallLog.layoutManager = LinearLayoutManager(context)
@@ -132,7 +131,7 @@ class RecentsFragment : Fragment() {
 
   private fun makeCall(number: String) {
     if (PermissionUtils.hasMakeCallPermission(context)) {
-//      activity?.let { viewModel.makeCall(it, number) }
+      activity?.let { viewModel.makeCall(it, number) }
       notCalledNumber = ""
     } else {
       notCalledNumber = number
@@ -140,27 +139,27 @@ class RecentsFragment : Fragment() {
     }
   }
 
-  private fun openContact(call: DialerCall) = activity?.let { /*viewModel.openContact(it, call)*/ }
+  private fun openContact(call: DialerCall) = activity?.let { viewModel.openContact(it, call) }
 
   private fun Activity.handleOptionClick(
     call: DialerCall,
     option: CallOption
-  ) = Unit
-//    when (option.id) {
-//      CallOption.ID_SEND_MESSAGE -> viewModel.sendMessage(this, call)
+  ) =
+    when (option.id) {
+      CallOption.ID_SEND_MESSAGE -> viewModel.sendMessage(this, call)
 //      CallOption.ID_CALL_DETAILS -> viewModel.callDetail(
 //        findNavController(),
 //        call
 //      )
 //
-//      CallOption.ID_CREATE_CONTACT -> viewModel.createContact(
-//        this,
-//        call
-//      )
-//
-//      CallOption.ID_ADD_EXISTING -> viewModel.addToContact(this, call)
-//      else -> Unit
-//    }
+      CallOption.ID_CREATE_CONTACT -> viewModel.createContact(
+        this,
+        call
+      )
+
+      CallOption.ID_ADD_EXISTING -> viewModel.addToContact(this, call)
+      else -> Unit
+    }
 
   private fun handleCalls(calls: List<DialerCall>) {
     adapter.setData(calls)
@@ -169,7 +168,7 @@ class RecentsFragment : Fragment() {
   private fun refreshData() {
     if (refreshNeeded) {
       refreshNeeded = false
-      //viewModel.invalidateCache()
+      viewModel.invalidateCache()
       adapter.notifyDataSetChanged()
     }
   }

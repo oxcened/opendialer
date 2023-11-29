@@ -1,12 +1,18 @@
 package dev.alenajam.opendialer.feature.calls
 
+import android.app.Activity
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.alenajam.opendialer.core.common.CommonUtils
+import dev.alenajam.opendialer.core.common.ContactsHelper
+import dev.alenajam.opendialer.data.calls.ContactInfo
 import dev.alenajam.opendialer.data.calls.DialerCall
 import dev.alenajam.opendialer.data.calls.DialerRepositoryImpl
+import dev.alenajam.opendialer.data.callsCache.CacheRepositoryImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -17,8 +23,8 @@ class DialerViewModel
 @Inject constructor(
   dialerRepository: DialerRepositoryImpl,
   private val app: Application,
-//  private val cacheRepository: CacheRepositoryImpl,
-//  private val startCacheUseCase: StartCache
+  private val cacheRepository: CacheRepositoryImpl,
+  private val startCacheUseCase: StartCache
 ) : ViewModel() {
   val calls: LiveData<List<DialerCall>> = dialerRepository
     .getCalls(app.contentResolver)
@@ -34,38 +40,55 @@ class DialerViewModel
 //    .flowOn(Dispatchers.IO)
 //    .asLiveData()
 
-//  fun sendMessage(activity: Activity, call: DialerCall) =
-//    CommonUtils.makeSms(activity, call.contactInfo.number)
+  fun sendMessage(activity: Activity, call: DialerCall) =
+    CommonUtils.makeSms(activity, call.contactInfo.number)
 //
-//  fun makeCall(activity: Activity, number: String) = CommonUtils.makeCall(activity, number)
+  fun makeCall(activity: Activity, number: String) = CommonUtils.makeCall(activity, number)
+
 //  fun callDetail(navController: NavController, call: DialerCall) =
 //    navController.navigate(MainFragmentDirections.actionHomeFragmentToCallDetailFragment(call))
 //
-//  fun createContact(activity: Activity, call: DialerCall) =
-//    CommonUtils.createContact(activity, call.contactInfo.number)
-//
-//  fun addToContact(activity: Activity, call: DialerCall) =
-//    CommonUtils.addContactAsExisting(activity, call.contactInfo.number)
-//
-//  fun openContact(activity: Activity, call: DialerCall) {
-//    ContactsHelper.getContactByPhoneNumber(activity, call.contactInfo.number)?.let {
-//      CommonUtils.showContactDetail(activity, it.id)
-//    }
-//  }
+  fun createContact(activity: Activity, call: DialerCall) =
+    CommonUtils.createContact(activity, call.contactInfo.number)
 
-//  fun updateContactInfo(number: String?, countryIso: String?, callLogInfo: ContactInfo) {
-//    cacheRepository.requestUpdateContactInfo(viewModelScope, number, countryIso, callLogInfo)
-//  }
-//
-//  fun startCache() {
-//    startCacheUseCase(viewModelScope, Unit) { it.fold(::handleFailure) {} }
-//  }
-//
-//  fun stopCache() {
-//    cacheRepository.stop()
-//  }
-//
-//  fun invalidateCache() {
-//    cacheRepository.invalidate()
-//  }
+  fun addToContact(activity: Activity, call: DialerCall) =
+    CommonUtils.addContactAsExisting(activity, call.contactInfo.number)
+
+  fun openContact(activity: Activity, call: DialerCall) {
+    ContactsHelper.getContactByPhoneNumber(activity, call.contactInfo.number)?.let {
+      CommonUtils.showContactDetail(activity, it.id)
+    }
+  }
+
+  fun updateContactInfo(number: String?, countryIso: String?, callLogInfo: ContactInfo) {
+    cacheRepository.requestUpdateContactInfo(
+      viewModelScope,
+      number,
+      countryIso,
+      callLogInfo = dev.alenajam.opendialer.data.callsCache.ContactInfo(
+        name = callLogInfo.name,
+        number = callLogInfo.number,
+        photoUri = callLogInfo.photoUri,
+        type = callLogInfo.type,
+        label = callLogInfo.label,
+        lookupUri = callLogInfo.lookupUri,
+        normalizedNumber = callLogInfo.normalizedNumber,
+        formattedNumber = callLogInfo.formattedNumber,
+        geoDescription = callLogInfo.geoDescription,
+        photoId = callLogInfo.photoId
+      )
+    )
+  }
+
+  fun startCache() {
+    startCacheUseCase(viewModelScope, Unit) { /* TODO handle failure */ }
+  }
+
+  fun stopCache() {
+    cacheRepository.stop()
+  }
+
+  fun invalidateCache() {
+    cacheRepository.invalidate()
+  }
 }
