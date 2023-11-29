@@ -1,5 +1,7 @@
 package dev.alenajam.opendialer.core.functional
 
+import dev.alenajam.opendialer.core.common.functional.Either
+
 /**
  * Represents a value of one of two possible types (a disjoint union).
  * Instances of [Either] are either an instance of [Left] or [Right].

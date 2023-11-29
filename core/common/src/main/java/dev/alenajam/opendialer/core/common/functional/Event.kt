@@ -1,4 +1,4 @@
-package dev.alenajam.opendialer.core.functional
+package dev.alenajam.opendialer.core.common.functional
 
 /**
  * Used as a wrapper for data that is exposed via a LiveData that represents an event.

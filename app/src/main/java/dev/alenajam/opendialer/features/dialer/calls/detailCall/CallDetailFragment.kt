@@ -17,7 +17,7 @@ import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
 import dagger.hilt.android.AndroidEntryPoint
 import dev.alenajam.opendialer.R
-import dev.alenajam.opendialer.core.functional.EventObserver
+import dev.alenajam.opendialer.core.common.functional.EventObserver
 import dev.alenajam.opendialer.databinding.FragmentCallDetailBinding
 import dev.alenajam.opendialer.features.dialer.DialerViewModel
 import dev.alenajam.opendialer.features.dialer.calls.CallOptionsAdapter

@@ -1,6 +1,7 @@
 package dev.alenajam.opendialer.core.functional
 
 import androidx.lifecycle.Observer
+import dev.alenajam.opendialer.core.common.functional.Event
 
 /**
  * An [Observer] for [Event]s, simplifying the pattern of checking if the [Event]'s content has

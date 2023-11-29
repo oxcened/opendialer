@@ -1,8 +1,8 @@
 package dev.alenajam.opendialer.feature.calls
 
-import dev.alenajam.opendialer.core.exception.Failure
-import dev.alenajam.opendialer.core.functional.Either
-import dev.alenajam.opendialer.core.interactor.UseCase
+import dev.alenajam.opendialer.core.common.exception.Failure
+import dev.alenajam.opendialer.core.common.functional.Either
+import dev.alenajam.opendialer.core.common.interactor.UseCase
 import dev.alenajam.opendialer.data.callsCache.CacheRepositoryImpl
 import javax.inject.Inject
 

@@ -1,7 +1,7 @@
-package dev.alenajam.opendialer.core.interactor
+package dev.alenajam.opendialer.core.common.interactor
 
-import dev.alenajam.opendialer.core.exception.Failure
-import dev.alenajam.opendialer.core.functional.Either
+import dev.alenajam.opendialer.core.common.exception.Failure
+import dev.alenajam.opendialer.core.common.functional.Either
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

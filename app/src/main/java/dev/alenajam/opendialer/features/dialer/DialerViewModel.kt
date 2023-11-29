@@ -11,8 +11,8 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.alenajam.opendialer.core.functional.Event
-import dev.alenajam.opendialer.core.platform.BaseViewModel
+import dev.alenajam.opendialer.core.common.functional.Event
+import dev.alenajam.opendialer.core.common.platform.BaseViewModel
 import dev.alenajam.opendialer.features.dialer.calls.DialerCall
 import dev.alenajam.opendialer.features.dialer.calls.cache.CacheRepositoryImpl
 import dev.alenajam.opendialer.features.dialer.calls.cache.ContactInfo

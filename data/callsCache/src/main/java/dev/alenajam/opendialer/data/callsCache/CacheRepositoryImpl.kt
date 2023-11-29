@@ -5,8 +5,8 @@ import android.content.Context
 import android.provider.ContactsContract
 import android.telephony.PhoneNumberUtils
 import dev.alenajam.opendialer.core.common.UriUtils
-import dev.alenajam.opendialer.core.exception.Failure
-import dev.alenajam.opendialer.core.functional.Either
+import dev.alenajam.opendialer.core.common.exception.Failure
+import dev.alenajam.opendialer.core.common.functional.Either
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch

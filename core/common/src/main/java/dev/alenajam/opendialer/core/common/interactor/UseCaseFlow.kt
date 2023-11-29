@@ -1,14 +1,13 @@
-package dev.alenajam.opendialer.core.interactor
+package dev.alenajam.opendialer.core.common.interactor
 
-import dev.alenajam.opendialer.core.exception.Failure
-import dev.alenajam.opendialer.core.functional.Either
+import dev.alenajam.opendialer.core.common.exception.Failure
+import dev.alenajam.opendialer.core.common.functional.Either
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

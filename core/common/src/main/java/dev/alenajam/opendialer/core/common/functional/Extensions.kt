@@ -1,4 +1,4 @@
-package dev.alenajam.opendialer.core.functional
+package dev.alenajam.opendialer.core.common.functional
 
 import android.content.res.Resources.getSystem
 import android.view.View

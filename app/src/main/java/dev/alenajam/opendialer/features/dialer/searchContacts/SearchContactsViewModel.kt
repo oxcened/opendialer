@@ -5,7 +5,7 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.alenajam.opendialer.core.platform.BaseViewModel
+import dev.alenajam.opendialer.core.common.platform.BaseViewModel
 import javax.inject.Inject
 
 @HiltViewModel

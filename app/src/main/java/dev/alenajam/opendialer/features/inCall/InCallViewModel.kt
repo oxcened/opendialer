@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.R
-import dev.alenajam.opendialer.core.platform.BaseViewModel
+import dev.alenajam.opendialer.core.common.platform.BaseViewModel
 import dev.alenajam.opendialer.util.CallsHandler
 import dev.alenajam.opendialer.util.TelecomAdapter
 import javax.inject.Inject

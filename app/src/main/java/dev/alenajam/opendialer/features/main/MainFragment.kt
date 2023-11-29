@@ -12,7 +12,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dev.alenajam.opendialer.R
-import dev.alenajam.opendialer.core.functional.safeNavigate
+import dev.alenajam.opendialer.core.common.functional.safeNavigate
 import dev.alenajam.opendialer.databinding.FragmentHomeBinding
 import dev.alenajam.opendialer.feature.calls.RecentsFragment
 import dev.alenajam.opendialer.features.dialer.contacts.ContactsFragment

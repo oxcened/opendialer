@@ -1,8 +1,8 @@
 package dev.alenajam.opendialer.features.dialer.calls.cache
 
 import android.app.Application
-import dev.alenajam.opendialer.core.exception.Failure
-import dev.alenajam.opendialer.core.functional.Either
+import dev.alenajam.opendialer.core.common.exception.Failure
+import dev.alenajam.opendialer.core.common.functional.Either
 import dev.alenajam.opendialer.features.dialer.contacts.ContactsData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel

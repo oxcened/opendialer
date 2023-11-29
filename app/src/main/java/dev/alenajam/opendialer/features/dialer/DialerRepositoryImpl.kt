@@ -9,8 +9,8 @@ import android.os.Build
 import android.provider.BlockedNumberContract
 import android.provider.CallLog
 import dev.alenajam.opendialer.R
-import dev.alenajam.opendialer.core.exception.Failure
-import dev.alenajam.opendialer.core.functional.Either
+import dev.alenajam.opendialer.core.common.exception.Failure
+import dev.alenajam.opendialer.core.common.functional.Either
 import dev.alenajam.opendialer.features.dialer.calls.CallsData
 import dev.alenajam.opendialer.features.dialer.calls.DialerCall
 import dev.alenajam.opendialer.features.dialer.calls.DialerCallEntity

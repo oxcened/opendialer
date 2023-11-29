@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import dev.alenajam.opendialer.core.exception.Failure
+import dev.alenajam.opendialer.core.common.exception.Failure
 
 abstract class BaseViewModel : ViewModel() {
   abstract val TAG: String?
