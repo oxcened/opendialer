@@ -1,7 +1,10 @@
-include ':app'
 rootProject.name = 'OpenDialer'
-include ':mylibrary'
-include ':core:common'
-include ':data:calls'
-include ':feature:calls'
-include ':data:callsCache'
+
+include (
+        ':app',
+        ':mylibrary',
+        ':core:common',
+        ':data:calls',
+        ':feature:calls',
+        ':data:callsCache'
+)
