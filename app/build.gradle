@@ -62,9 +62,11 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:common"))
     implementation(project(":feature:calls"))
+    implementation(project(":feature:callDetail"))
     implementation(project(":feature:contacts"))
+    implementation(project(":data:calls"))
+    implementation(project(":core:common"))
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 

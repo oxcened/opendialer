@@ -9,13 +9,6 @@
         android:name="dev.alenajam.opendialer.features.main.MainFragment"
         android:label="MainFragment">
         <action
-            android:id="@+id/action_homeFragment_to_callDetailFragment"
-            app:destination="@id/callDetailFragment">
-            <argument
-                android:name="call"
-                app:argType="dev.alenajam.opendialer.features.dialer.calls.DialerCall" />
-        </action>
-        <action
             android:id="@+id/action_homeFragment_to_searchContactsFragment"
             app:destination="@id/searchContactsFragment">
             <argument
@@ -30,8 +23,12 @@
     </fragment>
     <fragment
         android:id="@+id/callDetailFragment"
-        android:name="dev.alenajam.opendialer.features.dialer.calls.detailCall.CallDetailFragment"
-        android:label="CallDetailFragment" />
+        android:name="dev.alenajam.opendialer.feature.callDetail.CallDetailFragment"
+        android:label="CallDetailFragment">
+
+        <deepLink app:uri="android-app://dev.alenajam.opendialer/callDetailFragment?call={call}" />
+        <argument android:name="call" app:argType="integer" />
+    </fragment>
     <fragment
         android:id="@+id/searchContactsFragment"
         android:name="dev.alenajam.opendialer.features.dialer.searchContacts.SearchContactsFragment"

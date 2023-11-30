@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="divider">#28000000</color>
+    <color name="colorPrimaryDark">#5123c0</color>
+    <color name="windowBackground">#FAFAFA</color>
+    <color name="colorPrimary">#8852f4</color>
+    <color name="dark_bg_light_primary_text">#FFFFFFFF</color>
+</resources>

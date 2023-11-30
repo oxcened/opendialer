@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import dev.alenajam.opendialer.core.common.PermissionUtils
@@ -145,11 +146,11 @@ class RecentsFragment : Fragment() {
   ) =
     when (option.id) {
       CallOption.ID_SEND_MESSAGE -> viewModel.sendMessage(this, call)
-//      CallOption.ID_CALL_DETAILS -> viewModel.callDetail(
-//        findNavController(),
-//        call
-//      )
-//
+      CallOption.ID_CALL_DETAILS -> viewModel.callDetail(
+        findNavController(),
+        call
+      )
+
       CallOption.ID_CREATE_CONTACT -> viewModel.createContact(
         this,
         call

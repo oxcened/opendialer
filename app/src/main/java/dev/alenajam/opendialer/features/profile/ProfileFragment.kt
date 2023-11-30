@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import dev.alenajam.opendialer.core.common.OnStatusBarColorChange
 import dev.alenajam.opendialer.databinding.FragmentProfileBinding
-import dev.alenajam.opendialer.model.OnStatusBarColorChange
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class ProfileFragment : Fragment(), View.OnClickListener {
