@@ -111,7 +111,6 @@ class RecentsFragment : Fragment() {
     refreshData()
   }
 
-  @ExperimentalCoroutinesApi
   private fun observeCalls() {
     /** Ensure that observable isn't observed already */
     if (!viewModel.calls.hasObservers()) {
@@ -122,11 +121,10 @@ class RecentsFragment : Fragment() {
     }
   }
 
-  @ExperimentalCoroutinesApi
   private fun observeContacts() {
-//    viewModel.contacts.observe(viewLifecycleOwner, Observer {
-//      refreshNeeded = true
-//    })
+    viewModel.contacts.observe(viewLifecycleOwner) {
+      refreshNeeded = true
+    }
   }
 
   private fun makeCall(number: String) {

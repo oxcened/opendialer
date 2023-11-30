@@ -38,6 +38,7 @@ android {
 dependencies {
   implementation(project(":data:calls"))
   implementation(project(":data:callsCache"))
+  implementation(project(":data:contacts"))
   implementation(project(":core:common"))
 
   implementation("androidx.core:core-ktx:1.9.0")

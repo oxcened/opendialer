@@ -13,6 +13,7 @@ import dev.alenajam.opendialer.data.calls.ContactInfo
 import dev.alenajam.opendialer.data.calls.DialerCall
 import dev.alenajam.opendialer.data.calls.DialerRepositoryImpl
 import dev.alenajam.opendialer.data.callsCache.CacheRepositoryImpl
+import dev.alenajam.opendialer.data.contacts.DialerContact
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -22,7 +23,8 @@ import javax.inject.Inject
 class DialerViewModel
 @Inject constructor(
   dialerRepository: DialerRepositoryImpl,
-  private val app: Application,
+  contactsRepository: dev.alenajam.opendialer.data.contacts.DialerRepositoryImpl,
+  app: Application,
   private val cacheRepository: CacheRepositoryImpl,
   private val startCacheUseCase: StartCache
 ) : ViewModel() {
@@ -32,20 +34,19 @@ class DialerViewModel
     .flowOn(Dispatchers.IO)
     .asLiveData()
 
-
-//  @ExperimentalCoroutinesApi
-//  val contacts: LiveData<List<DialerContact>> = dialerRepository
-//    .getContacts(app.contentResolver)
-//    .map { DialerContact.mapList(it) }
-//    .flowOn(Dispatchers.IO)
-//    .asLiveData()
+  val contacts: LiveData<List<DialerContact>> = contactsRepository
+    .getContacts(app.contentResolver)
+    .map { DialerContact.mapList(it) }
+    .flowOn(Dispatchers.IO)
+    .asLiveData()
 
   fun sendMessage(activity: Activity, call: DialerCall) =
     CommonUtils.makeSms(activity, call.contactInfo.number)
-//
+
+  //
   fun makeCall(activity: Activity, number: String) = CommonUtils.makeCall(activity, number)
 
-//  fun callDetail(navController: NavController, call: DialerCall) =
+  //  fun callDetail(navController: NavController, call: DialerCall) =
 //    navController.navigate(MainFragmentDirections.actionHomeFragmentToCallDetailFragment(call))
 //
   fun createContact(activity: Activity, call: DialerCall) =
