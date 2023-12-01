@@ -26,7 +26,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".features.inCall.InCallActivity"
+            android:name=".feature.inCall.ui.InCallActivity"
             android:autoRemoveFromRecents="true"
             android:documentLaunchMode="intoExisting"
             android:launchMode="singleInstance"
@@ -79,7 +79,7 @@
 
 
         <service
-            android:name="dev.alenajam.opendialer.service.InCallServiceImpl"
+            android:name=".feature.inCall.service.InCallServiceImpl"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_INCALL_SERVICE">
@@ -96,7 +96,7 @@
         </service>
 
         <receiver
-            android:name="dev.alenajam.opendialer.helper.NotificationHelper$CallButtonsListener"
+            android:name=".feature.inCall.service.NotificationHelper$CallButtonsListener"
             android:exported="true">
             <intent-filter>
                 <action android:name="dev.alenajam.opendialer.CALL_ACCEPT" />

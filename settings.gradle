@@ -11,3 +11,5 @@ include (
 )
 include ':feature:contacts'
 include ':feature:callDetail'
+include ':feature:inCall'
+include ':data:inCall'
