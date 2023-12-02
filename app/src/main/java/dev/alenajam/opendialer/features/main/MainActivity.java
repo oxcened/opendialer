@@ -15,7 +15,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 import dev.alenajam.opendialer.R;
 import dev.alenajam.opendialer.core.common.OnStatusBarColorChange;
 import dev.alenajam.opendialer.core.common.ToolbarListener;
-import dev.alenajam.opendialer.features.dialer.searchContacts.SearchContactsFragment;
+
+import dev.alenajam.opendialer.feature.contactsSearch.SearchContactsFragment;
 import dev.alenajam.opendialer.model.BackPressedListener;
 import dev.alenajam.opendialer.model.KeyboardSearchListener;
 import dev.alenajam.opendialer.model.OpenSearchListener;
