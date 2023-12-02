@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,7 +20,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
 class RecentsFragment : Fragment() {
-  private val viewModel: DialerViewModel by activityViewModels()
+  private val viewModel: DialerViewModel by viewModels()
   lateinit var adapter: RecentsAdapter
   private var notCalledNumber = ""
   private var refreshNeeded = false

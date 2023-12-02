@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import dev.alenajam.opendialer.core.common.PermissionUtils
@@ -16,7 +16,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
 class ContactsFragment : Fragment() {
-  private val viewModel: DialerViewModel by activityViewModels()
+  private val viewModel: DialerViewModel by viewModels()
   lateinit var adapter: ContactAdapter
   private var _binding: FragmentContactsBinding? = null
   private val binding get() = _binding!!
