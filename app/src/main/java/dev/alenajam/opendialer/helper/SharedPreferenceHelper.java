@@ -19,11 +19,6 @@ import dev.alenajam.opendialer.util.CommonUtils;
 public abstract class SharedPreferenceHelper {
   public static final String SP_QUICK_RESPONSES = "SP_QUICK_RESPONSES";
   public static final String KEY_SETTING_THEME = "theme";
-  public static final String KEY_SETTING_DEFAULT = "default";
-  public static final String KEY_SETTING_SOUND_VIBRATION = "sound";
-  public static final String KEY_SETTING_QUICK_RESPONSES = "quick_responses";
-  public static final String KEY_SETTING_BLOCKED_NUMBERS = "blockedNumbers";
-  public static final String KEY_SETTING_NOTIFICATION_SETTINGS = "notificationSettings";
 
   public static SharedPreferences getSharedPreferences(Context context) {
     return PreferenceManager.getDefaultSharedPreferences(context);

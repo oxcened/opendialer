@@ -2,9 +2,5 @@
 <resources>
     <color name="windowBackground">#303030</color>
     <color name="textColorPrimary">@color/white</color>
-    <color name="colorControlNormal">#B3B3B3</color>
-    <color name="buttonSelectedBackground">#48ffffff</color>
-    <color name="backgroundHeader">#454545</color>
-    <color name="textColorSecondary">@color/textLightSecondary</color>
     <color name="divider">#28AFAFAF</color>
 </resources>

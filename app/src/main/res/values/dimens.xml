@@ -3,10 +3,8 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="contactIconSize">42dp</dimen>
-    <dimen name="itemTitleTextSize">18sp</dimen>
     <dimen name="itemSubtitleTextSize">15sp</dimen>
     <dimen name="itemVerticalPadding">15dp</dimen>
-    <dimen name="itemHorizontalPadding">20dp</dimen>
     <dimen name="topBarHeight">56dp</dimen>
     <dimen name="topBarElevation">4dp</dimen>
     <dimen name="topBarHorizontalPadding">10dp</dimen>

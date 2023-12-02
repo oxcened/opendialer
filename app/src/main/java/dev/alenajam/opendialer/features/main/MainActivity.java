@@ -13,14 +13,14 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import dev.alenajam.opendialer.R;
-import dev.alenajam.opendialer.features.dialer.searchContacts.SearchContactsFragment;
-import dev.alenajam.opendialer.model.BackPressedListener;
-import dev.alenajam.opendialer.model.KeyboardSearchListener;
-import dev.alenajam.opendialer.model.OnStatusBarColorChange;
-import dev.alenajam.opendialer.model.OpenSearchListener;
-import dev.alenajam.opendialer.model.SearchListener;
-import dev.alenajam.opendialer.model.SearchOpenChangeListener;
-import dev.alenajam.opendialer.model.ToolbarListener;
+import dev.alenajam.opendialer.core.common.BackPressedListener;
+import dev.alenajam.opendialer.core.common.KeyboardSearchListener;
+import dev.alenajam.opendialer.core.common.OnStatusBarColorChange;
+import dev.alenajam.opendialer.core.common.OpenSearchListener;
+import dev.alenajam.opendialer.core.common.SearchListener;
+import dev.alenajam.opendialer.core.common.SearchOpenChangeListener;
+import dev.alenajam.opendialer.core.common.ToolbarListener;
+import dev.alenajam.opendialer.feature.contactsSearch.SearchContactsFragment;
 import dev.alenajam.opendialer.util.CommonUtilsKt;
 import dev.alenajam.opendialer.view.SearchView;
 

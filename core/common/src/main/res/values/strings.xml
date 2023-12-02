@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="choose_sim_card">Choose SIM for this call</string>
+    <string name="text_copied">Text copied</string>
+    <string-array name="array_quick_responses">
+        <item name="array_quick_responses0">Can\'t talk now. What\'s up?</item>
+        <item name="array_quick_responses1">I\'ll call you right back.</item>
+        <item name="array_quick_responses2">I\'ll call you later.</item>
+        <item name="array_quick_responses3">Can\'t talk now. Call me later?</item>
+    </string-array>
+    <string name="write_your_own">Write your own…</string>
+    <string name="error_write_something">You have to write something!</string>
+    <string name="your_text_here">Your text here</string>
+</resources>

@@ -1,2 +1,18 @@
-include ':app'
 rootProject.name = 'OpenDialer'
+
+include (
+        ':app',
+        ':feature:calls',
+        ':data:calls',
+        ':data:callsCache',
+        ':data:contacts',
+        ':core:common',
+        ':feature:contacts',
+        ':feature:callDetail',
+        ':feature:inCall',
+        ':data:inCall',
+        ':data:contactsSearch',
+        ':core:aosp',
+        ':feature:contactsSearch',
+        ':feature:settings',
+)

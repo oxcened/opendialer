@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="InCallUIView">
+        <!--
+        <attr name="showText" format="boolean" />
+        <attr name="labelPosition" format="enum">
+            <enum name="left" value="0"/>
+            <enum name="right" value="1"/>
+        </attr>
+        -->
+    </declare-styleable>
+    <declare-styleable name="MyButton">
+        <attr name="pressed" format="boolean" />
+        <attr name="borderColor" format="enum">
+            <enum name="red" value="0" />
+            <enum name="green" value="1" />
+        </attr>
+        <attr name="whichSfx" format="enum">
+            <enum name="none" value="-1" />
+            <enum name="generic" value="0" />
+            <enum name="run" value="1" />
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="KeyButton">
+        <attr name="whichKey" format="enum">
+            <enum name="key0" value="0" />
+            <enum name="key1" value="1" />
+            <enum name="key2" value="2" />
+            <enum name="key3" value="3" />
+            <enum name="key4" value="4" />
+            <enum name="key5" value="5" />
+            <enum name="key6" value="6" />
+            <enum name="key7" value="7" />
+            <enum name="key8" value="8" />
+            <enum name="key9" value="9" />
+            <enum name="keyAsterisk" value="10" />
+            <enum name="keyHashtag" value="11" />
+        </attr>
+    </declare-styleable>
+</resources>

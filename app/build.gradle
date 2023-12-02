@@ -49,7 +49,6 @@ android {
         }
     }
     buildFeatures {
-        dataBinding true
         viewBinding true
     }
     namespace 'dev.alenajam.opendialer'
@@ -62,6 +61,15 @@ android {
 }
 
 dependencies {
+    implementation(project(":feature:calls"))
+    implementation(project(":feature:callDetail"))
+    implementation(project(":feature:contacts"))
+    implementation(project(":feature:inCall"))
+    implementation(project(":feature:contactsSearch"))
+    implementation(project(":feature:settings"))
+    implementation(project(":data:calls"))
+    implementation(project(":core:common"))
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation 'androidx.annotation:annotation:1.7.0'
@@ -85,24 +93,16 @@ dependencies {
 
     implementation 'com.google.android.material:material:1.10.0'
     implementation 'com.google.code.gson:gson:2.9.0'
-    implementation 'com.google.guava:guava:21.0'
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 
     implementation 'com.google.dagger:hilt-android:2.48.1'
     kapt 'com.google.dagger:hilt-compiler:2.48.1'
-    // For instrumentation tests
     androidTestImplementation  'com.google.dagger:hilt-android-testing:2.48.1'
     kaptAndroidTest 'com.google.dagger:hilt-compiler:2.48.1'
-    // For local unit tests
     testImplementation 'com.google.dagger:hilt-android-testing:2.48.1'
     kaptTest 'com.google.dagger:hilt-compiler:2.48.1'
 
-    implementation 'io.reactivex.rxjava3:rxjava:3.0.0-RC7'
-    implementation 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
-    implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-    implementation 'com.squareup.picasso:picasso:2.71828'
-
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 }
 

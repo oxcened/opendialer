@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/keys_text"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="18sp"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/textColorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/keys_text"
+        app:layout_constraintWidth_percent="0.95" />
+
+    <dev.alenajam.opendialer.core.common.KeyButton
+        android:id="@+id/button1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="2dp"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.3333"
+        app:whichKey="key1" />
+
+    <dev.alenajam.opendialer.core.common.KeyButton
+        android:id="@+id/button2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toEndOf="@id/button1"
+        app:layout_constraintTop_toTopOf="@id/button1"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.3333"
+        app:whichKey="key2" />
+
+    <dev.alenajam.opendialer.core.common.KeyButton
+        android:id="@+id/button3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toEndOf="@id/button2"
+        app:layout_constraintTop_toTopOf="@id/button1"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.3333"
+        app:whichKey="key3" />
+
+    <dev.alenajam.opendialer.core.common.KeyButton
+        android:id="@+id/button4"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button1"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.3333"
+        app:whichKey="key4" />
+
+    <dev.alenajam.opendialer.core.common.KeyButton
+        android:id="@+id/button5"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toEndOf="@id/button4"
+        app:layout_constraintTop_toTopOf="@id/button4"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.3333"
+        app:whichKey="key5" />
+
+    <dev.alenajam.opendialer.core.common.KeyButton
+        android:id="@+id/button6"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toEndOf="@id/button5"
+        app:layout_constraintTop_toTopOf="@id/button5"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.3333"
+        app:whichKey="key6" />
+
+    <dev.alenajam.opendialer.core.common.KeyButton
+        android:id="@+id/button7"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button4"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.3333"
+        app:whichKey="key7" />
+
+    <dev.alenajam.opendialer.core.common.KeyButton
+        android:id="@+id/button8"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toEndOf="@id/button7"
+        app:layout_constraintTop_toTopOf="@id/button7"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.3333"
+        app:whichKey="key8" />
+
+    <dev.alenajam.opendialer.core.common.KeyButton
+        android:id="@+id/button9"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toEndOf="@id/button8"
+        app:layout_constraintTop_toTopOf="@id/button7"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.3333"
+        app:whichKey="key9" />
+
+    <dev.alenajam.opendialer.core.common.KeyButton
+        android:id="@+id/buttonAsterisk"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button7"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.3333"
+        app:whichKey="keyAsterisk" />
+
+    <dev.alenajam.opendialer.core.common.KeyButton
+        android:id="@+id/button0"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toEndOf="@id/buttonAsterisk"
+        app:layout_constraintTop_toTopOf="@id/buttonAsterisk"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.3333"
+        app:whichKey="key0" />
+
+    <dev.alenajam.opendialer.core.common.KeyButton
+        android:id="@+id/buttonHashtag"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toEndOf="@id/button0"
+        app:layout_constraintTop_toTopOf="@id/buttonAsterisk"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.3333"
+        app:whichKey="keyHashtag" />
+</androidx.constraintlayout.widget.ConstraintLayout>
