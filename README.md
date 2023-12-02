@@ -38,11 +38,11 @@ This project aims to be an open, clean and modern dialer for Android.
 
 Change the run configuration to `app`.
 
-![image](./.github/images/android_studio_build.png)
+![image](docs/images/android_studio_build.png)
 
 The app contains the usual `debug` and `release` build variants which can be built and run. 
 
-![image](./.github/images/android_studio_build_variant.png)
+![image](docs/images/android_studio_build_variant.png)
 
 Once you're up and running, you can refer to the learning journeys below to get a better
 understanding of which libraries and tools are being used, the reasoning behind the approaches to
