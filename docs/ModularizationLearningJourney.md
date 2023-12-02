@@ -80,7 +80,7 @@ how you can organize your project. In general, you should strive for low couplin
 
 ## Types of modules in OpenDialer
 
-<!--![Diagram showing types of modules and their dependencies in OpenDialer](./images/app_modularization.png "Diagram showing types of modules and their dependencies in OpenDialer")-->
+![Diagram showing types of modules and their dependencies in OpenDialer](./images/app_modularization.png "Diagram showing types of modules and their dependencies in OpenDialer")
 
 **Top tip**: A module graph (shown above) can be useful during modularization planning for
 visualizing dependencies between modules.
