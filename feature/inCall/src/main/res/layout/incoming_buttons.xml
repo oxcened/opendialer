@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <Button
+        android:id="@+id/fight"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="Accept"
+        app:layout_constraintBottom_toTopOf="@+id/option"
+        app:layout_constraintEnd_toEndOf="@id/option"
+        app:layout_constraintStart_toStartOf="@id/option" />
+
+    <Button
+        android:id="@+id/run"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Decline"
+        app:layout_constraintBottom_toBottomOf="@+id/fight"
+        app:layout_constraintEnd_toEndOf="@id/hide"
+        app:layout_constraintStart_toStartOf="@id/hide" />
+
+    <Button
+        android:id="@+id/option"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="5dp"
+        android:text="Options"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/hide"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/hide"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="10dp"
+        android:text="hide"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/option"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

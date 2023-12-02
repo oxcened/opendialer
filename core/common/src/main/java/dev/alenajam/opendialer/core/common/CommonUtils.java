@@ -98,7 +98,7 @@ public abstract class CommonUtils {
 
   @Deprecated
   public static void startInCallUI(Context context) throws ClassNotFoundException {
-    Intent intent = new Intent(context, Class.forName("dev.alenajam.opendialer.features.inCall.InCallActivity"));
+    Intent intent = new Intent(context, Class.forName("dev.alenajam.opendialer.features.inCall.ui.InCallActivity"));
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     context.startActivity(intent);
   }

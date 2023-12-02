@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="call_connecting_title">Connecting</string>
+    <string name="call_details">Call details</string>
+    <string name="call_dialing_title">Dialing</string>
+    <string name="call_disconnecting_title">Disconnecting</string>
+    <string name="call_holding_title">On hold</string>
+    <string name="call_ringing_title">Incoming call</string>
+    <string name="call_disconnected_title">Disconnected</string>
+    <string name="channel_incoming_calls">Incoming Calls</string>
+    <string name="channel_ongoing_calls">Ongoing Calls</string>
+    <string name="channel_outgoing_calls">Outgoing Calls</string>
+    <string name="notification_incoming_call_title">Incoming call: %1$s</string>
+    <string name="notification_ongoing_call_title">Ongoing call: %1$s</string>
+    <string name="notification_on_hold_call_title">On hold call: %1$s</string>
+    <string name="notification_outgoing_call_title">Calling: %1$s</string>
+    <string name="manageConferenceCall">Manage conference call</string>
+</resources>

@@ -37,7 +37,6 @@ import androidx.core.content.ContextCompat;
 
 import dev.alenajam.opendialer.BuildConfig;
 import dev.alenajam.opendialer.R;
-import dev.alenajam.opendialer.features.inCall.InCallActivity;
 import dev.alenajam.opendialer.view.MyDialog;
 
 import java.util.List;
@@ -99,13 +98,6 @@ public abstract class CommonUtils {
 
     return String.valueOf(
         start > end ? editText.getText().subSequence(end, start) : editText.getText().subSequence(start, end));
-  }
-
-  @Deprecated
-  public static void startInCallUI(Context context) {
-    Intent intent = new Intent(context, InCallActivity.class);
-    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    context.startActivity(intent);
   }
 
   @SuppressLint("MissingPermission")

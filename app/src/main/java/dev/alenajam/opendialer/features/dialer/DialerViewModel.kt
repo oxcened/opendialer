@@ -22,7 +22,6 @@ import dev.alenajam.opendialer.features.dialer.calls.detailCall.DeleteCalls
 import dev.alenajam.opendialer.features.dialer.calls.detailCall.GetDetailOptions
 import dev.alenajam.opendialer.features.dialer.calls.detailCall.UnblockCaller
 import dev.alenajam.opendialer.features.dialer.contacts.DialerContact
-import dev.alenajam.opendialer.features.main.MainFragmentDirections
 import dev.alenajam.opendialer.helper.ContactsHelper
 import dev.alenajam.opendialer.util.CommonUtils
 import kotlinx.coroutines.Dispatchers
@@ -73,8 +72,8 @@ class DialerViewModel
     CommonUtils.makeSms(activity, call.contactInfo.number)
 
   fun makeCall(activity: Activity, number: String) = CommonUtils.makeCall(activity, number)
-  fun callDetail(navController: NavController, call: DialerCall) =
-    navController.navigate(MainFragmentDirections.actionHomeFragmentToCallDetailFragment(call))
+  fun callDetail(navController: NavController, call: DialerCall) = Unit
+    // navController.navigate(MainFragmentDirections.actionHomeFragmentToCallDetailFragment(call))
 
   fun createContact(activity: Activity, call: DialerCall) =
     CommonUtils.createContact(activity, call.contactInfo.number)

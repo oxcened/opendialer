@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_in_call"
+    app:startDestination="@id/inCallFragment">
+
+    <fragment
+        android:id="@+id/inCallFragment"
+        android:name="dev.alenajam.opendialer.feature.inCall.ui.InCallFragment"
+        android:label="InCallFragment">
+        <action
+            android:id="@+id/action_inCallFragment_to_inCallManageConferenceFragment"
+            app:destination="@id/inCallManageConferenceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/inCallManageConferenceFragment"
+        android:name="dev.alenajam.opendialer.feature.inCall.ui.InCallManageConferenceFragment"
+        android:label="InCallManageConferenceFragment" />
+</navigation>
