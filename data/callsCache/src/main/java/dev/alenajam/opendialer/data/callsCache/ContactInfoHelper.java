@@ -30,8 +30,8 @@ import org.json.JSONObject;
 import java.util.Objects;
 
 import dev.alenajam.opendialer.core.common.PermissionUtils;
-import dev.alenajam.opendialer.core.common.PhoneNumberHelper;
-import dev.alenajam.opendialer.core.common.UriUtils;
+import dev.alenajam.opendialer.core.aosp.PhoneNumberHelper;
+import dev.alenajam.opendialer.core.aosp.UriUtils;
 
 /**
  * Utility class to look up the contact information for a given number.

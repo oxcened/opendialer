@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.provider.ContactsContract
 import android.telephony.PhoneNumberUtils
-import dev.alenajam.opendialer.core.common.UriUtils
+import dev.alenajam.opendialer.core.aosp.UriUtils
 import dev.alenajam.opendialer.core.common.exception.Failure
 import dev.alenajam.opendialer.core.common.functional.Either
 import kotlinx.coroutines.CoroutineScope

@@ -14,7 +14,7 @@
  * limitations under the License
  */
 
-package dev.alenajam.opendialer.core.common;
+package dev.alenajam.opendialer.core.aosp;
 
 import android.content.Context;
 import android.provider.CallLog;
