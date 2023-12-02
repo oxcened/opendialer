@@ -15,8 +15,9 @@ This project aims to be an open, clean and modern dialer for Android.
 **Table of Contents**
 
 - [Features](#features)
-- [Tech Stack](#tech-stack)
 - [Build and Run](#build-and-run)
+- [Tech Stack](#tech-stack)
+- [Modularization](#modularization)
 - [Roadmap](#roadmap)
 - [Changelog](#changelog)
 - [Contributing](#contributing)
@@ -30,16 +31,6 @@ This project aims to be an open, clean and modern dialer for Android.
 - In-Call interface
 - Call conferences
 - Hang up with customized quick answers
-
-## Tech Stack
-
-- JDK 17
-- Android API 24+
-- Clean Architecture
-- MVVM pattern
-- ViewModel and LiveData
-- Kotlin Coroutines and Flow
-- Dagger Hilt
 
 # Build and Run
 
@@ -57,6 +48,22 @@ Once you're up and running, you can refer to the learning journeys below to get 
 understanding of which libraries and tools are being used, the reasoning behind the approaches to
 UI, testing, architecture and more, and how all of these different pieces of the project fit
 together to create a complete app.
+
+## Tech Stack
+
+- JDK 17
+- Android API 24+
+- Clean Architecture
+- MVVM pattern
+- ViewModel and LiveData
+- Kotlin Coroutines and Flow
+- Dagger Hilt
+
+# Modularization
+
+The **OpenDialer** app has been fully modularized based on the [official recommendations](https://developer.android.com/topic/modularization/patterns) and you can find the
+description of the modularization strategy used in
+[modularization learning journey](./docs/ModularizationLearningJourney.md).
 
 ## Roadmap
 
