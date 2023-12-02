@@ -5,4 +5,10 @@
     <color name="windowBackground">#FAFAFA</color>
     <color name="colorPrimary">#8852f4</color>
     <color name="dark_bg_light_primary_text">#FFFFFFFF</color>
+    <color name="textColorPrimary">#202020</color>
+    <color name="textColorSecondary">@color/textDarkSecondary</color>
+
+    <!-- Dark Text Color for Light Background -->
+    <!--DE for %87 opacity-->
+    <color name="textDarkSecondary">#99000000</color> <!--8A for %54 opacity-->
 </resources>

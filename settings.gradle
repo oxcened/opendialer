@@ -11,3 +11,9 @@ include (
 )
 include ':feature:contacts'
 include ':feature:callDetail'
+include ':feature:inCall'
+include ':data:inCall'
+include ':data:contactsSearch'
+include ':core:aosp'
+include ':feature:contactsSearch'
+include ':feature:settings'

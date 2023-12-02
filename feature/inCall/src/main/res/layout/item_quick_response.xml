@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_quick_response_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:paddingStart="@dimen/itemHorizontalPadding"
+    android:paddingTop="@dimen/itemVerticalPadding"
+    android:paddingEnd="@dimen/itemHorizontalPadding"
+    android:paddingBottom="@dimen/itemVerticalPadding">
+
+    <TextView
+        android:id="@+id/item_quick_response_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="@dimen/itemTitleTextSize" />
+</RelativeLayout>

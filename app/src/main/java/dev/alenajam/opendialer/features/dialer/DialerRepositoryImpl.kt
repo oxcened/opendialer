@@ -17,9 +17,6 @@ import dev.alenajam.opendialer.features.dialer.calls.DialerCallEntity
 import dev.alenajam.opendialer.features.dialer.calls.detailCall.DetailCall
 import dev.alenajam.opendialer.features.dialer.contacts.ContactsData
 import dev.alenajam.opendialer.features.dialer.contacts.DialerContactEntity
-import dev.alenajam.opendialer.features.dialer.searchContacts.DialerSearchContactEntity
-import dev.alenajam.opendialer.features.dialer.searchContacts.SearchContactsData
-import dev.alenajam.opendialer.features.dialer.searchContacts.SearchContactsDialpadData
 import dev.alenajam.opendialer.model.CallOption
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
@@ -76,32 +73,6 @@ class DialerRepositoryImpl
         contentResolver.unregisterContentObserver(observer)
       }
     }
-
-  override suspend fun searchContacts(
-    contentResolver: ContentResolver,
-    query: String
-  ): Either<Failure, List<DialerSearchContactEntity>> {
-    SearchContactsData.getCursor(contentResolver, query)?.let {
-      val data = SearchContactsData.getData(it)
-      it.close()
-      return Either.Right(data)
-    }
-
-    return Either.Left(Failure.NoData)
-  }
-
-  override suspend fun searchContactsDialpad(
-    contentResolver: ContentResolver,
-    query: String
-  ): Either<Failure, List<DialerSearchContactEntity>> {
-    SearchContactsDialpadData.getCursor(contentResolver)?.let {
-      val data = SearchContactsDialpadData.getData(app, it, query)
-      it.close()
-      return Either.Right(data)
-    }
-
-    return Either.Left(Failure.NoData)
-  }
 
   override suspend fun getDetailOptions(call: DialerCall): Either<Failure, List<CallOption>> {
     return with(app) {

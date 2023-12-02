@@ -13,7 +13,7 @@
             app:destination="@id/searchContactsFragment">
             <argument
                 android:name="initiationType"
-                app:argType="dev.alenajam.opendialer.features.dialer.searchContacts.SearchContactsFragment$InitiationType" />
+                app:argType="dev.alenajam.opendialer.feature.contactsSearch.SearchContactsFragment$InitiationType" />
             <argument
                 android:name="prefilledNumber"
                 android:defaultValue="@null"
@@ -31,6 +31,6 @@
     </fragment>
     <fragment
         android:id="@+id/searchContactsFragment"
-        android:name="dev.alenajam.opendialer.features.dialer.searchContacts.SearchContactsFragment"
+        android:name="dev.alenajam.opendialer.feature.contactsSearch.SearchContactsFragment"
         android:label="SearchContactsFragment" />
 </navigation>
