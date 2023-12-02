@@ -16,6 +16,7 @@ This project aims to be an open, clean and modern dialer for Android.
 
 - [Features](#features)
 - [Tech Stack](#tech-stack)
+- [Build and Run](#build-and-run)
 - [Roadmap](#roadmap)
 - [Changelog](#changelog)
 - [Contributing](#contributing)
@@ -39,6 +40,23 @@ This project aims to be an open, clean and modern dialer for Android.
 - ViewModel and LiveData
 - Kotlin Coroutines and Flow (v1)
 - Dagger (v2)
+
+# Build and Run
+
+**OpenDialer** uses the Gradle build system and can be imported directly into Android Studio (make sure you are using the latest stable version available [here](https://developer.android.com/studio)). 
+
+Change the run configuration to `app`.
+
+![image](./.github/images/android_studio_build.png)
+
+The app contains the usual `debug` and `release` build variants which can be built and run. 
+
+![image](./.github/images/android_studio_build_variant.png)
+
+Once you're up and running, you can refer to the learning journeys below to get a better
+understanding of which libraries and tools are being used, the reasoning behind the approaches to
+UI, testing, architecture and more, and how all of these different pieces of the project fit
+together to create a complete app.
 
 ## Roadmap
 
