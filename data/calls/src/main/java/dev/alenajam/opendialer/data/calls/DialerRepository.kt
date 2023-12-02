@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface DialerRepository {
   fun getCalls(contentResolver: ContentResolver): Flow<List<DialerCallEntity>>
+  suspend fun getCallByIds(contentResolver: ContentResolver, ids: List<Int>): Either<Failure, List<DialerCallEntity>>
   suspend fun getDetailOptions(call: DialerCall): Either<Failure, List<CallOption>>
   suspend fun deleteCalls(calls: List<DetailCall>): Either<Failure, Unit>
   suspend fun blockCaller(number: String): Either<Failure, Unit>

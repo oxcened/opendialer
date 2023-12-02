@@ -5,11 +5,9 @@ import android.app.Application
 import android.content.Intent
 import android.net.Uri
 import android.telecom.PhoneAccount
-import androidx.core.net.toUri
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
-import androidx.navigation.NavDeepLinkRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.ContactsHelper
@@ -17,6 +15,8 @@ import dev.alenajam.opendialer.core.common.functional.Event
 import dev.alenajam.opendialer.core.common.platform.BaseViewModel
 import dev.alenajam.opendialer.data.calls.CallOption
 import dev.alenajam.opendialer.data.calls.DialerCall
+import dev.alenajam.opendialer.data.calls.DialerRepositoryImpl
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,15 +26,26 @@ class DialerViewModel
   private val getDetailOptions: GetDetailOptions,
   private val deleteCallsUseCase: DeleteCalls,
   private val blockCallerUseCase: BlockCaller,
-  private val unblockCallerUseCase: UnblockCaller
+  private val unblockCallerUseCase: UnblockCaller,
+  private val dialerRepositoryImpl: DialerRepositoryImpl
 ) : BaseViewModel() {
   override val TAG: String? = DialerViewModel::class.simpleName
 
+  private val _call: MutableLiveData<DialerCall> = MutableLiveData()
+  val call: LiveData<DialerCall> = _call
   val detailOptions: MutableLiveData<List<CallOption>> =
     MutableLiveData()
   val deletedDetailCalls: MutableLiveData<Event<Unit>> = MutableLiveData()
   val blockedCaller: MutableLiveData<Event<Unit>> = MutableLiveData()
   val unblockedCaller: MutableLiveData<Event<Unit>> = MutableLiveData()
+
+  fun getCallByIds(ids: List<Int>) {
+    viewModelScope.launch {
+      dialerRepositoryImpl.getCallByIds(app.contentResolver, ids).fold(
+        { /* TODO handle failure */ }, { call -> _call.postValue(DialerCall.mapList(call).first()) }
+      )
+    }
+  }
 
   fun getDetailOptions(call: DialerCall) =
     getDetailOptions(viewModelScope, call) { it.fold(::handleFailure, ::handleDetailOptions) }

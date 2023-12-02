@@ -9,24 +9,24 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.amulyakhare.textdrawable.util.ColorGenerator
-import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
 import dagger.hilt.android.AndroidEntryPoint
+import dev.alenajam.opendialer.core.common.CALL_DETAIL_PARAM_CALL_IDS
 import dev.alenajam.opendialer.core.common.CircleTransform
 import dev.alenajam.opendialer.core.common.OnStatusBarColorChange
 import dev.alenajam.opendialer.core.common.PermissionUtils
+import dev.alenajam.opendialer.core.common.SharedPreferenceHelper
 import dev.alenajam.opendialer.core.common.ToolbarListener
 import dev.alenajam.opendialer.data.calls.CallOption
 import dev.alenajam.opendialer.data.calls.DialerCall
 import dev.alenajam.opendialer.feature.callDetail.databinding.FragmentCallDetailBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-private const val PARAM_CALL = "call"
 private val circleTransform: Transformation = CircleTransform()
 private val colorList = listOf(
   Color.parseColor("#4FAF44"),
@@ -39,8 +39,9 @@ private val generator = ColorGenerator.create(colorList)
 
 @AndroidEntryPoint
 class CallDetailFragment : Fragment(), View.OnClickListener {
-  private val viewModel: DialerViewModel by activityViewModels()
+  private val viewModel: DialerViewModel by viewModels()
   lateinit var adapter: RecentsAdapter
+  private lateinit var callIds: List<Int>
   private lateinit var call: DialerCall
   private var optionsAdapter: CallOptionsAdapter? = null
   private var toolbarListener: ToolbarListener? = null
@@ -56,14 +57,6 @@ class CallDetailFragment : Fragment(), View.OnClickListener {
       }
     }
 
-  companion object {
-    fun newInstance(call: DialerCall) = CallDetailFragment().apply {
-      arguments = Bundle().apply {
-        putSerializable(PARAM_CALL, call)
-      }
-    }
-  }
-
   override fun onAttach(context: Context) {
     super.onAttach(context)
     if (context is ToolbarListener) {
@@ -76,9 +69,16 @@ class CallDetailFragment : Fragment(), View.OnClickListener {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    arguments?.let {
-    // TODO fetch data by id
-    // val id = it.getInt(PARAM_CALL)
+    val pref = SharedPreferenceHelper.getSharedPreferences(context)
+    val idsStr = pref.getString(CALL_DETAIL_PARAM_CALL_IDS, null)
+
+    idsStr?.let {
+      pref.edit().remove(CALL_DETAIL_PARAM_CALL_IDS).apply()
+      callIds = it.split(',').map { id -> id.toInt() }
+    }
+
+    if (callIds.isEmpty()) {
+      throw IllegalArgumentException("No valid call IDs were set in SharedPreferences before ${CallDetailFragment::class.java.simpleName} onCreate")
     }
   }
 
@@ -110,6 +110,10 @@ class CallDetailFragment : Fragment(), View.OnClickListener {
     binding.toolbarLayout.toolbar.setNavigationOnClickListener { goBack() }
     context?.let { binding.toolbarLayout.toolbar.setTitle(R.string.call_details) }
 
+    viewModel.call.observe(viewLifecycleOwner) {
+      this.call = it
+      renderCall()
+    }
     viewModel.detailOptions.observe(viewLifecycleOwner) { handleOptions(it) }
     viewModel.deletedDetailCalls.observe(viewLifecycleOwner,
       dev.alenajam.opendialer.core.common.functional.EventObserver { goBack() })
@@ -123,6 +127,10 @@ class CallDetailFragment : Fragment(), View.OnClickListener {
     binding.callButton.setOnClickListener(this)
     binding.contactIcon.setOnClickListener(this)
 
+    viewModel.getCallByIds(callIds)
+  }
+
+  private fun renderCall() {
     context?.let { context ->
       viewModel.getDetailOptions(call)
 

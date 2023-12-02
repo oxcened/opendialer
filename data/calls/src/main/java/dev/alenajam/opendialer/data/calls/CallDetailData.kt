@@ -4,12 +4,11 @@ import android.content.ContentResolver
 import android.database.Cursor
 import android.net.Uri
 import android.provider.CallLog.Calls
-import android.telephony.PhoneNumberUtils
 import android.util.Log
 
-abstract class CallsData {
+abstract class CallDetailData {
   companion object {
-    private val TAG = CallsData::class.simpleName
+    private val TAG = CallDetailData::class.simpleName
     val URI: Uri = Calls.CONTENT_URI
     private const val LIMIT = 1000
 
@@ -39,30 +38,33 @@ abstract class CallsData {
      *  - Blocked calls
      *  - Non-video Duo calls
      */
-    private const val where = """
+    private val where = { ids: List<Int> ->
+      """
             ${Calls.TYPE} != ${Calls.BLOCKED_TYPE}
             AND (
                 ${Calls.PHONE_ACCOUNT_COMPONENT_NAME} IS NULL
                 OR ${Calls.PHONE_ACCOUNT_COMPONENT_NAME} NOT LIKE 'com.google.android.apps.tachyon%'
                 OR ${Calls.FEATURES} & ${Calls.FEATURES_VIDEO} == ${Calls.FEATURES_VIDEO}
             )
+            AND ${Calls._ID} in (${ids.joinToString(",")})
         """
+    }
 
-    fun getCursor(contentResolver: ContentResolver): Cursor? = contentResolver.query(
+    fun getCursor(contentResolver: ContentResolver, ids: List<Int>): Cursor? = contentResolver.query(
       URI
         .buildUpon()
         .appendQueryParameter(Calls.LIMIT_PARAM_KEY, LIMIT.toString())
         .build(),
       projection,
-      where,
+      where(ids),
       null,
       Calls.DEFAULT_SORT_ORDER
     )
 
     fun getData(cursor: Cursor): List<DialerCallEntity> {
       val start = System.currentTimeMillis()
-
       val list = mutableListOf<DialerCallEntity>()
+
       if (cursor.moveToFirst()) {
         do {
           list.add(

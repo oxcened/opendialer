@@ -41,6 +41,20 @@ class DialerRepositoryImpl
       }
     }
 
+  override suspend fun getCallByIds(
+    contentResolver: ContentResolver,
+    ids: List<Int>
+  ): Either<Failure, List<DialerCallEntity>> {
+    val cursor = CallDetailData.getCursor(contentResolver, ids) ?: return Either.Left(Failure.NoData)
+    val data = CallDetailData.getData(cursor)
+
+    return if (data.isEmpty()) {
+      Either.Left(Failure.NoData)
+    } else {
+      Either.Right(data)
+    }
+  }
+
   override suspend fun getDetailOptions(call: DialerCall): Either<Failure, List<CallOption>> {
     return with(app) {
       val options = mutableListOf<CallOption>()

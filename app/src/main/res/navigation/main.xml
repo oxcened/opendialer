@@ -26,8 +26,7 @@
         android:name="dev.alenajam.opendialer.feature.callDetail.CallDetailFragment"
         android:label="CallDetailFragment">
 
-        <deepLink app:uri="android-app://dev.alenajam.opendialer/callDetailFragment?call={call}" />
-        <argument android:name="call" app:argType="integer" />
+        <deepLink app:uri="android-app://dev.alenajam.opendialer/feature/callDetail/callDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchContactsFragment"

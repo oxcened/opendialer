@@ -2,17 +2,15 @@ package dev.alenajam.opendialer.feature.calls
 
 import android.app.Activity
 import android.app.Application
-import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import androidx.navigation.NavDeepLinkRequest
-import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.ContactsHelper
+import dev.alenajam.opendialer.core.common.navigateToCallDetail
 import dev.alenajam.opendialer.data.calls.ContactInfo
 import dev.alenajam.opendialer.data.calls.DialerCall
 import dev.alenajam.opendialer.data.calls.DialerRepositoryImpl
@@ -51,11 +49,7 @@ class DialerViewModel
   fun makeCall(activity: Activity, number: String) = CommonUtils.makeCall(activity, number)
 
   fun callDetail(navController: NavController, call: DialerCall) {
-    val request =
-      NavDeepLinkRequest.Builder
-        .fromUri("android-app://dev.alenajam.opendialer/callDetailFragment?call=${call.id}".toUri())
-        .build()
-    navController.navigate(request)
+    navController.navigateToCallDetail(call.childCalls.map { it.id })
   }
 
   fun createContact(activity: Activity, call: DialerCall) =

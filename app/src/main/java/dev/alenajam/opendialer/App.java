@@ -1,7 +1,6 @@
 package dev.alenajam.opendialer;
 
 import android.app.Application;
-import android.content.SharedPreferences;
 
 import dagger.hilt.android.HiltAndroidApp;
 import dev.alenajam.opendialer.helper.NotificationHelper;
@@ -15,9 +14,5 @@ public class App extends Application {
     super.onCreate();
     NotificationHelper.setupNotificationChannels(this);
     SharedPreferenceHelper.init(this);
-  }
-
-  public SharedPreferences getAppSharedPreferences() {
-    return SharedPreferenceHelper.getSharedPreferences(this);
   }
 }
