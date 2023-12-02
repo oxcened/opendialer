@@ -1,6 +1,6 @@
 # OpenDialer
 
-This project aims to be an open, clean and modern dialer for Android.
+An open, clean and modern dialer for Android.
 
 ![Static Badge](https://img.shields.io/badge/24%2B-brightgreen?logo=android&label=API)
 [![Latest Version](https://img.shields.io/github/v/release/oxcened/opendialer)](https://github.com/oxcened/opendialer/releases)
