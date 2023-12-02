@@ -1,0 +1,26 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory app:title="@string/general">
+        <ListPreference
+            app:defaultValue="1"
+            app:entries="@array/theme_options_entries"
+            app:entryValues="@array/theme_options_values"
+            app:key="theme"
+            app:title="@string/theme"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/dialer">
+        <Preference app:key="default" />
+        <Preference
+            app:key="sound"
+            app:title="@string/sound_vibration" />
+        <Preference
+            app:isPreferenceVisible="false"
+            app:key="blockedNumbers"
+            app:title="@string/manageBlockedNumbers" />
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/inCall">
+        <Preference
+            app:key="quick_responses"
+            app:title="@string/customize_quick_responses" />
+    </PreferenceCategory>
+</PreferenceScreen>

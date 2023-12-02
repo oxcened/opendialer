@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dev.alenajam.opendialer.R
 import dev.alenajam.opendialer.features.dialer.calls.cache.ContactInfo
-import dev.alenajam.opendialer.util.getContactImagePlaceholder
 import dev.alenajam.opendialer.util.getValueAnimator
 import dev.alenajam.opendialer.util.CommonUtils
 import com.amulyakhare.textdrawable.util.ColorGenerator
@@ -145,12 +144,6 @@ class RecentsAdapter(
 
       val isExpanded = position == expandedItem
       expand(currentCall, this, isExpanded)
-
-      Picasso.get()
-        .load(contact.photoUri)
-        .placeholder(context.getContactImagePlaceholder(currentCall, generator))
-        .transform(circleTransform)
-        .into(contactIcon)
 
       contactIcon.setOnClickListener { onContactClick(currentCall) }
 

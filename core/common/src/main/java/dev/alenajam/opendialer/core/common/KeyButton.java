@@ -118,7 +118,7 @@ public class KeyButton extends ConstraintLayout {
     this.keyPressedListener = keyPressedListener;
   }
 
-  interface KeyPressedListener {
+  public interface KeyPressedListener {
     void onKeyPressed(View view, boolean pressed);
   }
 }
