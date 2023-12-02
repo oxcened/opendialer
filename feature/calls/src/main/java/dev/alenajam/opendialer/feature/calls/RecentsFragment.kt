@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import dev.alenajam.opendialer.core.common.PermissionUtils
@@ -111,7 +112,6 @@ class RecentsFragment : Fragment() {
     refreshData()
   }
 
-  @ExperimentalCoroutinesApi
   private fun observeCalls() {
     /** Ensure that observable isn't observed already */
     if (!viewModel.calls.hasObservers()) {
@@ -122,11 +122,10 @@ class RecentsFragment : Fragment() {
     }
   }
 
-  @ExperimentalCoroutinesApi
   private fun observeContacts() {
-//    viewModel.contacts.observe(viewLifecycleOwner, Observer {
-//      refreshNeeded = true
-//    })
+    viewModel.contacts.observe(viewLifecycleOwner) {
+      refreshNeeded = true
+    }
   }
 
   private fun makeCall(number: String) {
@@ -147,11 +146,11 @@ class RecentsFragment : Fragment() {
   ) =
     when (option.id) {
       CallOption.ID_SEND_MESSAGE -> viewModel.sendMessage(this, call)
-//      CallOption.ID_CALL_DETAILS -> viewModel.callDetail(
-//        findNavController(),
-//        call
-//      )
-//
+      CallOption.ID_CALL_DETAILS -> viewModel.callDetail(
+        findNavController(),
+        call
+      )
+
       CallOption.ID_CREATE_CONTACT -> viewModel.createContact(
         this,
         call

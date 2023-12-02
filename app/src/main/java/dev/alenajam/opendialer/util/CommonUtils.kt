@@ -14,7 +14,6 @@ import androidx.annotation.ColorInt
 import dev.alenajam.opendialer.R
 import dev.alenajam.opendialer.features.dialer.calls.DialerCall
 import dev.alenajam.opendialer.features.dialer.contacts.DialerContact
-import dev.alenajam.opendialer.features.dialer.searchContacts.DialerSearchContact
 import com.amulyakhare.textdrawable.TextDrawable
 import com.amulyakhare.textdrawable.util.ColorGenerator
 
@@ -56,24 +55,6 @@ fun Context.getContactImagePlaceholder(call: DialerCall, generator: ColorGenerat
 
 fun Context.getContactImagePlaceholder(
   contact: DialerContact,
-  generator: ColorGenerator
-): TextDrawable {
-  val filteredName = contact.name.replace("[^a-zA-Z0-9]".toRegex(), "")
-  var firstCharStr = ""
-
-  if (filteredName.isNotEmpty()) {
-    val firstChar = filteredName[0]
-    firstCharStr = firstChar.toString()
-  }
-
-  return TextDrawable.builder()
-    .beginConfig()
-    .endConfig()
-    .buildRound(firstCharStr, generator.getColor(contact.id))
-}
-
-fun Context.getContactImagePlaceholder(
-  contact: DialerSearchContact,
   generator: ColorGenerator
 ): TextDrawable {
   val filteredName = contact.name.replace("[^a-zA-Z0-9]".toRegex(), "")

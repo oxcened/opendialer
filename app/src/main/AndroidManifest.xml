@@ -26,14 +26,14 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".features.inCall.InCallActivity"
+            android:name=".feature.inCall.ui.InCallActivity"
             android:autoRemoveFromRecents="true"
             android:documentLaunchMode="intoExisting"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="dev.alenajam.opendialer.activity.SettingsActivity"
+            android:name=".feature.settings.SettingsActivity"
             android:label="@string/option"
             android:parentActivityName="dev.alenajam.opendialer.features.main.MainActivity"
             android:theme="@style/PreferenceTheme">
@@ -67,19 +67,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="dev.alenajam.opendialer.activity.AboutActivity"
+            android:name=".feature.settings.AboutActivity"
             android:label="@string/info"
             android:parentActivityName="dev.alenajam.opendialer.features.main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
 
         <activity
-            android:name="dev.alenajam.opendialer.activity.CustomizeQuickResponsesActivity"
-            android:parentActivityName="dev.alenajam.opendialer.activity.SettingsActivity" />
+            android:name=".feature.settings.CustomizeQuickResponsesActivity"
+            android:parentActivityName=".feature.settings.SettingsActivity" />
 
 
         <service
-            android:name="dev.alenajam.opendialer.service.InCallServiceImpl"
+            android:name=".feature.inCall.service.InCallServiceImpl"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_INCALL_SERVICE">
@@ -96,7 +96,7 @@
         </service>
 
         <receiver
-            android:name="dev.alenajam.opendialer.helper.NotificationHelper$CallButtonsListener"
+            android:name=".feature.inCall.service.NotificationHelper$CallButtonsListener"
             android:exported="true">
             <intent-filter>
                 <action android:name="dev.alenajam.opendialer.CALL_ACCEPT" />

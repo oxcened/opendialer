@@ -3,8 +3,17 @@ rootProject.name = 'OpenDialer'
 include (
         ':app',
         ':mylibrary',
-        ':core:common',
-        ':data:calls',
         ':feature:calls',
-        ':data:callsCache'
+        ':data:calls',
+        ':data:callsCache',
+        ':data:contacts',
+        ':core:common',
 )
+include ':feature:contacts'
+include ':feature:callDetail'
+include ':feature:inCall'
+include ':data:inCall'
+include ':data:contactsSearch'
+include ':core:aosp'
+include ':feature:contactsSearch'
+include ':feature:settings'

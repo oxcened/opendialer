@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="copy_number">Copy number</string>
+    <string name="create_new_contact">Create new contact</string>
+    <string name="add_to_a_contact">Add to a contact</string>
+    <string name="send_message">Send message</string>
+    <string name="edit_number_before_call">Edit number before call</string>
+    <string name="searchContactsActionMakeCall">Call %1$s</string>
+    <string name="turn_on">Turn on</string>
+    <string name="searchContactsHeader">All contacts</string>
+    <string name="placeholder_search_permissions">To see suggestions, turn on the phone permissions</string>
+</resources>

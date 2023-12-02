@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dev.alenajam.opendialer.feature.contactsSearch.KeypadBottomSheetBehavior xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dialpad"
+    android:layout_width="370dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="end"
+    android:elevation="7dp"
+    app:behavior_draggable="false"
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="0dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" />

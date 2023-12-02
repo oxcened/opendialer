@@ -12,16 +12,16 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dev.alenajam.opendialer.R
+import dev.alenajam.opendialer.core.common.ToolbarListener
 import dev.alenajam.opendialer.core.common.functional.safeNavigate
 import dev.alenajam.opendialer.databinding.FragmentHomeBinding
 import dev.alenajam.opendialer.feature.calls.RecentsFragment
-import dev.alenajam.opendialer.features.dialer.contacts.ContactsFragment
-import dev.alenajam.opendialer.features.dialer.searchContacts.SearchContactsFragment
+import dev.alenajam.opendialer.feature.contacts.ContactsFragment
+import dev.alenajam.opendialer.feature.contactsSearch.SearchContactsFragment
+import dev.alenajam.opendialer.feature.settings.ProfileFragment
 import dev.alenajam.opendialer.features.main.MainFragmentDirections.Companion.actionHomeFragmentToSearchContactsFragment
-import dev.alenajam.opendialer.features.profile.ProfileFragment
 import dev.alenajam.opendialer.model.OnStatusBarColorChange
 import dev.alenajam.opendialer.model.SearchOpenChangeListener
-import dev.alenajam.opendialer.model.ToolbarListener
 
 class MainFragment :
   Fragment(),

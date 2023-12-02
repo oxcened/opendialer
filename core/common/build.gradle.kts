@@ -46,4 +46,6 @@ dependencies {
   implementation("com.squareup.picasso:picasso:2.71828")
   implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
   implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
+  implementation("androidx.preference:preference-ktx:1.2.1")
+  implementation("com.google.code.gson:gson:2.9.0")
 }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nothingHere">Mmh..nothing here</string>
+    <string name="placeholder_contacts">To see your contacts, turn on the contacts permissions</string>
+    <string name="turn_on">Turn on</string>
+</resources>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include  android:id="@+id/toolbar_layout" layout="@layout/toolbar" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="20dp">
+
+            <ImageView
+                android:id="@+id/contactIcon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="10dp"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="17sp"
+                app:layout_constraintBottom_toTopOf="@id/subtitle"
+                app:layout_constraintEnd_toStartOf="@id/callButton"
+                app:layout_constraintStart_toEndOf="@id/contactIcon"
+                app:layout_constraintTop_toTopOf="@id/contactIcon" />
+
+            <TextView
+                android:id="@+id/subtitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="@id/contactIcon"
+                app:layout_constraintEnd_toEndOf="@id/title"
+                app:layout_constraintStart_toStartOf="@id/title"
+                app:layout_constraintTop_toBottomOf="@id/title" />
+
+            <ImageView
+                android:id="@+id/callButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:padding="8dp"
+                android:src="@drawable/ic_call"
+                app:layout_constraintBottom_toBottomOf="@id/contactIcon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/contactIcon" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_call_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:nestedScrollingEnabled="false"
+                android:paddingHorizontal="5dp"
+                app:layout_constraintTop_toBottomOf="@id/contactIcon" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/divider"
+                app:layout_constraintTop_toBottomOf="@id/recycler_view_call_details" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_call_details_options"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintTop_toBottomOf="@id/divider" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

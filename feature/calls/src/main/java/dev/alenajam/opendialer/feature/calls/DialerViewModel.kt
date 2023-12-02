@@ -2,10 +2,14 @@ package dev.alenajam.opendialer.feature.calls
 
 import android.app.Activity
 import android.app.Application
+import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import androidx.navigation.NavDeepLinkRequest
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.ContactsHelper
@@ -13,6 +17,7 @@ import dev.alenajam.opendialer.data.calls.ContactInfo
 import dev.alenajam.opendialer.data.calls.DialerCall
 import dev.alenajam.opendialer.data.calls.DialerRepositoryImpl
 import dev.alenajam.opendialer.data.callsCache.CacheRepositoryImpl
+import dev.alenajam.opendialer.data.contacts.DialerContact
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -22,7 +27,8 @@ import javax.inject.Inject
 class DialerViewModel
 @Inject constructor(
   dialerRepository: DialerRepositoryImpl,
-  private val app: Application,
+  contactsRepository: dev.alenajam.opendialer.data.contacts.DialerRepositoryImpl,
+  app: Application,
   private val cacheRepository: CacheRepositoryImpl,
   private val startCacheUseCase: StartCache
 ) : ViewModel() {
@@ -32,22 +38,26 @@ class DialerViewModel
     .flowOn(Dispatchers.IO)
     .asLiveData()
 
-
-//  @ExperimentalCoroutinesApi
-//  val contacts: LiveData<List<DialerContact>> = dialerRepository
-//    .getContacts(app.contentResolver)
-//    .map { DialerContact.mapList(it) }
-//    .flowOn(Dispatchers.IO)
-//    .asLiveData()
+  val contacts: LiveData<List<DialerContact>> = contactsRepository
+    .getContacts(app.contentResolver)
+    .map { DialerContact.mapList(it) }
+    .flowOn(Dispatchers.IO)
+    .asLiveData()
 
   fun sendMessage(activity: Activity, call: DialerCall) =
     CommonUtils.makeSms(activity, call.contactInfo.number)
-//
+
+  //
   fun makeCall(activity: Activity, number: String) = CommonUtils.makeCall(activity, number)
 
-//  fun callDetail(navController: NavController, call: DialerCall) =
-//    navController.navigate(MainFragmentDirections.actionHomeFragmentToCallDetailFragment(call))
-//
+  fun callDetail(navController: NavController, call: DialerCall) {
+    val request =
+      NavDeepLinkRequest.Builder
+        .fromUri("android-app://dev.alenajam.opendialer/callDetailFragment?call=${call.id}".toUri())
+        .build()
+    navController.navigate(request)
+  }
+
   fun createContact(activity: Activity, call: DialerCall) =
     CommonUtils.createContact(activity, call.contactInfo.number)
 

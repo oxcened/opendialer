@@ -38,6 +38,7 @@ android {
 dependencies {
   implementation(project(":data:calls"))
   implementation(project(":data:callsCache"))
+  implementation(project(":data:contacts"))
   implementation(project(":core:common"))
 
   implementation("androidx.core:core-ktx:1.9.0")
@@ -73,4 +74,6 @@ dependencies {
   implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
   implementation("androidx.preference:preference-ktx:1.2.1")
   implementation("androidx.recyclerview:recyclerview:1.3.2")
+
+  implementation("com.google.code.gson:gson:2.9.0")
 }
