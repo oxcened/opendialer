@@ -162,8 +162,8 @@ Using the above modularization strategy, the OpenDialer app has the following mo
    </td>
    <td>Common classes shared between modules.
    </td>
-   <td><code>NiaDispatchers</code><br>
-   <code>Result</code>
+   <td><code>PermissionUtils</code><br>
+   <code>DefaultPhoneUtils</code>
    </td>
   </tr>
   <tr>
