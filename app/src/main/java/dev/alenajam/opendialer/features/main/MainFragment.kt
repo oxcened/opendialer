@@ -18,8 +18,8 @@ import dev.alenajam.opendialer.databinding.FragmentHomeBinding
 import dev.alenajam.opendialer.feature.calls.RecentsFragment
 import dev.alenajam.opendialer.feature.contacts.ContactsFragment
 import dev.alenajam.opendialer.feature.contactsSearch.SearchContactsFragment
+import dev.alenajam.opendialer.feature.settings.ProfileFragment
 import dev.alenajam.opendialer.features.main.MainFragmentDirections.Companion.actionHomeFragmentToSearchContactsFragment
-import dev.alenajam.opendialer.features.profile.ProfileFragment
 import dev.alenajam.opendialer.model.OnStatusBarColorChange
 import dev.alenajam.opendialer.model.SearchOpenChangeListener
 

@@ -1,4 +1,4 @@
-package dev.alenajam.opendialer.activity;
+package dev.alenajam.opendialer.feature.settings;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,24 +12,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import dev.alenajam.opendialer.App;
-import dev.alenajam.opendialer.R;
-import dev.alenajam.opendialer.adapter.QuickResponseAdapter;
-import dev.alenajam.opendialer.helper.SharedPreferenceHelper;
-import dev.alenajam.opendialer.view.EditTextDialog;
-import dev.alenajam.opendialer.view.MyDialog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import dev.alenajam.opendialer.core.common.EditTextDialog;
+import dev.alenajam.opendialer.core.common.MyDialog;
+import dev.alenajam.opendialer.core.common.SharedPreferenceHelper;
+
 public class CustomizeQuickResponsesActivity extends AppCompatActivity implements QuickResponseAdapter.QuickResponseListener {
   private ArrayList<String> quickResponses;
   private RecyclerView recyclerView;
   private SharedPreferences sharedPreferences;
   private Gson gson = new Gson();
-  private EditTextDialog dialog;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +39,7 @@ public class CustomizeQuickResponsesActivity extends AppCompatActivity implement
       actionBar.setSubtitle(getString(R.string.long_press_delete));
     }
 
-    sharedPreferences = ((App) getApplicationContext()).getAppSharedPreferences();
+    sharedPreferences = SharedPreferenceHelper.getSharedPreferences(this);
 
     recyclerView = findViewById(R.id.recycler_view_quick_responses);
     String json = sharedPreferences.getString(SharedPreferenceHelper.SP_QUICK_RESPONSES, "");
@@ -127,11 +124,5 @@ public class CustomizeQuickResponsesActivity extends AppCompatActivity implement
       return true;
     }
     return false;
-  }
-
-  @Override
-  protected void onDestroy() {
-    if (dialog != null && dialog.isShowing()) dialog.hide();
-    super.onDestroy();
   }
 }

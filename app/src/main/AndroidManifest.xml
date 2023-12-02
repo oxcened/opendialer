@@ -33,7 +33,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="dev.alenajam.opendialer.activity.SettingsActivity"
+            android:name=".feature.settings.SettingsActivity"
             android:label="@string/option"
             android:parentActivityName="dev.alenajam.opendialer.features.main.MainActivity"
             android:theme="@style/PreferenceTheme">
@@ -67,15 +67,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="dev.alenajam.opendialer.activity.AboutActivity"
+            android:name=".feature.settings.AboutActivity"
             android:label="@string/info"
             android:parentActivityName="dev.alenajam.opendialer.features.main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
 
         <activity
-            android:name="dev.alenajam.opendialer.activity.CustomizeQuickResponsesActivity"
-            android:parentActivityName="dev.alenajam.opendialer.activity.SettingsActivity" />
+            android:name=".feature.settings.CustomizeQuickResponsesActivity"
+            android:parentActivityName=".feature.settings.SettingsActivity" />
 
 
         <service

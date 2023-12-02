@@ -1,11 +1,11 @@
-package dev.alenajam.opendialer.activity;
+package dev.alenajam.opendialer.feature.settings;
 
-import static dev.alenajam.opendialer.helper.SharedPreferenceHelper.KEY_SETTING_BLOCKED_NUMBERS;
-import static dev.alenajam.opendialer.helper.SharedPreferenceHelper.KEY_SETTING_DEFAULT;
-import static dev.alenajam.opendialer.helper.SharedPreferenceHelper.KEY_SETTING_NOTIFICATION_SETTINGS;
-import static dev.alenajam.opendialer.helper.SharedPreferenceHelper.KEY_SETTING_QUICK_RESPONSES;
-import static dev.alenajam.opendialer.helper.SharedPreferenceHelper.KEY_SETTING_SOUND_VIBRATION;
-import static dev.alenajam.opendialer.helper.SharedPreferenceHelper.KEY_SETTING_THEME;
+import static dev.alenajam.opendialer.core.common.SharedPreferenceHelper.KEY_SETTING_BLOCKED_NUMBERS;
+import static dev.alenajam.opendialer.core.common.SharedPreferenceHelper.KEY_SETTING_DEFAULT;
+import static dev.alenajam.opendialer.core.common.SharedPreferenceHelper.KEY_SETTING_NOTIFICATION_SETTINGS;
+import static dev.alenajam.opendialer.core.common.SharedPreferenceHelper.KEY_SETTING_QUICK_RESPONSES;
+import static dev.alenajam.opendialer.core.common.SharedPreferenceHelper.KEY_SETTING_SOUND_VIBRATION;
+import static dev.alenajam.opendialer.core.common.SharedPreferenceHelper.KEY_SETTING_THEME;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,9 +22,8 @@ import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
-import dev.alenajam.opendialer.R;
-import dev.alenajam.opendialer.util.CommonUtils;
-import dev.alenajam.opendialer.util.DefaultPhoneUtils;
+import dev.alenajam.opendialer.core.common.CommonUtils;
+import dev.alenajam.opendialer.core.common.DefaultPhoneUtils;
 
 public class SettingsActivity extends AppCompatActivity {
   private static final int REQUEST_ID_DEFAULT = 1;
@@ -131,13 +130,8 @@ public class SettingsActivity extends AppCompatActivity {
           startActivity(new Intent(getContext(), CustomizeQuickResponsesActivity.class));
           break;
         case KEY_SETTING_BLOCKED_NUMBERS:
-          if (telecomManager != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+          if (telecomManager != null) {
             startActivity(telecomManager.createManageBlockedNumbersIntent());
-          }
-          break;
-        case KEY_SETTING_NOTIFICATION_SETTINGS:
-          if (getContext() != null) {
-            CommonUtils.openNotificationSettings(getContext());
           }
           break;
       }
