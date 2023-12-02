@@ -32,7 +32,7 @@ This project aims to be an open, clean and modern dialer for Android.
 - Call conferences
 - Hang up with customized quick answers
 
-# Build and Run
+## Build and Run
 
 **OpenDialer** uses the Gradle build system and can be imported directly into Android Studio (make sure you are using the latest stable version available [here](https://developer.android.com/studio)). 
 
