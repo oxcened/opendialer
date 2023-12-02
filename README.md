@@ -33,13 +33,13 @@ This project aims to be an open, clean and modern dialer for Android.
 
 ## Tech Stack
 
-- JDK 8
+- JDK 17
 - Android API 24+
 - Clean Architecture
 - MVVM pattern
 - ViewModel and LiveData
-- Kotlin Coroutines and Flow (v1)
-- Dagger (v2)
+- Kotlin Coroutines and Flow
+- Dagger Hilt
 
 # Build and Run
 
