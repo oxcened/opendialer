@@ -59,7 +59,7 @@ together to create a complete app.
 - Kotlin Coroutines and Flow
 - Dagger Hilt
 
-# Modularization
+## Modularization
 
 The **OpenDialer** app has been fully modularized based on the [official recommendations](https://developer.android.com/topic/modularization/patterns) and you can find the
 description of the modularization strategy used in
