@@ -100,6 +100,11 @@ The OpenDialer app contains the following types of modules:
   appropriate `core` module. A `feature` module should have no dependencies on other feature
   modules. They only depend on the `core` modules that they require.
 
+* `data:` modules - library modules responsible for business logic and sourcing data.
+  Each data module should be responsible for handling data that represents a certain domain.
+  It can handle many types of data as long as they are related.
+  A data module usually contains a repository, data sources and model classes.
+
 * `core:` modules - common library modules containing auxiliary code and specific dependencies that
   need to be shared between other modules in the app. These modules can depend on other core
   modules, but they shouldn’t depend on feature nor app modules.
