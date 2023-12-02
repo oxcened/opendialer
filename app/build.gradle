@@ -67,6 +67,7 @@ dependencies {
     implementation(project(":feature:contacts"))
     implementation(project(":feature:inCall"))
     implementation(project(":feature:contactsSearch"))
+    implementation(project(":feature:settings"))
     implementation(project(":data:calls"))
     implementation(project(":core:common"))
 

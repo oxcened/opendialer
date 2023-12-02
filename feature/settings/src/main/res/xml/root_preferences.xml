@@ -7,10 +7,6 @@
             app:key="theme"
             app:title="@string/theme"
             app:useSimpleSummaryProvider="true" />
-        <Preference
-            app:isPreferenceVisible="false"
-            app:key="notificationSettings"
-            app:title="@string/notificationSettings" />
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/dialer">
         <Preference app:key="default" />

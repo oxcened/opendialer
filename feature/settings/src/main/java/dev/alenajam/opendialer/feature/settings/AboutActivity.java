@@ -1,13 +1,15 @@
-package dev.alenajam.opendialer.activity;
+package dev.alenajam.opendialer.feature.settings;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import dev.alenajam.opendialer.BuildConfig;
-import dev.alenajam.opendialer.R;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class AboutActivity extends AppCompatActivity {
 
   @Override
@@ -20,6 +22,13 @@ public class AboutActivity extends AppCompatActivity {
     if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     TextView version = findViewById(R.id.version);
-    version.setText(getString(R.string.version, BuildConfig.VERSION_NAME));
+
+    try {
+      PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+      String versionName = pInfo.versionName;
+      version.setText(getString(R.string.version, versionName));
+    } catch (PackageManager.NameNotFoundException e) {
+      e.printStackTrace();
+    }
   }
 }

@@ -1,4 +1,4 @@
-package dev.alenajam.opendialer.features.profile
+package dev.alenajam.opendialer.feature.settings
 
 import android.content.Context
 import android.content.Intent
@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import dev.alenajam.opendialer.core.common.OnStatusBarColorChange
-import dev.alenajam.opendialer.databinding.FragmentProfileBinding
+import dev.alenajam.opendialer.feature.settings.databinding.FragmentProfileBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class ProfileFragment : Fragment(), View.OnClickListener {
@@ -41,8 +41,8 @@ class ProfileFragment : Fragment(), View.OnClickListener {
 
   override fun onClick(v: View) {
     when (v) {
-      binding.about -> startActivity(Intent(context, dev.alenajam.opendialer.activity.AboutActivity::class.java))
-      binding.options -> startActivity(Intent(context, dev.alenajam.opendialer.activity.SettingsActivity::class.java))
+      binding.about -> startActivity(Intent(context, AboutActivity::class.java))
+      binding.options -> startActivity(Intent(context, SettingsActivity::class.java))
     }
   }
 }
