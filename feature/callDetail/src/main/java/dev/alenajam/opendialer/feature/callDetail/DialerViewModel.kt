@@ -7,12 +7,12 @@ import android.net.Uri
 import android.telecom.PhoneAccount
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.ContactsHelper
 import dev.alenajam.opendialer.core.common.functional.Event
-import dev.alenajam.opendialer.core.common.platform.BaseViewModel
 import dev.alenajam.opendialer.data.calls.CallOption
 import dev.alenajam.opendialer.data.calls.DialerCall
 import dev.alenajam.opendialer.data.calls.DialerRepositoryImpl
@@ -28,9 +28,7 @@ class DialerViewModel
   private val blockCallerUseCase: BlockCaller,
   private val unblockCallerUseCase: UnblockCaller,
   private val dialerRepositoryImpl: DialerRepositoryImpl
-) : BaseViewModel() {
-  override val TAG: String? = DialerViewModel::class.simpleName
-
+) : ViewModel() {
   private val _call: MutableLiveData<DialerCall> = MutableLiveData()
   val call: LiveData<DialerCall> = _call
   val detailOptions: MutableLiveData<List<CallOption>> =
@@ -48,7 +46,7 @@ class DialerViewModel
   }
 
   fun getDetailOptions(call: DialerCall) =
-    getDetailOptions(viewModelScope, call) { it.fold(::handleFailure, ::handleDetailOptions) }
+    getDetailOptions(viewModelScope, call) { it.fold({}, ::handleDetailOptions) }
 
   fun makeCall(activity: Activity, number: String) = CommonUtils.makeCall(activity, number)
 
@@ -68,7 +66,7 @@ class DialerViewModel
 
   fun deleteCalls(call: DialerCall) = deleteCallsUseCase(viewModelScope, call.childCalls) {
     it.fold(
-      ::handleFailure,
+      {},
       ::handleDeletedDetailCalls
     )
   }
@@ -77,14 +75,14 @@ class DialerViewModel
     blockCallerUseCase(
       viewModelScope,
       it
-    ) { res -> res.fold(::handleFailure, ::handleBlockCaller) }
+    ) { res -> res.fold({}, ::handleBlockCaller) }
   }
 
   fun unblockCaller(call: DialerCall) = call.contactInfo.number?.let {
     unblockCallerUseCase(
       viewModelScope,
       it
-    ) { res -> res.fold(::handleFailure, ::handleUnblockCaller) }
+    ) { res -> res.fold({}, ::handleUnblockCaller) }
   }
 
   private fun handleDetailOptions(options: List<CallOption>) =

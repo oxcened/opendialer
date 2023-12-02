@@ -20,13 +20,6 @@ android {
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
     }
   }
-  compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-  }
-  kotlinOptions {
-    jvmTarget = "1.8"
-  }
 }
 
 dependencies {
@@ -38,4 +31,8 @@ dependencies {
   androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
   implementation("com.google.guava:guava:21.0")
+}
+
+kotlin {
+  jvmToolchain(17)
 }

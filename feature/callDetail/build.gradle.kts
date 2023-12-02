@@ -22,15 +22,7 @@ android {
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
     }
   }
-  compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-  }
-  kotlinOptions {
-    jvmTarget = "1.8"
-  }
   buildFeatures {
-    dataBinding = true
     viewBinding = true
   }
 }
@@ -41,7 +33,7 @@ dependencies {
   implementation(project(":data:contacts"))
   implementation(project(":core:common"))
 
-  implementation("androidx.core:core-ktx:1.9.0")
+  implementation("androidx.core:core-ktx:1.12.0")
   implementation("androidx.appcompat:appcompat:1.6.1")
   implementation("com.google.android.material:material:1.10.0")
   testImplementation("junit:junit:4.13.2")
@@ -74,6 +66,8 @@ dependencies {
   implementation("com.amulyakhare:com.amulyakhare.textdrawable:1.0.1")
   implementation("com.squareup.picasso:picasso:2.71828")
   implementation("org.ocpsoft.prettytime:prettytime:4.0.1.Final")
+}
 
-  implementation("com.google.code.gson:gson:2.9.0")
+kotlin {
+  jvmToolchain(17)
 }
