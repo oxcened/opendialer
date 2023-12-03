@@ -53,8 +53,6 @@ together to create a complete app.
 
 - JDK 17
 - Android API 24+
-- Clean Architecture
-- MVVM pattern
 - ViewModel and LiveData
 - Kotlin Coroutines and Flow
 - Dagger Hilt
