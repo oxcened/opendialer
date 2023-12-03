@@ -1,6 +1,6 @@
 # Modularization learning journey
 
-This strategy was inspired by [Now in Android](https://github.com/android/nowinandroid).
+This learning journey was inspired by [Now in Android](https://github.com/android/nowinandroid).
 
 In this learning journey you will learn about modularization, and the modularization strategy used
 to create the modules in the OpenDialer app.
