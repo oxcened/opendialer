@@ -6,34 +6,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.data.calls.CallOption
 import dev.alenajam.opendialer.data.calls.DialerCall
-import dev.alenajam.opendialer.feature.calls.databinding.FragmentRecentsBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
 class RecentsFragment : Fragment() {
   private val viewModel: DialerViewModel by viewModels()
-  lateinit var adapter: RecentsAdapter
   private var notCalledNumber = ""
   private var refreshNeeded = false
-  private var _binding: FragmentRecentsBinding? = null
-  private val binding get() = _binding!!
 
-  @ExperimentalCoroutinesApi
   private val requestPermissions =
     registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { data ->
       /** Ensure that all permissions were allowed */
       if (PermissionUtils.recentsPermissions.all { data[it] == true }) {
         /** Hide permission prompt */
-        binding.permissionPrompt.visibility = View.GONE
+        // binding.permissionPrompt.visibility = View.GONE
 
         observeCalls()
       }
@@ -55,13 +50,17 @@ class RecentsFragment : Fragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View {
-    _binding = FragmentRecentsBinding.inflate(inflater, container, false)
-    return binding.root
-  }
+    /*_binding = FragmentRecentsBinding.inflate(inflater, container, false)
+    return binding.root*/
 
-  override fun onDestroyView() {
-    super.onDestroyView()
-    _binding = null
+    return ComposeView(requireContext()).apply {
+      setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+      setContent {
+        CallsScreen(
+          navController = findNavController()
+        )
+      }
+    }
   }
 
   override fun onStart() {
@@ -74,11 +73,10 @@ class RecentsFragment : Fragment() {
     viewModel.stopCache()
   }
 
-  @ExperimentalCoroutinesApi
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    context?.let {
+    /*context?.let {
       adapter = RecentsAdapter(
         it,
         binding.recyclerViewCallLog,
@@ -95,7 +93,7 @@ class RecentsFragment : Fragment() {
     if (PermissionUtils.hasRecentsPermission(context)) {
       observeCalls()
     } else {
-      /** Show permission prompt */
+      *//** Show permission prompt *//*
       binding.permissionPrompt.visibility = View.VISIBLE
       binding.buttonPermission.setOnClickListener {
         requestPermissions.launch(PermissionUtils.recentsPermissions)
@@ -104,7 +102,7 @@ class RecentsFragment : Fragment() {
 
     if (PermissionUtils.hasContactsPermission(context)) {
       observeContacts()
-    }
+    }*/
   }
 
   override fun onResume() {
@@ -161,14 +159,14 @@ class RecentsFragment : Fragment() {
     }
 
   private fun handleCalls(calls: List<DialerCall>) {
-    adapter.setData(calls)
+    // adapter.setData(calls)
   }
 
   private fun refreshData() {
     if (refreshNeeded) {
       refreshNeeded = false
       viewModel.invalidateCache()
-      adapter.notifyDataSetChanged()
+      // adapter.notifyDataSetChanged()
     }
   }
 }

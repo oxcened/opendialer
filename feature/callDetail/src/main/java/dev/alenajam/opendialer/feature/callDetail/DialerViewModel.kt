@@ -49,6 +49,7 @@ class DialerViewModel
     getDetailOptions(viewModelScope, call) { it.fold({}, ::handleDetailOptions) }
 
   fun makeCall(activity: Activity, number: String) = CommonUtils.makeCall(activity, number)
+  fun makeCall(number: String) = CommonUtils.makeCall(app, number)
 
   fun copyNumber(call: DialerCall) = CommonUtils.copyToClipobard(app, call.contactInfo.number)
   fun openContact(activity: Activity, call: DialerCall) {
@@ -57,12 +58,25 @@ class DialerViewModel
     }
   }
 
+  fun sendMessage() {
+    call.value?.number?.let { CommonUtils.makeSms(app, it) }
+  }
+
   fun editNumberBeforeCall(activity: Activity, call: DialerCall) {
     val intent = Intent(Intent.ACTION_DIAL).apply {
       data = Uri.fromParts(PhoneAccount.SCHEME_TEL, call.number, null)
     }
     activity.startActivity(intent)
   }
+
+  fun editNumberBeforeCall(call: DialerCall) {
+    val intent = Intent(Intent.ACTION_DIAL).apply {
+      data = Uri.fromParts(PhoneAccount.SCHEME_TEL, call.number, null)
+    }
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    app.startActivity(intent)
+  }
+
 
   fun deleteCalls(call: DialerCall) = deleteCallsUseCase(viewModelScope, call.childCalls) {
     it.fold(

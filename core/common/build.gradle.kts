@@ -27,7 +27,6 @@ android {
 }
 
 dependencies {
-
   implementation("androidx.core:core-ktx:1.9.0")
   implementation("androidx.appcompat:appcompat:1.6.1")
   implementation("com.google.android.material:material:1.10.0")
@@ -40,6 +39,18 @@ dependencies {
   implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
   implementation("androidx.preference:preference-ktx:1.2.1")
   implementation("com.google.code.gson:gson:2.9.0")
+
+  val composeBom = platform("androidx.compose:compose-bom:2023.10.01")
+  implementation(composeBom)
+  androidTestImplementation(composeBom)
+  implementation("androidx.compose.material3:material3")
+  implementation("androidx.compose.ui:ui-tooling-preview")
+  debugImplementation("androidx.compose.ui:ui-tooling")
+  androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+  debugImplementation("androidx.compose.ui:ui-test-manifest")
+  implementation("androidx.compose.material:material-icons-extended")
+  implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+  implementation("androidx.compose.runtime:runtime-livedata")
 }
 
 kotlin {

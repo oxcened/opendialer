@@ -26,7 +26,7 @@ class DialerViewModel
 @Inject constructor(
   dialerRepository: DialerRepositoryImpl,
   contactsRepository: dev.alenajam.opendialer.data.contacts.DialerRepositoryImpl,
-  app: Application,
+  private val app: Application,
   private val cacheRepository: CacheRepositoryImpl,
   private val startCacheUseCase: StartCache
 ) : ViewModel() {
@@ -44,9 +44,11 @@ class DialerViewModel
 
   fun sendMessage(activity: Activity, call: DialerCall) =
     CommonUtils.makeSms(activity, call.contactInfo.number)
+  fun sendMessage(number: String) =
+    CommonUtils.makeSms(app, number)
 
-  //
   fun makeCall(activity: Activity, number: String) = CommonUtils.makeCall(activity, number)
+  fun makeCall(number: String) = CommonUtils.makeCall(app, number)
 
   fun callDetail(navController: NavController, call: DialerCall) {
     navController.navigateToCallDetail(call.childCalls.map { it.id })
@@ -57,6 +59,8 @@ class DialerViewModel
 
   fun addToContact(activity: Activity, call: DialerCall) =
     CommonUtils.addContactAsExisting(activity, call.contactInfo.number)
+  fun addToContact(number: String) =
+    CommonUtils.addContactAsExisting(app, number)
 
   fun openContact(activity: Activity, call: DialerCall) {
     ContactsHelper.getContactByPhoneNumber(activity, call.contactInfo.number)?.let {
