@@ -50,7 +50,9 @@ public class CallDetailsAdapter extends RecyclerView.Adapter<CallDetailsAdapter.
     if (currentCall.getDuration() == 0) {
       holder.duration.setVisibility(View.GONE);
     } else {
-      holder.duration.setText(CommonUtils.getDurationTimeStringMinimal(currentCall.getDuration() * 1000));
+      holder.duration.setText(
+          CommonUtils.getDurationTimeStringMinimal(currentCall.getDuration() * 1000)
+      );
     }
 
     // TODO refactor

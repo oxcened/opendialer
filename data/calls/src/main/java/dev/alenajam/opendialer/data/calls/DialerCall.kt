@@ -6,7 +6,7 @@ import java.io.Serializable
 import java.util.Date
 
 @Keep
-class DialerCall(
+data class DialerCall(
   val id: Int,
   val number: String?,
   val date: Date,
@@ -107,6 +107,7 @@ class DialerCall(
   }
 
   fun isAnonymous(): Boolean = contactInfo.number.isNullOrBlank()
+  fun isContactSaved(): Boolean = !contactInfo.name.isNullOrBlank()
 }
 
 fun equalNumbers(number1: String?, number2: String?): Boolean {
