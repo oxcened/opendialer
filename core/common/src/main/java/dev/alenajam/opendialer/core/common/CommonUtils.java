@@ -107,6 +107,7 @@ public abstract class CommonUtils {
   public static void makeCall(Context context, String number) {
     if (PermissionUtils.hasMakeCallPermission(context)) {
       Intent intent = new Intent(Intent.ACTION_CALL, Uri.fromParts("tel", number, null));
+      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
       TelecomManager telecomManager = (TelecomManager) context.getSystemService(TELECOM_SERVICE);
       if (telecomManager == null) return;
@@ -153,7 +154,9 @@ public abstract class CommonUtils {
   }
 
   public static void makeSms(Context context, String number) {
-    context.startActivity(new Intent(Intent.ACTION_SENDTO, Uri.fromParts("smsto", number, null)));
+    Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("smsto", number, null));
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    context.startActivity(intent);
   }
 
   public static void copyToClipobard(Context context, String text) {
@@ -169,6 +172,7 @@ public abstract class CommonUtils {
     Intent intent = new Intent(Intent.ACTION_VIEW);
     Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, String.valueOf(contactId));
     intent.setData(uri);
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     context.startActivity(intent);
   }
 
@@ -197,6 +201,7 @@ public abstract class CommonUtils {
     Intent addExistingIntent = new Intent(Intent.ACTION_INSERT_OR_EDIT);
     addExistingIntent.setType(ContactsContract.Contacts.CONTENT_ITEM_TYPE);
     addExistingIntent.putExtra(ContactsContract.Intents.Insert.PHONE, number);
+    addExistingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     context.startActivity(addExistingIntent);
   }
 

@@ -24,6 +24,10 @@ android {
   }
   buildFeatures {
     viewBinding = true
+    compose = true
+  }
+  composeOptions {
+    kotlinCompilerExtensionVersion = "1.5.2"
   }
 }
 
@@ -63,6 +67,20 @@ dependencies {
   implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
   implementation("androidx.preference:preference-ktx:1.2.1")
   implementation("androidx.recyclerview:recyclerview:1.3.2")
+
+  val composeBom = platform("androidx.compose:compose-bom:2023.10.01")
+  implementation(composeBom)
+  androidTestImplementation(composeBom)
+  implementation("androidx.compose.material3:material3")
+  implementation("androidx.compose.ui:ui-tooling-preview")
+  debugImplementation("androidx.compose.ui:ui-tooling")
+  androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+  debugImplementation("androidx.compose.ui:ui-test-manifest")
+  implementation("androidx.compose.material:material-icons-extended")
+  implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+  implementation("androidx.compose.runtime:runtime-livedata")
+
+  implementation("io.coil-kt:coil-compose:2.5.0")
 }
 
 kotlin {
