@@ -18,8 +18,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.amulyakhare.textdrawable.TextDrawable
-import com.amulyakhare.textdrawable.util.ColorGenerator
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
 import dev.alenajam.opendialer.core.common.CircleTransform
@@ -36,14 +34,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 private val circleTransform: Transformation = CircleTransform()
-private val colorList = listOf(
-  Color.parseColor("#4FAF44"),
-  Color.parseColor("#F6D145"),
-  Color.parseColor("#FF9526"),
-  Color.parseColor("#EF4423"),
-  Color.parseColor("#328AF0")
-)
-private val generator = ColorGenerator.create(colorList)
 private const val itemHeight = 75f
 private const val optionHeight = 50
 private const val expandAnimDuration = 200L
@@ -161,7 +151,6 @@ class RecentsAdapter(
 
       Picasso.get()
         .load(contact.photoUri)
-        .placeholder(context.getContactImagePlaceholder(currentCall, generator))
         .transform(circleTransform)
         .into(contactIcon)
 
@@ -258,29 +247,6 @@ class RecentsAdapter(
       }
     }
   }
-}
-
-fun Context.getContactImagePlaceholder(call: DialerCall, generator: ColorGenerator): TextDrawable {
-  var name = call.contactInfo.name
-
-  if (call.isAnonymous()) {
-    name = getString(R.string.anonymous)
-  } else if (name.isNullOrBlank()) {
-    name = call.contactInfo.number ?: ""
-  }
-
-  val filteredName = name.replace("[^a-zA-Z0-9]".toRegex(), "")
-  var firstCharStr = ""
-
-  if (filteredName.isNotEmpty()) {
-    val firstChar = filteredName[0]
-    firstCharStr = firstChar.toString()
-  }
-
-  return TextDrawable.builder()
-    .beginConfig()
-    .endConfig()
-    .buildRound(firstCharStr, generator.getColor(call.id))
 }
 
 inline fun getValueAnimator(

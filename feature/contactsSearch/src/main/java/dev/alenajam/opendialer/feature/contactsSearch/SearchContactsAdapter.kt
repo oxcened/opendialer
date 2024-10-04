@@ -10,8 +10,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.amulyakhare.textdrawable.TextDrawable
-import com.amulyakhare.textdrawable.util.ColorGenerator
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
 import dev.alenajam.opendialer.core.aosp.QueryBoldingUtil
@@ -21,14 +19,6 @@ import dev.alenajam.opendialer.core.common.ContactsHelper
 import dev.alenajam.opendialer.data.contactsSearch.DialerSearchContact
 
 private val circleTransform: Transformation = CircleTransform()
-private val colorList = listOf(
-  Color.parseColor("#4FAF44"),
-  Color.parseColor("#F6D145"),
-  Color.parseColor("#FF9526"),
-  Color.parseColor("#EF4423"),
-  Color.parseColor("#328AF0")
-)
-private val generator = ColorGenerator.create(colorList)
 
 class SearchContactsAdapter(private val onClick: (item: Item) -> Unit) :
   RecyclerView.Adapter<SearchContactsAdapter.ViewHolder>() {
@@ -77,7 +67,6 @@ class SearchContactsAdapter(private val onClick: (item: Item) -> Unit) :
 
         Picasso.get()
           .load(current.image)
-          .placeholder(context.getContactImagePlaceholder(current, generator))
           .transform(circleTransform)
           .into(contactIcon)
 
@@ -153,22 +142,4 @@ class SearchContactsAdapter(private val onClick: (item: Item) -> Unit) :
       ACTION
     }
   }
-}
-
-fun Context.getContactImagePlaceholder(
-  contact: DialerSearchContact,
-  generator: ColorGenerator
-): TextDrawable {
-  val filteredName = contact.name.replace("[^a-zA-Z0-9]".toRegex(), "")
-  var firstCharStr = ""
-
-  if (filteredName.isNotEmpty()) {
-    val firstChar = filteredName[0]
-    firstCharStr = firstChar.toString()
-  }
-
-  return TextDrawable.builder()
-    .beginConfig()
-    .endConfig()
-    .buildRound(firstCharStr, generator.getColor(contact.id))
 }

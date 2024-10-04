@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.amulyakhare.textdrawable.util.ColorGenerator
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,7 +34,6 @@ private val colorList = listOf(
   Color.parseColor("#EF4423"),
   Color.parseColor("#328AF0")
 )
-private val generator = ColorGenerator.create(colorList)
 
 @AndroidEntryPoint
 class CallDetailFragment : Fragment(), View.OnClickListener {
@@ -136,7 +134,6 @@ class CallDetailFragment : Fragment(), View.OnClickListener {
 
       Picasso.get()
         .load(call.contactInfo.photoUri)
-        .placeholder(context.getContactImagePlaceholder(call, generator))
         .transform(circleTransform)
         .into(binding.contactIcon)
     }

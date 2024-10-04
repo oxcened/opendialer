@@ -31,6 +31,7 @@ dependencies {
   androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
   implementation("com.google.guava:guava:21.0")
+  implementation ("com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava")
 }
 
 kotlin {
