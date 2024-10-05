@@ -40,7 +40,7 @@ dependencies {
   implementation("androidx.preference:preference-ktx:1.2.1")
   implementation("com.google.code.gson:gson:2.9.0")
 
-  val composeBom = platform("androidx.compose:compose-bom:2023.10.01")
+  val composeBom = platform("androidx.compose:compose-bom:2024.09.03")
   implementation(composeBom)
   androidTestImplementation(composeBom)
   implementation("androidx.compose.material3:material3")

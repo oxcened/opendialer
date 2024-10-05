@@ -3,6 +3,7 @@ plugins {
   id("org.jetbrains.kotlin.android")
   id("kotlin-kapt")
   id("com.google.dagger.hilt.android")
+  alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -70,7 +71,7 @@ dependencies {
   implementation("com.squareup.picasso:picasso:2.71828")
   implementation("org.ocpsoft.prettytime:prettytime:4.0.1.Final")
 
-  val composeBom = platform("androidx.compose:compose-bom:2023.10.01")
+  val composeBom = platform("androidx.compose:compose-bom:2024.09.03")
   implementation(composeBom)
   androidTestImplementation(composeBom)
   implementation("androidx.compose.material3:material3")

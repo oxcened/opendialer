@@ -1,0 +1,8 @@
+[versions]
+kotlin = "2.0.20"
+
+[libraries]
+compose-activity = { group = "androidx.activity", name = "activity-compose", version = "1.9.2" }
+
+[plugins]
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

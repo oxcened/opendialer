@@ -16,28 +16,28 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
-class DialerRepositoryImpl
-@Inject constructor(private val app: Application) : DialerRepository {
-  override fun getCalls(contentResolver: ContentResolver): Flow<List<DialerCallEntity>> =
+class CallsRepositoryImpl
+@Inject constructor(private val app: Application) : CallsRepository {
+  override fun getCalls(): Flow<List<DialerCallEntity>> =
     callbackFlow {
       val observer = object : ContentObserver(null) {
         override fun onChange(selfChange: Boolean) {
-          CallsData.getCursor(contentResolver)?.let {
+          CallsData.getCursor(app.contentResolver)?.let {
             trySend(CallsData.getData(it))
             it.close()
           }
         }
       }
 
-      contentResolver.registerContentObserver(CallsData.URI, true, observer)
+      app.contentResolver.registerContentObserver(CallsData.URI, true, observer)
 
-      CallsData.getCursor(contentResolver)?.let {
+      CallsData.getCursor(app.contentResolver)?.let {
         trySend(CallsData.getData(it))
         it.close()
       }
 
       awaitClose {
-        contentResolver.unregisterContentObserver(observer)
+        app.contentResolver.unregisterContentObserver(observer)
       }
     }
 

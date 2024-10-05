@@ -17,6 +17,7 @@ buildscript {
 
 plugins {
     id 'com.google.dagger.hilt.android' version '2.48.1' apply false
+    alias(libs.plugins.compose.compiler) apply false
 }
 
 allprojects {

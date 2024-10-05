@@ -15,7 +15,7 @@ import dev.alenajam.opendialer.core.common.ContactsHelper
 import dev.alenajam.opendialer.core.common.functional.Event
 import dev.alenajam.opendialer.data.calls.CallOption
 import dev.alenajam.opendialer.data.calls.DialerCall
-import dev.alenajam.opendialer.data.calls.DialerRepositoryImpl
+import dev.alenajam.opendialer.data.calls.CallsRepositoryImpl
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,7 +27,7 @@ class DialerViewModel
   private val deleteCallsUseCase: DeleteCalls,
   private val blockCallerUseCase: BlockCaller,
   private val unblockCallerUseCase: UnblockCaller,
-  private val dialerRepositoryImpl: DialerRepositoryImpl
+  private val callsRepositoryImpl: CallsRepositoryImpl
 ) : ViewModel() {
   private val _call: MutableLiveData<DialerCall> = MutableLiveData()
   val call: LiveData<DialerCall> = _call
@@ -39,7 +39,7 @@ class DialerViewModel
 
   fun getCallByIds(ids: List<Int>) {
     viewModelScope.launch {
-      dialerRepositoryImpl.getCallByIds(app.contentResolver, ids).fold(
+      callsRepositoryImpl.getCallByIds(app.contentResolver, ids).fold(
         { /* TODO handle failure */ }, { call -> _call.postValue(DialerCall.mapList(call).first()) }
       )
     }

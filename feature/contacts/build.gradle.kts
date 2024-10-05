@@ -3,6 +3,7 @@ plugins {
   id("org.jetbrains.kotlin.android")
   id("kotlin-kapt")
   id("com.google.dagger.hilt.android")
+  alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -68,7 +69,7 @@ dependencies {
   implementation("androidx.preference:preference-ktx:1.2.1")
   implementation("androidx.recyclerview:recyclerview:1.3.2")
 
-  val composeBom = platform("androidx.compose:compose-bom:2023.10.01")
+  val composeBom = platform("androidx.compose:compose-bom:2024.09.03")
   implementation(composeBom)
   androidTestImplementation(composeBom)
   implementation("androidx.compose.material3:material3")

@@ -1,5 +1,7 @@
 package dev.alenajam.opendialer.feature.calls
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,15 +23,17 @@ import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.PersonAddAlt
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.Voicemail
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -42,9 +46,11 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.core.common.forwardingPainter
 import dev.alenajam.opendialer.data.calls.CallType
 import dev.alenajam.opendialer.data.calls.ContactInfo
@@ -54,11 +60,35 @@ import java.util.Date
 
 @Composable
 internal fun CallsScreen(
-  viewModel: DialerViewModel = viewModel(), navController: NavController
+  viewModel: CallsViewModel = viewModel(), navController: NavController,
 ) {
-  val calls = viewModel.calls.observeAsState(emptyList())
+  val requestPermissions =
+    rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
+      if (PermissionUtils.recentsPermissions.all { result[it] == true }) {
+        viewModel.handleCallsPermissionGranted()
+      }
+    }
+
+  val calls = viewModel.calls.collectAsStateWithLifecycle()
+  val hasPermissions = viewModel.hasCallsPermission.collectAsStateWithLifecycle()
   var openRowId by remember { mutableStateOf<Int?>(null) }
+
   Surface(modifier = Modifier.fillMaxSize()) {
+    if (!hasPermissions.value) {
+      Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp, alignment = Alignment.CenterVertically),
+      ) {
+        Text(text = stringResource(R.string.placeholder_call_log))
+        OutlinedButton(
+          onClick = { requestPermissions.launch(input=PermissionUtils.recentsPermissions) }
+        ) {
+          Text(text = stringResource(R.string.turn_on))
+        }
+      }
+      return@Surface
+    }
+
     LazyColumn {
       items(calls.value) { call ->
         val isOpen = openRowId == call.id

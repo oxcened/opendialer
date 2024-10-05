@@ -15,11 +15,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.data.calls.CallOption
 import dev.alenajam.opendialer.data.calls.DialerCall
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
 class RecentsFragment : Fragment() {
-  private val viewModel: DialerViewModel by viewModels()
+  private val viewModel: CallsViewModel by viewModels()
   private var notCalledNumber = ""
   private var refreshNeeded = false
 
@@ -112,18 +111,18 @@ class RecentsFragment : Fragment() {
 
   private fun observeCalls() {
     /** Ensure that observable isn't observed already */
-    if (!viewModel.calls.hasObservers()) {
+    /*if (!viewModel.calls.hasObservers()) {
       viewModel.calls.observe(viewLifecycleOwner) {
         handleCalls(it)
         refreshNeeded = true
       }
-    }
+    }*/
   }
 
   private fun observeContacts() {
-    viewModel.contacts.observe(viewLifecycleOwner) {
+    /*viewModel.contacts.observe(viewLifecycleOwner) {
       refreshNeeded = true
-    }
+    }*/
   }
 
   private fun makeCall(number: String) {
