@@ -65,16 +65,16 @@ internal fun CallsScreen(
   val requestPermissions =
     rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
       if (PermissionUtils.recentsPermissions.all { result[it] == true }) {
-        viewModel.handleCallsPermissionGranted()
+        viewModel.handleRuntimePermissionGranted()
       }
     }
 
   val calls = viewModel.calls.collectAsStateWithLifecycle()
-  val hasPermissions = viewModel.hasCallsPermission.collectAsStateWithLifecycle()
+  val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
   var openRowId by remember { mutableStateOf<Int?>(null) }
 
   Surface(modifier = Modifier.fillMaxSize()) {
-    if (!hasPermissions.value) {
+    if (!hasPermission.value) {
       Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp, alignment = Alignment.CenterVertically),

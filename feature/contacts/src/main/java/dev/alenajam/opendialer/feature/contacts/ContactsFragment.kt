@@ -15,7 +15,7 @@ import dev.alenajam.opendialer.data.contacts.DialerContact
 
 @AndroidEntryPoint
 class ContactsFragment : Fragment() {
-  private val viewModel: DialerViewModel by viewModels()
+  private val viewModel: ContactsViewModel by viewModels()
   private val requestPermissions =
     registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { data ->
       /** Ensure that all permissions were allowed */
