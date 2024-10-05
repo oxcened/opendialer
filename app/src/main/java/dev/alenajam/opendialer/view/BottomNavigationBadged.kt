@@ -13,7 +13,7 @@ class BottomNavigationBadged(context: Context, attributeSet: AttributeSet) :
 
   private val badges = mutableMapOf<Int, View>()
 
-  fun showItemBadge(position: Int, show: Boolean) {
+  /*fun showItemBadge(position: Int, show: Boolean) {
     val item = getItem(position)
 
     if (show) {
@@ -30,10 +30,10 @@ class BottomNavigationBadged(context: Context, attributeSet: AttributeSet) :
         badges.remove(position)
       }
     }
-  }
+  }*/
 
-  private fun getItem(position: Int): BottomNavigationItemView {
+  /*private fun getItem(position: Int): BottomNavigationItemView {
     val menuView = getChildAt(0) as BottomNavigationMenuView
     return menuView.getChildAt(position) as BottomNavigationItemView
-  }
+  }*/
 }
