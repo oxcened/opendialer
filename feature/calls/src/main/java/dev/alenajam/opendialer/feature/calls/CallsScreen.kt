@@ -23,7 +23,6 @@ import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.PersonAddAlt
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.Voicemail
-import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,8 +30,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +45,8 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -70,8 +71,13 @@ internal fun CallsScreen(
     }
 
   val calls = viewModel.calls.collectAsStateWithLifecycle()
+  val lastInvalidateCache = viewModel.lastInvalidateCache.collectAsStateWithLifecycle()
   val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
   var openRowId by remember { mutableStateOf<Int?>(null) }
+
+  LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+    viewModel.attemptInvalidateCache()
+  }
 
   Surface(modifier = Modifier.fillMaxSize()) {
     if (!hasPermission.value) {
@@ -91,7 +97,9 @@ internal fun CallsScreen(
 
     LazyColumn {
       items(calls.value) { call ->
+        LaunchedEffect(call, lastInvalidateCache.value) { viewModel.updateContactInfo(call) }
         val isOpen = openRowId == call.id
+
         CallRow(call = call,
           isOpen = isOpen,
           onClick = { openRowId = if (isOpen) null else call.id },

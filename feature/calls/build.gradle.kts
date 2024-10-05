@@ -30,6 +30,9 @@ android {
   composeOptions {
     kotlinCompilerExtensionVersion = "1.5.2"
   }
+  compileOptions {
+    isCoreLibraryDesugaringEnabled = true
+  }
 }
 
 dependencies {
@@ -88,6 +91,7 @@ dependencies {
   implementation("io.coil-kt:coil-compose:2.5.0")
 
   implementation(libs.compose.activity)
+  coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
 }
 
 kotlin {
