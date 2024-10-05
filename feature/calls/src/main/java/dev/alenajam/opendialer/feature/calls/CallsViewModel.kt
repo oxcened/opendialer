@@ -14,14 +14,8 @@ import dev.alenajam.opendialer.data.calls.ContactInfo
 import dev.alenajam.opendialer.data.calls.DialerCall
 import dev.alenajam.opendialer.data.calls.CallsRepositoryImpl
 import dev.alenajam.opendialer.data.callsCache.CacheRepositoryImpl
-import dev.alenajam.opendialer.data.contacts.DialerContact
-import dev.alenajam.opendialer.data.contacts.DialerRepositoryImpl
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,28 +23,22 @@ import javax.inject.Inject
 class CallsViewModel
 @Inject constructor(
   private val callsRepository: CallsRepositoryImpl,
-  private val contactsRepository: DialerRepositoryImpl,
   private val app: Application,
   private val cacheRepository: CacheRepositoryImpl,
   private val startCacheUseCase: StartCache
 ) : ViewModel() {
-  val contacts = contactsRepository
-    .getContacts(app.contentResolver)
-    .map { DialerContact.mapList(it) }
-    .flowOn(Dispatchers.IO)
-
   private val _calls = MutableStateFlow<List<DialerCall>>(emptyList())
   val calls: StateFlow<List<DialerCall>> = _calls
-  private val _hasCallsPermission = MutableStateFlow(false)
-  val hasCallsPermission: StateFlow<Boolean> = _hasCallsPermission
+  private val _hasRuntimePermission = MutableStateFlow(false)
+  val hasRuntimePermission: StateFlow<Boolean> = _hasRuntimePermission
 
   init {
-    _hasCallsPermission.value = PermissionUtils.hasRecentsPermission(app)
+    _hasRuntimePermission.value = PermissionUtils.hasRecentsPermission(app)
     getCalls()
   }
 
   fun getCalls() {
-    if (!hasCallsPermission.value) return
+    if (!hasRuntimePermission.value) return
 
     viewModelScope.launch {
       callsRepository.getCalls().collect { calls ->
@@ -59,8 +47,8 @@ class CallsViewModel
     }
   }
 
-  fun handleCallsPermissionGranted() {
-    _hasCallsPermission.value = true
+  fun handleRuntimePermissionGranted() {
+    _hasRuntimePermission.value = true
     getCalls()
   }
 

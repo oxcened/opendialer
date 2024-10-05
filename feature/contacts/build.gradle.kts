@@ -82,6 +82,8 @@ dependencies {
   implementation("androidx.compose.runtime:runtime-livedata")
 
   implementation("io.coil-kt:coil-compose:2.5.0")
+
+  implementation(libs.compose.activity)
 }
 
 kotlin {
