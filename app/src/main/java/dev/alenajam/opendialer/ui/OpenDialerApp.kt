@@ -16,6 +16,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,63 +35,75 @@ import dev.alenajam.opendialer.databinding.AppFragmentContactsBinding
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun OpenDialerApp(
-  openDialpad: () -> Unit
+    openDialpad: () -> Unit
 ) {
-  var selectedNavigationItem by remember { mutableStateOf("CALLS") }
-  Scaffold(
-    topBar = {
-      SearchBar(
-        query = "",
-        active = false,
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
-        placeholder = { Text(text = stringResource(id = R.string.searchContacts)) },
-        leadingIcon = { Icon(imageVector = Icons.Outlined.Search, contentDescription = null) },
-        onSearch = {},
-        onActiveChange = {},
-        onQueryChange = {},
-      ) {}
-    },
-    bottomBar = {
-      NavigationBar {
-        val isSelected = { item: String -> item == selectedNavigationItem }
-        NavigationBarItem(
-          selected = isSelected("CALLS"),
-          icon = {
-            Icon(
-              imageVector = if (isSelected("CALLS")) Icons.Filled.AccessTimeFilled else Icons.Outlined.AccessTime,
-              contentDescription = null
-            )
-          },
-          label = { Text("Recents") },
-          onClick = { selectedNavigationItem = "CALLS" },
-        )
+    var selectedNavigationItem by remember { mutableStateOf("CALLS") }
+    Scaffold(
+        topBar = {
+            SearchBar(
+                inputField = @Composable {
+                    SearchBarDefaults.InputField(
+                        query = "",
+                        onQueryChange = {},
+                        onSearch = {},
+                        expanded = false,
+                        onExpandedChange = {},
+                        enabled = false,
+                        placeholder = { Text(text = stringResource(id = R.string.coming_soon)) },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Search,
+                                contentDescription = null
+                            )
+                        }
+                    )
+                },
+                expanded = false,
+                onExpandedChange = {},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+            ) {}
+        },
+        bottomBar = {
+            NavigationBar {
+                val isSelected = { item: String -> item == selectedNavigationItem }
+                NavigationBarItem(
+                    selected = isSelected("CALLS"),
+                    icon = {
+                        Icon(
+                            imageVector = if (isSelected("CALLS")) Icons.Filled.AccessTimeFilled else Icons.Outlined.AccessTime,
+                            contentDescription = null
+                        )
+                    },
+                    label = { Text(text = stringResource(R.string.recents)) },
+                    onClick = { selectedNavigationItem = "CALLS" },
+                )
 
-        NavigationBarItem(
-          selected = isSelected("CONTACTS"),
-          icon = {
-            Icon(
-              imageVector = if (isSelected("CONTACTS")) Icons.Filled.People else Icons.Outlined.People,
-              contentDescription = null
-            )
-          },
-          label = { Text("Contacts") },
-          onClick = { selectedNavigationItem = "CONTACTS" },
-        )
-      }
-    },
-    floatingActionButton = {
-      FloatingActionButton(onClick = openDialpad) {
-        Icon(imageVector = Icons.Outlined.Dialpad, contentDescription = null)
-      }
+                NavigationBarItem(
+                    selected = isSelected("CONTACTS"),
+                    icon = {
+                        Icon(
+                            imageVector = if (isSelected("CONTACTS")) Icons.Filled.People else Icons.Outlined.People,
+                            contentDescription = null
+                        )
+                    },
+                    label = { Text(text = stringResource(R.string.contacts)) },
+                    onClick = { selectedNavigationItem = "CONTACTS" },
+                )
+            }
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = openDialpad) {
+                Icon(imageVector = Icons.Outlined.Dialpad, contentDescription = null)
+            }
+        }
+    ) { innerPadding ->
+        Surface(modifier = Modifier.padding(innerPadding)) {
+            when (selectedNavigationItem) {
+                "CALLS" -> AndroidViewBinding(AppFragmentCallsBinding::inflate)
+                "CONTACTS" -> AndroidViewBinding(AppFragmentContactsBinding::inflate)
+            }
+        }
     }
-  ) { innerPadding ->
-    Surface(modifier = Modifier.padding(innerPadding)) {
-      when (selectedNavigationItem) {
-        "CALLS" -> AndroidViewBinding(AppFragmentCallsBinding::inflate)
-        "CONTACTS" -> AndroidViewBinding(AppFragmentContactsBinding::inflate)
-      }
-    }
-  }
 }
