@@ -1,8 +1,11 @@
 [versions]
+coilCompose = "2.5.0"
 kotlin = "2.0.20"
 
 [libraries]
 compose-activity = { group = "androidx.activity", name = "activity-compose", version = "1.9.2" }
+androidx-material3 = { module = "androidx.compose.material3:material3" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 
 [plugins]
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
