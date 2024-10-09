@@ -3,6 +3,7 @@ plugins {
   id("org.jetbrains.kotlin.android")
   id("kotlin-kapt")
   id("com.google.dagger.hilt.android")
+  alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -24,6 +25,7 @@ android {
   }
   buildFeatures {
     viewBinding = true
+    compose = true
   }
 }
 
@@ -61,6 +63,20 @@ dependencies {
   implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
   implementation("androidx.preference:preference-ktx:1.2.1")
   implementation("androidx.recyclerview:recyclerview:1.3.2")
+
+  val composeBom = platform("androidx.compose:compose-bom:2024.09.03")
+  implementation(composeBom)
+  androidTestImplementation(composeBom)
+  implementation(libs.androidx.material3)
+  implementation("androidx.compose.ui:ui-tooling-preview")
+  debugImplementation("androidx.compose.ui:ui-tooling")
+  androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+  debugImplementation("androidx.compose.ui:ui-test-manifest")
+  implementation("androidx.compose.material:material-icons-extended")
+  implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+  implementation("androidx.compose.runtime:runtime-livedata")
+  implementation(libs.compose.activity)
+  implementation(libs.coil.compose)
 }
 
 kotlin {

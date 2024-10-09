@@ -10,6 +10,8 @@ import android.telecom.VideoProfile;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import dev.alenajam.opendialer.core.common.CommonUtils;
 import dev.alenajam.opendialer.core.common.Contact;
 import dev.alenajam.opendialer.core.common.ContactsHelper;
@@ -19,7 +21,7 @@ public class OngoingCall {
   @SuppressLint("StaticFieldLeak")
   public static OngoingCall ONGOING_CALL_NULL = new OngoingCall();
   private Call call;
-  private String callerNumber = "", keypadText = "", callerName;
+  private String callerNumber = "", keypadText = "", callerName, callerImageUri = null;
   private long startTime = -1, totalTime = 0;
   private int type;
   private Context context;
@@ -78,6 +80,7 @@ public class OngoingCall {
 
       if (savedContact != null) {
         callerName = savedContact.getName();
+        callerImageUri = savedContact.getImageUri();
       } else {
         callerName = callerNumber;
       }
@@ -123,8 +126,14 @@ public class OngoingCall {
     return callerNumber;
   }
 
+  @Nullable
   public String getCallerName() {
     return callerName;
+  }
+
+  @Nullable
+  public String getCallerImageUri() {
+    return callerImageUri;
   }
 
   public String getKeypadText() {

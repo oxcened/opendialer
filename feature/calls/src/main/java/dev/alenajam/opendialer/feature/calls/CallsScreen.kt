@@ -61,7 +61,8 @@ import java.util.Date
 
 @Composable
 internal fun CallsScreen(
-  viewModel: CallsViewModel = viewModel(), navController: NavController,
+  viewModel: CallsViewModel = viewModel(),
+  navController: NavController,
 ) {
   val requestPermissions =
     rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->

@@ -204,7 +204,6 @@ private fun BoxScope.Dialpad(
         modifier = Modifier
             .fillMaxWidth()
             .align(Alignment.BottomCenter)
-            .height(420.dp)
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(10.dp),
