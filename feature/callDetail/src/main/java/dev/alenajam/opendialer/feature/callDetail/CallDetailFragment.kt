@@ -81,7 +81,7 @@ class CallDetailFragment : Fragment(), View.OnClickListener {
     return ComposeView(requireContext()).apply {
       setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
       setContent {
-        CallDetailScreen()
+        //CallDetailScreen()
       }
     }
   }

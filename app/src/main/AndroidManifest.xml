@@ -42,7 +42,7 @@
                 android:value="dev.alenajam.opendialer.features.main.MainActivity" />
         </activity>
         <activity
-            android:name="dev.alenajam.opendialer.features.main.MainActivity"
+            android:name="dev.alenajam.opendialer.ui.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.Main"
