@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-internal class ContactsViewModel
+class ContactsViewModel
 @Inject constructor(
   private val contactsRepository: ContactsRepositoryImpl,
   private val app: Application,

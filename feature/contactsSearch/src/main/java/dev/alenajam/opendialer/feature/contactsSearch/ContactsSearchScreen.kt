@@ -49,9 +49,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.core.common.forwardingPainter
@@ -59,9 +58,8 @@ import dev.alenajam.opendialer.core.common.getActivity
 import dev.alenajam.opendialer.data.contactsSearch.DialerSearchContact
 
 @Composable
-internal fun ContactsSearchScreen(
-    viewModel: SearchContactsViewModel = viewModel(),
-    navController: NavController,
+fun ContactsSearchScreen(
+    viewModel: SearchContactsViewModel = hiltViewModel(),
 ) {
     val result = viewModel.result.collectAsStateWithLifecycle()
     val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()

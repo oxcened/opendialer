@@ -4,6 +4,7 @@ plugins {
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -94,6 +95,8 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.compose.activity)
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
+    implementation(libs.hilt.navigation.compose)
+    implementation(libs.kotlinx.serialization)
 }
 
 kotlin {

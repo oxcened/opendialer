@@ -4,6 +4,7 @@ plugins {
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -87,6 +88,9 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata")
 
     implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation(libs.hilt.navigation.compose)
+    implementation(libs.kotlinx.serialization)
+    implementation(libs.navigation.compose)
 }
 
 kotlin {

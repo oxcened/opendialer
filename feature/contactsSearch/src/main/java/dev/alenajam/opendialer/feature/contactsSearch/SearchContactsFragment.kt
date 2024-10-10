@@ -114,9 +114,6 @@ class SearchContactsFragment : Fragment(), BackPressedListener, SearchListener,
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                ContactsSearchScreen(
-                    navController = findNavController()
-                )
             }
         }
 

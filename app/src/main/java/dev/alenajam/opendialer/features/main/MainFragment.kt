@@ -62,13 +62,13 @@ class MainFragment :
     return ComposeView(requireContext()).apply {
       setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
       setContent {
-        OpenDialerApp(
+        /*OpenDialerApp(
           openDialpad = {
             val action =
               actionHomeFragmentToSearchContactsFragment(SearchContactsFragment.InitiationType.DIALPAD)
             findNavController().safeNavigate(action)
           }
-        )
+        )*/
       }
     }
   }

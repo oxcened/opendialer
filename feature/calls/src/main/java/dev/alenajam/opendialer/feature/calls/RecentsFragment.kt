@@ -55,9 +55,7 @@ class RecentsFragment : Fragment() {
     return ComposeView(requireContext()).apply {
       setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
       setContent {
-        CallsScreen(
-          navController = findNavController()
-        )
+        //CallsScreen()
       }
     }
   }
@@ -144,7 +142,6 @@ class RecentsFragment : Fragment() {
     when (option.id) {
       CallOption.ID_SEND_MESSAGE -> viewModel.sendMessage(this, call)
       CallOption.ID_CALL_DETAILS -> viewModel.callDetail(
-        findNavController(),
         call
       )
 
