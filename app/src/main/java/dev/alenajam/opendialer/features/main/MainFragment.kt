@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -22,6 +24,7 @@ import dev.alenajam.opendialer.feature.contacts.ContactsFragment
 import dev.alenajam.opendialer.feature.contactsSearch.SearchContactsFragment
 import dev.alenajam.opendialer.feature.settings.ProfileFragment
 import dev.alenajam.opendialer.features.main.MainFragmentDirections.Companion.actionHomeFragmentToSearchContactsFragment
+import dev.alenajam.opendialer.ui.OpenDialerApp
 
 class MainFragment :
   Fragment(),
@@ -53,8 +56,21 @@ class MainFragment :
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View {
-    _binding = FragmentHomeBinding.inflate(inflater, container, false)
-    return binding.root
+    /*_binding = FragmentHomeBinding.inflate(inflater, container, false)
+    return binding.root*/
+
+    return ComposeView(requireContext()).apply {
+      setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+      setContent {
+        /*OpenDialerApp(
+          openDialpad = {
+            val action =
+              actionHomeFragmentToSearchContactsFragment(SearchContactsFragment.InitiationType.DIALPAD)
+            findNavController().safeNavigate(action)
+          }
+        )*/
+      }
+    }
   }
 
   override fun onDestroyView() {
@@ -65,7 +81,7 @@ class MainFragment :
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    onStatusBarColorChange?.onColorChange(view.context.getColor(R.color.windowBackground))
+    /*onStatusBarColorChange?.onColorChange(view.context.getColor(R.color.windowBackground))
 
     binding.bottomNavigation.setOnNavigationItemSelectedListener(this)
     binding.bottomNavigation.itemIconTintList = null
@@ -77,7 +93,7 @@ class MainFragment :
       adapter = viewPagerAdapter
       isUserInputEnabled = false
       registerOnPageChangeCallback(OnPageChange())
-    }
+    }*/
   }
 
   private fun setPage(fragment: Tab) {

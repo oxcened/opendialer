@@ -25,7 +25,7 @@ import dev.alenajam.opendialer.util.CommonUtilsKt;
 import dev.alenajam.opendialer.view.SearchView;
 
 @AndroidEntryPoint
-public class MainActivity extends AppCompatActivity implements
+public class _MainActivity extends AppCompatActivity implements
     ToolbarListener,
     OpenSearchListener,
     KeyboardSearchListener,
@@ -101,14 +101,14 @@ public class MainActivity extends AppCompatActivity implements
     navHostFragment
         .getNavController()
         .popBackStack(R.id.homeFragment, false);
-
+/*
     navHostFragment
         .getNavController()
         .navigate(
             MainFragmentDirections.Companion.actionHomeFragmentToSearchContactsFragment(
                 SearchContactsFragment.InitiationType.DIALPAD, prefilled
             )
-        );
+        );*/
   }
 
   @Override

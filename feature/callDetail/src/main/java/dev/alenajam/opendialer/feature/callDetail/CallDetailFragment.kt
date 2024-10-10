@@ -8,11 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
 import dagger.hilt.android.AndroidEntryPoint
 import dev.alenajam.opendialer.core.common.CALL_DETAIL_PARAM_CALL_IDS
@@ -23,29 +23,15 @@ import dev.alenajam.opendialer.core.common.SharedPreferenceHelper
 import dev.alenajam.opendialer.core.common.ToolbarListener
 import dev.alenajam.opendialer.data.calls.CallOption
 import dev.alenajam.opendialer.data.calls.DialerCall
-import dev.alenajam.opendialer.feature.callDetail.databinding.FragmentCallDetailBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-
-private val circleTransform: Transformation = CircleTransform()
-private val colorList = listOf(
-  Color.parseColor("#4FAF44"),
-  Color.parseColor("#F6D145"),
-  Color.parseColor("#FF9526"),
-  Color.parseColor("#EF4423"),
-  Color.parseColor("#328AF0")
-)
 
 @AndroidEntryPoint
 class CallDetailFragment : Fragment(), View.OnClickListener {
   private val viewModel: DialerViewModel by viewModels()
-  lateinit var adapter: RecentsAdapter
   private lateinit var callIds: List<Int>
   private lateinit var call: DialerCall
-  private var optionsAdapter: CallOptionsAdapter? = null
   private var toolbarListener: ToolbarListener? = null
   private var onStatusBarColorChange: OnStatusBarColorChange? = null
-  private var _binding: FragmentCallDetailBinding? = null
-  private val binding get() = _binding!!
   private val requestMakeCallPermissions =
     registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { data ->
       /** Ensure that all permissions were allowed */
@@ -85,17 +71,19 @@ class CallDetailFragment : Fragment(), View.OnClickListener {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View {
-    _binding = FragmentCallDetailBinding.inflate(
+    /*_binding = FragmentCallDetailBinding.inflate(
       inflater,
       container,
       false
     )
-    return binding.root
-  }
+    return binding.root*/
 
-  override fun onDestroyView() {
-    super.onDestroyView()
-    _binding = null
+    return ComposeView(requireContext()).apply {
+      setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+      setContent {
+        //CallDetailScreen()
+      }
+    }
   }
 
   @ExperimentalCoroutinesApi
@@ -105,7 +93,7 @@ class CallDetailFragment : Fragment(), View.OnClickListener {
     onStatusBarColorChange?.onColorChange(view.context.getColor(R.color.colorPrimaryDark))
     toolbarListener?.hideToolbar(false)
 
-    binding.toolbarLayout.toolbar.setNavigationOnClickListener { goBack() }
+    /*binding.toolbarLayout.toolbar.setNavigationOnClickListener { goBack() }
     context?.let { binding.toolbarLayout.toolbar.setTitle(R.string.call_details) }
 
     viewModel.call.observe(viewLifecycleOwner) {
@@ -123,13 +111,13 @@ class CallDetailFragment : Fragment(), View.OnClickListener {
       dev.alenajam.opendialer.core.common.functional.EventObserver { handleBlockedCaller(false) })
 
     binding.callButton.setOnClickListener(this)
-    binding.contactIcon.setOnClickListener(this)
+    binding.contactIcon.setOnClickListener(this)*/
 
     viewModel.getCallByIds(callIds)
   }
 
   private fun renderCall() {
-    context?.let { context ->
+    /*context?.let { context ->
       viewModel.getDetailOptions(call)
 
       Picasso.get()
@@ -163,11 +151,11 @@ class CallDetailFragment : Fragment(), View.OnClickListener {
     optionsAdapter = CallOptionsAdapter { option ->
       handleOptionClick(option)
     }
-    binding.recyclerViewCallDetailsOptions.adapter = optionsAdapter
+    binding.recyclerViewCallDetailsOptions.adapter = optionsAdapter*/
   }
 
   private fun handleOptions(options: List<CallOption>) {
-    optionsAdapter?.setData(options)
+    // optionsAdapter?.setData(options)
   }
 
   private fun handleOptionClick(option: CallOption) {
@@ -208,11 +196,11 @@ class CallDetailFragment : Fragment(), View.OnClickListener {
   }
 
   override fun onClick(v: View?) {
-    if (v?.id == binding.callButton.id) {
+    /*if (v?.id == binding.callButton.id) {
       activity?.let { makeCall() }
     } else if (v?.id == binding.contactIcon.id) {
       activity?.let { viewModel.openContact(it, call) }
-    }
+    }*/
   }
 
   private fun goBack() {
