@@ -15,32 +15,34 @@ import dev.alenajam.opendialer.feature.settings.SettingsScreen
 internal fun AppComposable() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = HomeRoute) {
-        composable<HomeRoute> {
-            HomeScreen(
-                onOpenDialpad = {
-                    navController.navigate(ContactsSearchRoute)
-                },
-                onOpenHistory = {
-                    navController.navigate(CallDetailRoute(callIds = it))
-                },
-                onOpenSettings = {
-                    navController.navigate(SettingsRoute)
-                }
-            )
-        }
-        composable<ContactsSearchRoute> {
-            ContactsSearchScreen()
-        }
-        composable<CallDetailRoute> {
-            CallDetailScreen(
-                onNavigateBack = { navController.popBackStack() }
-            )
-        }
-        composable<SettingsRoute> {
-            SettingsScreen(
-                onNavigateBack = { navController.popBackStack() }
-            )
+    AppTheme {
+        NavHost(navController = navController, startDestination = HomeRoute) {
+            composable<HomeRoute> {
+                HomeScreen(
+                    onOpenDialpad = {
+                        navController.navigate(ContactsSearchRoute)
+                    },
+                    onOpenHistory = {
+                        navController.navigate(CallDetailRoute(callIds = it))
+                    },
+                    onOpenSettings = {
+                        navController.navigate(SettingsRoute)
+                    }
+                )
+            }
+            composable<ContactsSearchRoute> {
+                ContactsSearchScreen()
+            }
+            composable<CallDetailRoute> {
+                CallDetailScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable<SettingsRoute> {
+                SettingsScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
         }
     }
 }
