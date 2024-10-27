@@ -12,7 +12,7 @@ class SearchContactsDialpadParams(val contentResolver: ContentResolver, val quer
 
 class SearchContactsDialpad
 @Inject constructor(private val dialerRepositoryImpl: DialerRepositoryImpl) :
-  UseCase<SearchContactsDialpadParams, List<DialerSearchContactEntity>>() {
-  override suspend fun run(params: SearchContactsDialpadParams): Either<Failure, List<DialerSearchContactEntity>> =
-    dialerRepositoryImpl.searchContactsDialpad(params.contentResolver, params.query)
+    UseCase<SearchContactsDialpadParams, List<DialerSearchContactEntity>>() {
+    override suspend fun run(params: SearchContactsDialpadParams): Either<Failure, List<DialerSearchContactEntity>> =
+        dialerRepositoryImpl.searchContactsDialpad(params.contentResolver, params.query)
 }

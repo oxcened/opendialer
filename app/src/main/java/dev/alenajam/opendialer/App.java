@@ -9,10 +9,10 @@ import dev.alenajam.opendialer.helper.SharedPreferenceHelper;
 @HiltAndroidApp
 public class App extends Application {
 
-  @Override
-  public void onCreate() {
-    super.onCreate();
-    NotificationHelper.setupNotificationChannels(this);
-    SharedPreferenceHelper.init(this);
-  }
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        NotificationHelper.setupNotificationChannels(this);
+        SharedPreferenceHelper.init(this);
+    }
 }

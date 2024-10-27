@@ -8,5 +8,5 @@ import javax.inject.Inject
 
 class StartCache
 @Inject constructor(private val cacheRepositoryImpl: CacheRepositoryImpl) : UseCase<Unit, Unit>() {
-  override suspend fun run(params: Unit): Either<Failure, Unit> = cacheRepositoryImpl.start()
+    override suspend fun run(params: Unit): Either<Failure, Unit> = cacheRepositoryImpl.start()
 }

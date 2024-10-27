@@ -7,53 +7,51 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import dev.alenajam.opendialer.feature.inCall.R
 import dev.alenajam.opendialer.feature.inCall.service.CallsHandler
 
 @AndroidEntryPoint
 class InCallActivity : AppCompatActivity() {
-  var visibility: Boolean = false
-    private set
+    var visibility: Boolean = false
+        private set
 
-  companion object {
-    fun start(context: Context) {
-      val intent = Intent(context, InCallActivity::class.java)
-      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-      context.startActivity(intent)
+    companion object {
+        fun start(context: Context) {
+            val intent = Intent(context, InCallActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(intent)
+        }
     }
-  }
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    requestWindowFeature(Window.FEATURE_NO_TITLE)
-    CallsHandler.setInCallActivity(this)
-    val flags = WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-      WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
-      WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or
-      WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON or
-      WindowManager.LayoutParams.FLAG_FULLSCREEN or
-      WindowManager.LayoutParams.FLAG_IGNORE_CHEEK_PRESSES
-    window.addFlags(flags)
-    supportActionBar?.hide()
-    super.onCreate(savedInstanceState)
-    setContent {
-      InCallScreen()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        CallsHandler.setInCallActivity(this)
+        val flags = WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or
+                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON or
+                WindowManager.LayoutParams.FLAG_FULLSCREEN or
+                WindowManager.LayoutParams.FLAG_IGNORE_CHEEK_PRESSES
+        window.addFlags(flags)
+        supportActionBar?.hide()
+        super.onCreate(savedInstanceState)
+        setContent {
+            InCallScreen()
+        }
     }
-  }
 
-  override fun onStart() {
-    super.onStart()
-    visibility = true
-  }
+    override fun onStart() {
+        super.onStart()
+        visibility = true
+    }
 
-  override fun onStop() {
-    super.onStop()
-    visibility = false
-  }
+    override fun onStop() {
+        super.onStop()
+        visibility = false
+    }
 
-  override fun onDestroy() {
-    super.onDestroy()
-    CallsHandler.clearInCallActivity(this)
-  }
+    override fun onDestroy() {
+        super.onDestroy()
+        CallsHandler.clearInCallActivity(this)
+    }
 }

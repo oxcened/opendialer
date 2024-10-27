@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 class UnblockCaller
 @Inject constructor(private val callsRepositoryImpl: CallsRepositoryImpl) :
-  UseCase<String, Unit>() {
-  override suspend fun run(params: String): Either<Failure, Unit> =
-    callsRepositoryImpl.unblockCaller(params)
+    UseCase<String, Unit>() {
+    override suspend fun run(params: String): Either<Failure, Unit> =
+        callsRepositoryImpl.unblockCaller(params)
 }

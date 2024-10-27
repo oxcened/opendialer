@@ -26,81 +26,81 @@ import com.google.common.base.Optional;
 @SuppressWarnings("Guava")
 abstract class SmartDialMap {
 
-  /**
-   * Returns true if the provided character can be mapped to a key on the dialpad.
-   *
-   * <p>The provided character is expected to be a normalized character. See {@link
-   * SmartDialMap#normalizeCharacter(char)} for details.
-   */
-  protected boolean isValidDialpadCharacter(char ch) {
-    return isValidDialpadAlphabeticChar(ch) || isValidDialpadNumericChar(ch);
-  }
-
-  /**
-   * Returns true if the provided character is a letter and can be mapped to a key on the dialpad.
-   *
-   * <p>The provided character is expected to be a normalized character. See {@link
-   * SmartDialMap#normalizeCharacter(char)} for details.
-   */
-  protected boolean isValidDialpadAlphabeticChar(char ch) {
-    return getCharToKeyMap().containsKey(ch);
-  }
-
-  /**
-   * Returns true if the provided character is a digit, and can be mapped to a key on the dialpad.
-   */
-  protected boolean isValidDialpadNumericChar(char ch) {
-    return '0' <= ch && ch <= '9';
-  }
-
-  /**
-   * Get the index of the key on the dialpad which the character corresponds to.
-   *
-   * <p>The provided character is expected to be a normalized character. See {@link
-   * SmartDialMap#normalizeCharacter(char)} for details.
-   *
-   * <p>An {@link Optional#absent()} is returned if the provided character can't be mapped to a key
-   * on the dialpad.
-   */
-  protected Optional<Byte> getDialpadIndex(char ch) {
-    if (isValidDialpadNumericChar(ch)) {
-      return Optional.of((byte) (ch - '0'));
+    /**
+     * Returns true if the provided character can be mapped to a key on the dialpad.
+     *
+     * <p>The provided character is expected to be a normalized character. See {@link
+     * SmartDialMap#normalizeCharacter(char)} for details.
+     */
+    protected boolean isValidDialpadCharacter(char ch) {
+        return isValidDialpadAlphabeticChar(ch) || isValidDialpadNumericChar(ch);
     }
 
-    if (isValidDialpadAlphabeticChar(ch)) {
-      return Optional.of((byte) (getCharToKeyMap().get(ch) - '0'));
+    /**
+     * Returns true if the provided character is a letter and can be mapped to a key on the dialpad.
+     *
+     * <p>The provided character is expected to be a normalized character. See {@link
+     * SmartDialMap#normalizeCharacter(char)} for details.
+     */
+    protected boolean isValidDialpadAlphabeticChar(char ch) {
+        return getCharToKeyMap().containsKey(ch);
     }
 
-    return Optional.absent();
-  }
+    /**
+     * Returns true if the provided character is a digit, and can be mapped to a key on the dialpad.
+     */
+    protected boolean isValidDialpadNumericChar(char ch) {
+        return '0' <= ch && ch <= '9';
+    }
 
-  /**
-   * Get the actual numeric character on the dialpad which the character corresponds to.
-   *
-   * <p>The provided character is expected to be a normalized character. See {@link
-   * SmartDialMap#normalizeCharacter(char)} for details.
-   *
-   * <p>An {@link Optional#absent()} is returned if the provided character can't be mapped to a key
-   * on the dialpad.
-   */
-  protected Optional<Character> getDialpadNumericCharacter(char ch) {
-    return isValidDialpadAlphabeticChar(ch)
-        ? Optional.of(getCharToKeyMap().get(ch))
-        : Optional.absent();
-  }
+    /**
+     * Get the index of the key on the dialpad which the character corresponds to.
+     *
+     * <p>The provided character is expected to be a normalized character. See {@link
+     * SmartDialMap#normalizeCharacter(char)} for details.
+     *
+     * <p>An {@link Optional#absent()} is returned if the provided character can't be mapped to a key
+     * on the dialpad.
+     */
+    protected Optional<Byte> getDialpadIndex(char ch) {
+        if (isValidDialpadNumericChar(ch)) {
+            return Optional.of((byte) (ch - '0'));
+        }
 
-  /**
-   * Converts uppercase characters to lower case ones, and on a best effort basis, strips accents
-   * from accented characters.
-   *
-   * <p>An {@link Optional#absent()} is returned if the provided character can't be mapped to a key
-   * on the dialpad.
-   */
-  abstract Optional<Character> normalizeCharacter(char ch);
+        if (isValidDialpadAlphabeticChar(ch)) {
+            return Optional.of((byte) (getCharToKeyMap().get(ch) - '0'));
+        }
 
-  /**
-   * Returns a map in which each key is a normalized character and the corresponding value is a
-   * dialpad key.
-   */
-  abstract SimpleArrayMap<Character, Character> getCharToKeyMap();
+        return Optional.absent();
+    }
+
+    /**
+     * Get the actual numeric character on the dialpad which the character corresponds to.
+     *
+     * <p>The provided character is expected to be a normalized character. See {@link
+     * SmartDialMap#normalizeCharacter(char)} for details.
+     *
+     * <p>An {@link Optional#absent()} is returned if the provided character can't be mapped to a key
+     * on the dialpad.
+     */
+    protected Optional<Character> getDialpadNumericCharacter(char ch) {
+        return isValidDialpadAlphabeticChar(ch)
+                ? Optional.of(getCharToKeyMap().get(ch))
+                : Optional.absent();
+    }
+
+    /**
+     * Converts uppercase characters to lower case ones, and on a best effort basis, strips accents
+     * from accented characters.
+     *
+     * <p>An {@link Optional#absent()} is returned if the provided character can't be mapped to a key
+     * on the dialpad.
+     */
+    abstract Optional<Character> normalizeCharacter(char ch);
+
+    /**
+     * Returns a map in which each key is a normalized character and the corresponding value is a
+     * dialpad key.
+     */
+    abstract SimpleArrayMap<Character, Character> getCharToKeyMap();
 }

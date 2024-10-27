@@ -34,13 +34,15 @@ An open, clean and modern dialer for Android.
 
 ## Build and Run
 
-**OpenDialer** uses the Gradle build system and can be imported directly into Android Studio (make sure you are using the latest stable version available [here](https://developer.android.com/studio)). 
+**OpenDialer** uses the Gradle build system and can be imported directly into Android Studio (make
+sure you are using the latest stable version
+available [here](https://developer.android.com/studio)).
 
 Change the run configuration to `app`.
 
 ![image](docs/images/android_studio_build.png)
 
-The app contains the usual `debug` and `release` build variants which can be built and run. 
+The app contains the usual `debug` and `release` build variants which can be built and run.
 
 ![image](docs/images/android_studio_build_variant.png)
 
@@ -59,7 +61,9 @@ together to create a complete app.
 
 ## Modularization
 
-The **OpenDialer** app has been fully modularized based on the [official recommendations](https://developer.android.com/topic/modularization/patterns) and you can find the
+The **OpenDialer** app has been fully modularized based on
+the [official recommendations](https://developer.android.com/topic/modularization/patterns) and you
+can find the
 description of the modularization strategy used in
 [modularization learning journey](./docs/ModularizationLearningJourney.md).
 

@@ -9,13 +9,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 public class MyBottomSheetDialog extends BottomSheetDialog {
 
-  protected MyBottomSheetDialog(Context context) {
-    super(context, R.style.CustomBottomSheetDialogTheme);
-  }
+    protected MyBottomSheetDialog(Context context) {
+        super(context, R.style.CustomBottomSheetDialogTheme);
+    }
 
-  protected MyBottomSheetDialog(@NonNull Context context, int viewResId) {
-    super(context);
-    View sheetView = getLayoutInflater().inflate(viewResId, null);
-    setContentView(sheetView);
-  }
+    protected MyBottomSheetDialog(@NonNull Context context, int viewResId) {
+        super(context);
+        View sheetView = getLayoutInflater().inflate(viewResId, null);
+        setContentView(sheetView);
+    }
 }

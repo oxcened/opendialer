@@ -13,33 +13,33 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 abstract class UseCaseFlow<in Params, T> {
-  private var job: Job? = null
+    private var job: Job? = null
 
-  abstract fun run(params: Params): Flow<T>
+    abstract fun run(params: Params): Flow<T>
 
-  operator fun invoke(
-    scope: CoroutineScope,
-    params: Params,
-    onResult: (Either<Failure, T>) -> Unit,
-    onCompletion: (suspend (flowCollector: FlowCollector<T>) -> Unit)? = null
-  ) {
-    if (job?.isActive == true) {
-      return
+    operator fun invoke(
+        scope: CoroutineScope,
+        params: Params,
+        onResult: (Either<Failure, T>) -> Unit,
+        onCompletion: (suspend (flowCollector: FlowCollector<T>) -> Unit)? = null
+    ) {
+        if (job?.isActive == true) {
+            return
+        }
+
+        job = scope.launch {
+            withContext(Dispatchers.IO) {
+                run(params)
+                    .catch {
+                        onResult(Either.Left(Failure.GenericFailure(it)))
+                    }
+                    .onCompletion {
+                        onCompletion?.invoke(this)
+                    }
+                    .collect {
+                        onResult(Either.Right(it))
+                    }
+            }
+        }
     }
-
-    job = scope.launch {
-      withContext(Dispatchers.IO) {
-        run(params)
-          .catch {
-            onResult(Either.Left(Failure.GenericFailure(it)))
-          }
-          .onCompletion {
-            onCompletion?.invoke(this)
-          }
-          .collect {
-            onResult(Either.Right(it))
-          }
-      }
-    }
-  }
 }

@@ -16,35 +16,35 @@ import javax.inject.Inject
 @HiltViewModel
 class ContactsViewModel
 @Inject constructor(
-  private val contactsRepository: ContactsRepositoryImpl,
-  private val app: Application,
+    private val contactsRepository: ContactsRepositoryImpl,
+    private val app: Application,
 ) : ViewModel() {
-  private val _contacts = MutableStateFlow<List<DialerContact>>(emptyList())
-  val contacts: StateFlow<List<DialerContact>> = _contacts
-  private val _hasRuntimePermission = MutableStateFlow(false)
-  val hasRuntimePermission: StateFlow<Boolean> = _hasRuntimePermission
+    private val _contacts = MutableStateFlow<List<DialerContact>>(emptyList())
+    val contacts: StateFlow<List<DialerContact>> = _contacts
+    private val _hasRuntimePermission = MutableStateFlow(false)
+    val hasRuntimePermission: StateFlow<Boolean> = _hasRuntimePermission
 
-  init {
-    _hasRuntimePermission.value = PermissionUtils.hasContactsPermission(app)
-    getContacts()
-  }
-
-  fun getContacts() {
-    if (!hasRuntimePermission.value) return
-
-    viewModelScope.launch {
-      contactsRepository.getContacts().collect { contacts ->
-        _contacts.value = DialerContact.mapList(contacts)
-      }
+    init {
+        _hasRuntimePermission.value = PermissionUtils.hasContactsPermission(app)
+        getContacts()
     }
-  }
 
-  fun handleRuntimePermissionGranted() {
-    _hasRuntimePermission.value = true
-    getContacts()
-  }
+    fun getContacts() {
+        if (!hasRuntimePermission.value) return
 
-  fun openContact(contactId: Int) {
-    CommonUtils.showContactDetail(app, contactId)
-  }
+        viewModelScope.launch {
+            contactsRepository.getContacts().collect { contacts ->
+                _contacts.value = DialerContact.mapList(contacts)
+            }
+        }
+    }
+
+    fun handleRuntimePermissionGranted() {
+        _hasRuntimePermission.value = true
+        getContacts()
+    }
+
+    fun openContact(contactId: Int) {
+        CommonUtils.showContactDetail(app, contactId)
+    }
 }

@@ -55,7 +55,12 @@ class SearchContactsViewModel
             viewModelScope,
             SearchContactsDialpadParams(app.contentResolver, query)
         ) {
-            it.fold({}) { res -> handleResult(SmartDialNameMatcher.normalizeNumber(app, query), res) }
+            it.fold({}) { res ->
+                handleResult(
+                    SmartDialNameMatcher.normalizeNumber(app, query),
+                    res
+                )
+            }
         }
     }
 
@@ -68,6 +73,7 @@ class SearchContactsViewModel
         CommonUtils.makeCall(activity, number)
         return true
     }
+
     fun sendMessage(activity: Activity, number: String) = CommonUtils.makeSms(activity, number)
     fun createContact(activity: Activity, number: String) =
         CommonUtils.createContact(activity, number)

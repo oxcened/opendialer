@@ -72,7 +72,9 @@ fun ContactsSearchScreen(
         }
 
     Scaffold { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
+        Box(modifier = Modifier
+            .padding(innerPadding)
+            .fillMaxSize()) {
             SearchList(
                 result = result.value,
                 hasPermission = hasPermission.value,

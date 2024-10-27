@@ -28,44 +28,44 @@ import java.util.ArrayList;
  */
 public class SmartDialMatchPosition {
 
-  private static final String TAG = SmartDialMatchPosition.class.getSimpleName();
+    private static final String TAG = SmartDialMatchPosition.class.getSimpleName();
 
-  public int start;
-  public int end;
+    public int start;
+    public int end;
 
-  public SmartDialMatchPosition(int start, int end) {
-    this.start = start;
-    this.end = end;
-  }
-
-  /**
-   * Used by {@link SmartDialNameMatcher} to advance the positions of a match position found in a
-   * sub query.
-   *
-   * @param inList    ArrayList of SmartDialMatchPositions to modify.
-   * @param toAdvance Offset to modify by.
-   */
-  public static void advanceMatchPositions(
-      ArrayList<SmartDialMatchPosition> inList, int toAdvance) {
-    for (int i = 0; i < inList.size(); i++) {
-      inList.get(i).advance(toAdvance);
+    public SmartDialMatchPosition(int start, int end) {
+        this.start = start;
+        this.end = end;
     }
-  }
 
-  /**
-   * Used mainly for debug purposes. Displays contents of an ArrayList of SmartDialMatchPositions.
-   *
-   * @param list ArrayList of SmartDialMatchPositions to print out in a human readable fashion.
-   */
-  public static void print(ArrayList<SmartDialMatchPosition> list) {
-    for (int i = 0; i < list.size(); i++) {
-      SmartDialMatchPosition m = list.get(i);
-      Log.d(TAG, "[" + m.start + "," + m.end + "]");
+    /**
+     * Used by {@link SmartDialNameMatcher} to advance the positions of a match position found in a
+     * sub query.
+     *
+     * @param inList    ArrayList of SmartDialMatchPositions to modify.
+     * @param toAdvance Offset to modify by.
+     */
+    public static void advanceMatchPositions(
+            ArrayList<SmartDialMatchPosition> inList, int toAdvance) {
+        for (int i = 0; i < inList.size(); i++) {
+            inList.get(i).advance(toAdvance);
+        }
     }
-  }
 
-  private void advance(int toAdvance) {
-    this.start += toAdvance;
-    this.end += toAdvance;
-  }
+    /**
+     * Used mainly for debug purposes. Displays contents of an ArrayList of SmartDialMatchPositions.
+     *
+     * @param list ArrayList of SmartDialMatchPositions to print out in a human readable fashion.
+     */
+    public static void print(ArrayList<SmartDialMatchPosition> list) {
+        for (int i = 0; i < list.size(); i++) {
+            SmartDialMatchPosition m = list.get(i);
+            Log.d(TAG, "[" + m.start + "," + m.end + "]");
+        }
+    }
+
+    private void advance(int toAdvance) {
+        this.start += toAdvance;
+        this.end += toAdvance;
+    }
 }
