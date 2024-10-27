@@ -23,7 +23,7 @@ import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.PersonAddAlt
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.Voicemail
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -197,7 +197,7 @@ private fun CallRow(
             }
 
             AnimatedVisibility(visible = isOpen) {
-                Divider()
+                HorizontalDivider()
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically
