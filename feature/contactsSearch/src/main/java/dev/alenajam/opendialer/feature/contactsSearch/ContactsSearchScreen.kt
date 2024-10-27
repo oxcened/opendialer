@@ -69,6 +69,17 @@ fun ContactsSearchScreen(
             viewModel.handleCallRuntimePermissionGranted()
         }
 
+    fun makeCall(number: String) {
+        viewModel.makeCall(
+            activity = context.getActivity() as Activity,
+            number = number
+        ).let {
+            if (!it) {
+                requestCallPermissions.launch(PermissionUtils.makeCallPermissions)
+            }
+        }
+    }
+
     Scaffold(
         bottomBar = {
             Dialpad(
@@ -77,16 +88,7 @@ fun ContactsSearchScreen(
                     query = it
                     viewModel.searchContactsByDialpad(it)
                 },
-                onCall = {
-                    viewModel.makeCall(
-                        activity = context.getActivity() as Activity,
-                        number = query
-                    ).let {
-                        if (!it) {
-                            requestCallPermissions.launch(PermissionUtils.makeCallPermissions)
-                        }
-                    }
-                }
+                onCall = { makeCall(query) }
             )
         }
     ) { innerPadding ->
@@ -98,7 +100,8 @@ fun ContactsSearchScreen(
             SearchList(
                 result = result.value,
                 hasPermission = hasPermission.value,
-                handleRuntimePermissionGranted = { viewModel.handleRuntimePermissionGranted(query = query) }
+                onRuntimePermissionGranted = { viewModel.handleRuntimePermissionGranted(query = query) },
+                onResultClick = { makeCall(it.number) }
             )
         }
     }
@@ -108,12 +111,13 @@ fun ContactsSearchScreen(
 private fun SearchList(
     result: SearchContactsViewModel.Result?,
     hasPermission: Boolean,
-    handleRuntimePermissionGranted: () -> Unit
+    onRuntimePermissionGranted: () -> Unit,
+    onResultClick: (contact: DialerSearchContact) -> Unit
 ) {
     val requestPermissions =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
             if (PermissionUtils.contactsPermissions.all { result[it] == true }) {
-                handleRuntimePermissionGranted()
+                onRuntimePermissionGranted()
             }
         }
 
@@ -139,7 +143,7 @@ private fun SearchList(
     LazyColumn {
         result?.contacts?.let { contacts ->
             items(contacts) { contact ->
-                ResultRow(contact, onClick = { })
+                ResultRow(contact, onClick = { onResultClick(contact) })
             }
         }
     }
