@@ -31,13 +31,19 @@ import dev.alenajam.opendialer.R
 import dev.alenajam.opendialer.feature.calls.CallsScreen
 import dev.alenajam.opendialer.feature.contacts.ContactsScreen
 
+private enum class Route {
+    CALLS,
+    CONTACTS
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun HomeScreen(
     onOpenDialpad: () -> Unit,
     onOpenHistory: (ids: List<Int>) -> Unit
 ) {
-    var selectedNavigationItem by remember { mutableStateOf("CALLS") }
+    var currentRoute by remember { mutableStateOf(Route.CALLS) }
+
     Scaffold(
         topBar = {
             SearchBar(
@@ -67,29 +73,30 @@ internal fun HomeScreen(
         },
         bottomBar = {
             NavigationBar {
-                val isSelected = { item: String -> item == selectedNavigationItem }
+                val isSelected = { item: Route -> item == currentRoute }
+
                 NavigationBarItem(
-                    selected = isSelected("CALLS"),
+                    selected = isSelected(Route.CALLS),
                     icon = {
                         Icon(
-                            imageVector = if (isSelected("CALLS")) Icons.Filled.AccessTimeFilled else Icons.Outlined.AccessTime,
+                            imageVector = if (isSelected(Route.CALLS)) Icons.Filled.AccessTimeFilled else Icons.Outlined.AccessTime,
                             contentDescription = null
                         )
                     },
                     label = { Text(text = stringResource(R.string.recents)) },
-                    onClick = { selectedNavigationItem = "CALLS" },
+                    onClick = { currentRoute = Route.CALLS },
                 )
 
                 NavigationBarItem(
-                    selected = isSelected("CONTACTS"),
+                    selected = isSelected(Route.CONTACTS),
                     icon = {
                         Icon(
-                            imageVector = if (isSelected("CONTACTS")) Icons.Filled.People else Icons.Outlined.People,
+                            imageVector = if (isSelected(Route.CONTACTS)) Icons.Filled.People else Icons.Outlined.People,
                             contentDescription = null
                         )
                     },
                     label = { Text(text = stringResource(R.string.contacts)) },
-                    onClick = { selectedNavigationItem = "CONTACTS" },
+                    onClick = { currentRoute = Route.CONTACTS },
                 )
             }
         },
@@ -100,12 +107,12 @@ internal fun HomeScreen(
         }
     ) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) {
-            when (selectedNavigationItem) {
-                "CALLS" -> CallsScreen(
+            when (currentRoute) {
+                Route.CALLS -> CallsScreen(
                     onOpenHistory = onOpenHistory
                 )
 
-                "CONTACTS" -> ContactsScreen()
+                Route.CONTACTS -> ContactsScreen()
             }
         }
     }
