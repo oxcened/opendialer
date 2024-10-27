@@ -33,15 +33,6 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".feature.settings.SettingsActivity"
-            android:label="@string/option"
-            android:parentActivityName="dev.alenajam.opendialer.features.main.MainActivity"
-            android:theme="@style/PreferenceTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="dev.alenajam.opendialer.features.main.MainActivity" />
-        </activity>
-        <activity
             android:name="dev.alenajam.opendialer.ui.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
@@ -66,17 +57,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".feature.settings.AboutActivity"
-            android:label="@string/info"
-            android:parentActivityName="dev.alenajam.opendialer.features.main.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-
-        <activity
-            android:name=".feature.settings.CustomizeQuickResponsesActivity"
-            android:parentActivityName=".feature.settings.SettingsActivity" />
-
 
         <service
             android:name=".feature.inCall.service.InCallServiceImpl"

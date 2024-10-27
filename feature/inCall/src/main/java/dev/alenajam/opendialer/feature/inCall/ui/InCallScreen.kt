@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,14 +39,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import dev.alenajam.opendialer.core.common.getActivity
 
 @Composable
 internal fun InCallScreen(
-    viewModel: InCallViewModel = viewModel(),
-    navController: NavController,
+    viewModel: InCallViewModel = viewModel()
 ) {
     val stateLabel = viewModel.stateLabel.observeAsState("")
     val isHolding = viewModel.isHolding.observeAsState()
@@ -54,42 +54,44 @@ internal fun InCallScreen(
     val callerImageUri = viewModel.callerImageUri.observeAsState("")
     val context = LocalContext.current
 
-    Box {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            AsyncImage(
-                model = callerImageUri.value,
-                contentDescription = null,
-                modifier = Modifier.size(50.dp),
-                placeholder = null,
-                error = null,
-                fallback = null
-            )
+    Scaffold { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                AsyncImage(
+                    model = callerImageUri.value,
+                    contentDescription = null,
+                    modifier = Modifier.size(50.dp),
+                    placeholder = null,
+                    error = null,
+                    fallback = null
+                )
 
-            Text(
-                text = callerName.value,
-                style = MaterialTheme.typography.titleMedium
-            )
+                Text(
+                    text = callerName.value,
+                    style = MaterialTheme.typography.titleMedium
+                )
 
-            Text(
-                text = stateLabel.value,
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                Text(
+                    text = stateLabel.value,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            CallButtons(
+                isMuted = isMuted.value,
+                isSpeaker = isSpeaker.value,
+                isHolding = isHolding.value,
+                onHangup = viewModel::hangup,
+                onMute = viewModel::turnMute,
+                onSpeaker = viewModel::turnSpeaker,
+                onHold = viewModel::hold,
+                onAddCall = { viewModel.addCall(activity = context.getActivity() as Activity) }
             )
         }
-
-        CallButtons(
-            isMuted = isMuted.value,
-            isSpeaker = isSpeaker.value,
-            isHolding = isHolding.value,
-            onHangup = viewModel::hangup,
-            onMute = viewModel::turnMute,
-            onSpeaker = viewModel::turnSpeaker,
-            onHold = viewModel::hold,
-            onAddCall = { viewModel.addCall(activity = context.getActivity() as Activity) }
-        )
     }
 }
 
@@ -121,7 +123,9 @@ private fun BoxScope.CallButtons(
             AnimatedVisibility(visible = isOpen.value) {
                 Row(
                     horizontalArrangement = Arrangement.SpaceAround,
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 48.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 48.dp)
                 ) {
                     CallButton(
                         icon = Icons.Outlined.Pause,
@@ -141,7 +145,9 @@ private fun BoxScope.CallButtons(
 
             Row(
                 horizontalArrangement = Arrangement.SpaceAround,
-                modifier = Modifier.fillMaxWidth().padding(bottom = 48.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 48.dp)
             ) {
                 CallButton(
                     icon = Icons.Outlined.Dialpad,
@@ -205,7 +211,7 @@ private fun CallButton(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Surface (
+            Surface(
                 modifier = Modifier.size(50.dp),
                 shape = CircleShape,
                 color = if (isActive == true) Color.DarkGray else Color.White

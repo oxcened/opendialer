@@ -94,8 +94,11 @@ class InCallViewModel
         )
     )
 
-    fun manageConference(fragment: Fragment) = fragment.findNavController()
-        .navigate(R.id.action_inCallFragment_to_inCallManageConferenceFragment)
+    fun manageConference(fragment: Fragment) {
+        /*fragment.findNavController()
+        .navigate(R.id.action_inCallFragment_to_inCallManageConferenceFragment)*/
+        TODO()
+    }
 
     fun merge(call: OngoingCall) = OngoingCallHelper.merge(call)
 }

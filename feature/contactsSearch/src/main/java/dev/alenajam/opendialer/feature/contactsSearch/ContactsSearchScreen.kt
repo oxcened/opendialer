@@ -28,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -70,8 +71,8 @@ fun ContactsSearchScreen(
             viewModel.handleCallRuntimePermissionGranted()
         }
 
-    Surface(modifier = Modifier.fillMaxSize()) {
-        Box {
+    Scaffold { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
             SearchList(
                 result = result.value,
                 hasPermission = hasPermission.value,

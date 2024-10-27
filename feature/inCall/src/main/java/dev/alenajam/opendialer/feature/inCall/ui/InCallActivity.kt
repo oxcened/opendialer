@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.alenajam.opendialer.feature.inCall.R
 import dev.alenajam.opendialer.feature.inCall.service.CallsHandler
@@ -35,7 +37,9 @@ class InCallActivity : AppCompatActivity() {
     window.addFlags(flags)
     supportActionBar?.hide()
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_in_call)
+    setContent {
+      InCallScreen()
+    }
   }
 
   override fun onStart() {
