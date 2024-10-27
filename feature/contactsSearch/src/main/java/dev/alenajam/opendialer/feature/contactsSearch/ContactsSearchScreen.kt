@@ -201,8 +201,8 @@ private fun Dialpad(
     }
 
     Surface(
-        tonalElevation = 8.dp,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surfaceContainer
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(10.dp),
