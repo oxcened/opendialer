@@ -109,7 +109,7 @@ private fun TopBar(
                 ) {
                     val placeholder = forwardingPainter(
                         painter = rememberVectorPainter(Icons.Filled.AccountCircle),
-                        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary)
                     )
                     AsyncImage(
                         model = call.contactInfo.photoUri,
