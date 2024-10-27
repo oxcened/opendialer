@@ -4,7 +4,6 @@ import android.app.Activity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -54,35 +53,8 @@ internal fun InCallScreen(
     val callerImageUri = viewModel.callerImageUri.observeAsState("")
     val context = LocalContext.current
 
-    Scaffold { innerPadding ->
-        Box(modifier = Modifier
-            .padding(innerPadding)
-            .fillMaxSize()) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                AsyncImage(
-                    model = callerImageUri.value,
-                    contentDescription = null,
-                    modifier = Modifier.size(50.dp),
-                    placeholder = null,
-                    error = null,
-                    fallback = null
-                )
-
-                Text(
-                    text = callerName.value,
-                    style = MaterialTheme.typography.titleMedium
-                )
-
-                Text(
-                    text = stateLabel.value,
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
+    Scaffold(
+        bottomBar = {
             CallButtons(
                 isMuted = isMuted.value,
                 isSpeaker = isSpeaker.value,
@@ -94,11 +66,38 @@ internal fun InCallScreen(
                 onAddCall = { viewModel.addCall(activity = context.getActivity() as Activity) }
             )
         }
+    ) { innerPadding ->
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            AsyncImage(
+                model = callerImageUri.value,
+                contentDescription = null,
+                modifier = Modifier.size(50.dp),
+                placeholder = null,
+                error = null,
+                fallback = null
+            )
+
+            Text(
+                text = callerName.value,
+                style = MaterialTheme.typography.titleMedium
+            )
+
+            Text(
+                text = stateLabel.value,
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
     }
 }
 
 @Composable
-private fun BoxScope.CallButtons(
+private fun CallButtons(
     isMuted: Boolean? = false,
     isSpeaker: Boolean? = false,
     isHolding: Boolean? = false,
@@ -113,8 +112,7 @@ private fun BoxScope.CallButtons(
     Surface(
         tonalElevation = 8.dp,
         modifier = Modifier
-            .fillMaxWidth()
-            .align(Alignment.BottomCenter),
+            .fillMaxWidth(),
         shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
     ) {
         Column(

@@ -3,15 +3,15 @@ package dev.alenajam.opendialer.feature.inCall.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Window
 import android.view.WindowManager
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.enableEdgeToEdge
 import dagger.hilt.android.AndroidEntryPoint
 import dev.alenajam.opendialer.feature.inCall.service.CallsHandler
 
 @AndroidEntryPoint
-class InCallActivity : AppCompatActivity() {
+class InCallActivity : ComponentActivity() {
     var visibility: Boolean = false
         private set
 
@@ -24,17 +24,12 @@ class InCallActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        super.onCreate(savedInstanceState)
         CallsHandler.setInCallActivity(this)
-        val flags = WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
-                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or
-                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON or
-                WindowManager.LayoutParams.FLAG_FULLSCREEN or
+        val flags = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or
                 WindowManager.LayoutParams.FLAG_IGNORE_CHEEK_PRESSES
         window.addFlags(flags)
-        supportActionBar?.hide()
-        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
             InCallScreen()
         }

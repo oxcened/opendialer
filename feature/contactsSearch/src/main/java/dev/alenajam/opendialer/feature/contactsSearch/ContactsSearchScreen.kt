@@ -4,8 +4,6 @@ import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -71,16 +69,8 @@ fun ContactsSearchScreen(
             viewModel.handleCallRuntimePermissionGranted()
         }
 
-    Scaffold { innerPadding ->
-        Box(modifier = Modifier
-            .padding(innerPadding)
-            .fillMaxSize()) {
-            SearchList(
-                result = result.value,
-                hasPermission = hasPermission.value,
-                handleRuntimePermissionGranted = { viewModel.handleRuntimePermissionGranted(query = query) }
-            )
-
+    Scaffold(
+        bottomBar = {
             Dialpad(
                 query = query,
                 onQueryChange = {
@@ -99,11 +89,23 @@ fun ContactsSearchScreen(
                 }
             )
         }
+    ) { innerPadding ->
+        Surface(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+        ) {
+            SearchList(
+                result = result.value,
+                hasPermission = hasPermission.value,
+                handleRuntimePermissionGranted = { viewModel.handleRuntimePermissionGranted(query = query) }
+            )
+        }
     }
 }
 
 @Composable
-private fun BoxScope.SearchList(
+private fun SearchList(
     result: SearchContactsViewModel.Result?,
     hasPermission: Boolean,
     handleRuntimePermissionGranted: () -> Unit
@@ -122,9 +124,7 @@ private fun BoxScope.SearchList(
                 8.dp,
                 alignment = Alignment.CenterVertically
             ),
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(top = 16.dp)
+            modifier = Modifier.padding(top = 16.dp)
         ) {
             Text(text = stringResource(R.string.placeholder_search_permissions))
             Button(
@@ -188,7 +188,7 @@ private fun ResultRow(
 }
 
 @Composable
-private fun BoxScope.Dialpad(
+private fun Dialpad(
     query: String,
     onQueryChange: (query: String) -> Unit,
     onCall: () -> Unit
@@ -202,13 +202,11 @@ private fun BoxScope.Dialpad(
 
     Surface(
         tonalElevation = 8.dp,
-        modifier = Modifier
-            .fillMaxWidth()
-            .align(Alignment.BottomCenter)
+        modifier = Modifier.fillMaxWidth()
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(10.dp),
-            modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
+            modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 24.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(

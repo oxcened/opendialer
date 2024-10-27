@@ -1,6 +1,5 @@
 package dev.alenajam.opendialer.ui
 
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -12,9 +11,8 @@ import dev.alenajam.opendialer.feature.contactsSearch.ContactsSearchScreen
 import dev.alenajam.opendialer.feature.settings.SettingsRoute
 import dev.alenajam.opendialer.feature.settings.SettingsScreen
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun OpenDialerApp() {
+internal fun AppComposable() {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = HomeRoute) {
