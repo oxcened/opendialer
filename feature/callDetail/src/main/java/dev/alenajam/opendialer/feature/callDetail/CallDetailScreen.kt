@@ -10,8 +10,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.Call
 import androidx.compose.material.icons.outlined.CallMade
@@ -137,7 +137,7 @@ private fun TopBar(
             IconButton(
                 onClick = onNavigateBack
             ) {
-                Icon(imageVector = Icons.Outlined.ArrowBack, contentDescription = null)
+                Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
             }
         }
     )

@@ -9,11 +9,14 @@ import dev.alenajam.opendialer.feature.callDetail.CallDetailRoute
 import dev.alenajam.opendialer.feature.callDetail.CallDetailScreen
 import dev.alenajam.opendialer.feature.contactsSearch.ContactsSearchRoute
 import dev.alenajam.opendialer.feature.contactsSearch.ContactsSearchScreen
+import dev.alenajam.opendialer.feature.settings.SettingsRoute
+import dev.alenajam.opendialer.feature.settings.SettingsScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun OpenDialerApp() {
     val navController = rememberNavController()
+
     NavHost(navController = navController, startDestination = HomeRoute) {
         composable<HomeRoute> {
             HomeScreen(
@@ -22,6 +25,9 @@ internal fun OpenDialerApp() {
                 },
                 onOpenHistory = {
                     navController.navigate(CallDetailRoute(callIds = it))
+                },
+                onOpenSettings = {
+                    navController.navigate(SettingsRoute)
                 }
             )
         }
@@ -30,6 +36,11 @@ internal fun OpenDialerApp() {
         }
         composable<CallDetailRoute> {
             CallDetailScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+        composable<SettingsRoute> {
+            SettingsScreen(
                 onNavigateBack = { navController.popBackStack() }
             )
         }

@@ -25,4 +25,5 @@
     <string name="searchContacts">Search contacts</string>
     <string name="nothingHere">Mmh..nothing here</string>
     <string name="coming_soon">Coming soon…</string>
+    <string name="home_menu_settings_label">Settings</string>
 </resources>
