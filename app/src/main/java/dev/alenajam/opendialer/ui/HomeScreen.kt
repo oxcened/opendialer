@@ -103,7 +103,7 @@ internal fun HomeScreen(
                                         onDismissRequest = { expanded = false }) {
                                         DropdownMenuItem(
                                             text = { Text(text = stringResource(R.string.home_menu_settings_label)) },
-                                            onClick = { onOpenSettings() },
+                                            onClick = onOpenSettings,
                                         )
                                     }
                                 }
