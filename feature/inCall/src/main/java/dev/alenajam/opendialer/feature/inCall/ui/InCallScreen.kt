@@ -23,10 +23,13 @@ import androidx.compose.material.icons.outlined.Pause
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -36,10 +39,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import dev.alenajam.opendialer.core.common.getActivity
+import dev.alenajam.opendialer.core.common.ui.Dialpad
 
 @Composable
 internal fun InCallScreen(
@@ -55,7 +61,7 @@ internal fun InCallScreen(
 
     Scaffold(
         bottomBar = {
-            CallButtons(
+            Footer(
                 isMuted = isMuted.value,
                 isSpeaker = isSpeaker.value,
                 isHolding = isHolding.value,
@@ -63,7 +69,8 @@ internal fun InCallScreen(
                 onMute = viewModel::turnMute,
                 onSpeaker = viewModel::turnSpeaker,
                 onHold = viewModel::hold,
-                onAddCall = { viewModel.addCall(activity = context.getActivity() as Activity) }
+                onAddCall = { viewModel.addCall(activity = context.getActivity() as Activity) },
+                onDigit = viewModel::playDtmf
             )
         }
     ) { innerPadding ->
@@ -96,8 +103,13 @@ internal fun InCallScreen(
     }
 }
 
+enum class OpenSection {
+    ADDITIONAL_ACTIONS,
+    DIALPAD
+}
+
 @Composable
-private fun CallButtons(
+private fun Footer(
     isMuted: Boolean? = false,
     isSpeaker: Boolean? = false,
     isHolding: Boolean? = false,
@@ -106,26 +118,36 @@ private fun CallButtons(
     onSpeaker: () -> Unit,
     onHold: () -> Unit,
     onAddCall: () -> Unit,
+    onDigit: (digit: Char) -> Unit
 ) {
-    var isOpen = remember { mutableStateOf(false) }
+    var openSection = remember { mutableStateOf<OpenSection?>(null) }
+    var dialpadInput = remember { mutableStateOf("") }
+
+    fun handleDialpadDigit(digit: Char) {
+        dialpadInput.value = dialpadInput.value.plus(digit)
+        onDigit(digit)
+    }
+
+    fun toggleSectionButton(section: OpenSection) {
+        openSection.value = if (openSection.value == section) null else section
+    }
 
     Surface(
         tonalElevation = 8.dp,
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 32.dp)
+                .padding(bottom = 32.dp, start = 16.dp, end = 16.dp)
         ) {
-            AnimatedVisibility(visible = isOpen.value) {
+            AnimatedVisibility(visible = openSection.value == OpenSection.ADDITIONAL_ACTIONS) {
                 Row(
                     horizontalArrangement = Arrangement.SpaceAround,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 48.dp)
+                        .padding(bottom = 16.dp, top = 32.dp)
                 ) {
                     CallButton(
                         icon = Icons.Outlined.Pause,
@@ -143,17 +165,43 @@ private fun CallButtons(
                 }
             }
 
+            AnimatedVisibility(
+                visible = openSection.value == OpenSection.DIALPAD
+            ) {
+                Column(
+                    modifier = Modifier.padding(bottom = 16.dp)
+                ) {
+                    TextField(
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(bottom = 8.dp)
+                            .fillMaxWidth(),
+                        value = TextFieldValue(text = dialpadInput.value),
+                        onValueChange = { dialpadInput.value = it.text },
+                        textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
+                        colors = TextFieldDefaults.colors(
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedContainerColor = Color.Transparent
+                        )
+                    )
+
+                    Dialpad(
+                        onDigitClick = ::handleDialpadDigit
+                    )
+                }
+            }
+
             Row(
                 horizontalArrangement = Arrangement.SpaceAround,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 48.dp)
+                    .padding(bottom = 48.dp, top = 32.dp)
             ) {
                 CallButton(
                     icon = Icons.Outlined.Dialpad,
                     label = "Dialpad",
-                    isActive = false,
-                    onClick = {}
+                    isActive = openSection.value == OpenSection.DIALPAD,
+                    onClick = { toggleSectionButton(OpenSection.DIALPAD) }
                 )
 
                 CallButton(
@@ -173,8 +221,8 @@ private fun CallButtons(
                 CallButton(
                     icon = Icons.Outlined.MoreVert,
                     label = "More",
-                    isActive = isOpen.value,
-                    onClick = { isOpen.value = !isOpen.value }
+                    isActive = openSection.value == OpenSection.ADDITIONAL_ACTIONS,
+                    onClick = { toggleSectionButton(OpenSection.ADDITIONAL_ACTIONS) }
                 )
             }
 

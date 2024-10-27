@@ -75,7 +75,7 @@ class InCallViewModel
     fun turnSpeaker() = TelecomAdapter.turnSpeaker()
     fun turnBluetooth() = TelecomAdapter.turnBluetooth()
     fun turnMute() = TelecomAdapter.turnMute()
-    fun playDtmf(call: OngoingCall, digit: Char) = call.playDtmf(digit)
+    fun playDtmf(digit: Char) = primaryCall.value?.playDtmf(digit)
     fun hold() = primaryCall.value?.hold()
     fun switch() = secondaryCall.value?.hold(false)
 

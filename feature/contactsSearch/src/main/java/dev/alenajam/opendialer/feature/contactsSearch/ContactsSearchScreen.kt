@@ -5,10 +5,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,8 +19,6 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
@@ -49,13 +44,13 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.core.common.forwardingPainter
 import dev.alenajam.opendialer.core.common.getActivity
+import dev.alenajam.opendialer.core.common.ui.Dialpad
 import dev.alenajam.opendialer.data.contactsSearch.DialerSearchContact
 
 @Composable
@@ -84,7 +79,7 @@ fun ContactsSearchScreen(
 
     Scaffold(
         bottomBar = {
-            Dialpad(
+            Footer(
                 query = query,
                 onQueryChange = {
                     query = it
@@ -194,15 +189,15 @@ private fun ResultRow(
 }
 
 @Composable
-private fun Dialpad(
+private fun Footer(
     query: String,
     onQueryChange: (query: String) -> Unit,
     onCall: () -> Unit
 ) {
     var selection by remember { mutableStateOf(TextRange.Zero) }
 
-    fun handleButtonClick(button: String) {
-        onQueryChange(query.replaceRange(selection.start, selection.end, button))
+    fun handleButtonClick(digit: Char) {
+        onQueryChange(query.replaceRange(selection.start, selection.end, digit.toString()))
         selection = TextRange(selection.start + 1)
     }
 
@@ -212,7 +207,7 @@ private fun Dialpad(
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(10.dp),
-            modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 24.dp)
+            modifier = Modifier.padding(bottom = 24.dp, start = 16.dp, end = 16.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(
@@ -261,95 +256,9 @@ private fun Dialpad(
                 }
             }
 
-            Row(
-                modifier = Modifier.height(60.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                DigitButton(
-                    digit = "1",
-                    subtitle = "",
-                    onClick = ::handleButtonClick
-                )
-
-                DigitButton(
-                    digit = "2",
-                    subtitle = "abc",
-                    onClick = ::handleButtonClick
-                )
-
-                DigitButton(
-                    digit = "3",
-                    subtitle = "def",
-                    onClick = ::handleButtonClick
-                )
-            }
-
-            Row(
-                modifier = Modifier.height(60.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                DigitButton(
-                    digit = "4",
-                    subtitle = "ghi",
-                    onClick = ::handleButtonClick
-                )
-
-                DigitButton(
-                    digit = "5",
-                    subtitle = "jkl",
-                    onClick = ::handleButtonClick
-                )
-
-                DigitButton(
-                    digit = "6",
-                    subtitle = "mno",
-                    onClick = ::handleButtonClick
-                )
-            }
-
-            Row(
-                modifier = Modifier.height(60.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                DigitButton(
-                    digit = "7",
-                    subtitle = "pqrs",
-                    onClick = ::handleButtonClick
-                )
-
-                DigitButton(
-                    digit = "8",
-                    subtitle = "tuv",
-                    onClick = ::handleButtonClick
-                )
-
-                DigitButton(
-                    digit = "9",
-                    subtitle = "wxyz",
-                    onClick = ::handleButtonClick
-                )
-            }
-
-            Row(
-                modifier = Modifier.height(60.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                DigitButton(
-                    digit = "*",
-                    onClick = ::handleButtonClick
-                )
-
-                DigitButton(
-                    digit = "0",
-                    subtitle = "+",
-                    onClick = ::handleButtonClick
-                )
-
-                DigitButton(
-                    digit = "#",
-                    onClick = ::handleButtonClick
-                )
-            }
+            Dialpad(
+                onDigitClick = ::handleButtonClick
+            )
 
             Button(
                 onClick = onCall,
@@ -367,38 +276,6 @@ private fun Dialpad(
                     )
                     Text(text = stringResource(R.string.dialpad_button_call_label))
                 }
-            }
-        }
-    }
-}
-
-@Composable
-private fun RowScope.DigitButton(
-    digit: String,
-    subtitle: String? = null,
-    onClick: (digit: String) -> Unit
-) {
-    FilledTonalButton(
-        onClick = { onClick(digit) },
-        modifier = Modifier
-            .weight(1f)
-            .fillMaxHeight(),
-        contentPadding = PaddingValues(),
-        colors = ButtonDefaults.filledTonalButtonColors().copy(
-            containerColor = Color.White,
-        )
-    ) {
-
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = digit,
-                fontSize = 25.sp
-            )
-
-            if (subtitle != null) {
-                Text(
-                    text = subtitle,
-                )
             }
         }
     }
