@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +22,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -263,236 +265,90 @@ private fun Dialpad(
                 modifier = Modifier.height(60.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                FilledTonalButton(
-                    onClick = { handleButtonClick("1") },
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    contentPadding = PaddingValues(),
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "1",
-                            fontSize = 25.sp
-                        )
+                DigitButton(
+                    digit = "1",
+                    subtitle = "",
+                    onClick = ::handleButtonClick
+                )
 
-                        Text(
-                            text = "",
-                        )
-                    }
-                }
+                DigitButton(
+                    digit = "2",
+                    subtitle = "abc",
+                    onClick = ::handleButtonClick
+                )
 
-                FilledTonalButton(
-                    onClick = { handleButtonClick("2") },
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    contentPadding = PaddingValues(),
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "2",
-                            fontSize = 25.sp
-                        )
-
-                        Text(
-                            text = "abc",
-                        )
-                    }
-                }
-
-                FilledTonalButton(
-                    onClick = { handleButtonClick("3") },
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    contentPadding = PaddingValues(),
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "3",
-                            fontSize = 25.sp
-                        )
-
-                        Text(
-                            text = "def",
-                        )
-                    }
-                }
+                DigitButton(
+                    digit = "3",
+                    subtitle = "def",
+                    onClick = ::handleButtonClick
+                )
             }
 
             Row(
                 modifier = Modifier.height(60.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                FilledTonalButton(
-                    onClick = { handleButtonClick("4") },
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    contentPadding = PaddingValues(),
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "4",
-                            fontSize = 25.sp
-                        )
+                DigitButton(
+                    digit = "4",
+                    subtitle = "ghi",
+                    onClick = ::handleButtonClick
+                )
 
-                        Text(
-                            text = "ghi",
-                        )
-                    }
-                }
+                DigitButton(
+                    digit = "5",
+                    subtitle = "jkl",
+                    onClick = ::handleButtonClick
+                )
 
-                FilledTonalButton(
-                    onClick = { handleButtonClick("5") },
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    contentPadding = PaddingValues(),
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "5",
-                            fontSize = 25.sp
-                        )
-
-                        Text(
-                            text = "jkl",
-                        )
-                    }
-                }
-
-                FilledTonalButton(
-                    onClick = { handleButtonClick("6") },
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    contentPadding = PaddingValues(),
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "6",
-                            fontSize = 25.sp
-                        )
-
-                        Text(
-                            text = "mno",
-                        )
-                    }
-                }
+                DigitButton(
+                    digit = "6",
+                    subtitle = "mno",
+                    onClick = ::handleButtonClick
+                )
             }
 
             Row(
                 modifier = Modifier.height(60.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                FilledTonalButton(
-                    onClick = { handleButtonClick("7") },
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    contentPadding = PaddingValues(),
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "7",
-                            fontSize = 25.sp
-                        )
+                DigitButton(
+                    digit = "7",
+                    subtitle = "pqrs",
+                    onClick = ::handleButtonClick
+                )
 
-                        Text(
-                            text = "pqrs",
-                        )
-                    }
-                }
+                DigitButton(
+                    digit = "8",
+                    subtitle = "tuv",
+                    onClick = ::handleButtonClick
+                )
 
-                FilledTonalButton(
-                    onClick = { handleButtonClick("8") },
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    contentPadding = PaddingValues(),
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "8",
-                            fontSize = 25.sp
-                        )
-
-                        Text(
-                            text = "tuv",
-                        )
-                    }
-                }
-
-                FilledTonalButton(
-                    onClick = { handleButtonClick("9") },
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    contentPadding = PaddingValues(),
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "9",
-                            fontSize = 25.sp
-                        )
-
-                        Text(
-                            text = "wxyz",
-                        )
-                    }
-                }
+                DigitButton(
+                    digit = "9",
+                    subtitle = "wxyz",
+                    onClick = ::handleButtonClick
+                )
             }
 
             Row(
                 modifier = Modifier.height(60.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                FilledTonalButton(
-                    onClick = { handleButtonClick("*") },
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    contentPadding = PaddingValues(),
-                ) {
-                    Text(
-                        text = "*",
-                        fontSize = 25.sp
-                    )
-                }
+                DigitButton(
+                    digit = "*",
+                    onClick = ::handleButtonClick
+                )
 
-                FilledTonalButton(
-                    onClick = { handleButtonClick("0") },
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    contentPadding = PaddingValues(),
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "0",
-                            fontSize = 25.sp
-                        )
+                DigitButton(
+                    digit = "0",
+                    subtitle = "+",
+                    onClick = ::handleButtonClick
+                )
 
-                        Text(
-                            text = "+",
-                        )
-                    }
-                }
-
-                FilledTonalButton(
-                    onClick = { handleButtonClick("#") },
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    contentPadding = PaddingValues(),
-                ) {
-                    Text(
-                        text = "#",
-                        fontSize = 25.sp
-                    )
-                }
+                DigitButton(
+                    digit = "#",
+                    onClick = ::handleButtonClick
+                )
             }
 
             Button(
@@ -511,6 +367,38 @@ private fun Dialpad(
                     )
                     Text(text = stringResource(R.string.dialpad_button_call_label))
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun RowScope.DigitButton(
+    digit: String,
+    subtitle: String? = null,
+    onClick: (digit: String) -> Unit
+) {
+    FilledTonalButton(
+        onClick = { onClick(digit) },
+        modifier = Modifier
+            .weight(1f)
+            .fillMaxHeight(),
+        contentPadding = PaddingValues(),
+        colors = ButtonDefaults.filledTonalButtonColors().copy(
+            containerColor = Color.White,
+        )
+    ) {
+
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = digit,
+                fontSize = 25.sp
+            )
+
+            if (subtitle != null) {
+                Text(
+                    text = subtitle,
+                )
             }
         }
     }
