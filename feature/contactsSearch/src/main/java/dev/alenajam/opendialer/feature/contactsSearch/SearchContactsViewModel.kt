@@ -2,8 +2,10 @@ package dev.alenajam.opendialer.feature.contactsSearch
 
 import android.app.Activity
 import android.app.Application
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.core.aosp.SmartDialNameMatcher
 import dev.alenajam.opendialer.core.common.CommonUtils
@@ -17,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchContactsViewModel
 @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val app: Application,
     private val searchContactsUseCase: SearchContacts,
     private val searchContactsDialpadUseCase: SearchContactsDialpad
@@ -27,6 +30,8 @@ class SearchContactsViewModel
     val hasRuntimePermission: StateFlow<Boolean> = _hasRuntimePermission
     private val _hasCallRuntimePermission = MutableStateFlow(false)
     private val hasCallRuntimePermission: StateFlow<Boolean> = _hasCallRuntimePermission
+    private val contactsSearch = savedStateHandle.toRoute<ContactsSearchRoute>()
+    val prefilledNumber = contactsSearch.prefilledNumber
 
     init {
         _hasRuntimePermission.value = PermissionUtils.hasSearchPermission(app)

@@ -86,6 +86,7 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.kotlinx.serialization)
+    implementation(libs.navigation.compose)
 }
 
 kotlin {

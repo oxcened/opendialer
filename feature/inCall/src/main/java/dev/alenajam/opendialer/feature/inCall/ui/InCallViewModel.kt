@@ -13,6 +13,7 @@ import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.core.common.CommonUtils
+import dev.alenajam.opendialer.core.common.MAIN_ACTIVITY_INTENT_DIAL_EXTRA_ADD_CALL
 import dev.alenajam.opendialer.feature.inCall.R
 import dev.alenajam.opendialer.feature.inCall.service.CallsHandler
 import dev.alenajam.opendialer.feature.inCall.service.OngoingCall
@@ -79,16 +80,9 @@ class InCallViewModel
     fun hold() = primaryCall.value?.hold()
     fun switch() = secondaryCall.value?.hold(false)
 
-    fun addCall(fragment: Fragment) = fragment.startActivity(
-        Intent(Intent.ACTION_DIAL).putExtra(
-            "add_call",
-            true
-        )
-    )
-
     fun addCall(activity: Activity) = activity.startActivity(
         Intent(Intent.ACTION_DIAL).putExtra(
-            "add_call",
+            MAIN_ACTIVITY_INTENT_DIAL_EXTRA_ADD_CALL,
             true
         )
     )

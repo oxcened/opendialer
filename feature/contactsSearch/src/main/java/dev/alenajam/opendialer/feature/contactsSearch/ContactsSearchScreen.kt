@@ -59,7 +59,7 @@ fun ContactsSearchScreen(
 ) {
     val result = viewModel.result.collectAsStateWithLifecycle()
     val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
-    var query by remember { mutableStateOf("") }
+    var query by remember { mutableStateOf(viewModel.prefilledNumber) }
     val context = LocalContext.current
     val requestCallPermissions =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
