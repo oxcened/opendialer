@@ -5,6 +5,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -98,7 +99,9 @@ fun CallsScreen(
             return@Surface
         }
 
-        LazyColumn {
+        LazyColumn(
+            contentPadding = PaddingValues(bottom = 100.dp)
+        ) {
             items(calls.value) { call ->
                 LaunchedEffect(
                     call,
