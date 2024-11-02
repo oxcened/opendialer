@@ -15,8 +15,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Backspace
+import androidx.compose.material.icons.automirrored.outlined.Message
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.outlined.PersonAddAlt
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -37,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -94,12 +97,69 @@ fun ContactsSearchScreen(
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            SearchList(
-                result = result.value,
-                hasPermission = hasPermission.value,
-                onRuntimePermissionGranted = { viewModel.handleRuntimePermissionGranted(query = query) },
-                onResultClick = { makeCall(it.number) }
-            )
+            if (!hasPermission.value) {
+                PermissionPrompt(
+                    onPermissionGranted = { viewModel.handleRuntimePermissionGranted(query = query) }
+                )
+                return@Surface
+            }
+
+            Column {
+                SearchList(
+                    result = result.value,
+                    onResultClick = { makeCall(it.number) }
+                )
+
+                ActionsList(
+                    query = query,
+                    onCreateNewContact = {
+                        viewModel.createContact(
+                            activity = context.getActivity() as Activity,
+                            number = query
+                        )
+                    },
+                    onAddToContact = {
+                        viewModel.addToContact(
+                            activity = context.getActivity() as Activity,
+                            number = query
+                        )
+                    },
+                    onSendMessage = {
+                        viewModel.sendMessage(
+                            activity = context.getActivity() as Activity,
+                            number = query
+                        )
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun PermissionPrompt(
+    onPermissionGranted: () -> Unit
+) {
+    val requestPermissions =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
+            if (PermissionUtils.contactsPermissions.all { result[it] == true }) {
+                onPermissionGranted()
+            }
+        }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(
+            8.dp,
+            alignment = Alignment.CenterVertically
+        ),
+        modifier = Modifier.padding(top = 16.dp)
+    ) {
+        Text(text = stringResource(R.string.placeholder_search_permissions))
+        Button(
+            onClick = { requestPermissions.launch(input = PermissionUtils.searchPermissions) }
+        ) {
+            Text(text = stringResource(R.string.turn_on))
         }
     }
 }
@@ -107,36 +167,8 @@ fun ContactsSearchScreen(
 @Composable
 private fun SearchList(
     result: SearchContactsViewModel.Result?,
-    hasPermission: Boolean,
-    onRuntimePermissionGranted: () -> Unit,
     onResultClick: (contact: DialerSearchContact) -> Unit
 ) {
-    val requestPermissions =
-        rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
-            if (PermissionUtils.contactsPermissions.all { result[it] == true }) {
-                onRuntimePermissionGranted()
-            }
-        }
-
-    if (!hasPermission) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(
-                8.dp,
-                alignment = Alignment.CenterVertically
-            ),
-            modifier = Modifier.padding(top = 16.dp)
-        ) {
-            Text(text = stringResource(R.string.placeholder_search_permissions))
-            Button(
-                onClick = { requestPermissions.launch(input = PermissionUtils.searchPermissions) }
-            ) {
-                Text(text = stringResource(R.string.turn_on))
-            }
-        }
-        return
-    }
-
     LazyColumn {
         result?.contacts?.let { contacts ->
             items(contacts) { contact ->
@@ -156,7 +188,7 @@ private fun ResultRow(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp),
+                modifier = Modifier.padding(16.dp),
             ) {
                 val placeholder = forwardingPainter(
                     painter = rememberVectorPainter(Icons.Filled.AccountCircle),
@@ -184,6 +216,64 @@ private fun ResultRow(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun ActionsList(
+    query: String,
+    onCreateNewContact: () -> Unit,
+    onAddToContact: () -> Unit,
+    onSendMessage: () -> Unit
+) {
+    if (query.isBlank()) return
+
+    Column {
+        ActionRow(
+            icon = Icons.Outlined.PersonAddAlt,
+            label = stringResource(R.string.create_new_contact),
+            onClick = onCreateNewContact
+        )
+
+        ActionRow(
+            icon = Icons.Outlined.PersonAddAlt,
+            label = stringResource(R.string.add_to_a_contact),
+            onClick = onAddToContact
+        )
+
+        ActionRow(
+            icon = Icons.AutoMirrored.Outlined.Message,
+            label = stringResource(R.string.send_message),
+            onClick = onSendMessage
+        )
+    }
+}
+
+@Composable
+private fun ActionRow(
+    icon: ImageVector,
+    label: String,
+    onClick: () -> Unit
+) {
+    Surface(
+        onClick = onClick
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null
+            )
+
+            Text(
+                text = label
+            )
         }
     }
 }
