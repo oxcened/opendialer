@@ -43,9 +43,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import coil.compose.AsyncImage
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.forwardingPainter
+import dev.alenajam.opendialer.core.common.functional.EventObserver
 import dev.alenajam.opendialer.data.calls.CallType
 import dev.alenajam.opendialer.data.calls.ContactInfo
 import dev.alenajam.opendialer.data.calls.DetailCall
@@ -61,6 +63,10 @@ fun CallDetailScreen(
     val call = viewModel.call.observeAsState()
     val isAnon = call.value?.isAnonymous() == true
     val childCalls = call.value?.childCalls ?: emptyList()
+    
+    viewModel.deletedDetailCalls.observe(
+        LocalLifecycleOwner.current,
+        EventObserver { onNavigateBack() })
 
     Scaffold(
         topBar = {
