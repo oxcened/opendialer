@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
@@ -54,7 +55,10 @@ fun ContactsScreen(
                     alignment = Alignment.CenterVertically
                 ),
             ) {
-                Text(text = stringResource(R.string.placeholder_contacts))
+                Text(
+                    text = stringResource(R.string.placeholder_contacts),
+                    textAlign = TextAlign.Center,
+                )
                 OutlinedButton(
                     onClick = { requestPermissions.launch(input = PermissionUtils.contactsPermissions) }
                 ) {
