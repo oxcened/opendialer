@@ -15,7 +15,7 @@
         <item>@string/dark</item>
         <item>@string/set_battery_saver</item>
     </string-array>
-    <string name="light">Light</string>
+    <string name="light">Light</string>x
     <string name="dark">Dark</string>
     <string name="set_battery_saver">Set by Battery Saver</string>
     <string-array name="theme_options_values">
@@ -33,4 +33,6 @@
     <string name="profile_label_options">Options</string>
     <string name="profile_desc_options">Let\'s tweak it a little bit!</string>
     <string name="placeholder_quick_responses">Press the ADD button in the upper right corner to start customizing your quick responses</string>
+    <string name="screen_settings_title">Settings</string>
+    <string name="url_github_opendialer" translatable="false">https://github.com/oxcened/opendialer</string>
 </resources>

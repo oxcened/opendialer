@@ -7,28 +7,28 @@ import java.util.Objects;
  */
 public class ContactMatch {
 
-  private final String lookupKey;
-  private final long id;
+    private final String lookupKey;
+    private final long id;
 
-  public ContactMatch(String lookupKey, long id) {
-    this.lookupKey = lookupKey;
-    this.id = id;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(lookupKey, id);
-  }
-
-  @Override
-  public boolean equals(Object object) {
-    if (this == object) {
-      return true;
+    public ContactMatch(String lookupKey, long id) {
+        this.lookupKey = lookupKey;
+        this.id = id;
     }
-    if (object instanceof ContactMatch) {
-      final ContactMatch that = (ContactMatch) object;
-      return Objects.equals(this.lookupKey, that.lookupKey) && Objects.equals(this.id, that.id);
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(lookupKey, id);
     }
-    return false;
-  }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object instanceof ContactMatch) {
+            final ContactMatch that = (ContactMatch) object;
+            return Objects.equals(this.lookupKey, that.lookupKey) && Objects.equals(this.id, that.id);
+        }
+        return false;
+    }
 }

@@ -5,12 +5,10 @@ This learning journey was inspired by [Now in Android](https://github.com/androi
 In this learning journey you will learn about modularization, and the modularization strategy used
 to create the modules in the OpenDialer app.
 
-
 ## Overview
 
 Modularization is the practice of breaking the concept of a monolithic, one-module codebase into
 loosely coupled, self contained modules.
-
 
 ### Benefits of modularization
 
@@ -38,7 +36,6 @@ allows certain features of your app to be delivered conditionally or downloaded 
 **Reusability** - Proper modularization enables opportunities for code sharing and building multiple
 apps, across different platforms, from the same foundation.
 
-
 ### Modularization pitfalls
 
 However, modularization is a pattern that can be misused, and there are some gotchas to be aware of
@@ -60,7 +57,6 @@ your project. A dominating factor is the size and relative complexity of the cod
 project is not expected to grow beyond a certain threshold, the scalability and build time gains
 won’t apply.
 
-
 ## Modularization strategy
 
 It’s important to note that there is no single modularization strategy that fits all projects.
@@ -79,7 +75,6 @@ how you can organize your project. In general, you should strive for low couplin
 * **High cohesion** - A module should comprise a collection of code that acts as a system. It should
   have clearly defined responsibilities and stay within boundaries of certain domain knowledge.
 
-
 ## Types of modules in OpenDialer
 
 ![Diagram showing types of modules and their dependencies in OpenDialer](./images/app_modularization.png "Diagram showing types of modules and their dependencies in OpenDialer")
@@ -90,7 +85,8 @@ visualizing dependencies between modules.
 The OpenDialer app contains the following types of modules:
 
 * The `app` module - contains app level and scaffolding classes that bind the rest of the codebase,
-  such as `MainActivity`, `MainFragment`, `App` and app-level controlled navigation. A good example of this is
+  such as `MainActivity`, `MainFragment`, `App` and app-level controlled navigation. A good example
+  of this is
   the navigation setup through `main.xml` and the bottom navigation bar setup
   through `MainFragment`. The `app` module depends on all `feature` modules and
   required `core` modules.
@@ -114,7 +110,6 @@ The OpenDialer app contains the following types of modules:
   modules, but they shouldn’t depend on feature nor app modules.
 
 * Miscellaneous modules - these are yet to be created.
-
 
 ## Modules
 

@@ -24,14 +24,14 @@ import java.util.Locale;
  */
 public final class LocaleUtils {
 
-  /**
-   * Returns the default locale of the device.
-   */
-  public static Locale getLocale(Context context) {
-    Locale locale = context.getResources().getConfiguration().locale;
-    if (locale != null) {
-      return locale;
+    /**
+     * Returns the default locale of the device.
+     */
+    public static Locale getLocale(Context context) {
+        Locale locale = context.getResources().getConfiguration().locale;
+        if (locale != null) {
+            return locale;
+        }
+        return Locale.getDefault();
     }
-    return Locale.getDefault();
-  }
 }

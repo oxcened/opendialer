@@ -4,6 +4,8 @@ plugins {
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs.kotlin'
     id 'com.google.dagger.hilt.android'
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -50,6 +52,7 @@ android {
     }
     buildFeatures {
         viewBinding true
+        compose true
     }
     namespace 'dev.alenajam.opendialer'
     lint {
@@ -57,6 +60,9 @@ android {
     }
     compileOptions {
         coreLibraryDesugaringEnabled true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.2"
     }
 }
 
@@ -96,7 +102,7 @@ dependencies {
 
     implementation 'com.google.dagger:hilt-android:2.48.1'
     kapt 'com.google.dagger:hilt-compiler:2.48.1'
-    androidTestImplementation  'com.google.dagger:hilt-android-testing:2.48.1'
+    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.48.1'
     kaptAndroidTest 'com.google.dagger:hilt-compiler:2.48.1'
     testImplementation 'com.google.dagger:hilt-android-testing:2.48.1'
     kaptTest 'com.google.dagger:hilt-compiler:2.48.1'
@@ -105,6 +111,19 @@ dependencies {
 
     testImplementation 'junit:junit:4.13.2'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+
+    def composeBom = platform('androidx.compose:compose-bom:2024.09.03')
+    implementation composeBom
+    androidTestImplementation composeBom
+    implementation(libs.androidx.material3)
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    debugImplementation 'androidx.compose.ui:ui-tooling'
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
+    debugImplementation 'androidx.compose.ui:ui-test-manifest'
+    implementation 'androidx.compose.material:material-icons-extended'
+    implementation "androidx.compose.ui:ui-viewbinding"
+    implementation(libs.navigation.compose)
+    implementation(libs.kotlinx.serialization)
 }
 
 repositories {
