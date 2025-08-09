@@ -1,18 +1,25 @@
 rootProject.name = 'OpenDialer'
 
 include(
-        ':app',
-        ':feature:calls',
-        ':data:calls',
-        ':data:callsCache',
-        ':data:contacts',
-        ':core:common',
-        ':feature:contacts',
-        ':feature:callDetail',
-        ':feature:inCall',
-        ':data:inCall',
-        ':data:contactsSearch',
-        ':core:aosp',
-        ':feature:contactsSearch',
-        ':feature:settings',
+        // core
+        ":core:aosp",
+        ":core:common",
+
+        // data
+        ":data:calls",
+        ":data:callsCache",
+        ":data:contacts",
+        ":data:contactsSearch",
+        ":data:inCall",
+
+        // features
+        ":feature:callDetail",
+        ":feature:calls",
+        ":feature:contacts",
+        ":feature:contactsSearch",
+        ":feature:inCall",
+        ":feature:settings",
+
+        // app
+        ":app",
 )
