@@ -80,6 +80,12 @@ fun CallsScreen(
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.attemptInvalidateCache()
     }
+    LifecycleEventEffect(Lifecycle.Event.ON_START) {
+        viewModel.startCache()
+    }
+    LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
+        viewModel.stopCache()
+    }
 
     Surface(modifier = Modifier.fillMaxSize()) {
         if (!hasPermission.value) {
