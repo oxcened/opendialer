@@ -1,4 +1,4 @@
-package dev.alenajam.opendialer.ui
+package dev.alenajam.opendialer.core.common.ui
 import androidx.compose.ui.graphics.Color
 
 val primaryLight = Color(0xFF8E4954)
@@ -215,8 +215,14 @@ val surfaceContainerLowestDarkHighContrast = Color(0xFF140C0D)
 val surfaceContainerLowDarkHighContrast = Color(0xFF22191A)
 val surfaceContainerDarkHighContrast = Color(0xFF261D1E)
 val surfaceContainerHighDarkHighContrast = Color(0xFF312828)
+
 val surfaceContainerHighestDarkHighContrast = Color(0xFF3D3233)
 
+// Custom Answer Button Greens
+val answerGreenLight = Color(0xFF4CAF50) // Green500
+val onAnswerGreenLight = Color(0xFFFFFFFF)
+val answerGreenDark = Color(0xFF43A047) // Green600
+val onAnswerGreenDark = Color(0xFFFFFFFF)
 
 
 
