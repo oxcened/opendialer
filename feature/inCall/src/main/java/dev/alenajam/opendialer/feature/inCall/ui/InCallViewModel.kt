@@ -41,6 +41,7 @@ class InCallViewModel
     val isMuted = audioState.map { it.isMuted }
     val callerName = primaryCall.map { it.callerName ?: it.callerNumber }
     val callerImageUri = primaryCall.map { it.callerImageUri }
+    val isIncoming = primaryCall.map { it.state == Call.STATE_RINGING  }
 
     override fun onCleared() {
         super.onCleared()
@@ -72,7 +73,7 @@ class InCallViewModel
     }
 
     fun hangup(message: String? = null) = primaryCall.value?.hangup(message)
-    fun answer(call: OngoingCall) = call.answer()
+    fun answer() = primaryCall.value?.answer()
     fun turnSpeaker() = TelecomAdapter.turnSpeaker()
     fun turnBluetooth() = TelecomAdapter.turnBluetooth()
     fun turnMute() = TelecomAdapter.turnMute()
