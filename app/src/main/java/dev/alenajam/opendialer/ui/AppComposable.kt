@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dev.alenajam.opendialer.core.common.MAIN_ACTIVITY_INTENT_DIAL_EXTRA_ADD_CALL
 import dev.alenajam.opendialer.core.common.getActivity
+import dev.alenajam.opendialer.core.common.ui.AppProviders
 import dev.alenajam.opendialer.feature.callDetail.CallDetailRoute
 import dev.alenajam.opendialer.feature.callDetail.CallDetailScreen
 import dev.alenajam.opendialer.feature.contactsSearch.ContactsSearchRoute
@@ -27,7 +28,7 @@ internal fun AppComposable() {
         onOpenContactsSearch = { navController.navigate(ContactsSearchRoute(it)) }
     )
 
-    AppTheme {
+    AppProviders {
         NavHost(navController = navController, startDestination = HomeRoute) {
             composable<HomeRoute> {
                 HomeScreen(
