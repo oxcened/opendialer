@@ -95,6 +95,14 @@ fun SettingsScreen(
                     }
                 }
             )
+
+            val fontCredit = stringResource(R.string.font_credit)
+            if (fontCredit.isNotBlank()) {
+                Text(
+                    text = fontCredit,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
         }
     }
 }

@@ -35,4 +35,5 @@
     <string name="placeholder_quick_responses">Press the ADD button in the upper right corner to start customizing your quick responses</string>
     <string name="screen_settings_title">Settings</string>
     <string name="url_github_opendialer" translatable="false">https://github.com/oxcened/opendialer</string>
+    <string name="font_credit" translatable="false"></string>
 </resources>
