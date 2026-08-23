@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import dev.alenajam.opendialer.core.common.LocalCustomColorsScheme
 
 @Composable
-internal fun IncomingFooter(
+fun IncomingCallControls(
     onHangup: () -> Unit,
     onAnswer: () -> Unit,
 ) {

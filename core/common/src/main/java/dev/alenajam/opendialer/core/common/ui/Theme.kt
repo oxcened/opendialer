@@ -2,7 +2,9 @@ package dev.alenajam.opendialer.core.common.ui
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -20,6 +22,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
+
+private val expressiveShapes = Shapes(
+    extraSmall = RoundedCornerShape(8.dp),
+    small = RoundedCornerShape(12.dp),
+    medium = RoundedCornerShape(20.dp),
+    large = RoundedCornerShape(28.dp),
+    extraLarge = RoundedCornerShape(36.dp)
+)
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -289,7 +300,8 @@ fun AppTheme(
         LocalCustomColorsScheme provides customColorScheme
     ) {
         MaterialTheme(
-            colorScheme = colorScheme
+            colorScheme = colorScheme,
+            shapes = expressiveShapes
         ) {
             if (backgroundPainter != null) {
                 Box(modifier = Modifier.fillMaxSize()) {
@@ -307,4 +319,3 @@ fun AppTheme(
         }
     }
 }
-

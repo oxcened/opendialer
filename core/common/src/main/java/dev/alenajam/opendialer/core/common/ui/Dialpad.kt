@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
@@ -19,13 +20,17 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun Dialpad(
-    onDigitClick: (digit: Char) -> Unit
+    onDigitClick: (digit: Char) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        modifier = modifier.fillMaxWidth()
     ) {
         Row(
-            modifier = Modifier.height(60.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             DigitButton(
@@ -48,7 +53,9 @@ fun Dialpad(
         }
 
         Row(
-            modifier = Modifier.height(60.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             DigitButton(
@@ -71,7 +78,9 @@ fun Dialpad(
         }
 
         Row(
-            modifier = Modifier.height(60.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             DigitButton(
@@ -94,7 +103,9 @@ fun Dialpad(
         }
 
         Row(
-            modifier = Modifier.height(60.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             DigitButton(

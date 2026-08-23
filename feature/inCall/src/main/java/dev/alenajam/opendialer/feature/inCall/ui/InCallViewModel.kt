@@ -1,3 +1,4 @@
+
 package dev.alenajam.opendialer.feature.inCall.ui
 
 import android.app.Activity
@@ -40,6 +41,7 @@ class InCallViewModel
     val isSpeaker = audioState.map { it.route == CallAudioState.ROUTE_SPEAKER }
     val isMuted = audioState.map { it.isMuted }
     val callerName = primaryCall.map { it.callerName ?: it.callerNumber }
+    val callerNumber = primaryCall.map { it.callerNumber }
     val callerImageUri = primaryCall.map { it.callerImageUri }
     val isIncoming = primaryCall.map { it.state == Call.STATE_RINGING  }
 
@@ -57,7 +59,7 @@ class InCallViewModel
             Call.STATE_DIALING -> app.getString(R.string.call_dialing_title)
             Call.STATE_DISCONNECTING -> app.getString(R.string.call_disconnecting_title)
             Call.STATE_DISCONNECTED -> app.getString(R.string.call_disconnected_title)
-            Call.STATE_ACTIVE -> "00:00:00"
+            Call.STATE_ACTIVE -> "00:00"
             else -> ""
         }
         val liveData = MutableLiveData(initialValue)

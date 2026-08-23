@@ -20,7 +20,7 @@ kotlinx-coroutines = "1.6.4"
 gson = "2.9.0"
 picasso = "2.71828"
 prettytime = "4.0.1.Final"
-compose-bom = "2024.09.03"
+compose-bom = "2026.08.00"
 desugar-jdk-libs = "2.0.4"
 
 [libraries]

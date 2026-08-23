@@ -1,23 +1,16 @@
 package dev.alenajam.opendialer.feature.inCall.ui
 
 import android.app.Activity
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImage
 import dev.alenajam.opendialer.core.common.getActivity
 import dev.alenajam.opendialer.core.common.ui.AppProviders
 
@@ -30,6 +23,7 @@ internal fun InCallScreen(
     val isSpeaker = viewModel.isSpeaker.observeAsState()
     val isMuted = viewModel.isMuted.observeAsState()
     val callerName = viewModel.callerName.observeAsState("")
+    val callerNumber = viewModel.callerNumber.observeAsState("")
     val callerImageUri = viewModel.callerImageUri.observeAsState("")
     val isIncoming = viewModel.isIncoming.observeAsState(false)
     val context = LocalContext.current
@@ -40,12 +34,12 @@ internal fun InCallScreen(
             contentWindowInsets = WindowInsets(0, 0, 0, 0),
             bottomBar = {
                 if (isIncoming.value) {
-                    IncomingFooter(
+                    IncomingCallControls(
                         onHangup = viewModel::hangup,
                         onAnswer = viewModel::answer,
                     )
                 } else {
-                    Footer(
+                    InCallControls(
                         isMuted = isMuted.value,
                         isSpeaker = isSpeaker.value,
                         isHolding = isHolding.value,
@@ -59,33 +53,16 @@ internal fun InCallScreen(
                 }
             }
         ) { innerPadding ->
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
+            InCallDetails(
+                callerName = callerName.value,
+                callerNumber = callerNumber.value,
+                stateLabel = stateLabel.value,
+                callerImageUri = callerImageUri.value,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
                     .statusBarsPadding()
-            ) {
-                AsyncImage(
-                    model = callerImageUri.value,
-                    contentDescription = null,
-                    modifier = Modifier.size(50.dp),
-                    placeholder = null,
-                    error = null,
-                    fallback = null
-                )
-
-                Text(
-                    text = callerName.value,
-                    style = MaterialTheme.typography.titleMedium
-                )
-
-                Text(
-                    text = stateLabel.value,
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+            )
         }
     }
 }

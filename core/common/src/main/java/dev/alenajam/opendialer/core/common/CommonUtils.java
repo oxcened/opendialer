@@ -42,14 +42,16 @@ public abstract class CommonUtils {
 
     @SuppressLint("DefaultLocale")
     public static String getDurationTimeString(long durationMilliseconds) {
+        long hours = TimeUnit.MILLISECONDS.toHours(durationMilliseconds);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(durationMilliseconds) -
+                TimeUnit.HOURS.toMinutes(hours);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(durationMilliseconds) -
+                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(durationMilliseconds));
 
-        return String.format("%02d:%02d:%02d",
-                TimeUnit.MILLISECONDS.toHours(durationMilliseconds),
-                TimeUnit.MILLISECONDS.toMinutes(durationMilliseconds) -
-                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(durationMilliseconds)),
-                TimeUnit.MILLISECONDS.toSeconds(durationMilliseconds) -
-                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(durationMilliseconds))
-        );
+        if (hours > 0) {
+            return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        }
+        return String.format("%02d:%02d", minutes, seconds);
     }
 
     @SuppressLint("DefaultLocale")

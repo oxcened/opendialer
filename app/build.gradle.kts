@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "dev.alenajam.opendialer"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "dev.alenajam.opendialer"

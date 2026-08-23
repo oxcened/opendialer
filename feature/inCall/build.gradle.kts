@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "dev.alenajam.opendialer.feature.inCall"
-    compileSdk = 34
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 24

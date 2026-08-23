@@ -1,28 +1,32 @@
 package dev.alenajam.opendialer.feature.inCall.ui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.VolumeUp
-import androidx.compose.material.icons.outlined.AddIcCall
-import androidx.compose.material.icons.outlined.CallEnd
-import androidx.compose.material.icons.outlined.Dialpad
-import androidx.compose.material.icons.outlined.MicOff
-import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material.icons.outlined.Pause
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -31,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -38,7 +43,7 @@ import dev.alenajam.opendialer.core.common.ui.Dialpad
 import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 
 @Composable
-internal fun Footer(
+fun InCallControls(
     isMuted: Boolean? = false,
     isSpeaker: Boolean? = false,
     isHolding: Boolean? = false,
@@ -65,7 +70,8 @@ internal fun Footer(
     Surface(
         tonalElevation = 8.dp,
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        shape = RoundedCornerShape(topStart = 36.dp, topEnd = 36.dp)
     ) {
         Column(
             modifier = Modifier
@@ -73,31 +79,66 @@ internal fun Footer(
                 .navigationBarsPadding()
                 .padding(bottom = 16.dp, start = 16.dp, end = 16.dp)
         ) {
-            AnimatedVisibility(visible = openSection.value == OpenSection.ADDITIONAL_ACTIONS) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceAround,
+            AnimatedVisibility(
+                visible = openSection.value == OpenSection.ADDITIONAL_ACTIONS,
+                enter = expandVertically(
+                    animationSpec = spring(dampingRatio = 0.78f, stiffness = 420f)
+                ) + fadeIn(),
+                exit = shrinkVertically(
+                    animationSpec = spring(dampingRatio = 0.9f, stiffness = 500f)
+                ) + fadeOut()
+            ) {
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 16.dp, top = 32.dp)
+                        .padding(top = 8.dp, bottom = 8.dp)
                 ) {
-                    CallButton(
-                        icon = icons.pause,
-                        label = "Hold",
-                        isActive = isHolding,
-                        onClick = onHold
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp)
+                    ) {
+                        Text(text = "More", style = MaterialTheme.typography.titleMedium)
+                        Spacer(modifier = Modifier.weight(1f))
+                        IconButton(
+                            onClick = { toggleSectionButton(OpenSection.ADDITIONAL_ACTIONS) }
+                        ) {
+                            Icon(imageVector = Icons.Outlined.Close, contentDescription = "Close")
+                        }
+                    }
 
-                    CallButton(
-                        icon = icons.addCall,
-                        label = "Add call",
-                        isActive = false,
-                        onClick = onAddCall
-                    )
+                    Surface(
+                        color = MaterialTheme.colorScheme.surfaceContainerLowest,
+                        shape = RoundedCornerShape(28.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column {
+                            MoreActionRow(
+                                icon = icons.addCall,
+                                label = "Add call",
+                                onClick = onAddCall
+                            )
+                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                            MoreActionRow(
+                                icon = icons.pause,
+                                label = "Hold",
+                                isActive = isHolding,
+                                onClick = onHold
+                            )
+                        }
+                    }
                 }
             }
 
             AnimatedVisibility(
-                visible = openSection.value == OpenSection.DIALPAD
+                visible = openSection.value == OpenSection.DIALPAD,
+                enter = expandVertically(
+                    animationSpec = spring(dampingRatio = 0.78f, stiffness = 420f)
+                ) + fadeIn(),
+                exit = shrinkVertically(
+                    animationSpec = spring(dampingRatio = 0.9f, stiffness = 500f)
+                ) + fadeOut()
             ) {
                 Column(
                     modifier = Modifier.padding(bottom = 16.dp)
@@ -112,7 +153,11 @@ internal fun Footer(
                         textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
                         colors = TextFieldDefaults.colors(
                             unfocusedContainerColor = Color.Transparent,
-                            focusedContainerColor = Color.Transparent
+                            focusedContainerColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent,
+                            errorIndicatorColor = Color.Transparent
                         )
                     )
 
@@ -126,7 +171,7 @@ internal fun Footer(
                 horizontalArrangement = Arrangement.SpaceAround,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 48.dp, top = 32.dp)
+                    .padding(bottom = 24.dp, top = 24.dp)
             ) {
                 CallButton(
                     icon = icons.dialpad,
@@ -157,21 +202,66 @@ internal fun Footer(
                 )
             }
 
-            IconButton(
+            Surface(
                 onClick = onHangup,
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.error
-                ),
+                color = MaterialTheme.colorScheme.error,
+                shape = RoundedCornerShape(32.dp),
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .size(60.dp)
+                    .width(224.dp)
+                    .height(64.dp)
             ) {
-                Icon(
-                    imageVector = icons.hangup,
-                    contentDescription = null,
-                    tint = Color.White
-                )
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = icons.hangup,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onError
+                    )
+                }
             }
+        }
+    }
+}
+
+@Composable
+private fun MoreActionRow(
+    icon: ImageVector,
+    label: String,
+    isActive: Boolean? = false,
+    onClick: () -> Unit
+) {
+    Surface(
+        onClick = onClick,
+        color = Color.Transparent,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
+        ) {
+            Surface(
+                color = if (isActive == true) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.surfaceContainerHigh
+                },
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier.size(48.dp)
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = if (isActive == true) {
+                            MaterialTheme.colorScheme.onPrimary
+                        } else {
+                            MaterialTheme.colorScheme.onSurface
+                        }
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(text = label, style = MaterialTheme.typography.bodyLarge)
         }
     }
 }

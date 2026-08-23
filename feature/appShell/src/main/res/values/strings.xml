@@ -3,5 +3,5 @@
     <string name="contacts">Contacts</string>
     <string name="recents">Recents</string>
     <string name="coming_soon">Coming soon…</string>
-    <string name="home_menu_settings_label">Settings</string>
+    <string name="home_menu_settings_label">About</string>
 </resources>

@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.callscache"
-    compileSdk = 34
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 24

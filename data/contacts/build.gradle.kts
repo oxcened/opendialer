@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "dev.alenajam.opendialer.data.contacts"
-    compileSdk = 34
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 24

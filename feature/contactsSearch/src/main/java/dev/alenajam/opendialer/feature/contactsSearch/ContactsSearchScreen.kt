@@ -320,7 +320,11 @@ private fun Footer(
                     textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent
+                        focusedContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        errorIndicatorColor = Color.Transparent
                     )
                 )
 
