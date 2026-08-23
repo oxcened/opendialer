@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
 import android.os.Build;
 
 import dev.alenajam.opendialer.feature.inCall.R;
@@ -97,7 +98,15 @@ public abstract class NotificationHelper {
 
         if (callService != null) {
             Notification notification = builder.build();
-            callService.startForeground(NOTIFICATION_ID_CALL, notification);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                callService.startForeground(
+                        NOTIFICATION_ID_CALL,
+                        notification,
+                        ServiceInfo.FOREGROUND_SERVICE_TYPE_PHONE_CALL
+                );
+            } else {
+                callService.startForeground(NOTIFICATION_ID_CALL, notification);
+            }
             return notification;
         } else return null;
     }
