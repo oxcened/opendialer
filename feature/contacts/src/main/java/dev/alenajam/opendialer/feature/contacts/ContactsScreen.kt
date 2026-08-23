@@ -5,6 +5,7 @@ import android.telephony.PhoneNumberUtils
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -123,6 +124,7 @@ fun ContactsScreen(
                     roundTop = index == 0,
                     roundBottom = index == filteredContacts.lastIndex,
                     onClick = { openRowKey = if (isOpen) null else rowKey },
+                    onOpenContact = { viewModel.openContact(contact.id) },
                     onCall = {
                         if (!viewModel.makeCall(contact.number)) {
                             pendingCallNumber = contact.number
@@ -148,6 +150,7 @@ private fun ContactRow(
     roundTop: Boolean,
     roundBottom: Boolean,
     onClick: () -> Unit,
+    onOpenContact: () -> Unit,
     onCall: () -> Unit,
     onMessage: () -> Unit,
     onHistory: () -> Unit,
@@ -184,7 +187,9 @@ private fun ContactRow(
                 AsyncImage(
                     model = contact.image,
                     contentDescription = null,
-                    modifier = Modifier.size(50.dp),
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clickable(onClick = onOpenContact),
                     placeholder = placeholder,
                     error = placeholder,
                     fallback = placeholder
@@ -291,6 +296,7 @@ private fun ContactRowPreview() {
         roundTop = true,
         roundBottom = true,
         onClick = {},
+        onOpenContact = {},
         onCall = {},
         onMessage = {},
         onHistory = {},
