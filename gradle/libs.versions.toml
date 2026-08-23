@@ -1,7 +1,11 @@
 [versions]
-kotlin = "2.0.20"
+kotlin = "2.2.10"
+hilt = "2.57.2"
 
 [libraries]
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
 compose-activity = { group = "androidx.activity", name = "activity-compose", version = "1.9.2" }
 androidx-material3 = { module = "androidx.compose.material3:material3" }
 coil-compose = { module = "io.coil-kt:coil-compose", version = "2.5.0" }

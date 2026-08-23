@@ -10,7 +10,6 @@ include(
         ":data:callsCache",
         ":data:contacts",
         ":data:contactsSearch",
-        ":data:inCall",
 
         // features
         ":feature:callDetail",
