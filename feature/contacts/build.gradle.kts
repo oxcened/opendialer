@@ -49,7 +49,7 @@ dependencies {
   testImplementation("com.google.dagger:hilt-android-testing:2.48.1")
   kaptTest("com.google.dagger:hilt-compiler:2.48.1")
 
-  implementation("com.amulyakhare:com.amulyakhare.textdrawable:1.0.1")
+  implementation("com.github.ramseth001:TextDrawable:1.1.6")
   implementation("com.squareup.picasso:picasso:2.71828")
   implementation("org.ocpsoft.prettytime:prettytime:4.0.1.Final")
 

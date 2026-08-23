@@ -67,7 +67,7 @@ dependencies {
   implementation("androidx.preference:preference-ktx:1.2.1")
   implementation("androidx.recyclerview:recyclerview:1.3.2")
 
-  implementation("com.amulyakhare:com.amulyakhare.textdrawable:1.0.1")
+  implementation("com.github.ramseth001:TextDrawable:1.1.6")
   implementation("com.squareup.picasso:picasso:2.71828")
   implementation("org.ocpsoft.prettytime:prettytime:4.0.1.Final")
 

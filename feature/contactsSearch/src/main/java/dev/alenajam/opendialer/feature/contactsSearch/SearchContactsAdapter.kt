@@ -28,7 +28,7 @@ private val colorList = listOf(
   Color.parseColor("#EF4423"),
   Color.parseColor("#328AF0")
 )
-private val generator = ColorGenerator.create(colorList)
+private val generator = ColorGenerator(colorList)
 
 class SearchContactsAdapter(private val onClick: (item: Item) -> Unit) :
   RecyclerView.Adapter<SearchContactsAdapter.ViewHolder>() {

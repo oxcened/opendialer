@@ -44,7 +44,7 @@ private val colorList = listOf(
   Color.parseColor("#EF4423"),
   Color.parseColor("#328AF0")
 )
-private val generator = ColorGenerator.create(colorList)
+private val generator = ColorGenerator(colorList)
 private const val itemHeight = 75f
 private const val optionHeight = 50
 private const val expandAnimDuration = 200L

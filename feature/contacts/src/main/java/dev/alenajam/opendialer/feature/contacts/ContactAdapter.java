@@ -33,7 +33,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
       Color.parseColor("#328AF0")
   );
 
-  private ColorGenerator generator = ColorGenerator.create(colorList);
+  private ColorGenerator generator = new ColorGenerator(colorList);
   private Transformation circleTransform = new CircleTransform();
   private Activity context;
   private ArrayList<DialerContact> contacts = new ArrayList<>();
