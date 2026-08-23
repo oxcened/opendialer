@@ -5,11 +5,19 @@ import android.telecom.PhoneAccount
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.util.Consumer
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import dev.alenajam.opendialer.core.common.DefaultPhoneUtils
 import dev.alenajam.opendialer.core.common.MAIN_ACTIVITY_INTENT_DIAL_EXTRA_ADD_CALL
 import dev.alenajam.opendialer.core.common.getActivity
 import dev.alenajam.opendialer.core.common.ui.AppIcons
@@ -34,31 +42,56 @@ fun DialerApp(
 ) {
     val navController = rememberNavController()
 
-    HandleDialIntent(
-        onOpenContactsSearch = { navController.navigate(ContactsSearchRoute(it)) }
-    )
-
     AppProviders(icons = icons, themeExtension = themeExtension) {
-        NavHost(navController = navController, startDestination = HomeRoute) {
-            composable<HomeRoute> {
-                HomeScreen(
-                    onOpenDialpad = { navController.navigate(ContactsSearchRoute()) },
-                    onOpenHistory = { navController.navigate(CallDetailRoute(callIds = it)) },
-                    onOpenSettings = { navController.navigate(SettingsRoute) },
-                )
+        val activity = LocalContext.current.getActivity()
+        var isDefaultPhoneApp by remember(activity) {
+            mutableStateOf(activity?.let(DefaultPhoneUtils::hasDefault) == true)
+        }
+        val lifecycleOwner = LocalLifecycleOwner.current
+
+        DisposableEffect(activity, lifecycleOwner) {
+            val observer = LifecycleEventObserver { _, event ->
+                if (event == Lifecycle.Event.ON_RESUME) {
+                    isDefaultPhoneApp = activity?.let(DefaultPhoneUtils::hasDefault) == true
+                }
             }
-            composable<ContactsSearchRoute> {
-                ContactsSearchScreen()
-            }
-            composable<CallDetailRoute> {
-                CallDetailScreen(onNavigateBack = { navController.popBackStack() })
-            }
-            composable<SettingsRoute> {
-                SettingsScreen(onNavigateBack = { navController.popBackStack() })
+            lifecycleOwner.lifecycle.addObserver(observer)
+            onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+        }
+
+        if (!isDefaultPhoneApp) {
+            DefaultPhoneScreen(
+                onSetAsDefault = {
+                    activity?.let { DefaultPhoneUtils.requestDefault(it, DEFAULT_PHONE_REQUEST_CODE) }
+                },
+            )
+        } else {
+            HandleDialIntent(
+                onOpenContactsSearch = { navController.navigate(ContactsSearchRoute(it)) }
+            )
+            NavHost(navController = navController, startDestination = HomeRoute) {
+                composable<HomeRoute> {
+                    HomeScreen(
+                        onOpenDialpad = { navController.navigate(ContactsSearchRoute()) },
+                        onOpenHistory = { navController.navigate(CallDetailRoute(callIds = it)) },
+                        onOpenSettings = { navController.navigate(SettingsRoute) },
+                    )
+                }
+                composable<ContactsSearchRoute> {
+                    ContactsSearchScreen()
+                }
+                composable<CallDetailRoute> {
+                    CallDetailScreen(onNavigateBack = { navController.popBackStack() })
+                }
+                composable<SettingsRoute> {
+                    SettingsScreen(onNavigateBack = { navController.popBackStack() })
+                }
             }
         }
     }
 }
+
+private const val DEFAULT_PHONE_REQUEST_CODE = 1001
 
 @Composable
 private fun HandleDialIntent(onOpenContactsSearch: (prefilledNumber: String) -> Unit) {
