@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.AccessTimeFilled
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.outlined.AccessTime
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Dialpad
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.People
@@ -50,38 +51,47 @@ internal fun HomeScreen(
     onOpenSettings: () -> Unit,
 ) {
     var currentTab by remember { mutableStateOf(HomeTab.CALLS) }
+    var searchQuery by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
             SearchBar(
                 inputField = @Composable {
                     SearchBarDefaults.InputField(
-                        query = "",
-                        onQueryChange = {},
+                        query = searchQuery,
+                        onQueryChange = { searchQuery = it },
                         onSearch = {},
                         expanded = false,
                         onExpandedChange = {},
-                        enabled = false,
-                        placeholder = { Text(stringResource(R.string.coming_soon)) },
+                        placeholder = { Text(stringResource(R.string.search_contacts)) },
                         leadingIcon = {
                             IconButton(onClick = {}) {
                                 Icon(Icons.Outlined.Search, contentDescription = null)
                             }
                         },
                         trailingIcon = {
-                            Box {
-                                var expanded by remember { mutableStateOf(false) }
-                                IconButton(onClick = { expanded = true }) {
-                                    Icon(Icons.Default.MoreVert, contentDescription = null)
-                                }
-                                DropdownMenu(
-                                    expanded = expanded,
-                                    onDismissRequest = { expanded = false },
-                                ) {
-                                    DropdownMenuItem(
-                                        text = { Text(stringResource(R.string.home_menu_settings_label)) },
-                                        onClick = onOpenSettings,
+                            if (searchQuery.isNotEmpty()) {
+                                IconButton(onClick = { searchQuery = "" }) {
+                                    Icon(
+                                        Icons.Outlined.Close,
+                                        contentDescription = stringResource(R.string.clear_search),
                                     )
+                                }
+                            } else {
+                                Box {
+                                    var expanded by remember { mutableStateOf(false) }
+                                    IconButton(onClick = { expanded = true }) {
+                                        Icon(Icons.Default.MoreVert, contentDescription = null)
+                                    }
+                                    DropdownMenu(
+                                        expanded = expanded,
+                                        onDismissRequest = { expanded = false },
+                                    ) {
+                                        DropdownMenuItem(
+                                            text = { Text(stringResource(R.string.home_menu_settings_label)) },
+                                            onClick = onOpenSettings,
+                                        )
+                                    }
                                 }
                             }
                         },
@@ -130,9 +140,13 @@ internal fun HomeScreen(
         },
     ) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) {
-            when (currentTab) {
-                HomeTab.CALLS -> CallsScreen(onOpenHistory = onOpenHistory)
-                HomeTab.CONTACTS -> ContactsScreen()
+            if (searchQuery.isNotBlank()) {
+                ContactsScreen(searchQuery = searchQuery, onOpenHistory = onOpenHistory)
+            } else {
+                when (currentTab) {
+                    HomeTab.CALLS -> CallsScreen(onOpenHistory = onOpenHistory)
+                    HomeTab.CONTACTS -> ContactsScreen(onOpenHistory = onOpenHistory)
+                }
             }
         }
     }

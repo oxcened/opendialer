@@ -9,15 +9,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import dev.alenajam.opendialer.feature.inCall.R
 
 @Composable
 fun InCallDetails(
     callerName: String,
     callerNumber: String,
+    callerNumberLabel: String,
     stateLabel: String,
     callerImageUri: String? = null,
     modifier: Modifier = Modifier,
@@ -56,7 +59,11 @@ fun InCallDetails(
 
         if (callerName.isNotBlank() && callerNumber.isNotBlank() && callerName != callerNumber) {
             Text(
-                text = callerNumber,
+                text = if (callerNumberLabel.isBlank()) {
+                    callerNumber
+                } else {
+                    stringResource(R.string.caller_number_subtitle, callerNumberLabel, callerNumber)
+                },
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

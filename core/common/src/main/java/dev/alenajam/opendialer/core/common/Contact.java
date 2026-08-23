@@ -9,6 +9,8 @@ public class Contact implements Serializable {
     private boolean starred;
     private String imageUri;
     private String lookupKey;
+    private int phoneType;
+    private String phoneLabel;
 
     public Contact(int id) {
         this.id = id;
@@ -82,5 +84,21 @@ public class Contact implements Serializable {
 
     public void setLookupKey(String lookupKey) {
         this.lookupKey = lookupKey;
+    }
+
+    public int getPhoneType() {
+        return phoneType;
+    }
+
+    public void setPhoneType(int phoneType) {
+        this.phoneType = phoneType;
+    }
+
+    public String getPhoneLabel() {
+        return phoneLabel;
+    }
+
+    public void setPhoneLabel(String phoneLabel) {
+        this.phoneLabel = phoneLabel;
     }
 }

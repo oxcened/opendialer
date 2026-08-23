@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.ContactsContract;
 import android.telecom.Call;
 import android.telecom.VideoProfile;
 
@@ -21,7 +22,7 @@ public class OngoingCall {
     @SuppressLint("StaticFieldLeak")
     public static OngoingCall ONGOING_CALL_NULL = new OngoingCall();
     private Call call;
-    private String callerNumber = "", keypadText = "", callerName, callerImageUri = null;
+    private String callerNumber = "", callerNumberLabel = "", keypadText = "", callerName, callerImageUri = null;
     private long startTime = -1, totalTime = 0;
     private int type;
     private Context context;
@@ -81,6 +82,11 @@ public class OngoingCall {
             if (savedContact != null) {
                 callerName = savedContact.getName();
                 callerImageUri = savedContact.getImageUri();
+                callerNumberLabel = ContactsContract.CommonDataKinds.Phone.getTypeLabel(
+                        context.getResources(),
+                        savedContact.getPhoneType(),
+                        savedContact.getPhoneLabel()
+                ).toString();
             } else {
                 callerName = callerNumber;
             }
@@ -124,6 +130,10 @@ public class OngoingCall {
 
     public String getCallerNumber() {
         return callerNumber;
+    }
+
+    public String getCallerNumberLabel() {
+        return callerNumberLabel;
     }
 
     @Nullable

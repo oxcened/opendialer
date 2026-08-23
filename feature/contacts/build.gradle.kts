@@ -35,6 +35,7 @@ android {
 
 dependencies {
     implementation(project(":data:contacts"))
+    implementation(project(":data:calls"))
     implementation(project(":core:common"))
 
     implementation(libs.androidx.core.ktx)

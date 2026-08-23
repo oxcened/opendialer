@@ -14,11 +14,15 @@ abstract class ContactsData {
             ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY,
             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
             ContactsContract.CommonDataKinds.Phone.STARRED,
-            ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI
+            ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI,
+            ContactsContract.CommonDataKinds.Phone.NUMBER,
+            ContactsContract.CommonDataKinds.Phone.TYPE,
+            ContactsContract.CommonDataKinds.Phone.LABEL,
         )
 
         private const val where =
-            "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} IS NOT NULL"
+            "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} IS NOT NULL AND " +
+                "${ContactsContract.CommonDataKinds.Phone.NUMBER} IS NOT NULL"
         private const val sort =
             "${ContactsContract.CommonDataKinds.Phone.STARRED} DESC, ${ContactsContract.CommonDataKinds.Phone.SORT_KEY_PRIMARY}"
 
@@ -44,7 +48,10 @@ abstract class ContactsData {
                                 )
                             )
                                 ?.takeIf { it.isNotBlank() },
-                            starred = cursor.getInt(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.STARRED))
+                            starred = cursor.getInt(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.STARRED)),
+                            number = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER)),
+                            phoneType = cursor.getInt(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.TYPE)),
+                            phoneLabel = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.LABEL)),
                         )
                     )
                 } while (cursor.moveToNext())

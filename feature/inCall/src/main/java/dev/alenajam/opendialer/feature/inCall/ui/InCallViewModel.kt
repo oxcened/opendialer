@@ -42,6 +42,7 @@ class InCallViewModel
     val isMuted = audioState.map { it.isMuted }
     val callerName = primaryCall.map { it.callerName ?: it.callerNumber }
     val callerNumber = primaryCall.map { it.callerNumber }
+    val callerNumberLabel = primaryCall.map { it.callerNumberLabel }
     val callerImageUri = primaryCall.map { it.callerImageUri }
     val isIncoming = primaryCall.map { it.state == Call.STATE_RINGING  }
 

@@ -2,7 +2,8 @@
 <resources>
     <string name="contacts">Contacts</string>
     <string name="recents">Recents</string>
-    <string name="coming_soon">Coming soon…</string>
+    <string name="search_contacts">Search contacts</string>
+    <string name="clear_search">Clear search</string>
     <string name="home_menu_settings_label">About</string>
     <string name="default_phone_title">Set OpenDialer as default</string>
     <string name="default_phone_description">OpenDialer can only make and receive calls when it’s your default phone app.</string>

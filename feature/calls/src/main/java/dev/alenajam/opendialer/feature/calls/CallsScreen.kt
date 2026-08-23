@@ -1,19 +1,21 @@
 package dev.alenajam.opendialer.feature.calls
 
+import android.provider.ContactsContract
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.outlined.Block
@@ -25,7 +27,6 @@ import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.PersonAddAlt
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.Voicemail
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -40,11 +41,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.style.TextAlign
@@ -60,6 +62,10 @@ import dev.alenajam.opendialer.data.calls.CallType
 import dev.alenajam.opendialer.data.calls.ContactInfo
 import dev.alenajam.opendialer.data.calls.DialerCall
 import org.ocpsoft.prettytime.PrettyTime
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.Date
 
 @Composable
@@ -79,6 +85,11 @@ fun CallsScreen(
     val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
     var openRowId by remember { mutableStateOf<Int?>(null) }
     val icons = LocalAppIcons.current
+    val callsByDate = remember(calls.value) {
+        calls.value.groupBy { call ->
+            call.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+        }
+    }
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.attemptInvalidateCache()
@@ -115,32 +126,58 @@ fun CallsScreen(
         LazyColumn(
             contentPadding = PaddingValues(bottom = 100.dp)
         ) {
-            items(calls.value) { call ->
-                LaunchedEffect(
-                    call,
-                    lastInvalidateCache.value
-                ) { viewModel.updateContactInfo(call) }
-                val isOpen = openRowId == call.id
+            callsByDate.forEach { (date, callsForDate) ->
+                item(key = "header-$date") {
+                    CallDateHeader(date)
+                }
+                itemsIndexed(callsForDate, key = { _, call -> call.id }) { index, call ->
+                    LaunchedEffect(
+                        call,
+                        lastInvalidateCache.value
+                    ) { viewModel.updateContactInfo(call) }
+                    val isOpen = openRowId == call.id
 
-                CallRow(call = call,
-                    isOpen = isOpen,
-                    icons = icons,
-                    onClick = { openRowId = if (isOpen) null else call.id },
-                    makeCall = { viewModel.makeCall(call.contactInfo.number!!) },
-                    sendMessage = { viewModel.sendMessage(call.contactInfo.number!!) },
-                    addContact = { viewModel.addToContact(call.contactInfo.number!!) },
-                    openContact = { viewModel.openContact(call) },
-                    openHistory = { onOpenHistory(call.childCalls.map { it.id }) }
-                )
+                    CallRow(call = call,
+                        isOpen = isOpen,
+                        roundTop = index == 0,
+                        roundBottom = index == callsForDate.lastIndex,
+                        icons = icons,
+                        onClick = { openRowId = if (isOpen) null else call.id },
+                        makeCall = { viewModel.makeCall(call.contactInfo.number!!) },
+                        sendMessage = { viewModel.sendMessage(call.contactInfo.number!!) },
+                        addContact = { viewModel.addToContact(call.contactInfo.number!!) },
+                        openContact = { viewModel.openContact(call) },
+                        openHistory = { onOpenHistory(call.childCalls.map { it.id }) }
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
+private fun CallDateHeader(date: LocalDate) {
+    val today = LocalDate.now()
+    val label = when (date) {
+        today -> stringResource(R.string.call_log_date_today)
+        today.minusDays(1) -> stringResource(R.string.call_log_date_yesterday)
+        else -> date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
+    }
+
+    Text(
+        text = label,
+        modifier = Modifier.padding(start = 16.dp, top = 24.dp, end = 16.dp, bottom = 8.dp),
+        style = MaterialTheme.typography.titleSmall,
+        color = MaterialTheme.colorScheme.primary,
+    )
+}
+
+@Composable
 private fun CallRow(
     call: DialerCall,
     isOpen: Boolean,
+    roundTop: Boolean,
+    roundBottom: Boolean,
     icons: dev.alenajam.opendialer.core.common.ui.AppIcons,
     onClick: () -> Unit,
     makeCall: () -> Unit,
@@ -149,8 +186,30 @@ private fun CallRow(
     openContact: () -> Unit,
     openHistory: () -> Unit,
 ) {
+    val resources = LocalContext.current.resources
+    val relativeTime = PrettyTime().format(call.date)
+    val phoneType = call.contactInfo.type
+        ?.takeIf { call.isContactSaved() }
+        ?.let {
+            ContactsContract.CommonDataKinds.Phone.getTypeLabel(
+                resources,
+                it,
+                call.contactInfo.label,
+            ).toString()
+        }
+        .orEmpty()
+
     Surface(
-        onClick = onClick, tonalElevation = if (isOpen) 8.dp else 0.dp
+        onClick = onClick,
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 1.dp),
+        shape = RoundedCornerShape(
+            topStart = if (roundTop) 20.dp else 2.dp,
+            topEnd = if (roundTop) 20.dp else 2.dp,
+            bottomStart = if (roundBottom) 20.dp else 2.dp,
+            bottomEnd = if (roundBottom) 20.dp else 2.dp,
+        ),
+        color = Color.White,
+        shadowElevation = 0.5.dp,
     ) {
         Column {
             Row(
@@ -207,7 +266,11 @@ private fun CallRow(
                         )
 
                         Text(
-                            text = PrettyTime().format(call.date),
+                            text = if (phoneType.isBlank()) {
+                                relativeTime
+                            } else {
+                                stringResource(R.string.call_log_type_time, phoneType, relativeTime)
+                            },
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -226,27 +289,34 @@ private fun CallRow(
             }
 
             AnimatedVisibility(visible = isOpen) {
-                HorizontalDivider()
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(1.dp),
                 ) {
                     if (!call.isAnonymous()) {
                         if (!call.isContactSaved()) {
                             CallRowButton(
                                 label = "Add contact",
                                 icon = icons.personAdd,
+                                roundTop = true,
                                 onClick = addContact
                             )
                         }
 
                         CallRowButton(
-                            label = "Message", icon = icons.message, onClick = sendMessage
+                            label = "Message",
+                            icon = icons.message,
+                            roundTop = call.isContactSaved(),
+                            onClick = sendMessage,
                         )
                     }
 
                     CallRowButton(
-                        label = "History", icon = icons.history, onClick = openHistory
+                        label = "History",
+                        icon = icons.history,
+                        roundTop = call.isAnonymous(),
+                        roundBottom = true,
+                        onClick = openHistory,
                     )
                 }
             }
@@ -255,27 +325,36 @@ private fun CallRow(
 }
 
 @Composable
-private fun RowScope.CallRowButton(
-    label: String, icon: ImageVector, onClick: () -> Unit
+private fun CallRowButton(
+    label: String,
+    icon: ImageVector,
+    roundTop: Boolean = false,
+    roundBottom: Boolean = false,
+    onClick: () -> Unit,
 ) {
     Surface(
-        onClick = onClick, modifier = Modifier.weight(1f), color = Color.Transparent
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        shape = RoundedCornerShape(
+            topStart = if (roundTop) 12.dp else 2.dp,
+            topEnd = if (roundTop) 12.dp else 2.dp,
+            bottomStart = if (roundBottom) 12.dp else 2.dp,
+            bottomEnd = if (roundBottom) 12.dp else 2.dp,
+        ),
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(vertical = 16.dp)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
-            Text(
-                text = label,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            Text(text = label, style = MaterialTheme.typography.bodyLarge)
         }
     }
 }
@@ -301,6 +380,8 @@ private val anonymousCallMock = incomingCallMock.copy(
 private fun IncomingCallPreview() {
     CallRow(call = incomingCallMock,
         isOpen = false,
+        roundTop = true,
+        roundBottom = true,
         icons = dev.alenajam.opendialer.core.common.ui.DefaultAppIcons,
         onClick = {},
         makeCall = {},
@@ -315,6 +396,8 @@ private fun IncomingCallPreview() {
 private fun OutgoingCallPreview() {
     CallRow(call = outgoingCallMock,
         isOpen = false,
+        roundTop = true,
+        roundBottom = true,
         icons = dev.alenajam.opendialer.core.common.ui.DefaultAppIcons,
         onClick = {},
         makeCall = {},
@@ -329,6 +412,8 @@ private fun OutgoingCallPreview() {
 private fun AnonymousCallPreview() {
     CallRow(call = anonymousCallMock,
         isOpen = false,
+        roundTop = true,
+        roundBottom = true,
         icons = dev.alenajam.opendialer.core.common.ui.DefaultAppIcons,
         onClick = {},
         makeCall = {},

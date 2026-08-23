@@ -24,6 +24,7 @@ internal fun InCallScreen(
     val isMuted = viewModel.isMuted.observeAsState()
     val callerName = viewModel.callerName.observeAsState("")
     val callerNumber = viewModel.callerNumber.observeAsState("")
+    val callerNumberLabel = viewModel.callerNumberLabel.observeAsState("")
     val callerImageUri = viewModel.callerImageUri.observeAsState("")
     val isIncoming = viewModel.isIncoming.observeAsState(false)
     val context = LocalContext.current
@@ -56,6 +57,7 @@ internal fun InCallScreen(
             InCallDetails(
                 callerName = callerName.value,
                 callerNumber = callerNumber.value,
+                callerNumberLabel = callerNumberLabel.value,
                 stateLabel = stateLabel.value,
                 callerImageUri = callerImageUri.value,
                 modifier = Modifier

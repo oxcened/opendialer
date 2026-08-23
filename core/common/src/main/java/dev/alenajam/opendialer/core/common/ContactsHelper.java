@@ -38,6 +38,8 @@ public abstract class ContactsHelper {
                     phoneNumber,
                     cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.PHOTO_URI))
             );
+            contact.setPhoneType(cursor.getInt(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.TYPE)));
+            contact.setPhoneLabel(cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.LABEL)));
             cursor.close();
             return contact;
         } else if (cursor != null) cursor.close();
