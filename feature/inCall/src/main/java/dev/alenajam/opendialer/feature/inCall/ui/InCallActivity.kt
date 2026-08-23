@@ -9,10 +9,15 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.WindowCompat
 import dagger.hilt.android.AndroidEntryPoint
+import dev.alenajam.opendialer.core.common.ui.InCallUI
 import dev.alenajam.opendialer.feature.inCall.service.CallsHandler
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class InCallActivity : ComponentActivity() {
+    @Inject
+    lateinit var inCallUI: InCallUI
+
     var visibility: Boolean = false
         private set
 
@@ -36,7 +41,7 @@ class InCallActivity : ComponentActivity() {
             window.isNavigationBarContrastEnforced = false
         }
         setContent {
-            InCallScreen()
+            inCallUI.Content()
         }
     }
 

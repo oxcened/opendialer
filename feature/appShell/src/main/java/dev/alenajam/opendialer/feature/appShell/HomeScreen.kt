@@ -1,4 +1,4 @@
-package dev.alenajam.opendialer.ui
+package dev.alenajam.opendialer.feature.appShell
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,13 +37,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import dev.alenajam.opendialer.R
 import dev.alenajam.opendialer.feature.calls.CallsScreen
 import dev.alenajam.opendialer.feature.contacts.ContactsScreen
 
-private enum class Route {
+private enum class HomeTab {
     CALLS,
-    CONTACTS
+    CONTACTS,
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,7 +52,7 @@ internal fun HomeScreen(
     onOpenHistory: (ids: List<Int>) -> Unit,
     onOpenSettings: () -> Unit,
 ) {
-    var currentRoute by remember { mutableStateOf(Route.CALLS) }
+    var currentTab by remember { mutableStateOf(HomeTab.CALLS) }
 
     Scaffold(
         topBar = {
@@ -66,50 +65,33 @@ internal fun HomeScreen(
                         expanded = false,
                         onExpandedChange = {},
                         enabled = false,
-                        placeholder = { Text(text = stringResource(id = R.string.coming_soon)) },
+                        placeholder = { Text(stringResource(R.string.coming_soon)) },
                         leadingIcon = {
-                            IconButton(
-                                onClick = {}
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Outlined.Search,
-                                    contentDescription = null
-                                )
+                            IconButton(onClick = {}) {
+                                Icon(Icons.Outlined.Search, contentDescription = null)
                             }
                         },
                         trailingIcon = {
-                            IconButton(
-                                onClick = {}
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .wrapContentSize(Alignment.TopStart)
                             ) {
-                                Icon(
-                                    imageVector = Icons.Outlined.MoreVert,
-                                    contentDescription = null
-                                )
-
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .wrapContentSize(Alignment.TopStart)
+                                var expanded by remember { mutableStateOf(false) }
+                                IconButton(onClick = { expanded = true }) {
+                                    Icon(Icons.Default.MoreVert, contentDescription = null)
+                                }
+                                DropdownMenu(
+                                    expanded = expanded,
+                                    onDismissRequest = { expanded = false },
                                 ) {
-                                    var expanded by remember { mutableStateOf(false) }
-
-                                    IconButton(onClick = { expanded = true }) {
-                                        Icon(
-                                            Icons.Default.MoreVert,
-                                            contentDescription = null
-                                        )
-                                    }
-                                    DropdownMenu(
-                                        expanded = expanded,
-                                        onDismissRequest = { expanded = false }) {
-                                        DropdownMenuItem(
-                                            text = { Text(text = stringResource(R.string.home_menu_settings_label)) },
-                                            onClick = onOpenSettings,
-                                        )
-                                    }
+                                    DropdownMenuItem(
+                                        text = { Text(stringResource(R.string.home_menu_settings_label)) },
+                                        onClick = onOpenSettings,
+                                    )
                                 }
                             }
-                        }
+                        },
                     )
                 },
                 expanded = false,
@@ -117,51 +99,47 @@ internal fun HomeScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .statusBarsPadding()
-                    .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+                    .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
             ) {}
         },
         bottomBar = {
             NavigationBar {
-                val isSelected = { item: Route -> item == currentRoute }
-
                 NavigationBarItem(
-                    selected = isSelected(Route.CALLS),
+                    selected = currentTab == HomeTab.CALLS,
                     icon = {
                         Icon(
-                            imageVector = if (isSelected(Route.CALLS)) Icons.Filled.AccessTimeFilled else Icons.Outlined.AccessTime,
-                            contentDescription = null
+                            if (currentTab == HomeTab.CALLS) Icons.Filled.AccessTimeFilled
+                            else Icons.Outlined.AccessTime,
+                            contentDescription = null,
                         )
                     },
-                    label = { Text(text = stringResource(R.string.recents)) },
-                    onClick = { currentRoute = Route.CALLS },
+                    label = { Text(stringResource(R.string.recents)) },
+                    onClick = { currentTab = HomeTab.CALLS },
                 )
-
                 NavigationBarItem(
-                    selected = isSelected(Route.CONTACTS),
+                    selected = currentTab == HomeTab.CONTACTS,
                     icon = {
                         Icon(
-                            imageVector = if (isSelected(Route.CONTACTS)) Icons.Filled.People else Icons.Outlined.People,
-                            contentDescription = null
+                            if (currentTab == HomeTab.CONTACTS) Icons.Filled.People
+                            else Icons.Outlined.People,
+                            contentDescription = null,
                         )
                     },
-                    label = { Text(text = stringResource(R.string.contacts)) },
-                    onClick = { currentRoute = Route.CONTACTS },
+                    label = { Text(stringResource(R.string.contacts)) },
+                    onClick = { currentTab = HomeTab.CONTACTS },
                 )
             }
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onOpenDialpad) {
-                Icon(imageVector = Icons.Outlined.Dialpad, contentDescription = null)
+                Icon(Icons.Outlined.Dialpad, contentDescription = null)
             }
-        }
+        },
     ) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) {
-            when (currentRoute) {
-                Route.CALLS -> CallsScreen(
-                    onOpenHistory = onOpenHistory
-                )
-
-                Route.CONTACTS -> ContactsScreen()
+            when (currentTab) {
+                HomeTab.CALLS -> CallsScreen(onOpenHistory = onOpenHistory)
+                HomeTab.CONTACTS -> ContactsScreen()
             }
         }
     }

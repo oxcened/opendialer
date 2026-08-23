@@ -35,6 +35,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.alenajam.opendialer.core.common.ui.Dialpad
+import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 
 @Composable
 internal fun Footer(
@@ -48,6 +49,7 @@ internal fun Footer(
     onAddCall: () -> Unit,
     onDigit: (digit: Char) -> Unit
 ) {
+    val icons = LocalAppIcons.current
     var openSection = remember { mutableStateOf<OpenSection?>(null) }
     var dialpadInput = remember { mutableStateOf("") }
 
@@ -79,14 +81,14 @@ internal fun Footer(
                         .padding(bottom = 16.dp, top = 32.dp)
                 ) {
                     CallButton(
-                        icon = Icons.Outlined.Pause,
+                        icon = icons.pause,
                         label = "Hold",
                         isActive = isHolding,
                         onClick = onHold
                     )
 
                     CallButton(
-                        icon = Icons.Outlined.AddIcCall,
+                        icon = icons.addCall,
                         label = "Add call",
                         isActive = false,
                         onClick = onAddCall
@@ -127,28 +129,28 @@ internal fun Footer(
                     .padding(bottom = 48.dp, top = 32.dp)
             ) {
                 CallButton(
-                    icon = Icons.Outlined.Dialpad,
+                    icon = icons.dialpad,
                     label = "Dialpad",
                     isActive = openSection.value == OpenSection.DIALPAD,
                     onClick = { toggleSectionButton(OpenSection.DIALPAD) }
                 )
 
                 CallButton(
-                    icon = Icons.Outlined.MicOff,
+                    icon = icons.mute,
                     label = "Mute",
                     isActive = isMuted,
                     onClick = onMute
                 )
 
                 CallButton(
-                    icon = Icons.AutoMirrored.Outlined.VolumeUp,
+                    icon = icons.speaker,
                     label = "Speaker",
                     isActive = isSpeaker,
                     onClick = onSpeaker
                 )
 
                 CallButton(
-                    icon = Icons.Outlined.MoreVert,
+                    icon = icons.more,
                     label = "More",
                     isActive = openSection.value == OpenSection.ADDITIONAL_ACTIONS,
                     onClick = { toggleSectionButton(OpenSection.ADDITIONAL_ACTIONS) }
@@ -165,7 +167,7 @@ internal fun Footer(
                     .size(60.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.CallEnd,
+                    imageVector = icons.hangup,
                     contentDescription = null,
                     tint = Color.White
                 )

@@ -54,6 +54,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":feature:appShell"))
     implementation(project(":feature:calls"))
     implementation(project(":feature:callDetail"))
     implementation(project(":feature:contacts"))

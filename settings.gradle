@@ -33,6 +33,7 @@ include(
         ":feature:contacts",
         ":feature:contactsSearch",
         ":feature:inCall",
+        ":feature:appShell",
         ":feature:settings",
 
         // app

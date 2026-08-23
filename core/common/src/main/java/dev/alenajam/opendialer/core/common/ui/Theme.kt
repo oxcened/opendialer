@@ -15,6 +15,11 @@ import androidx.compose.ui.platform.LocalContext
 import dev.alenajam.opendialer.core.common.DarkCustomColors
 import dev.alenajam.opendialer.core.common.LightCustomColors
 import dev.alenajam.opendialer.core.common.LocalCustomColorsScheme
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -277,13 +282,29 @@ fun AppTheme(
         if (darkTheme) DarkCustomColors
         else LightCustomColors
 
+    val extension = LocalAppThemeExtension.current
+    val backgroundPainter = extension.backgroundPainter()
+
     CompositionLocalProvider(
         LocalCustomColorsScheme provides customColorScheme
     ) {
         MaterialTheme(
-            colorScheme = colorScheme,
-            content = content
-        )
+            colorScheme = colorScheme
+        ) {
+            if (backgroundPainter != null) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Image(
+                        painter = backgroundPainter,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.FillBounds
+                    )
+                    content()
+                }
+            } else {
+                content()
+            }
+        }
     }
 }
 

@@ -54,6 +54,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.core.common.forwardingPainter
+import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.data.calls.CallType
 import dev.alenajam.opendialer.data.calls.ContactInfo
 import dev.alenajam.opendialer.data.calls.DialerCall
@@ -76,6 +77,7 @@ fun CallsScreen(
     val lastInvalidateCache = viewModel.lastInvalidateCache.collectAsStateWithLifecycle()
     val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
     var openRowId by remember { mutableStateOf<Int?>(null) }
+    val icons = LocalAppIcons.current
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.attemptInvalidateCache()
@@ -121,6 +123,7 @@ fun CallsScreen(
 
                 CallRow(call = call,
                     isOpen = isOpen,
+                    icons = icons,
                     onClick = { openRowId = if (isOpen) null else call.id },
                     makeCall = { viewModel.makeCall(call.contactInfo.number!!) },
                     sendMessage = { viewModel.sendMessage(call.contactInfo.number!!) },
@@ -136,6 +139,7 @@ fun CallsScreen(
 private fun CallRow(
     call: DialerCall,
     isOpen: Boolean,
+    icons: dev.alenajam.opendialer.core.common.ui.AppIcons,
     onClick: () -> Unit,
     makeCall: () -> Unit,
     sendMessage: () -> Unit,
@@ -152,7 +156,7 @@ private fun CallRow(
                 modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp),
             ) {
                 val placeholder = forwardingPainter(
-                    painter = rememberVectorPainter(Icons.Filled.AccountCircle),
+                    painter = rememberVectorPainter(icons.accountCircle),
                     colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary)
                 )
 
@@ -179,11 +183,11 @@ private fun CallRow(
                     ) {
                         Icon(
                             imageVector = when (call.type) {
-                                CallType.INCOMING, CallType.ANSWERED_EXTERNALLY -> Icons.Outlined.CallReceived
-                                CallType.OUTGOING -> Icons.Outlined.CallMade
-                                CallType.MISSED, CallType.REJECTED -> Icons.Outlined.CallMissed
-                                CallType.VOICEMAIL -> Icons.Outlined.Voicemail
-                                CallType.BLOCKED -> Icons.Outlined.Block
+                                CallType.INCOMING, CallType.ANSWERED_EXTERNALLY -> icons.callReceived
+                                CallType.OUTGOING -> icons.callMade
+                                CallType.MISSED, CallType.REJECTED -> icons.callMissed
+                                CallType.VOICEMAIL -> icons.voicemail
+                                CallType.BLOCKED -> icons.block
                             },
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -201,7 +205,7 @@ private fun CallRow(
                 if (!call.isAnonymous()) {
                     IconButton(onClick = makeCall) {
                         Icon(
-                            imageVector = Icons.Outlined.Phone,
+                            imageVector = icons.phone,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -219,18 +223,18 @@ private fun CallRow(
                         if (!call.isContactSaved()) {
                             CallRowButton(
                                 label = "Add contact",
-                                icon = Icons.Outlined.PersonAddAlt,
+                                icon = icons.personAdd,
                                 onClick = addContact
                             )
                         }
 
                         CallRowButton(
-                            label = "Message", icon = Icons.Outlined.Message, onClick = sendMessage
+                            label = "Message", icon = icons.message, onClick = sendMessage
                         )
                     }
 
                     CallRowButton(
-                        label = "History", icon = Icons.Outlined.History, onClick = openHistory
+                        label = "History", icon = icons.history, onClick = openHistory
                     )
                 }
             }
@@ -285,6 +289,7 @@ private val anonymousCallMock = incomingCallMock.copy(
 private fun IncomingCallPreview() {
     CallRow(call = incomingCallMock,
         isOpen = false,
+        icons = dev.alenajam.opendialer.core.common.ui.DefaultAppIcons,
         onClick = {},
         makeCall = {},
         addContact = {},
@@ -297,6 +302,7 @@ private fun IncomingCallPreview() {
 private fun OutgoingCallPreview() {
     CallRow(call = outgoingCallMock,
         isOpen = false,
+        icons = dev.alenajam.opendialer.core.common.ui.DefaultAppIcons,
         onClick = {},
         makeCall = {},
         addContact = {},
@@ -309,6 +315,7 @@ private fun OutgoingCallPreview() {
 private fun AnonymousCallPreview() {
     CallRow(call = anonymousCallMock,
         isOpen = false,
+        icons = dev.alenajam.opendialer.core.common.ui.DefaultAppIcons,
         onClick = {},
         makeCall = {},
         addContact = {},

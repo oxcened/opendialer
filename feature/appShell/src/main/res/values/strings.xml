@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="contacts">Contacts</string>
+    <string name="recents">Recents</string>
+    <string name="coming_soon">Coming soon…</string>
+    <string name="home_menu_settings_label">Settings</string>
+</resources>

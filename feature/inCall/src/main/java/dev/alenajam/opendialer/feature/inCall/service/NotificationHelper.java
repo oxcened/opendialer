@@ -43,6 +43,11 @@ public abstract class NotificationHelper {
     }
 
     private static Notification notifyCall(Context context, InCallServiceImpl callService, String channelId, int priority, String notificationText) {
+        // This feature is consumed by more than one application. Do not rely on
+        // a host Application class to create the foreground-service channels.
+        // Channel creation is idempotent, so ensuring them here is safe.
+        setupNotificationChannels(context);
+
         Intent intent = new Intent(Intent.ACTION_MAIN, null);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
         intent.setClass(context, InCallActivity.class);
