@@ -15,7 +15,7 @@ android {
     defaultConfig {
         applicationId = "dev.alenajam.opendialer"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 37
         versionCode = 1
         versionName = "0.1.0"
 
