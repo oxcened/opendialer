@@ -23,6 +23,12 @@ android {
             )
         }
     }
+
+    lint {
+        // Disabling BidiSpoofing as a temporary workaround if running on JDK < 21,
+        // but the project should be built with JDK 21+ for AGP 9.3.x compatibility.
+        // disable.add("BidiSpoofing")
+    }
 }
 
 dependencies {
@@ -38,9 +44,5 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain(17)
-}
-
-kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }
