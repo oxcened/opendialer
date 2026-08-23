@@ -94,6 +94,12 @@ class CallsViewModel
         }
     }
 
+    fun openContact(call: DialerCall) {
+        ContactsHelper.getContactByPhoneNumber(app, call.contactInfo.number)?.let {
+            CommonUtils.showContactDetail(app, it.id)
+        }
+    }
+
     fun updateContactInfo(call: DialerCall) {
         if (call.isAnonymous() || !hasContactsRuntimePermission) {
             return

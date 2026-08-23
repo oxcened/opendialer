@@ -15,4 +15,5 @@
     <string name="placeholder_call_log">To see your call log, turn on the phone permissions</string>
     <string name="nothingHere">Mmh..nothing here</string>
     <string name="turn_on">Turn on</string>
+    <string name="open_contact">Open contact</string>
 </resources>

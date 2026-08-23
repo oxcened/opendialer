@@ -3,6 +3,7 @@ package dev.alenajam.opendialer.feature.calls
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -128,6 +129,7 @@ fun CallsScreen(
                     makeCall = { viewModel.makeCall(call.contactInfo.number!!) },
                     sendMessage = { viewModel.sendMessage(call.contactInfo.number!!) },
                     addContact = { viewModel.addToContact(call.contactInfo.number!!) },
+                    openContact = { viewModel.openContact(call) },
                     openHistory = { onOpenHistory(call.childCalls.map { it.id }) }
                 )
             }
@@ -144,6 +146,7 @@ private fun CallRow(
     makeCall: () -> Unit,
     sendMessage: () -> Unit,
     addContact: () -> Unit,
+    openContact: () -> Unit,
     openHistory: () -> Unit,
 ) {
     Surface(
@@ -162,8 +165,17 @@ private fun CallRow(
 
                 AsyncImage(
                     model = call.contactInfo.photoUri,
-                    contentDescription = null,
-                    modifier = Modifier.size(50.dp),
+                    contentDescription = if (call.isContactSaved()) {
+                        stringResource(R.string.open_contact)
+                    } else {
+                        null
+                    },
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clickable(
+                            enabled = call.isContactSaved(),
+                            onClick = openContact
+                        ),
                     placeholder = placeholder,
                     error = placeholder,
                     fallback = placeholder
@@ -293,6 +305,7 @@ private fun IncomingCallPreview() {
         onClick = {},
         makeCall = {},
         addContact = {},
+        openContact = {},
         sendMessage = {},
         openHistory = {})
 }
@@ -306,6 +319,7 @@ private fun OutgoingCallPreview() {
         onClick = {},
         makeCall = {},
         addContact = {},
+        openContact = {},
         sendMessage = {},
         openHistory = {})
 }
@@ -319,6 +333,7 @@ private fun AnonymousCallPreview() {
         onClick = {},
         makeCall = {},
         addContact = {},
+        openContact = {},
         sendMessage = {},
         openHistory = {})
 }
