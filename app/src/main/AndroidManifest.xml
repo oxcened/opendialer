@@ -30,7 +30,8 @@
             android:autoRemoveFromRecents="true"
             android:documentLaunchMode="intoExisting"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name="dev.alenajam.opendialer.ui.MainActivity"

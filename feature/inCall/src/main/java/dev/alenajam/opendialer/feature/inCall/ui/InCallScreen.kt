@@ -2,9 +2,11 @@ package dev.alenajam.opendialer.feature.inCall.ui
 
 import android.app.Activity
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,6 +36,8 @@ internal fun InCallScreen(
 
     AppProviders {
         Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            contentWindowInsets = WindowInsets(0, 0, 0, 0),
             bottomBar = {
                 if (isIncoming.value) {
                     IncomingFooter(
@@ -60,6 +64,7 @@ internal fun InCallScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
+                    .statusBarsPadding()
             ) {
                 AsyncImage(
                     model = callerImageUri.value,
