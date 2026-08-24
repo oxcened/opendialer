@@ -30,14 +30,12 @@ import dev.alenajam.opendialer.feature.inCall.service.OngoingCall
 
 @Composable
 fun ManageConferenceSheet(
-    calls: Map<Call, OngoingCall>,
+    participants: List<ConferenceParticipantUiState>,
     showSplit: Boolean = true,
     onSplit: (OngoingCall) -> Unit,
     onHangup: (OngoingCall) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val participants = calls.values.filter { it.isConferenced() }
-
     Surface(
         tonalElevation = 8.dp,
         modifier = modifier.fillMaxWidth(),
@@ -61,12 +59,12 @@ fun ManageConferenceSheet(
             LazyColumn(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                items(participants) { call ->
+                items(participants) { participant ->
                     ConferenceParticipantRow(
-                        call = call,
+                        participant = participant,
                         showSplit = showSplit,
-                        onSplit = { onSplit(call) },
-                        onHangup = { onHangup(call) }
+                        onSplit = { onSplit(participant.call) },
+                        onHangup = { onHangup(participant.call) }
                     )
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                 }
@@ -77,18 +75,15 @@ fun ManageConferenceSheet(
 
 @Composable
 private fun ConferenceParticipantRow(
-    call: OngoingCall,
+    participant: ConferenceParticipantUiState,
     showSplit: Boolean,
     onSplit: () -> Unit,
     onHangup: () -> Unit
 ) {
     val icons = LocalAppIcons.current
-    val isConferenced = call.isConferenced()
-    val name = call.callerName ?: call.callerNumber ?: ""
-    val state = call.state
 
     Surface(
-        onClick = { if (showSplit && isConferenced) onSplit() },
+        onClick = { if (showSplit && participant.isConferenced) onSplit() },
         color = Color.Transparent,
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -97,7 +92,7 @@ private fun ConferenceParticipantRow(
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
         ) {
             AsyncImage(
-                model = call.callerImageUri,
+                model = participant.callerImageUri,
                 contentDescription = null,
                 modifier = Modifier.size(40.dp)
             )
@@ -106,12 +101,12 @@ private fun ConferenceParticipantRow(
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = name.ifBlank { "Unknown" },
+                    text = participant.callerName,
                     style = MaterialTheme.typography.bodyLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                val subtitle = when (state) {
+                val subtitle = when (participant.state) {
                     Call.STATE_ACTIVE -> "Active"
                     Call.STATE_HOLDING -> "On hold"
                     Call.STATE_RINGING -> "Ringing"
@@ -128,7 +123,7 @@ private fun ConferenceParticipantRow(
                 }
             }
 
-            if (showSplit && isConferenced) {
+            if (showSplit && participant.isConferenced) {
                 Surface(
                     onClick = onSplit,
                     color = Color.Transparent,

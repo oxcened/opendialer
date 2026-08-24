@@ -28,34 +28,25 @@ import dev.alenajam.opendialer.core.common.ui.AppProviders
 internal fun InCallScreen(
     viewModel: InCallViewModel = viewModel()
 ) {
-    val stateLabel = viewModel.stateLabel.observeAsState("")
-    val isHolding = viewModel.isHolding.observeAsState()
-    val isSpeaker = viewModel.isSpeaker.observeAsState()
-    val isMuted = viewModel.isMuted.observeAsState()
-    val callerName = viewModel.callerName.observeAsState("")
-    val callerNumber = viewModel.callerNumber.observeAsState("")
-    val callerNumberLabel = viewModel.callerNumberLabel.observeAsState("")
-    val callerImageUri = viewModel.callerImageUri.observeAsState("")
-    val isIncoming = viewModel.isIncoming.observeAsState(false)
-    val calls = viewModel.calls.observeAsState(emptyMap())
+    val uiState = viewModel.uiState.observeAsState(InCallUiState()).value
     val context = LocalContext.current
 
-    val canMerge = viewModel.canMerge.observeAsState(false).value
-    val telecomCanHold = viewModel.canHold.observeAsState(false).value
-    val hasSecondaryCall = viewModel.hasSecondaryCall.observeAsState(false).value
-    val secondaryCallerName = viewModel.secondaryCallerName.observeAsState(null).value
+    val canMerge = uiState.canMerge
+    val telecomCanHold = uiState.canHold
+    val hasSecondaryCall = uiState.hasSecondaryCall
+    val secondaryCallerName = uiState.secondaryCallerName
     val canSwap = hasSecondaryCall
     // Add call uses the telecom-provided capability. It is hidden once a
     // secondary call is present (two independent calls or a conference plus a
     // held call), since the map size check is unreliable for conferences where
     // the parent call inflates the count.
-    val canAddCall = viewModel.canAddCall.observeAsState(false).value && !hasSecondaryCall
+    val canAddCall = uiState.canAddCall && !hasSecondaryCall
     // When two calls are present, Swap replaces Hold in the More panel (they
     // would otherwise both toggle the same primary/secondary state).
     val canHold = telecomCanHold && !canSwap
     // In a conference with a secondary call, splitting a participant would
     // produce three independent calls, so the split affordance is hidden.
-    val canManageConference = viewModel.canManageConference.observeAsState(false).value
+    val canManageConference = uiState.canManageConference
     val showSplitInManage = canManageConference && !hasSecondaryCall
 
     var showManageSheet by remember { mutableStateOf(false) }
@@ -73,7 +64,7 @@ internal fun InCallScreen(
             sheetState = sheetState
         ) {
             ManageConferenceSheet(
-                calls = calls.value,
+                participants = uiState.conferenceParticipants,
                 showSplit = showSplitInManage,
                 onSplit = { call -> viewModel.split(call) },
                 onHangup = { call -> viewModel.hangup(call) }
@@ -86,16 +77,16 @@ internal fun InCallScreen(
             modifier = Modifier.fillMaxSize(),
             contentWindowInsets = WindowInsets(0, 0, 0, 0),
             bottomBar = {
-                if (isIncoming.value) {
+                if (uiState.isIncoming) {
                     IncomingCallControls(
                         onHangup = viewModel::hangup,
                         onAnswer = viewModel::answer,
                     )
                 } else {
                     InCallControls(
-                        isMuted = isMuted.value,
-                        isSpeaker = isSpeaker.value,
-                        isHolding = isHolding.value,
+                        isMuted = uiState.isMuted,
+                        isSpeaker = uiState.isSpeaker,
+                        isHolding = uiState.isHolding,
                         canManageConference = canManageConference,
                         canMerge = canMerge,
                         canSwap = canSwap,
@@ -119,18 +110,18 @@ internal fun InCallScreen(
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
-                if (hasSecondaryCall && secondaryCallerName != null && !isIncoming.value) {
+                if (hasSecondaryCall && secondaryCallerName != null && !uiState.isIncoming) {
                     SecondaryCallBanner(
                         callerName = secondaryCallerName,
                         modifier = Modifier.statusBarsPadding()
                     )
                 }
                 InCallDetails(
-                    callerName = callerName.value,
-                    callerNumber = callerNumber.value,
-                    callerNumberLabel = callerNumberLabel.value,
-                    stateLabel = stateLabel.value,
-                    callerImageUri = callerImageUri.value,
+                    callerName = uiState.callerName,
+                    callerNumber = uiState.callerNumber,
+                    callerNumberLabel = uiState.callerNumberLabel,
+                    stateLabel = uiState.stateLabel,
+                    callerImageUri = uiState.callerImageUri,
                     modifier = Modifier
                         .fillMaxSize()
                         .statusBarsPadding()
