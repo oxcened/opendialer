@@ -3,65 +3,93 @@ package dev.alenajam.opendialer.feature.inCall.service
 import android.content.Context
 import android.telecom.Call
 import android.telecom.CallAudioState
+import android.telecom.VideoProfile
 import androidx.annotation.MainThread
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import dev.alenajam.opendialer.feature.inCall.R
 import dev.alenajam.opendialer.feature.inCall.ui.InCallActivity
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class CallsHandler @Inject constructor(
-    private val contactResolver: CallContactResolver
-) {
-    private val _calls = MutableLiveData<Map<Call, OngoingCall>>(HashMap())
-    val calls: LiveData<Map<Call, OngoingCall>> = _calls
+    private val contactResolver: CallContactResolver,
+    private val telecomAdapter: TelecomAdapter
+) : CallManager, OngoingCall.Listener {
+    private val _calls = MutableStateFlow<Map<Call, OngoingCall>>(emptyMap())
+    override val calls: StateFlow<Map<Call, OngoingCall>> = _calls.asStateFlow()
 
-    private val _displayState = MutableLiveData(CallDisplayState(null, null))
-    val displayState: LiveData<CallDisplayState> = _displayState
+    private val _displayState = MutableStateFlow(CallDisplayState(null, null))
+    override val displayState: StateFlow<CallDisplayState> = _displayState.asStateFlow()
 
-    private val _audioState = MutableLiveData<CallAudioUiState?>()
-    val audioState: LiveData<CallAudioUiState?> = _audioState
+    private val _audioState = MutableStateFlow<CallAudioUiState?>(null)
+    override val audioState: StateFlow<CallAudioUiState?> = _audioState.asStateFlow()
 
-    private val _canAddCall = MutableLiveData<Boolean>()
-    val canAddCall: LiveData<Boolean> = _canAddCall
+    private val _canAddCall = MutableStateFlow(false)
+    override val canAddCall: StateFlow<Boolean> = _canAddCall.asStateFlow()
 
     private var callService: InCallServiceImpl? = null
-    private var inCallActivity: InCallActivity? = null
-
     private var context: Context? = null
     private var proximitySensor: ProximitySensor? = null
     private var nextCallSequence: Long = 0
 
-    fun setInCallActivity(inCallActivity: InCallActivity) {
-        this.inCallActivity = inCallActivity
-    }
-
-    fun clearInCallActivity(inCallActivity: InCallActivity) {
-        if (inCallActivity === this.inCallActivity) {
-            this.inCallActivity = null
+    // CallManager Implementation (Delegated Actions)
+    override fun answer(call: OngoingCall) {
+        if (call.state == Call.STATE_RINGING) {
+            call.call.answer(VideoProfile.STATE_AUDIO_ONLY)
         }
     }
 
-    fun isActivityStarted(): Boolean {
-        return inCallActivity != null && !inCallActivity!!.isDestroyed && !inCallActivity!!.isFinishing
+    override fun hangup(call: OngoingCall, message: String?) {
+        if (call.state == Call.STATE_RINGING) {
+            call.call.reject(message != null, message)
+        } else {
+            call.call.disconnect()
+        }
     }
 
-    fun isActivityShowing(): Boolean {
-        if (!isActivityStarted()) return false
-        return inCallActivity!!.visibility
+    override fun hold(call: OngoingCall, hold: Boolean?) {
+        val shouldHold = hold ?: (call.state != Call.STATE_HOLDING)
+        if (shouldHold && call.canBeHeld()) {
+            call.call.hold()
+        } else if (!shouldHold && call.state == Call.STATE_HOLDING) {
+            call.call.unhold()
+        }
     }
 
+    override fun playDtmf(call: OngoingCall, digit: Char) {
+        call.playDtmf(digit)
+    }
+
+    override fun merge(call: OngoingCall) {
+        call.merge()
+    }
+
+    override fun split(call: OngoingCall) {
+        call.split()
+    }
+
+    override fun swap() {
+        val secondary = _displayState.value.secondary ?: return
+        hold(secondary, false)
+    }
+
+    // Audio Commands (Delegated to TelecomAdapter)
+    override fun toggleSpeaker() = telecomAdapter.toggleSpeaker()
+    override fun toggleBluetooth() = telecomAdapter.toggleBluetooth()
+    override fun toggleMute() = telecomAdapter.toggleMute()
+
+    // Lifecycle and Event Methods
     @MainThread
-    @Suppress("DEPRECATION")
     fun addCall(call: Call, context: Context) {
         if (call.state == Call.STATE_DISCONNECTED) {
             OngoingCallHelper.handleDisconnectCause(context, call)
             return
         }
 
-        val map = HashMap(_calls.value ?: emptyMap())
+        val map = HashMap(_calls.value)
         var ongoingCall = map[call]
 
         if (ongoingCall == null) {
@@ -78,49 +106,51 @@ class CallsHandler @Inject constructor(
 
     @MainThread
     fun removeCall(call: Call) {
-        val currentMap = _calls.value ?: return
-        val map = HashMap(currentMap)
-
+        val map = HashMap(_calls.value)
         val ongoingCall = map.remove(call) ?: return
         ongoingCall.tearDown()
-
         _calls.value = map
         updateCalls()
     }
 
+    // OngoingCall.Listener Implementation
+    override fun onCallUpdated(call: OngoingCall) {
+        call.refreshIdentity()
+        resolveContact(call)
+        updateCalls()
+    }
+
+    override fun onCallRemoved(call: Call) {
+        removeCall(call)
+    }
+
     @MainThread
     fun updateCalls() {
-        var map = _calls.value ?: emptyMap()
+        var map = _calls.value
         if (reconcileCallsFromTelecom()) {
-            map = _calls.value ?: emptyMap()
+            map = _calls.value
         }
 
-        var selection = selectDisplayCalls(map)
+        val selection = selectDisplayCalls(map)
         if ((map.isEmpty() || selection.primary == null) && reconcileCallsFromTelecom()) {
-            map = _calls.value ?: emptyMap()
-            selection = selectDisplayCalls(map)
+            map = _calls.value
+            // selection = selectDisplayCalls(map) // selection is val now
         }
 
         if (map.isEmpty()) {
             _displayState.value = CallDisplayState(null, null)
-            attemptFinishActivity()
             NotificationHelper.tearDown(callService)
             return
         }
 
-        var primary = selection.primary
-        if (primary == null) {
-            primary = getPreviousVisibleCall(map)
-        }
-        if (primary == null) {
-            primary = getFirstTrackedCall(map)
-        }
+        // Use the new selection after potential second reconciliation
+        val finalSelection = if (selection.primary == null && map.isNotEmpty()) selectDisplayCalls(map) else selection
+        val primary = finalSelection.primary ?: getPreviousVisibleCall(map) ?: getFirstTrackedCall(map)
 
         if (primary != null) {
-            val secondary = selection.secondary
+            val secondary = finalSelection.secondary
             _displayState.value = CallDisplayState(primary, secondary)
             handleCallNotification(primary, primary.state ?: Call.STATE_NEW)
-            if (primary.state == Call.STATE_DIALING) attemptStartActivity()
             updateProximitySensor(primary)
         } else {
             _displayState.value = CallDisplayState(null, null)
@@ -129,8 +159,7 @@ class CallsHandler @Inject constructor(
 
     private fun reconcileCallsFromTelecom(): Boolean {
         val service = callService ?: return false
-
-        val reconciledCalls = HashMap(_calls.value ?: emptyMap())
+        val reconciledCalls = HashMap(_calls.value)
         var changed = false
         for (call in service.calls) {
             changed = changed or addReconciledCall(reconciledCalls, call)
@@ -138,62 +167,39 @@ class CallsHandler @Inject constructor(
                 changed = changed or addReconciledCall(reconciledCalls, child)
             }
         }
-
         if (!changed) return false
-
         _calls.value = reconciledCalls
         return true
     }
 
     private fun addReconciledCall(reconciledCalls: MutableMap<Call, OngoingCall>, call: Call): Boolean {
-        if (call.state == Call.STATE_DISCONNECTED || reconciledCalls.containsKey(call)) {
-            return false
-        }
-
+        if (call.state == Call.STATE_DISCONNECTED || reconciledCalls.containsKey(call)) return false
         val ongoingCall = OngoingCall(context!!, call, this, nextCallSequence++)
         reconciledCalls[call] = ongoingCall
         resolveContact(ongoingCall)
         return true
     }
 
-    @MainThread
-    fun onCallDetailsChanged(ongoingCall: OngoingCall) {
-        ongoingCall.refreshIdentity()
-        resolveContact(ongoingCall)
-        updateCalls()
-    }
-
     private fun resolveContact(ongoingCall: OngoingCall) {
         val number = ongoingCall.callerNumber
         if (number.isEmpty() || ongoingCall.isConference) return
-
         contactResolver.resolve(number) { contact ->
-            val currentCalls = _calls.value
-            if (currentCalls == null || currentCalls[ongoingCall.call] !== ongoingCall) return@resolve
+            if (_calls.value[ongoingCall.call] !== ongoingCall) return@resolve
             if (number != ongoingCall.callerNumber) return@resolve
-
             ongoingCall.applyContact(contact)
             updateCalls()
         }
     }
 
     private fun getPreviousVisibleCall(map: Map<Call, OngoingCall>): OngoingCall? {
-        val previous = _displayState.value ?: return null
-        val call = previous.primary ?: return null
-
-        return if (map.containsValue(call) && call.state != Call.STATE_DISCONNECTED) call else null
+        val previous = _displayState.value.primary ?: return null
+        return if (map.containsValue(previous) && previous.state != Call.STATE_DISCONNECTED) previous else null
     }
 
     private fun getFirstTrackedCall(map: Map<Call, OngoingCall>): OngoingCall? {
-        var first: OngoingCall? = null
-        for (current in map.values) {
-            if (current.state == Call.STATE_DISCONNECTED) continue
-            if (first == null || current.sequence < first.sequence) first = current
-        }
-        return first
+        return map.values.filter { it.state != Call.STATE_DISCONNECTED }.minByOrNull { it.sequence }
     }
 
-    @Suppress("DEPRECATION")
     private fun handleCallNotification(call: OngoingCall, state: Int) {
         val service = callService ?: return
         var caller = call.callerName
@@ -201,91 +207,26 @@ class CallsHandler @Inject constructor(
         if (caller.isNullOrEmpty()) caller = context?.getString(R.string.anonymous) ?: "Anonymous"
 
         when (state) {
-            Call.STATE_RINGING -> {
-                if (!isActivityShowing())
-                    NotificationHelper.notifyIncomingCall(context!!, service, caller)
-            }
-            Call.STATE_DIALING -> {
-                NotificationHelper.notifyOutgoingCall(context!!, service, caller)
-            }
-            Call.STATE_ACTIVE -> {
-                NotificationHelper.notifyOngoingCall(context!!, service, caller)
-            }
-            Call.STATE_HOLDING -> {
-                NotificationHelper.notifyOnHoldCall(context!!, service, caller)
-            }
-            Call.STATE_DISCONNECTING -> {
-                NotificationHelper.notifyDisconnectingCall(context!!, service, caller)
-            }
+            Call.STATE_RINGING -> NotificationHelper.notifyIncomingCall(context!!, service, caller)
+            Call.STATE_DIALING -> NotificationHelper.notifyOutgoingCall(context!!, service, caller)
+            Call.STATE_ACTIVE -> NotificationHelper.notifyOngoingCall(context!!, service, caller)
+            Call.STATE_HOLDING -> NotificationHelper.notifyOnHoldCall(context!!, service, caller)
+            Call.STATE_DISCONNECTING -> NotificationHelper.notifyDisconnectingCall(context!!, service, caller)
         }
     }
 
     private fun updateProximitySensor(pCall: OngoingCall?) {
-        var call = pCall
-        if (call == null) {
-            val currentDisplayState = _displayState.value
-            call = currentDisplayState?.primary
-        }
-
+        val call = pCall ?: _displayState.value.primary ?: return
         val sensor = proximitySensor ?: return
-        val currentCall = call ?: return
         val currentAudioState = _audioState.value ?: return
-
-        val state = currentCall.state ?: Call.STATE_NEW
-        val audioRoute = currentAudioState.route
-        sensor.updateProximitySensorMode(state, audioRoute)
+        sensor.updateProximitySensorMode(call.state ?: Call.STATE_NEW, currentAudioState.route)
     }
 
     private fun selectDisplayCalls(map: Map<Call, OngoingCall>): CallDisplaySelector.Selection<OngoingCall> {
-        val candidates = ArrayList<CallDisplaySelector.Candidate<OngoingCall>>()
-        for (call in map.values) {
-            candidates.add(
-                CallDisplaySelector.Candidate(
-                    call,
-                    call.state ?: Call.STATE_NEW,
-                    call.isConferenced,
-                    call.sequence
-                )
-            )
+        val candidates = map.values.map {
+            CallDisplaySelector.Candidate(it, it.state ?: Call.STATE_NEW, it.isConferenced, it.sequence)
         }
         return CallDisplaySelector.select(candidates)
-    }
-
-    fun attemptFinishActivity() {
-        if (isActivityStarted()) {
-            inCallActivity?.finish()
-        }
-    }
-
-    fun attemptStartActivity() {
-        if (!isActivityShowing() && context != null) {
-            InCallActivity.start(context!!)
-        }
-    }
-
-    @MainThread
-    fun updateCallAudioState(newAudioState: CallAudioState) {
-        _audioState.value = CallAudioUiState(newAudioState.route, newAudioState.isMuted)
-        updateProximitySensor(null)
-    }
-
-    @MainThread
-    fun updateCallEndpoint(route: Int) {
-        val current = _audioState.value
-        _audioState.value = CallAudioUiState(route, current?.isMuted == true)
-        updateProximitySensor(null)
-    }
-
-    @MainThread
-    fun updateMuteState(isMuted: Boolean) {
-        val current = _audioState.value
-        val route = current?.route ?: CallAudioState.ROUTE_EARPIECE
-        _audioState.value = CallAudioUiState(route, isMuted)
-    }
-
-    @MainThread
-    fun updateCanAddCall(newCanAddCall: Boolean) {
-        _canAddCall.value = newCanAddCall
     }
 
     fun setup(callService: InCallServiceImpl, context: Context, proximitySensor: ProximitySensor) {
@@ -296,13 +237,8 @@ class CallsHandler @Inject constructor(
     }
 
     fun tearDown() {
-        val map = _calls.value
-        if (map != null) {
-            for (call in map.values) {
-                call.tearDown()
-            }
-        }
-        _calls.value = HashMap()
+        _calls.value.values.forEach { it.tearDown() }
+        _calls.value = emptyMap()
         _displayState.value = CallDisplayState(null, null)
         _audioState.value = null
         _canAddCall.value = false
@@ -311,5 +247,33 @@ class CallsHandler @Inject constructor(
         context = null
         proximitySensor?.tearDown()
         proximitySensor = null
+    }
+
+    @MainThread
+    fun updateCallAudioState(newAudioState: CallAudioState) {
+        _audioState.value = CallAudioUiState(newAudioState.route, newAudioState.isMuted)
+        updateProximitySensor(null)
+    }
+
+    @MainThread
+    fun updateCallEndpoint(route: Int) {
+        val isMuted = _audioState.value?.isMuted == true
+        _audioState.value = CallAudioUiState(route, isMuted)
+        updateProximitySensor(null)
+    }
+
+    @MainThread
+    fun updateMuteState(isMuted: Boolean) {
+        val route = _audioState.value?.route ?: CallAudioState.ROUTE_EARPIECE
+        _audioState.value = CallAudioUiState(route, isMuted)
+    }
+
+    @MainThread
+    fun updateCanAddCall(newCanAddCall: Boolean) {
+        _canAddCall.value = newCanAddCall
+    }
+
+    fun attemptStartActivity() {
+        context?.let { InCallActivity.start(it) }
     }
 }

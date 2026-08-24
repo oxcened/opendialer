@@ -13,9 +13,14 @@ import dev.alenajam.opendialer.feature.inCall.R
 class OngoingCall(
     private val context: Context,
     val call: Call,
-    private val callsHandler: CallsHandler,
+    private val listener: Listener,
     val sequence: Long
 ) {
+    interface Listener {
+        fun onCallUpdated(call: OngoingCall)
+        fun onCallRemoved(call: android.telecom.Call)
+    }
+
     companion object {
         private const val DTMF_DURATION_MS = 300L
     }
@@ -41,22 +46,22 @@ class OngoingCall(
         override fun onStateChanged(call: Call, newState: Int) {
             super.onStateChanged(call, newState)
             updateState(newState)
-            if (newState != Call.STATE_DISCONNECTED) callsHandler.updateCalls()
+            if (newState != Call.STATE_DISCONNECTED) listener.onCallUpdated(this@OngoingCall)
         }
 
         override fun onConferenceableCallsChanged(call: Call, conferenceableCalls: List<Call>) {
             super.onConferenceableCallsChanged(call, conferenceableCalls)
-            callsHandler.updateCalls()
+            listener.onCallUpdated(this@OngoingCall)
         }
 
         override fun onParentChanged(call: Call, parent: Call?) {
             super.onParentChanged(call, parent)
-            callsHandler.updateCalls()
+            listener.onCallUpdated(this@OngoingCall)
         }
 
         override fun onDetailsChanged(call: Call, details: Call.Details) {
             super.onDetailsChanged(call, details)
-            callsHandler.onCallDetailsChanged(this@OngoingCall)
+            listener.onCallUpdated(this@OngoingCall)
         }
     }
 
@@ -115,7 +120,7 @@ class OngoingCall(
                     accumulateActiveTime()
                 }
                 lastState = state
-                callsHandler.removeCall(call)
+                listener.onCallRemoved(call)
                 OngoingCallHelper.handleDisconnectCause(context, call)
                 return
             }

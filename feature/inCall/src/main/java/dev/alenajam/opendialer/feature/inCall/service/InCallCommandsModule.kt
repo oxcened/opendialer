@@ -9,5 +9,8 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class InCallCommandsModule {
     @Binds
-    abstract fun bindInCallCommands(telecomAdapter: TelecomAdapter): InCallCommands
+    abstract fun bindInCallCommands(callsHandler: CallsHandler): InCallCommands
+
+    @Binds
+    abstract fun bindCallManager(callsHandler: CallsHandler): CallManager
 }

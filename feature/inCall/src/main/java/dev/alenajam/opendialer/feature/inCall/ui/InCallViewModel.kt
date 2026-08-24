@@ -1,70 +1,46 @@
-
 package dev.alenajam.opendialer.feature.inCall.ui
 
 import android.app.Activity
 import android.app.Application
 import android.content.Intent
 import android.telecom.Call
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
+import android.telecom.CallAudioState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.MAIN_ACTIVITY_INTENT_DIAL_EXTRA_ADD_CALL
 import dev.alenajam.opendialer.feature.inCall.R
-import dev.alenajam.opendialer.feature.inCall.service.CallDisplayState
-import dev.alenajam.opendialer.feature.inCall.service.CallAudioUiState
-import dev.alenajam.opendialer.feature.inCall.service.CallsHandler
-import dev.alenajam.opendialer.feature.inCall.service.InCallCommands
+import dev.alenajam.opendialer.feature.inCall.service.CallManager
 import dev.alenajam.opendialer.feature.inCall.service.OngoingCall
-import javax.inject.Inject
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
 
 @HiltViewModel
-class InCallViewModel
-@Inject constructor(
-    callHandler: CallsHandler,
-    private val inCallCommands: InCallCommands,
+class InCallViewModel @Inject constructor(
+    private val callManager: CallManager,
     private val app: Application
 ) : ViewModel() {
-    private val displayState: LiveData<CallDisplayState> = callHandler.displayState
-    private val calls: LiveData<Map<Call, OngoingCall>> = callHandler.calls
-    private val audioState: LiveData<CallAudioUiState?> = callHandler.audioState
-    private val canAddCall: LiveData<Boolean> = callHandler.canAddCall
-    private val _uiState = MediatorLiveData(InCallUiState())
-    val uiState: LiveData<InCallUiState> = _uiState
-    private var durationJob: Job? = null
-    private var durationCall: OngoingCall? = null
-
-    init {
-        _uiState.addSource(displayState) { refreshUiState() }
-        _uiState.addSource(calls) { refreshUiState() }
-        _uiState.addSource(audioState) { refreshUiState() }
-        _uiState.addSource(canAddCall) { refreshUiState() }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        durationJob?.cancel()
-        durationJob = null
-        durationCall = null
-    }
-
-    private fun refreshUiState() {
-        val callState = displayState.value ?: CallDisplayState()
-        val primary = callState.primary
-        val secondary = callState.secondary
-        val audio = audioState.value
+    val uiState: StateFlow<InCallUiState> = combine(
+        callManager.displayState,
+        callManager.calls,
+        callManager.audioState,
+        callManager.canAddCall
+    ) { display, allCalls, audio, canAdd ->
+        val primary = display.primary
+        val secondary = display.secondary
         val conferenceChildren = primary?.call?.children.orEmpty().toSet()
-        updateDurationJob(primary)
 
-        _uiState.value = InCallUiState(
+        InCallUiState(
             stateLabel = getStateLabel(primary),
             isHolding = primary?.state == Call.STATE_HOLDING,
-            isSpeaker = audio?.route == android.telecom.CallAudioState.ROUTE_SPEAKER,
+            isSpeaker = audio?.route == CallAudioState.ROUTE_SPEAKER,
             isMuted = audio?.isMuted == true,
             callerName = primary?.let { it.callerName ?: it.callerNumber }.orEmpty(),
             callerNumber = primary?.callerNumber.orEmpty(),
@@ -74,10 +50,10 @@ class InCallViewModel
             canHold = primary?.canBeHeld() == true,
             canMerge = primary?.canBeMerged() == true,
             canManageConference = primary?.isConference == true,
-            canAddCall = canAddCall.value == true,
+            canAddCall = canAdd && secondary == null,
             hasSecondaryCall = secondary != null,
             secondaryCallerName = secondary?.let { it.callerName ?: it.callerNumber },
-            conferenceParticipants = calls.value.orEmpty().values
+            conferenceParticipants = allCalls.values
                 .filter { it.isConferenced || conferenceChildren.contains(it.call) }
                 .map {
                     ConferenceParticipantUiState(
@@ -89,7 +65,19 @@ class InCallViewModel
                     )
                 }
         )
-    }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), InCallUiState())
+
+    val durationLabel: Flow<String> = flow {
+        while (true) {
+            val primary = callManager.displayState.value.primary
+            if (primary?.state == Call.STATE_ACTIVE) {
+                emit(getDurationLabel(primary))
+            } else {
+                emit("")
+            }
+            delay(1000)
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
 
     private fun getStateLabel(call: OngoingCall?): String =
         when (call?.state) {
@@ -103,46 +91,50 @@ class InCallViewModel
             else -> ""
         }
 
-    private fun updateDurationJob(call: OngoingCall?) {
-        if (call?.state != Call.STATE_ACTIVE) {
-            durationJob?.cancel()
-            durationJob = null
-            durationCall = null
-            return
-        }
-        if (durationCall === call && durationJob?.isActive == true) return
-
-        durationJob?.cancel()
-        durationCall = call
-        durationJob = viewModelScope.launch {
-            while (true) {
-                delay(1_000)
-                val currentState = _uiState.value ?: continue
-                if (displayState.value?.primary !== call || call.state != Call.STATE_ACTIVE) break
-                _uiState.value = currentState.copy(stateLabel = getDurationLabel(call))
-            }
-        }
-    }
-
     private fun getDurationLabel(call: OngoingCall): String {
         val differenceTime = CommonUtils.getCurrentTime() - call.startTime + call.totalTime
         return CommonUtils.getDurationTimeString(differenceTime)
     }
 
+    // Call Actions (Delegated to CallManager)
     fun hangup(message: String? = null) {
-        val primary = displayState.value?.primary ?: return
-        if (message != null) {
-            primary.hangup(message)
-        } else {
-            primary.hangup()
+        callManager.displayState.value.primary?.let {
+            callManager.hangup(it, message)
         }
     }
-    fun answer() = displayState.value?.primary?.answer()
-    fun turnSpeaker() = inCallCommands.toggleSpeaker()
-    fun turnBluetooth() = inCallCommands.toggleBluetooth()
-    fun turnMute() = inCallCommands.toggleMute()
-    fun playDtmf(digit: Char) = displayState.value?.primary?.playDtmf(digit)
-    fun hold() = displayState.value?.primary?.hold()
+
+    fun answer() {
+        callManager.displayState.value.primary?.let {
+            callManager.answer(it)
+        }
+    }
+
+    fun hold() {
+        callManager.displayState.value.primary?.let {
+            callManager.hold(it)
+        }
+    }
+
+    fun playDtmf(digit: Char) {
+        callManager.displayState.value.primary?.let {
+            callManager.playDtmf(it, digit)
+        }
+    }
+
+    fun merge() {
+        callManager.displayState.value.primary?.let {
+            callManager.merge(it)
+        }
+    }
+
+    fun split(call: OngoingCall) = callManager.split(call)
+    fun hangup(call: OngoingCall) = callManager.hangup(call)
+
+    fun turnSpeaker() = callManager.toggleSpeaker()
+    fun turnBluetooth() = callManager.toggleBluetooth()
+    fun turnMute() = callManager.toggleMute()
+
+    fun swap() = callManager.swap()
 
     fun addCall(activity: Activity) = activity.startActivity(
         Intent(Intent.ACTION_DIAL).putExtra(
@@ -150,16 +142,4 @@ class InCallViewModel
             true
         )
     )
-
-    fun merge() = displayState.value?.primary?.merge()
-
-    fun swap() {
-        val secondary = displayState.value?.secondary
-        if (secondary == null) return
-        secondary.hold(false)
-    }
-
-    fun split(call: OngoingCall) = call.split()
-
-    fun hangup(call: OngoingCall) = call.hangup()
 }

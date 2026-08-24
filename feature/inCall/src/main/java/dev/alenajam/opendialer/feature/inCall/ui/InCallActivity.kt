@@ -35,7 +35,6 @@ class InCallActivity : ComponentActivity() {
         enableEdgeToEdge()
         WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
-        callsHandler.setInCallActivity(this)
         val flags = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or
                 WindowManager.LayoutParams.FLAG_IGNORE_CHEEK_PRESSES
         window.addFlags(flags)
@@ -59,6 +58,5 @@ class InCallActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        callsHandler.clearInCallActivity(this)
     }
 }
