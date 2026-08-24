@@ -6,8 +6,14 @@ import android.os.PowerManager
 import android.telecom.Call
 import android.telecom.CallAudioState
 import android.util.Log
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class ProximitySensor(context: Context) {
+@Singleton
+class ProximitySensor @Inject constructor(
+    @ApplicationContext context: Context
+) {
     companion object {
         private val TAG = ProximitySensor::class.java.simpleName
     }

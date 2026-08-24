@@ -1,51 +1,34 @@
-# Implementation Plan: InCall Service Refactoring & Optimization
+# Implementation Plan: Service Layer Modernization (Coroutines & DI)
 
-This plan addresses the architectural and performance issues identified in the `:feature:inCall` module, focusing on state management, flow unification, and UI optimization.
-
-## User Review Required
-
-> [!IMPORTANT]
-> I am introducing a `CallManager` interface to unify audio commands and call actions. This will change how the ViewModel interacts with the service layer.
-> I will also migrate `CallsHandler` to use `StateFlow`, which is more idiomatic for Kotlin-based Composable state management.
+This plan covers refactoring `CallContactResolver` to use Coroutines and making `ProximitySensor` fully injectable via Hilt.
 
 ## Proposed Changes
 
 ### [:feature:inCall](file:///Users/alen/StudioProjects/opendialer/feature/inCall)
 
-#### [NEW] [CallManager.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/service/CallManager.kt)
-- Define a unified interface for all call-related actions (hangup, answer, hold, mute, speaker, etc.).
-- Inherits from `InCallCommands`.
+#### [MODIFY] [CallContactResolver.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/service/CallContactResolver.kt)
+- Remove `ExecutorService` and `Handler`.
+- Inject a `CoroutineScope` (annotated with `@ApplicationScope` if available, or use `Dispatchers.IO` directly).
+- Refactor `resolve` to use `withContext(Dispatchers.IO)`.
+- Keep the `Callback` for now to avoid breaking `CallsHandler`, but internal implementation will be coroutine-based.
+
+#### [MODIFY] [ProximitySensor.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/service/ProximitySensor.kt)
+- Add `@Inject constructor(@ApplicationContext context: Context)`.
+- Mark as `@Singleton` if appropriate (shared across call lifecycle).
+
+#### [MODIFY] [InCallServiceImpl.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/service/InCallServiceImpl.kt)
+- Inject `ProximitySensor` via Hilt.
+- Pass the injected sensor to `callHandler.setup()`.
 
 #### [MODIFY] [CallsHandler.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/service/CallsHandler.kt)
-- Implement `CallManager`.
-- Migrate `LiveData` to `StateFlow` (`calls`, `displayState`, `audioState`, `canAddCall`).
-- Decouple from `InCallActivity` (remove activity reference and methods).
-- Add specific action methods (hangup, answer, etc.) that delegate to `OngoingCall` or `TelecomAdapter`.
-
-#### [MODIFY] [InCallCommandsModule.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/service/InCallCommandsModule.kt)
-- Update to provide `CallManager` instead of just `InCallCommands`.
-
-#### [MODIFY] [OngoingCall.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/service/OngoingCall.kt)
-- Decouple from `CallsHandler` by using a callback or shared state for UI updates.
-- Ensure all time-related logic uses `SystemClock.elapsedRealtime()` explicitly for clarity.
-
-#### [MODIFY] [InCallViewModel.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/ui/InCallViewModel.kt)
-- Use `CallManager` for all interactions.
-- Refactor `refreshUiState` to be less expensive.
-- Expose a dedicated `durationLabel` Flow that updates independently of the main UI state to avoid full recompositions every second.
-- Collect `StateFlow` from `CallsHandler`.
-
-#### [MODIFY] [InCallActivity.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/ui/InCallActivity.kt)
-- Remove manual lifecycle registration with `CallsHandler`.
+- Ensure the `resolveContact` call still works with the refactored resolver.
 
 ## Verification Plan
 
 ### Automated Tests
-- Update and run `CallDisplaySelectorTest`.
-- Add unit tests for `CallsHandler`'s implementation of `CallManager`.
+- Build the project to ensure DI graphs are correct.
+- Run existing unit tests.
 
 ### Manual Verification
-- Test all call actions (Answer, Hangup, Hold, Merge, Split).
-- Verify audio route switching.
-- Verify duration timer accuracy and performance.
-- Verify proximity sensor behavior.
+- Verify contact resolution in the In-Call UI.
+- Verify proximity sensor behavior (screen turning off when near earpiece).

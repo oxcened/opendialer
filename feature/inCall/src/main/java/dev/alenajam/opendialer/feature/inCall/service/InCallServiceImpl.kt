@@ -19,6 +19,9 @@ class InCallServiceImpl : InCallService() {
     @Inject
     lateinit var telecomAdapter: TelecomAdapter
 
+    @Inject
+    lateinit var proximitySensor: ProximitySensor
+
     override fun onCallAdded(call: Call) {
         super.onCallAdded(call)
         callHandler.addCall(call, this)
@@ -71,7 +74,7 @@ class InCallServiceImpl : InCallService() {
         callHandler.setup(
             this,
             applicationContext,
-            ProximitySensor(applicationContext)
+            proximitySensor
         )
         telecomAdapter.attach(this)
         return super.onBind(intent)
