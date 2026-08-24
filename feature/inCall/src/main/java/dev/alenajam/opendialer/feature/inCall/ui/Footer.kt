@@ -47,11 +47,19 @@ fun InCallControls(
     isMuted: Boolean? = false,
     isSpeaker: Boolean? = false,
     isHolding: Boolean? = false,
+    canManageConference: Boolean = false,
+    canMerge: Boolean = false,
+    canSwap: Boolean = false,
+    canHold: Boolean = true,
+    canAddCall: Boolean = true,
     onHangup: () -> Unit,
     onMute: () -> Unit,
     onSpeaker: () -> Unit,
     onHold: () -> Unit,
     onAddCall: () -> Unit,
+    onMerge: () -> Unit = {},
+    onSwap: () -> Unit = {},
+    onManageConference: () -> Unit = {},
     onDigit: (digit: Char) -> Unit
 ) {
     val icons = LocalAppIcons.current
@@ -114,18 +122,52 @@ fun InCallControls(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Column {
-                            MoreActionRow(
-                                icon = icons.addCall,
-                                label = "Add call",
-                                onClick = onAddCall
-                            )
-                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                            MoreActionRow(
-                                icon = icons.pause,
-                                label = "Hold",
-                                isActive = isHolding,
-                                onClick = onHold
-                            )
+                            if (canAddCall) {
+                                MoreActionRow(
+                                    icon = icons.addCall,
+                                    label = "Add call",
+                                    onClick = onAddCall
+                                )
+                                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                            }
+                            if (canHold) {
+                                MoreActionRow(
+                                    icon = icons.pause,
+                                    label = "Hold",
+                                    isActive = isHolding,
+                                    onClick = onHold
+                                )
+                                if (canMerge || canSwap || canManageConference) {
+                                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                                }
+                            }
+                            if (canMerge) {
+                                MoreActionRow(
+                                    icon = icons.merge,
+                                    label = "Merge",
+                                    onClick = onMerge
+                                )
+                                if (canSwap || canManageConference) {
+                                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                                }
+                            }
+                            if (canSwap) {
+                                MoreActionRow(
+                                    icon = icons.swapCalls,
+                                    label = "Swap",
+                                    onClick = onSwap
+                                )
+                                if (canManageConference) {
+                                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                                }
+                            }
+                            if (canManageConference) {
+                                MoreActionRow(
+                                    icon = icons.more,
+                                    label = "Manage",
+                                    onClick = onManageConference
+                                )
+                            }
                         }
                     }
                 }

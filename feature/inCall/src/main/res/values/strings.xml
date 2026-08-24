@@ -15,5 +15,11 @@
     <string name="notification_on_hold_call_title">On hold call: %1$s</string>
     <string name="notification_outgoing_call_title">Calling: %1$s</string>
     <string name="manageConferenceCall">Manage conference call</string>
+    <string name="conference_call">Conference call</string>
     <string name="caller_number_subtitle">%1$s · %2$s</string>
+    <string name="conference_merge">Merge</string>
+    <string name="conference_swap">Swap</string>
+    <string name="conference_split">Split</string>
+    <string name="conference_end_call">End call</string>
+    <string name="conference_manage">Manage</string>
 </resources>

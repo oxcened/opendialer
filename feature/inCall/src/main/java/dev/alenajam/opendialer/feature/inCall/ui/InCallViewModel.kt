@@ -6,7 +6,6 @@ import android.app.Application
 import android.content.Intent
 import android.telecom.Call
 import android.telecom.CallAudioState
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -38,6 +37,7 @@ class InCallViewModel
     private var statusTimer: Timer? = null
     val stateLabel = primaryCall.switchMap { getStateLiveData(it) }
     val isHolding = primaryCall.map { it.state == Call.STATE_HOLDING }
+    val canMerge = primaryCall.map { it.canBeMerged() }
     val isSpeaker = audioState.map { it.route == CallAudioState.ROUTE_SPEAKER }
     val isMuted = audioState.map { it.isMuted }
     val callerName = primaryCall.map { it.callerName ?: it.callerNumber }
@@ -45,6 +45,11 @@ class InCallViewModel
     val callerNumberLabel = primaryCall.map { it.callerNumberLabel }
     val callerImageUri = primaryCall.map { it.callerImageUri }
     val isIncoming = primaryCall.map { it.state == Call.STATE_RINGING  }
+    val hasSecondaryCall = secondaryCall.map { it != null && it != OngoingCall.ONGOING_CALL_NULL }
+    val secondaryCallerName = secondaryCall.map {
+        if (it == null || it == OngoingCall.ONGOING_CALL_NULL) null
+        else it.callerName ?: it.callerNumber
+    }
 
     override fun onCleared() {
         super.onCleared()
@@ -91,11 +96,15 @@ class InCallViewModel
         )
     )
 
-    fun manageConference(fragment: Fragment) {
-        /*fragment.findNavController()
-        .navigate(R.id.action_inCallFragment_to_inCallManageConferenceFragment)*/
-        TODO()
+    fun merge() = primaryCall.value?.let { OngoingCallHelper.merge(it) }
+
+    fun swap() {
+        val secondary = secondaryCall.value
+        if (secondary == null || secondary == OngoingCall.ONGOING_CALL_NULL) return
+        secondary.hold(false)
     }
 
-    fun merge(call: OngoingCall) = OngoingCallHelper.merge(call)
+    fun split(call: OngoingCall) = call.split()
+
+    fun hangup(call: OngoingCall) = call.hangup()
 }

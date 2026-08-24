@@ -16,6 +16,7 @@ import javax.annotation.Nullable;
 import dev.alenajam.opendialer.core.common.CommonUtils;
 import dev.alenajam.opendialer.core.common.Contact;
 import dev.alenajam.opendialer.core.common.ContactsHelper;
+import dev.alenajam.opendialer.feature.inCall.R;
 
 public class OngoingCall {
     private static final int DTMF_DURATION_MS = 300;
@@ -71,7 +72,7 @@ public class OngoingCall {
         type = getState() == Call.STATE_RINGING ? OngoingCallHelper.CALL_TYPE_INCOMING : OngoingCallHelper.CALL_TYPE_OUTGOING;
 
         if (isConference()) {
-            //callerName = context.getString(R.string.conferenceCall);
+            callerName = context.getString(R.string.conference_call);
         } else if (isAnonymous()) {
             // callerName = context.getString(R.string.anonymous);
         } else {
@@ -232,6 +233,16 @@ public class OngoingCall {
         if (call.getConferenceableCalls().size() > 0) return true;
 
         return false;
+    }
+
+    public boolean canBeSplit() {
+        if (call == null) return false;
+        return call.getDetails().can(Call.Details.CAPABILITY_SEPARATE_FROM_CONFERENCE);
+    }
+
+    public void split() {
+        if (call == null) return;
+        call.splitFromConference();
     }
 
     public boolean isConference() {

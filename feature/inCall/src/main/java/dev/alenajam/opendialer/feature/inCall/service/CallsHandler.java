@@ -75,7 +75,11 @@ public class CallsHandler {
 
         OngoingCall ongoingCall = new OngoingCall(context, call);
 
-        Map<Call, OngoingCall> map = calls.getValue();
+        // Copy the map so a new reference is posted. LiveData.postValue with the
+        // same mutated-in-place HashMap instance is not detected as a change by
+        // Compose's observeAsState (structural equality on the same reference
+        // is always true), so conference UI would not recompose on add/remove.
+        Map<Call, OngoingCall> map = new HashMap<>(calls.getValue());
         map.put(call, ongoingCall);
 
         calls.postValue(map);
@@ -84,7 +88,7 @@ public class CallsHandler {
     public void removeCall(Call call) {
         if (calls.getValue() == null) return;
 
-        Map<Call, OngoingCall> map = calls.getValue();
+        Map<Call, OngoingCall> map = new HashMap<>(calls.getValue());
 
         OngoingCall ongoingCall = map.remove(call);
         if (ongoingCall == null) return;
