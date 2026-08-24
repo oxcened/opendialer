@@ -14,6 +14,7 @@
     <string name="notification_ongoing_call_title">Ongoing call: %1$s</string>
     <string name="notification_on_hold_call_title">On hold call: %1$s</string>
     <string name="notification_outgoing_call_title">Calling: %1$s</string>
+    <string name="notification_disconnecting_call_title">Ending call: %1$s</string>
     <string name="manageConferenceCall">Manage conference call</string>
     <string name="conference_call">Conference call</string>
     <string name="anonymous">Anonymous</string>

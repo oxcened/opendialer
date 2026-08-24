@@ -132,6 +132,10 @@ public abstract class NotificationHelper {
         notifyCall(context, callService, CHANNEL_ID_ONGOING_CALLS, Notification.PRIORITY_DEFAULT, context.getString(R.string.notification_on_hold_call_title, caller), false);
     }
 
+    public static void notifyDisconnectingCall(Context context, InCallServiceImpl callService, String caller) {
+        notifyCall(context, callService, CHANNEL_ID_ONGOING_CALLS, Notification.PRIORITY_DEFAULT, context.getString(R.string.notification_disconnecting_call_title, caller), false);
+    }
+
     public static void removeCallNotification(InCallServiceImpl callService) {
         if (callService != null) callService.stopForeground(true);
     }

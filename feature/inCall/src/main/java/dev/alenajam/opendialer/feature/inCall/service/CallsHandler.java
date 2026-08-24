@@ -230,6 +230,9 @@ public class CallsHandler {
             case Call.STATE_HOLDING:
                 NotificationHelper.notifyOnHoldCall(context, callService, caller);
                 break;
+            case Call.STATE_DISCONNECTING:
+                NotificationHelper.notifyDisconnectingCall(context, callService, caller);
+                break;
         }
     }
 
