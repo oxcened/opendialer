@@ -130,7 +130,6 @@ class InCallViewModel @Inject constructor(
     fun hangup(call: OngoingCall) = callManager.hangup(call)
 
     fun turnSpeaker() = callManager.toggleSpeaker()
-    fun turnBluetooth() = callManager.toggleBluetooth()
     fun selectAudioRoute(route: dev.alenajam.opendialer.feature.inCall.service.CallAudioRouteUiState) =
         callManager.selectAudioRoute(route)
     fun turnMute() = callManager.toggleMute()

@@ -1,6 +1,5 @@
 package dev.alenajam.opendialer.feature.calls
 
-import android.app.Activity
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -73,13 +72,9 @@ class CallsViewModel
         getCalls()
     }
 
-    fun sendMessage(activity: Activity, call: DialerCall) =
-        CommonUtils.makeSms(activity, call.contactInfo.number)
-
     fun sendMessage(number: String) =
         CommonUtils.makeSms(app, number)
 
-    fun makeCall(activity: Activity, number: String) = CommonUtils.makeCall(activity, number)
     fun makeCall(number: String) = CommonUtils.makeCall(app, number)
     fun copyNumber(number: String) = CommonUtils.copyToClipobard(app, number)
 
@@ -91,24 +86,8 @@ class CallsViewModel
         viewModelScope.launch { callsRepository.deleteCalls(call.childCalls) }
     }
 
-    fun callDetail(call: DialerCall) {
-        //navController.navigateToCallDetail(call.childCalls.map { it.id })
-    }
-
-    fun createContact(activity: Activity, call: DialerCall) =
-        CommonUtils.createContact(activity, call.contactInfo.number)
-
-    fun addToContact(activity: Activity, call: DialerCall) =
-        CommonUtils.addContactAsExisting(activity, call.contactInfo.number)
-
     fun addToContact(number: String) =
         CommonUtils.addContactAsExisting(app, number)
-
-    fun openContact(activity: Activity, call: DialerCall) {
-        ContactsHelper.getContactByPhoneNumber(activity, call.contactInfo.number)?.let {
-            CommonUtils.showContactDetail(activity, it.id)
-        }
-    }
 
     fun openContact(call: DialerCall) {
         ContactsHelper.getContactByPhoneNumber(app, call.contactInfo.number)?.let {

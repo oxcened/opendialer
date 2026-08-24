@@ -1,6 +1,5 @@
 package dev.alenajam.opendialer.feature.callDetail
 
-import android.app.Activity
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
@@ -13,7 +12,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.core.common.CommonUtils
-import dev.alenajam.opendialer.core.common.ContactsHelper
 import dev.alenajam.opendialer.core.common.functional.Event
 import dev.alenajam.opendialer.data.calls.CallOption
 import dev.alenajam.opendialer.data.calls.CallsRepositoryImpl
@@ -57,25 +55,12 @@ class DialerViewModel
     fun getDetailOptions(call: DialerCall) =
         getDetailOptions(viewModelScope, call) { it.fold({}, ::handleDetailOptions) }
 
-    fun makeCall(activity: Activity, number: String) = CommonUtils.makeCall(activity, number)
     fun makeCall(number: String) = CommonUtils.makeCall(app, number)
 
     fun copyNumber(call: DialerCall) = CommonUtils.copyToClipobard(app, call.contactInfo.number)
-    fun openContact(activity: Activity, call: DialerCall) {
-        ContactsHelper.getContactByPhoneNumber(activity, call.contactInfo.number)?.let {
-            CommonUtils.showContactDetail(activity, it.id)
-        }
-    }
 
     fun sendMessage() {
         call.value?.number?.let { CommonUtils.makeSms(app, it) }
-    }
-
-    fun editNumberBeforeCall(activity: Activity, call: DialerCall) {
-        val intent = Intent(Intent.ACTION_DIAL).apply {
-            data = Uri.fromParts(PhoneAccount.SCHEME_TEL, call.number, null)
-        }
-        activity.startActivity(intent)
     }
 
     fun editNumberBeforeCall(call: DialerCall) {

@@ -25,7 +25,6 @@ class SearchContactsViewModel
 @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val app: Application,
-    private val searchContactsUseCase: SearchContacts,
     private val searchContactsDialpadUseCase: SearchContactsDialpad,
     private val callsRepository: CallsRepository
 ) : ViewModel() {
@@ -61,13 +60,6 @@ class SearchContactsViewModel
 
     fun handleCallRuntimePermissionGranted() {
         _hasCallRuntimePermission.value = true
-    }
-
-    fun searchContacts(query: String) {
-        if (!hasRuntimePermission.value) return
-        searchContactsUseCase(viewModelScope, SearchContactsParams(app.contentResolver, query)) {
-            it.fold({}) { res -> handleResult(query, res) }
-        }
     }
 
     fun searchContactsByDialpad(query: String) {
