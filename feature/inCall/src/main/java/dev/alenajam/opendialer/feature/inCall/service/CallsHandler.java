@@ -82,7 +82,9 @@ public class CallsHandler {
         Map<Call, OngoingCall> map = new HashMap<>(calls.getValue());
         map.put(call, ongoingCall);
 
-        calls.postValue(map);
+        // Telecom and Call callbacks run on the main thread. Publish immediately
+        // so simultaneous conference updates cannot overwrite one another.
+        calls.setValue(map);
     }
 
     public void removeCall(Call call) {
@@ -95,11 +97,16 @@ public class CallsHandler {
 
         ongoingCall.tearDown();
 
-        calls.postValue(map);
+        // Conference members can disconnect back-to-back. Using postValue here
+        // lets each callback copy the same stale map, so the last posted removal
+        // can restore calls removed by earlier callbacks.
+        calls.setValue(map);
     }
 
     public void updateCalls() {
         Map<Call, OngoingCall> map = calls.getValue();
+        if (map.isEmpty() && restoreCallsFromTelecom()) return;
+
         // finish activity if there are no calls
         if (map.isEmpty()) {
             attemptFinishActivity();
@@ -119,6 +126,24 @@ public class CallsHandler {
             if (secondary == null) secondaryCall.postValue(OngoingCall.ONGOING_CALL_NULL);
             else secondaryCall.postValue(secondary);
         }
+    }
+
+    private boolean restoreCallsFromTelecom() {
+        if (callService == null) return false;
+
+        Map<Call, OngoingCall> restoredCalls = new HashMap<>();
+        for (Call call : callService.getCalls()) {
+            if (call.getState() != Call.STATE_DISCONNECTED) {
+                restoredCalls.put(call, new OngoingCall(context, call));
+            }
+        }
+
+        if (restoredCalls.isEmpty()) return false;
+
+        // A conference can survive after its independent companion call is
+        // removed even when all local entries were cleared during the handoff.
+        calls.setValue(restoredCalls);
+        return true;
     }
 
     private void handleCallNotification(OngoingCall call, int state) {
