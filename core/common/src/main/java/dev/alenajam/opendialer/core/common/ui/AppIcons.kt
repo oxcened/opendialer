@@ -18,6 +18,7 @@ import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Pause
 import androidx.compose.material.icons.outlined.PersonAddAlt
 import androidx.compose.material.icons.outlined.Phone
+import androidx.compose.material.icons.outlined.PhonePaused
 import androidx.compose.material.icons.outlined.SwapCalls
 import androidx.compose.material.icons.outlined.Voicemail
 import androidx.compose.runtime.Immutable
@@ -44,7 +45,8 @@ data class AppIcons(
     val personAdd: ImageVector,
     val history: ImageVector,
     val merge: ImageVector,
-    val swapCalls: ImageVector
+    val swapCalls: ImageVector,
+    val phonePaused: ImageVector
 )
 
 val DefaultAppIcons = AppIcons(
@@ -66,7 +68,8 @@ val DefaultAppIcons = AppIcons(
     personAdd = Icons.Outlined.PersonAddAlt,
     history = Icons.Outlined.History,
     merge = Icons.Outlined.Merge,
-    swapCalls = Icons.Outlined.SwapCalls
+    swapCalls = Icons.Outlined.SwapCalls,
+    phonePaused = Icons.Outlined.PhonePaused
 )
 
 val LocalAppIcons = staticCompositionLocalOf { DefaultAppIcons }
