@@ -20,6 +20,42 @@ class CallDisplaySelectorTest {
     }
 
     @Test
+    fun dialingCallTakesPriorityOverActiveCall() {
+        val result = CallDisplaySelector.select(
+            listOf(
+                candidate("active", Call.STATE_ACTIVE, false, 0),
+                candidate("dialing", Call.STATE_DIALING, false, 1)
+            )
+        )
+
+        assertEquals("dialing", result.primary)
+        assertEquals("active", result.secondary)
+    }
+
+    @Test
+    fun activeCallTakesPriorityOverHeldCall() {
+        val result = CallDisplaySelector.select(
+            listOf(
+                candidate("held", Call.STATE_HOLDING, false, 0),
+                candidate("active", Call.STATE_ACTIVE, false, 1)
+            )
+        )
+
+        assertEquals("active", result.primary)
+        assertEquals("held", result.secondary)
+    }
+
+    @Test
+    fun selectedPrimaryIsNotRepeatedAsSecondary() {
+        val result = CallDisplaySelector.select(
+            listOf(candidate("active", Call.STATE_ACTIVE, false, 0))
+        )
+
+        assertEquals("active", result.primary)
+        assertNull(result.secondary)
+    }
+
+    @Test
     fun sequenceMakesSelectionDeterministicWithinSameState() {
         val result = CallDisplaySelector.select(
             listOf(

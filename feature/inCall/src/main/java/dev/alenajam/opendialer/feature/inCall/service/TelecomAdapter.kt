@@ -45,11 +45,10 @@ class TelecomAdapter @Inject constructor() : InCallCommands {
                 toggleLegacyRoute(CallAudioState.ROUTE_SPEAKER)
                 return
             }
-            val nextType = if (currentEndpoint?.endpointType == CallEndpoint.TYPE_SPEAKER) {
-                preferredPrivateEndpointType()
-            } else {
-                CallEndpoint.TYPE_SPEAKER
-            }
+            val nextType = AudioRouteSelector.speakerTarget(
+                currentEndpoint?.endpointType,
+                availableEndpoints.map { it.endpointType }
+            )
             if (!requestEndpoint(nextType)) toggleLegacyRoute(CallAudioState.ROUTE_SPEAKER)
         } else {
             toggleLegacyRoute(CallAudioState.ROUTE_SPEAKER)
@@ -62,11 +61,10 @@ class TelecomAdapter @Inject constructor() : InCallCommands {
                 toggleLegacyRoute(CallAudioState.ROUTE_BLUETOOTH)
                 return
             }
-            val nextType = if (currentEndpoint?.endpointType == CallEndpoint.TYPE_BLUETOOTH) {
-                preferredPrivateEndpointType()
-            } else {
-                CallEndpoint.TYPE_BLUETOOTH
-            }
+            val nextType = AudioRouteSelector.bluetoothTarget(
+                currentEndpoint?.endpointType,
+                availableEndpoints.map { it.endpointType }
+            )
             if (!requestEndpoint(nextType)) toggleLegacyRoute(CallAudioState.ROUTE_BLUETOOTH)
         } else {
             toggleLegacyRoute(CallAudioState.ROUTE_BLUETOOTH)
@@ -94,16 +92,6 @@ class TelecomAdapter @Inject constructor() : InCallCommands {
             )
         }
     }
-
-    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    private fun preferredPrivateEndpointType(): Int =
-        when {
-            availableEndpoints.any { it.endpointType == CallEndpoint.TYPE_WIRED_HEADSET } ->
-                CallEndpoint.TYPE_WIRED_HEADSET
-            availableEndpoints.any { it.endpointType == CallEndpoint.TYPE_EARPIECE } ->
-                CallEndpoint.TYPE_EARPIECE
-            else -> CallEndpoint.TYPE_SPEAKER
-        }
 
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     private fun requestEndpoint(type: Int, label: String? = null): Boolean {

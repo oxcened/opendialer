@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.dp
 import dev.alenajam.opendialer.core.common.ui.ContactAvatar
 import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.feature.inCall.service.OngoingCall
+import dev.alenajam.opendialer.feature.inCall.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun ManageConferenceSheet(
@@ -82,7 +84,6 @@ private fun ConferenceParticipantRow(
     val icons = LocalAppIcons.current
 
     Surface(
-        onClick = { if (showSplit && participant.isConferenced) onSplit() },
         color = Color.Transparent,
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -119,12 +120,12 @@ private fun ConferenceParticipantRow(
                 Surface(
                     onClick = onSplit,
                     color = Color.Transparent,
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(48.dp)
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
                             imageVector = icons.merge,
-                            contentDescription = "Split",
+                            contentDescription = stringResource(R.string.action_split),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
@@ -134,12 +135,12 @@ private fun ConferenceParticipantRow(
             Surface(
                 onClick = onHangup,
                 color = Color.Transparent,
-                modifier = Modifier.size(40.dp)
+                modifier = Modifier.size(48.dp)
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
                         imageVector = icons.hangup,
-                        contentDescription = "End call",
+                        contentDescription = stringResource(R.string.action_end_call),
                         tint = MaterialTheme.colorScheme.error
                     )
                 }

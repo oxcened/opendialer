@@ -44,9 +44,7 @@ class OngoingCall(
     }
 
     private var lastState = Call.STATE_NEW
-    private var wasRinging = false
-    private var wasActive = false
-    private var wasLocallyDeclined = false
+    private val missedCallTracker = MissedCallTracker()
     private val mainHandler = Handler(Looper.getMainLooper())
     private val stopDtmfTone = Runnable { call.stopDtmfTone() }
 
@@ -135,9 +133,9 @@ class OngoingCall(
 
     private fun updateCallState(state: Int) {
         if (state == lastState) return
+        missedCallTracker.onStateChanged(state)
 
         when (state) {
-            Call.STATE_RINGING -> wasRinging = true
             Call.STATE_HOLDING -> {
                 if (lastState == Call.STATE_ACTIVE) {
                     accumulateActiveTime()
@@ -153,7 +151,6 @@ class OngoingCall(
                 return
             }
             Call.STATE_ACTIVE -> {
-                wasActive = true
                 _state.update { it.copy(startTime = CommonUtils.getCurrentTime()) }
             }
         }
@@ -178,16 +175,16 @@ class OngoingCall(
     val isConferenced: Boolean get() = _state.value.isConferenced
     val startTime: Long get() = _state.value.startTime
     val totalTime: Long get() = _state.value.totalTime
-    val shouldNotifyMissedCall: Boolean get() = wasRinging && !wasActive && !wasLocallyDeclined
+    val shouldNotifyMissedCall: Boolean get() = missedCallTracker.shouldNotify()
 
     fun answer() {
-        if (state != Call.STATE_RINGING) return
+        if (!CallActionPolicy.shouldAnswer(state)) return
         call.answer(VideoProfile.STATE_AUDIO_ONLY)
     }
 
     fun hangup(message: String? = null) {
-        if (state == Call.STATE_RINGING) {
-            wasLocallyDeclined = true
+        if (CallActionPolicy.shouldReject(state)) {
+            missedCallTracker.markLocallyDeclined()
             call.reject(message != null, message)
         } else {
             call.disconnect()
@@ -195,15 +192,14 @@ class OngoingCall(
     }
 
     fun markLocallyDeclined() {
-        wasLocallyDeclined = true
+        missedCallTracker.markLocallyDeclined()
     }
 
     fun hold(hold: Boolean? = null) {
-        val shouldHold = hold ?: (state != Call.STATE_HOLDING)
-        if (shouldHold && canBeHeld()) {
-            call.hold()
-        } else if (!shouldHold && state == Call.STATE_HOLDING) {
-            call.unhold()
+        when (CallActionPolicy.holdAction(state, canBeHeld(), hold)) {
+            CallActionPolicy.HoldAction.HOLD -> call.hold()
+            CallActionPolicy.HoldAction.UNHOLD -> call.unhold()
+            CallActionPolicy.HoldAction.NONE -> Unit
         }
     }
 
@@ -211,7 +207,7 @@ class OngoingCall(
     fun canBeMerged(): Boolean = _state.value.canMerge
 
     fun playDtmf(digit: Char) {
-        if (state != Call.STATE_ACTIVE) return
+        if (!CallActionPolicy.canPlayDtmf(state)) return
         mainHandler.removeCallbacks(stopDtmfTone)
         call.stopDtmfTone()
         call.playDtmfTone(digit)

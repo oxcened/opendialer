@@ -34,9 +34,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import dev.alenajam.opendialer.core.common.LocalCustomColorsScheme
 import dev.alenajam.opendialer.core.common.R as CommonR
+import dev.alenajam.opendialer.feature.inCall.R
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,6 +57,9 @@ fun IncomingCallControls(
     var showQuickResponses by remember { mutableStateOf(false) }
     var showCustomMessage by remember { mutableStateOf(false) }
     var customMessage by remember { mutableStateOf("") }
+    val answerDescription = stringResource(R.string.action_answer)
+    val declineDescription = stringResource(R.string.action_decline)
+    val messageDescription = stringResource(R.string.action_message)
 
     Surface(
         tonalElevation = 8.dp,
@@ -68,7 +77,11 @@ fun IncomingCallControls(
             Surface(
                 onClick = { showQuickResponses = true },
                 shape = RoundedCornerShape(28.dp),
-                color = Color.White
+                color = Color.White,
+                modifier = Modifier.semantics {
+                    contentDescription = messageDescription
+                    role = Role.Button
+                }
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -97,7 +110,7 @@ fun IncomingCallControls(
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.CallEnd,
-                            contentDescription = null,
+                            contentDescription = declineDescription,
                             tint = Color.White
                         )
                     }
@@ -118,7 +131,7 @@ fun IncomingCallControls(
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Call,
-                            contentDescription = null,
+                            contentDescription = answerDescription,
                             tint = Color.White
                         )
                     }

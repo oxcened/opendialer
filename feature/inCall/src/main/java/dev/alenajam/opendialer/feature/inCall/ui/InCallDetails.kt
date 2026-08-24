@@ -50,7 +50,7 @@ fun InCallDetails(
             text = displayName,
             style = MaterialTheme.typography.headlineLarge,
             textAlign = TextAlign.Center,
-            maxLines = 1,
+            maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
 

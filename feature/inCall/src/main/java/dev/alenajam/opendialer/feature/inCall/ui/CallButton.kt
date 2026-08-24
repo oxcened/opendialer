@@ -19,7 +19,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.alenajam.opendialer.feature.inCall.R
 
 @Composable
 internal fun CallButton(
@@ -51,6 +58,9 @@ internal fun CallButton(
         animationSpec = spring(dampingRatio = 0.68f, stiffness = 420f),
         label = "Call control shape"
     )
+    val stateDescription = stringResource(
+        if (isActive == true) R.string.control_state_on else R.string.control_state_off
+    )
 
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -60,15 +70,20 @@ internal fun CallButton(
         Surface(
             onClick = onClick,
             modifier = Modifier
-                .width(76.dp)
-                .height(64.dp),
+                .width(72.dp)
+                .height(64.dp)
+                .semantics(mergeDescendants = true) {
+                    contentDescription = label
+                    this.stateDescription = stateDescription
+                    role = Role.Button
+                },
             shape = RoundedCornerShape(cornerRadius),
             color = containerColor
         ) {
             Box {
                 Icon(
                     imageVector = icon,
-                    contentDescription = label,
+                    contentDescription = null,
                     tint = contentColor,
                     modifier = Modifier.align(Alignment.Center)
                 )

@@ -87,27 +87,15 @@ class CallsHandler @Inject constructor(
 
     // CallManager Implementation (Delegated Actions)
     override fun answer(call: OngoingCall) {
-        if (call.state == Call.STATE_RINGING) {
-            call.call.answer(VideoProfile.STATE_AUDIO_ONLY)
-        }
+        call.answer()
     }
 
     override fun hangup(call: OngoingCall, message: String?) {
-        if (call.state == Call.STATE_RINGING) {
-            call.markLocallyDeclined()
-            call.call.reject(message != null, message)
-        } else {
-            call.call.disconnect()
-        }
+        call.hangup(message)
     }
 
     override fun hold(call: OngoingCall, hold: Boolean?) {
-        val shouldHold = hold ?: (call.state != Call.STATE_HOLDING)
-        if (shouldHold && call.canBeHeld()) {
-            call.call.hold()
-        } else if (!shouldHold && call.state == Call.STATE_HOLDING) {
-            call.call.unhold()
-        }
+        call.hold(hold)
     }
 
     override fun playDtmf(call: OngoingCall, digit: Char) {

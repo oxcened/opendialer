@@ -19,6 +19,14 @@
     <string name="notification_missed_call_title">Missed call from %1$s</string>
     <string name="notification_call_back">Call back</string>
     <string name="notification_message">Message</string>
+    <string name="action_answer">Answer</string>
+    <string name="action_decline">Decline</string>
+    <string name="action_end_call">End call</string>
+    <string name="action_message">Message</string>
+    <string name="action_close">Close</string>
+    <string name="action_split">Split</string>
+    <string name="control_state_on">On</string>
+    <string name="control_state_off">Off</string>
     <string name="manageConferenceCall">Manage conference call</string>
     <string name="conference_call">Conference call</string>
     <string name="anonymous">Anonymous</string>

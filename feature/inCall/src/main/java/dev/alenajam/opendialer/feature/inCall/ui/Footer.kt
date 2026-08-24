@@ -37,11 +37,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.alenajam.opendialer.core.common.ui.Dialpad
 import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
+import dev.alenajam.opendialer.feature.inCall.R
 import dev.alenajam.opendialer.feature.inCall.service.CallAudioRouteUiState
 
 @Composable
@@ -77,6 +83,7 @@ fun InCallControls(
             it.type == android.telecom.CallAudioState.ROUTE_WIRED_HEADSET
     }
     val currentAudioRoute = audioRoutes.firstOrNull { it.isSelected }
+    val endCallDescription = stringResource(R.string.action_end_call)
 
     fun handleDialpadDigit(digit: Char) {
         dialpadInput.value = dialpadInput.value.plus(digit)
@@ -124,7 +131,7 @@ fun InCallControls(
                         IconButton(
                             onClick = { toggleSectionButton(OpenSection.ADDITIONAL_ACTIONS) }
                         ) {
-                            Icon(imageVector = Icons.Outlined.Close, contentDescription = "Close")
+                            Icon(imageVector = Icons.Outlined.Close, contentDescription = stringResource(R.string.action_close))
                         }
                     }
 
@@ -174,7 +181,7 @@ fun InCallControls(
                         IconButton(
                             onClick = { toggleSectionButton(OpenSection.DIALPAD) }
                         ) {
-                            Icon(imageVector = Icons.Outlined.Close, contentDescription = "Close")
+                            Icon(imageVector = Icons.Outlined.Close, contentDescription = stringResource(R.string.action_close))
                         }
                     }
 
@@ -265,6 +272,10 @@ fun InCallControls(
                     .align(Alignment.CenterHorizontally)
                     .width(224.dp)
                     .height(64.dp)
+                    .semantics {
+                        contentDescription = endCallDescription
+                        role = Role.Button
+                    }
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
