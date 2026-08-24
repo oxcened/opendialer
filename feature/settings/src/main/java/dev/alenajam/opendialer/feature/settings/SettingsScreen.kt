@@ -107,6 +107,12 @@ fun SettingsScreen(
                 uri = stringResource(R.string.url_discord)
             )
 
+            AboutLinkCard(
+                title = stringResource(R.string.feature_requests),
+                description = stringResource(R.string.feature_requests_description),
+                uri = stringResource(R.string.url_feature_requests)
+            )
+
             Text(
                 modifier = Modifier.padding(top = 4.dp),
                 text = stringResource(R.string.about_section_open_source),
