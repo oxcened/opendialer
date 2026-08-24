@@ -13,8 +13,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import dev.alenajam.opendialer.core.common.CommonUtils
+import dev.alenajam.opendialer.core.common.ui.ContactAvatar
 import dev.alenajam.opendialer.feature.inCall.R
 
 @Composable
@@ -32,16 +32,7 @@ fun InCallDetails(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
     ) {
-        if (showCallerImage) {
-            AsyncImage(
-                model = callerImageUri,
-                contentDescription = null,
-                modifier = Modifier.size(50.dp),
-                placeholder = null,
-                error = null,
-                fallback = null
-            )
-        }
+        val displayName = callerName.ifBlank { callerNumber.ifBlank { "Unknown" } }
 
         Text(
             text = if (status == CallStatus.ACTIVE) {
@@ -56,7 +47,7 @@ fun InCallDetails(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = callerName.ifBlank { callerNumber.ifBlank { "Unknown" } },
+            text = displayName,
             style = MaterialTheme.typography.headlineLarge,
             textAlign = TextAlign.Center,
             maxLines = 1,
@@ -72,6 +63,19 @@ fun InCallDetails(
                 },
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        if (showCallerImage) {
+            Spacer(modifier = Modifier.height(80.dp))
+
+            ContactAvatar(
+                name = callerName.takeIf { it.isNotBlank() && it != callerNumber },
+                photoUri = callerImageUri,
+                colorKey = callerName.ifBlank { callerNumber },
+                fallbackIconModifier = Modifier.size(72.dp),
+                initialTextStyle = MaterialTheme.typography.displayLarge,
+                modifier = Modifier.size(176.dp)
             )
         }
     }

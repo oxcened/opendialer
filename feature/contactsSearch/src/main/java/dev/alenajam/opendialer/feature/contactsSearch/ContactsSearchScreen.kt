@@ -43,9 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -54,9 +52,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
+import dev.alenajam.opendialer.core.common.ui.ContactAvatar
 import dev.alenajam.opendialer.core.common.PermissionUtils
-import dev.alenajam.opendialer.core.common.forwardingPainter
 import dev.alenajam.opendialer.core.common.getActivity
 import dev.alenajam.opendialer.core.common.ui.Dialpad
 import dev.alenajam.opendialer.data.contactsSearch.DialerSearchContact
@@ -240,22 +237,16 @@ private fun ResultRow(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(16.dp),
             ) {
-                val placeholder = forwardingPainter(
-                    painter = rememberVectorPainter(Icons.Filled.AccountCircle),
-                    colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary)
-                )
-                AsyncImage(
-                    model = contact.image,
-                    contentDescription = null,
+                ContactAvatar(
+                    name = contact.name.takeIf { it.isNotBlank() },
+                    photoUri = contact.image,
+                    colorKey = contact.number,
                     modifier = Modifier
                         .size(50.dp)
                         .clickable(
                             enabled = contact.contactId > 0,
                             onClick = onOpenContact
-                        ),
-                    placeholder = placeholder,
-                    error = placeholder,
-                    fallback = placeholder
+                        )
                 )
 
                 Column(modifier = Modifier.weight(1f)) {

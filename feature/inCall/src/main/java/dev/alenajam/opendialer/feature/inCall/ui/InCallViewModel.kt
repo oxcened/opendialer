@@ -46,7 +46,7 @@ class InCallViewModel @Inject constructor(
             isSpeaker = audio?.route == CallAudioState.ROUTE_SPEAKER,
             isMuted = audio?.isMuted == true,
             audioRoutes = audio?.availableRoutes.orEmpty(),
-            callerName = primary?.let { it.callerName ?: it.callerNumber }.orEmpty(),
+            callerName = primary?.callerName.orEmpty(),
             callerNumber = primary?.callerNumber.orEmpty(),
             callerNumberLabel = primary?.callerNumberLabel.orEmpty(),
             callerImageUri = primary?.callerImageUri,

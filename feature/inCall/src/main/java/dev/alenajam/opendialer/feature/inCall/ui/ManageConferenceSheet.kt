@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import dev.alenajam.opendialer.core.common.ui.ContactAvatar
 import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.feature.inCall.service.OngoingCall
 
@@ -90,9 +90,9 @@ private fun ConferenceParticipantRow(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
         ) {
-            AsyncImage(
-                model = participant.callerImageUri,
-                contentDescription = null,
+            ContactAvatar(
+                name = participant.callerName,
+                photoUri = participant.callerImageUri,
                 modifier = Modifier.size(40.dp)
             )
 

@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.Call
 import androidx.compose.material.icons.outlined.CallMade
@@ -47,17 +46,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import coil.compose.AsyncImage
 import dev.alenajam.opendialer.core.common.CommonUtils
-import dev.alenajam.opendialer.core.common.forwardingPainter
 import dev.alenajam.opendialer.core.common.functional.EventObserver
+import dev.alenajam.opendialer.core.common.ui.ContactAvatar
 import dev.alenajam.opendialer.data.calls.CallType
 import dev.alenajam.opendialer.data.calls.CallOption
 import dev.alenajam.opendialer.data.calls.ContactInfo
@@ -171,17 +167,11 @@ private fun TopBar(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    val placeholder = forwardingPainter(
-                        painter = rememberVectorPainter(Icons.Filled.AccountCircle),
-                        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary)
-                    )
-                    AsyncImage(
-                        model = call.contactInfo.photoUri,
-                        contentDescription = null,
-                        modifier = Modifier.size(50.dp),
-                        placeholder = placeholder,
-                        error = placeholder,
-                        fallback = placeholder
+                    ContactAvatar(
+                        name = call.contactInfo.name,
+                        photoUri = call.contactInfo.photoUri,
+                        colorKey = call.contactInfo.number.orEmpty(),
+                        modifier = Modifier.size(50.dp)
                     )
                     Spacer(modifier = Modifier.size(8.dp))
                     Text(

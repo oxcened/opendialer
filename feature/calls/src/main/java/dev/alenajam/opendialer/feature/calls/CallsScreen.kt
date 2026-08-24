@@ -27,7 +27,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Message
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.outlined.Block
@@ -58,10 +57,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -72,9 +69,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
+import dev.alenajam.opendialer.core.common.ui.ContactAvatar
 import dev.alenajam.opendialer.core.common.PermissionUtils
-import dev.alenajam.opendialer.core.common.forwardingPainter
 import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.data.calls.CallType
 import dev.alenajam.opendialer.data.calls.ContactInfo
@@ -336,24 +332,17 @@ private fun FavoriteItem(
         modifier = Modifier
             .width(60.dp)
     ) {
-        val placeholder = forwardingPainter(
-            painter = rememberVectorPainter(Icons.Filled.AccountCircle),
-            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary)
-        )
         Box(contentAlignment = Alignment.BottomEnd) {
-            AsyncImage(
-                model = favorite.image,
-                contentDescription = null,
+            ContactAvatar(
+                name = favorite.name,
+                photoUri = favorite.image,
+                colorKey = favorite.number,
                 modifier = Modifier
                     .size(56.dp)
-                    .clip(RoundedCornerShape(28.dp))
                     .combinedClickable(
                         onClick = onClick,
                         onLongClick = { showMenu = true }
-                    ),
-                placeholder = placeholder,
-                error = placeholder,
-                fallback = placeholder
+                    )
             )
 
             Surface(
@@ -458,13 +447,10 @@ private fun CallRow(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp),
             ) {
-                val placeholder = forwardingPainter(
-                    painter = rememberVectorPainter(icons.accountCircle),
-                    colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary)
-                )
-
-                AsyncImage(
-                    model = call.contactInfo.photoUri,
+                ContactAvatar(
+                    name = call.contactInfo.name,
+                    photoUri = call.contactInfo.photoUri,
+                    colorKey = call.contactInfo.number.orEmpty(),
                     contentDescription = if (call.isContactSaved()) {
                         stringResource(R.string.open_contact)
                     } else {
@@ -475,10 +461,7 @@ private fun CallRow(
                         .clickable(
                             enabled = call.isContactSaved(),
                             onClick = openContact
-                        ),
-                    placeholder = placeholder,
-                    error = placeholder,
-                    fallback = placeholder
+                        )
                 )
 
                 Column(modifier = Modifier.weight(1f)) {

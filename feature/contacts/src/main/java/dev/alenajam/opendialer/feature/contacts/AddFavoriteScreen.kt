@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
@@ -32,15 +31,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
+import dev.alenajam.opendialer.core.common.ui.ContactAvatar
 import dev.alenajam.opendialer.core.common.PermissionUtils
-import dev.alenajam.opendialer.core.common.forwardingPainter
 import dev.alenajam.opendialer.data.contacts.DialerContact
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -192,17 +188,11 @@ private fun FavoritePickerRow(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
-            val placeholder = forwardingPainter(
-                painter = rememberVectorPainter(Icons.Filled.AccountCircle),
-                colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary)
-            )
-            AsyncImage(
-                model = contact.image,
-                contentDescription = null,
-                modifier = Modifier.size(40.dp),
-                placeholder = placeholder,
-                error = placeholder,
-                fallback = placeholder
+            ContactAvatar(
+                name = contact.name,
+                photoUri = contact.image,
+                colorKey = contact.number,
+                modifier = Modifier.size(40.dp)
             )
 
             Column(
