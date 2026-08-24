@@ -35,7 +35,7 @@ public class OngoingCall {
         public void onStateChanged(Call call, int newState) {
             super.onStateChanged(call, newState);
             updateState(newState);
-            callsHandler.updateCalls();
+            if (newState != Call.STATE_DISCONNECTED) callsHandler.updateCalls();
         }
 
         @Override

@@ -4,9 +4,10 @@ import android.content.Context;
 import android.telecom.Call;
 import android.telecom.CallAudioState;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,10 +31,6 @@ public class CallsHandler {
     private Context context;
     private ProximitySensor proximitySensor;
     private long nextCallSequence;
-    private final Observer<Map<Call, OngoingCall>> callsObserver = ongoingCalls -> updateCalls();
-    private final Observer<CallAudioState> audioStateObserver = audioState -> updateAudioState();
-
-
     @Inject
     public CallsHandler() {
     }
@@ -58,6 +55,7 @@ public class CallsHandler {
         return inCallActivity.getVisibility();
     }
 
+    @MainThread
     public void addCall(Call call, Context context) {
         if (call.getState() == Call.STATE_DISCONNECTED) {
             OngoingCallHelper.handleDisconnectCause(context, call);
@@ -76,8 +74,10 @@ public class CallsHandler {
         // Telecom and Call callbacks run on the main thread. Publish immediately
         // so simultaneous conference updates cannot overwrite one another.
         calls.setValue(map);
+        updateCalls();
     }
 
+    @MainThread
     public void removeCall(Call call) {
         if (calls.getValue() == null) return;
 
@@ -92,11 +92,15 @@ public class CallsHandler {
         // lets each callback copy the same stale map, so the last posted removal
         // can restore calls removed by earlier callbacks.
         calls.setValue(map);
+        updateCalls();
     }
 
+    @MainThread
     public void updateCalls() {
         Map<Call, OngoingCall> map = calls.getValue();
-        if (map.isEmpty() && restoreCallsFromTelecom()) return;
+        if (map.isEmpty() && restoreCallsFromTelecom()) {
+            map = calls.getValue();
+        }
 
         // finish activity if there are no calls
         if (map.isEmpty()) {
@@ -161,10 +165,6 @@ public class CallsHandler {
                 NotificationHelper.notifyOnHoldCall(context, callService, caller);
                 break;
         }
-    }
-
-    private void updateAudioState() {
-        updateProximitySensor(null);
     }
 
     private void updateProximitySensor(OngoingCall pCall) {
@@ -286,12 +286,15 @@ public class CallsHandler {
         }
     }
 
+    @MainThread
     public void updateCallAudioState(CallAudioState newAudioState) {
-        audioState.postValue(newAudioState);
+        audioState.setValue(newAudioState);
+        updateProximitySensor(null);
     }
 
+    @MainThread
     public void updateCanAddCall(boolean newCanAddCall) {
-        canAddCall.postValue(newCanAddCall);
+        canAddCall.setValue(newCanAddCall);
     }
 
 
@@ -299,8 +302,7 @@ public class CallsHandler {
         this.callService = callService;
         this.context = context;
         this.proximitySensor = proximitySensor;
-        calls.observeForever(callsObserver);
-        audioState.observeForever(audioStateObserver);
+        updateCalls();
     }
 
     public void tearDown() {
@@ -308,23 +310,21 @@ public class CallsHandler {
         context = null;
         if (proximitySensor != null) proximitySensor.tearDown();
         proximitySensor = null;
-        calls.removeObserver(callsObserver);
-        audioState.removeObserver(audioStateObserver);
     }
 
-    public MutableLiveData<CallAudioState> getAudioState() {
+    public LiveData<CallAudioState> getAudioState() {
         return audioState;
     }
 
-    public MutableLiveData<Boolean> getCanAddCall() {
+    public LiveData<Boolean> getCanAddCall() {
         return canAddCall;
     }
 
-    public MutableLiveData<CallDisplayState> getDisplayState() {
+    public LiveData<CallDisplayState> getDisplayState() {
         return displayState;
     }
 
-    public MutableLiveData<Map<Call, OngoingCall>> getCalls() {
+    public LiveData<Map<Call, OngoingCall>> getCalls() {
         return calls;
     }
 }
