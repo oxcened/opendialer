@@ -1,37 +1,51 @@
-# Implementation Plan: Notification Modernization & Reactive Call State
+# Implementation Plan: Core Common Modernization
 
-This plan covers modernizing the call notification system using `Notification.CallStyle` and refactoring `OngoingCall` to expose state reactively via `StateFlow`.
+This plan covers the migration of core utility and model classes in the `:core:common` module from Java to Kotlin.
 
 ## Proposed Changes
 
-### [:feature:inCall](file:///Users/alen/StudioProjects/opendialer/feature/inCall)
+### [:core:common](file:///Users/alen/StudioProjects/opendialer/core/common)
 
-#### [MODIFY] [NotificationHelper.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/service/NotificationHelper.kt)
-- Clean up dead code and commented-out sections.
-- Refactor `notifyCall` to use `Notification.CallStyle` for Android 12+ (API 31+).
-- Use `Person` API for the notification sender.
-- Ensure proper mapping of Telecom actions (Answer/Hangup) to notification actions.
-- Convert `object` to a proper injectable class if it helps with state management, but keeping as `object` is also fine for now if it stays stateless.
+#### [NEW] [Contact.kt](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/Contact.kt)
+#### [DELETE] [Contact.java](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/Contact.java)
+- Convert to a Kotlin `data class`.
+- Use default parameters to replace multiple constructors.
+- Maintain `Serializable` for compatibility.
 
-#### [MODIFY] [OngoingCall.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/service/OngoingCall.kt)
-- Define an `OngoingCallInfo` data class to hold immutable snapshot of call state.
-- Expose a `StateFlow<OngoingCallInfo>` from `OngoingCall`.
-- Remove the `Listener` interface.
-- Ensure all property updates trigger a new emission in the `StateFlow`.
+#### [NEW] [ContactsHelper.kt](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/ContactsHelper.kt)
+#### [DELETE] [ContactsHelper.java](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/ContactsHelper.java)
+- Convert to a Kotlin `object`.
+- Keep the `getContactByPhoneNumber` logic.
 
-#### [MODIFY] [CallsHandler.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/service/CallsHandler.kt)
-- Remove `OngoingCall.Listener` implementation.
-- Observe each `OngoingCall`'s `StateFlow` to trigger `updateCalls()`.
-- *Optimization:* Instead of full collection of all flows, just having the `OngoingCall` notify the handler via a simple function call is still technically a "listener", but we can make it more reactive by having `CallsHandler` build its state by combining the flows of active calls.
+#### [NEW] [PermissionUtils.kt](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/PermissionUtils.kt)
+#### [DELETE] [PermissionUtils.java](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/PermissionUtils.java)
+- Convert to a Kotlin `object`.
+
+#### [NEW] [DefaultPhoneUtils.kt](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/DefaultPhoneUtils.kt)
+#### [DELETE] [DefaultPhoneUtils.java](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/DefaultPhoneUtils.java)
+- Convert to a Kotlin `object`.
+
+#### [NEW] [SharedPreferenceHelper.kt](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/SharedPreferenceHelper.kt)
+#### [DELETE] [SharedPreferenceHelper.java](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/SharedPreferenceHelper.java)
+- Convert to a Kotlin `class` (it's not abstract/static).
+
+#### [NEW] [MyDialog.kt](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/MyDialog.kt)
+#### [DELETE] [MyDialog.java](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/MyDialog.java)
+- Convert to Kotlin.
+- Use property access for views.
+
+#### [NEW] [CommonUtils.kt](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/CommonUtils.kt)
+#### [DELETE] [CommonUtils.java](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/CommonUtils.java)
+- Convert to a Kotlin `object`.
+- This is a large file, so I'll handle it carefully.
 
 ## Verification Plan
 
 ### Automated Tests
-- Build the project and ensure all components compile.
-- Run unit tests for `CallDisplaySelector`.
+- Run all unit tests in the project (since `:core:common` is used everywhere).
+- Build the project to ensure no Java interop issues.
 
 ### Manual Verification
-- Verify the new notification style on Android 12+ devices.
-- Test incoming call actions directly from the notification.
-- Verify UI updates in the app when call details change (e.g., contact resolved).
-- Test call duration and state transitions.
+- Verify contact lookup still works.
+- Verify permission checks are still correct.
+- Verify call making/SMS logic (in `CommonUtils`) still works.
