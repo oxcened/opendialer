@@ -16,9 +16,9 @@ import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.MAIN_ACTIVITY_INTENT_DIAL_EXTRA_ADD_CALL
 import dev.alenajam.opendialer.feature.inCall.R
 import dev.alenajam.opendialer.feature.inCall.service.CallsHandler
+import dev.alenajam.opendialer.feature.inCall.service.InCallCommands
 import dev.alenajam.opendialer.feature.inCall.service.OngoingCall
 import dev.alenajam.opendialer.feature.inCall.service.OngoingCallHelper
-import dev.alenajam.opendialer.feature.inCall.service.TelecomAdapter
 import java.util.Timer
 import javax.inject.Inject
 import kotlin.concurrent.fixedRateTimer
@@ -27,6 +27,7 @@ import kotlin.concurrent.fixedRateTimer
 class InCallViewModel
 @Inject constructor(
     callHandler: CallsHandler,
+    private val inCallCommands: InCallCommands,
     private val app: Application
 ) : ViewModel() {
     val primaryCall: MutableLiveData<OngoingCall> = callHandler.primaryCall
@@ -84,9 +85,9 @@ class InCallViewModel
 
     fun hangup(message: String? = null) = primaryCall.value?.hangup(message)
     fun answer() = primaryCall.value?.answer()
-    fun turnSpeaker() = TelecomAdapter.turnSpeaker()
-    fun turnBluetooth() = TelecomAdapter.turnBluetooth()
-    fun turnMute() = TelecomAdapter.turnMute()
+    fun turnSpeaker() = inCallCommands.toggleSpeaker()
+    fun turnBluetooth() = inCallCommands.toggleBluetooth()
+    fun turnMute() = inCallCommands.toggleMute()
     fun playDtmf(digit: Char) = primaryCall.value?.playDtmf(digit)
     fun hold() = primaryCall.value?.hold()
     fun switch() = secondaryCall.value?.hold(false)

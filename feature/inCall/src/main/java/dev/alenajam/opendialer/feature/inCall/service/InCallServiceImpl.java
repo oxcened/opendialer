@@ -11,9 +11,10 @@ import javax.inject.Inject;
 
 @AndroidEntryPoint
 public class InCallServiceImpl extends InCallService {
-    private final TelecomAdapter telecomAdapter = TelecomAdapter.INSTANCE;
     @Inject
     CallsHandler callHandler;
+    @Inject
+    TelecomAdapter telecomAdapter;
 
     @Override
     public void onCallAdded(Call call) {
@@ -52,7 +53,7 @@ public class InCallServiceImpl extends InCallService {
                 getApplicationContext(),
                 new ProximitySensor(getApplicationContext())
         );
-        telecomAdapter.setCallService(this);
+        telecomAdapter.attach(this);
 
         return super.onBind(intent);
     }
@@ -60,7 +61,7 @@ public class InCallServiceImpl extends InCallService {
     @Override
     public boolean onUnbind(Intent intent) {
         callHandler.tearDown();
-        telecomAdapter.tearDown();
+        telecomAdapter.detach(this);
 
         return super.onUnbind(intent);
     }

@@ -1,13 +1,20 @@
 package dev.alenajam.opendialer.feature.inCall.service
 
 import android.telecom.CallAudioState
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object TelecomAdapter {
-    var callService: InCallServiceImpl? = null
+@Singleton
+class TelecomAdapter @Inject constructor() : InCallCommands {
+    private var callService: InCallServiceImpl? = null
+
+    fun attach(callService: InCallServiceImpl) {
+        this.callService = callService
+    }
 
     private fun setAudioRoute(route: Int) = callService?.setAudioRoute(route)
 
-    fun turnSpeaker() {
+    override fun toggleSpeaker() {
         callService?.let {
             setAudioRoute(
                 if (it.callAudioState.route == CallAudioState.ROUTE_SPEAKER)
@@ -18,7 +25,7 @@ object TelecomAdapter {
         }
     }
 
-    fun turnBluetooth() {
+    override fun toggleBluetooth() {
         callService?.let {
             setAudioRoute(
                 if (it.callAudioState.route == CallAudioState.ROUTE_BLUETOOTH)
@@ -29,11 +36,13 @@ object TelecomAdapter {
         }
     }
 
-    fun turnMute() = callService?.let { it.setMuted(!it.callAudioState.isMuted) }
+    override fun toggleMute() {
+        callService?.let { it.setMuted(!it.callAudioState.isMuted) }
+    }
 
-    fun canAddCall() = callService?.canAddCall()
-
-    fun tearDown() {
-        callService = null
+    fun detach(callService: InCallServiceImpl) {
+        if (this.callService === callService) {
+            this.callService = null
+        }
     }
 }
