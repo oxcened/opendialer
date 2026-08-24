@@ -32,7 +32,7 @@ class InCallViewModel
 ) : ViewModel() {
     private val displayState: LiveData<CallDisplayState> = callHandler.displayState
     private val calls: LiveData<Map<Call, OngoingCall>> = callHandler.calls
-    private val audioState: LiveData<CallAudioUiState> = callHandler.audioState
+    private val audioState: LiveData<CallAudioUiState?> = callHandler.audioState
     private val canAddCall: LiveData<Boolean> = callHandler.canAddCall
     private val _uiState = MediatorLiveData(InCallUiState())
     val uiState: LiveData<InCallUiState> = _uiState
@@ -78,14 +78,14 @@ class InCallViewModel
             hasSecondaryCall = secondary != null,
             secondaryCallerName = secondary?.let { it.callerName ?: it.callerNumber },
             conferenceParticipants = calls.value.orEmpty().values
-                .filter { it.isConferenced() || conferenceChildren.contains(it.call) }
+                .filter { it.isConferenced || conferenceChildren.contains(it.call) }
                 .map {
                     ConferenceParticipantUiState(
                         call = it,
                         callerName = (it.callerName ?: it.callerNumber).ifBlank { "Unknown" },
                         callerImageUri = it.callerImageUri,
                         state = it.state,
-                        isConferenced = it.isConferenced()
+                        isConferenced = it.isConferenced
                     )
                 }
         )
@@ -129,7 +129,14 @@ class InCallViewModel
         return CommonUtils.getDurationTimeString(differenceTime)
     }
 
-    fun hangup(message: String? = null) = displayState.value?.primary?.hangup(message)
+    fun hangup(message: String? = null) {
+        val primary = displayState.value?.primary ?: return
+        if (message != null) {
+            primary.hangup(message)
+        } else {
+            primary.hangup()
+        }
+    }
     fun answer() = displayState.value?.primary?.answer()
     fun turnSpeaker() = inCallCommands.toggleSpeaker()
     fun turnBluetooth() = inCallCommands.toggleBluetooth()
