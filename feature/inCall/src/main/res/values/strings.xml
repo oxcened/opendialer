@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="call_connecting_title">Connecting</string>
+    <string name="call_connecting_title">Connecting…</string>
     <string name="call_details">Call details</string>
     <string name="call_dialing_title">Calling…</string>
-    <string name="call_disconnecting_title">Disconnecting</string>
+    <string name="call_disconnecting_title">Hanging up…</string>
     <string name="call_holding_title">On hold</string>
     <string name="call_ringing_title">Incoming call</string>
-    <string name="call_disconnected_title">Disconnected</string>
+    <string name="call_disconnected_title">Call ended</string>
     <string name="channel_incoming_calls">Incoming Calls</string>
     <string name="channel_ongoing_calls">Ongoing Calls</string>
     <string name="channel_outgoing_calls">Outgoing Calls</string>
