@@ -87,7 +87,8 @@ fun DialerApp(
                 }
                 composable<ContactsSearchRoute> {
                     ContactsSearchScreen(
-                        onOpenHistory = { navController.navigate(CallDetailRoute(callIds = it)) }
+                        onOpenHistory = { navController.navigate(CallDetailRoute(callIds = it)) },
+                        onDialpadCallStarted = { navController.popBackStack() }
                     )
                 }
                 composable<CallDetailRoute> {

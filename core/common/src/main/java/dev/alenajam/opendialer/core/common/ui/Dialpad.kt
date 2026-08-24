@@ -2,18 +2,21 @@ package dev.alenajam.opendialer.core.common.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -21,6 +24,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun Dialpad(
     onDigitClick: (digit: Char) -> Unit,
+    onZeroLongClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -116,7 +120,8 @@ fun Dialpad(
             DigitButton(
                 digit = '0',
                 subtitle = "+",
-                onClick = onDigitClick
+                onClick = onDigitClick,
+                onLongClick = onZeroLongClick
             )
 
             DigitButton(
@@ -131,28 +136,34 @@ fun Dialpad(
 private fun RowScope.DigitButton(
     digit: Char,
     subtitle: String? = null,
-    onClick: (digit: Char) -> Unit
+    onClick: (digit: Char) -> Unit,
+    onLongClick: (() -> Unit)? = null
 ) {
-    FilledTonalButton(
-        onClick = { onClick(digit) },
+    Surface(
         modifier = Modifier
             .weight(1f)
-            .fillMaxHeight(),
-        contentPadding = PaddingValues(),
-        colors = ButtonDefaults.filledTonalButtonColors().copy(
-            containerColor = Color.White,
-        )
+            .fillMaxHeight()
+            .clip(ButtonDefaults.shape)
+            .combinedClickable(
+                onClick = { onClick(digit) },
+                onLongClick = onLongClick
+            ),
+        color = Color.White,
+        shape = ButtonDefaults.shape
     ) {
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = digit.toString(),
-                fontSize = 25.sp
+                fontSize = 28.sp,
+                modifier = Modifier.offset(y = 4.dp)
             )
 
             if (subtitle != null) {
                 Text(
-                    text = subtitle,
+                    text = subtitle.uppercase(),
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.72f)
                 )
             }
         }

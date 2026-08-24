@@ -10,6 +10,9 @@
     <string name="searchContactsHeader">All contacts</string>
     <string name="placeholder_search_permissions">To see suggestions, turn on the phone permissions</string>
     <string name="dialpad_button_call_label">Call</string>
+    <string name="dialpad_more_options">More dialpad options</string>
+    <string name="add_2_second_pause">Add 2-sec pause</string>
+    <string name="add_wait">Add wait</string>
     <string name="call_contact">Call contact</string>
     <string name="open_contact">Open contact</string>
     <string name="suggested">Suggested</string>

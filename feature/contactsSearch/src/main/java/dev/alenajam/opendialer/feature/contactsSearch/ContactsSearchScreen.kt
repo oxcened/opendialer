@@ -5,7 +5,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Backspace
@@ -26,6 +29,8 @@ import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.PersonAddAlt
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
@@ -42,6 +47,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -62,6 +69,7 @@ import dev.alenajam.opendialer.data.contactsSearch.DialerSearchContact
 fun ContactsSearchScreen(
     viewModel: SearchContactsViewModel = hiltViewModel(),
     onOpenHistory: (callIds: List<Int>) -> Unit = {},
+    onDialpadCallStarted: () -> Unit = {},
 ) {
     val result = viewModel.result.collectAsStateWithLifecycle()
     val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
@@ -73,15 +81,15 @@ fun ContactsSearchScreen(
             viewModel.handleCallRuntimePermissionGranted()
         }
 
-    fun makeCall(number: String) {
-        viewModel.makeCall(
+    fun makeCall(number: String): Boolean {
+        val callStarted = viewModel.makeCall(
             activity = context.getActivity() as Activity,
             number = number
-        ).let {
-            if (!it) {
-                requestCallPermissions.launch(PermissionUtils.makeCallPermissions)
-            }
+        )
+        if (!callStarted) {
+            requestCallPermissions.launch(PermissionUtils.makeCallPermissions)
         }
+        return callStarted
     }
 
     Scaffold(
@@ -92,7 +100,9 @@ fun ContactsSearchScreen(
                     query = it
                     viewModel.searchContactsByDialpad(it)
                 },
-                onCall = { makeCall(query) }
+                onCall = {
+                    if (makeCall(query)) onDialpadCallStarted()
+                }
             )
         }
     ) { innerPadding ->
@@ -408,10 +418,17 @@ private fun Footer(
     onCall: () -> Unit
 ) {
     var selection by remember { mutableStateOf(TextRange.Zero) }
+    var overflowExpanded by remember { mutableStateOf(false) }
 
     fun handleButtonClick(digit: Char) {
         onQueryChange(query.replaceRange(selection.start, selection.end, digit.toString()))
         selection = TextRange(selection.start + 1)
+    }
+
+    fun insertDialModifier(modifier: Char) {
+        onQueryChange(query.replaceRange(selection.start, selection.end, modifier.toString()))
+        selection = TextRange(selection.start + 1)
+        overflowExpanded = false
     }
 
     Surface(
@@ -425,14 +442,30 @@ private fun Footer(
             modifier = Modifier.padding(bottom = 16.dp, start = 16.dp, end = 16.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(
-                    onClick = {},
-                    enabled = false
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = ""
-                    )
+                Box {
+                    IconButton(
+                        onClick = { overflowExpanded = true },
+                        enabled = query.isNotBlank()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = stringResource(R.string.dialpad_more_options)
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = overflowExpanded,
+                        onDismissRequest = { overflowExpanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.add_2_second_pause)) },
+                            onClick = { insertDialModifier(',') }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.add_wait)) },
+                            onClick = { insertDialModifier(';') }
+                        )
+                    }
                 }
 
                 TextField(
@@ -453,33 +486,46 @@ private fun Footer(
                     )
                 )
 
-                IconButton(
-                    onClick = {
-                        if (selection.end > selection.start) {
-                            onQueryChange(query.replaceRange(selection.start, selection.end, ""))
-                            selection = TextRange(selection.start)
-                        } else if (selection.start > 0) {
-                            onQueryChange(
-                                query.replaceRange(
-                                    selection.start - 1,
-                                    selection.end,
-                                    ""
-                                )
-                            )
-                            selection = TextRange(selection.start - 1)
-                        }
-                    },
-                    enabled = query.isNotEmpty()
+                val isBackspaceEnabled = query.isNotEmpty()
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .alpha(if (isBackspaceEnabled) 1f else 0.38f)
+                        .combinedClickable(
+                            enabled = isBackspaceEnabled,
+                            onClick = {
+                                if (selection.end > selection.start) {
+                                    onQueryChange(query.replaceRange(selection.start, selection.end, ""))
+                                    selection = TextRange(selection.start)
+                                } else if (selection.start > 0) {
+                                    onQueryChange(
+                                        query.replaceRange(
+                                            selection.start - 1,
+                                            selection.end,
+                                            ""
+                                        )
+                                    )
+                                    selection = TextRange(selection.start - 1)
+                                }
+                            },
+                            onLongClick = {
+                                onQueryChange("")
+                                selection = TextRange.Zero
+                            }
+                        )
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Outlined.Backspace,
-                        contentDescription = ""
+                        contentDescription = "Backspace"
                     )
                 }
             }
 
             Dialpad(
-                onDigitClick = ::handleButtonClick
+                onDigitClick = ::handleButtonClick,
+                onZeroLongClick = { handleButtonClick('+') }
             )
 
             Button(
