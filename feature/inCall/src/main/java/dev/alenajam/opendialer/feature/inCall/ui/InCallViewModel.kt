@@ -5,7 +5,6 @@ import android.app.Activity
 import android.app.Application
 import android.content.Intent
 import android.telecom.Call
-import android.telecom.CallAudioState
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
@@ -15,6 +14,7 @@ import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.MAIN_ACTIVITY_INTENT_DIAL_EXTRA_ADD_CALL
 import dev.alenajam.opendialer.feature.inCall.R
 import dev.alenajam.opendialer.feature.inCall.service.CallDisplayState
+import dev.alenajam.opendialer.feature.inCall.service.CallAudioUiState
 import dev.alenajam.opendialer.feature.inCall.service.CallsHandler
 import dev.alenajam.opendialer.feature.inCall.service.InCallCommands
 import dev.alenajam.opendialer.feature.inCall.service.OngoingCall
@@ -32,7 +32,7 @@ class InCallViewModel
 ) : ViewModel() {
     private val displayState: LiveData<CallDisplayState> = callHandler.displayState
     private val calls: LiveData<Map<Call, OngoingCall>> = callHandler.calls
-    private val audioState: LiveData<CallAudioState> = callHandler.audioState
+    private val audioState: LiveData<CallAudioUiState> = callHandler.audioState
     private val canAddCall: LiveData<Boolean> = callHandler.canAddCall
     private val _uiState = MediatorLiveData(InCallUiState())
     val uiState: LiveData<InCallUiState> = _uiState
@@ -63,7 +63,7 @@ class InCallViewModel
         _uiState.value = InCallUiState(
             stateLabel = getStateLabel(primary),
             isHolding = primary?.state == Call.STATE_HOLDING,
-            isSpeaker = audio?.route == CallAudioState.ROUTE_SPEAKER,
+            isSpeaker = audio?.route == android.telecom.CallAudioState.ROUTE_SPEAKER,
             isMuted = audio?.isMuted == true,
             callerName = primary?.let { it.callerName ?: it.callerNumber }.orEmpty(),
             callerNumber = primary?.callerNumber.orEmpty(),

@@ -4,10 +4,14 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.telecom.Call;
 import android.telecom.CallAudioState;
+import android.telecom.CallEndpoint;
 import android.telecom.InCallService;
+
+import androidx.annotation.RequiresApi;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import javax.inject.Inject;
+import java.util.List;
 
 @AndroidEntryPoint
 public class InCallServiceImpl extends InCallService {
@@ -32,6 +36,30 @@ public class InCallServiceImpl extends InCallService {
     public void onCallAudioStateChanged(CallAudioState audioState) {
         super.onCallAudioStateChanged(audioState);
         callHandler.updateCallAudioState(audioState);
+        telecomAdapter.onLegacyAudioStateChanged(audioState);
+    }
+
+    @Override
+    @RequiresApi(34)
+    public void onCallEndpointChanged(CallEndpoint callEndpoint) {
+        super.onCallEndpointChanged(callEndpoint);
+        telecomAdapter.onCallEndpointChanged(callEndpoint);
+        callHandler.updateCallEndpoint(TelecomAdapter.toLegacyRoute(callEndpoint.getEndpointType()));
+    }
+
+    @Override
+    @RequiresApi(34)
+    public void onAvailableCallEndpointsChanged(List<CallEndpoint> availableEndpoints) {
+        super.onAvailableCallEndpointsChanged(availableEndpoints);
+        telecomAdapter.onAvailableCallEndpointsChanged(availableEndpoints);
+    }
+
+    @Override
+    @RequiresApi(34)
+    public void onMuteStateChanged(boolean isMuted) {
+        super.onMuteStateChanged(isMuted);
+        telecomAdapter.onMuteStateChanged(isMuted);
+        callHandler.updateMuteState(isMuted);
     }
 
     @Override

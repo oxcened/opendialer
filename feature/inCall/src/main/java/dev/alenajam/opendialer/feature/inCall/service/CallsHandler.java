@@ -23,7 +23,7 @@ public class CallsHandler {
     private final MutableLiveData<Map<Call, OngoingCall>> calls = new MutableLiveData<>(new HashMap<>());
     private final MutableLiveData<CallDisplayState> displayState =
             new MutableLiveData<>(new CallDisplayState(null, null));
-    private final MutableLiveData<CallAudioState> audioState = new MutableLiveData<>();
+    private final MutableLiveData<CallAudioUiState> audioState = new MutableLiveData<>();
     private final MutableLiveData<Boolean> canAddCall = new MutableLiveData<>();
     private InCallServiceImpl callService;
     private InCallActivity inCallActivity;
@@ -339,8 +339,22 @@ public class CallsHandler {
 
     @MainThread
     public void updateCallAudioState(CallAudioState newAudioState) {
-        audioState.setValue(newAudioState);
+        audioState.setValue(new CallAudioUiState(newAudioState.getRoute(), newAudioState.isMuted()));
         updateProximitySensor(null);
+    }
+
+    @MainThread
+    public void updateCallEndpoint(int route) {
+        CallAudioUiState current = audioState.getValue();
+        audioState.setValue(new CallAudioUiState(route, current != null && current.isMuted()));
+        updateProximitySensor(null);
+    }
+
+    @MainThread
+    public void updateMuteState(boolean isMuted) {
+        CallAudioUiState current = audioState.getValue();
+        int route = current == null ? CallAudioState.ROUTE_EARPIECE : current.getRoute();
+        audioState.setValue(new CallAudioUiState(route, isMuted));
     }
 
     @MainThread
@@ -363,7 +377,7 @@ public class CallsHandler {
         proximitySensor = null;
     }
 
-    public LiveData<CallAudioState> getAudioState() {
+    public LiveData<CallAudioUiState> getAudioState() {
         return audioState;
     }
 
