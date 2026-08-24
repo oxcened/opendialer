@@ -67,19 +67,24 @@ public class CallsHandler {
             return;
         }
 
-        OngoingCall ongoingCall = new OngoingCall(context, call, this, nextCallSequence++);
-
         // Copy the map so a new reference is posted. LiveData.postValue with the
         // same mutated-in-place HashMap instance is not detected as a change by
         // Compose's observeAsState (structural equality on the same reference
         // is always true), so conference UI would not recompose on add/remove.
         Map<Call, OngoingCall> map = new HashMap<>(calls.getValue());
-        map.put(call, ongoingCall);
+        OngoingCall ongoingCall = map.get(call);
+
+        if (ongoingCall == null) {
+            ongoingCall = new OngoingCall(context, call, this, nextCallSequence++);
+            map.put(call, ongoingCall);
+            resolveContact(ongoingCall);
+        } else {
+            ongoingCall.refreshIdentity();
+        }
 
         // Telecom and Call callbacks run on the main thread. Publish immediately
         // so simultaneous conference updates cannot overwrite one another.
         calls.setValue(map);
-        resolveContact(ongoingCall);
         updateCalls();
     }
 
