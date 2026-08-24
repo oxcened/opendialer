@@ -21,6 +21,7 @@ public class OngoingCall {
     private final Call call;
     private String callerNumber = "", callerNumberLabel = "", callerName, callerImageUri = null;
     private long startTime = -1, totalTime = 0;
+    private int lastState = Call.STATE_NEW;
     private final Context context;
     private final CallsHandler callsHandler;
     private final long sequence;
@@ -102,20 +103,33 @@ public class OngoingCall {
     }
 
     private void handleCall(int state) {
+        if (state == lastState) return;
+
         switch (state) {
             case Call.STATE_HOLDING:
-                long totalTime = CommonUtils.getCurrentTime() - getStartTime();
-                totalTime += getTotalTime();
-                this.totalTime = totalTime;
+                if (lastState == Call.STATE_ACTIVE) {
+                    accumulateActiveTime();
+                }
                 break;
             case Call.STATE_DISCONNECTED:
+                if (lastState == Call.STATE_ACTIVE) {
+                    accumulateActiveTime();
+                }
+                lastState = state;
                 callsHandler.removeCall(call);
                 OngoingCallHelper.handleDisconnectCause(context, call);
-                break;
+                return;
             case Call.STATE_ACTIVE:
                 this.startTime = CommonUtils.getCurrentTime();
                 break;
         }
+        lastState = state;
+    }
+
+    private void accumulateActiveTime() {
+        if (startTime < 0) return;
+        totalTime += CommonUtils.getCurrentTime() - startTime;
+        startTime = -1;
     }
 
     public Call getCall() {
