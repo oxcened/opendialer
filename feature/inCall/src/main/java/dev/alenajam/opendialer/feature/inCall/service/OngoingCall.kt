@@ -44,6 +44,9 @@ class OngoingCall(
     }
 
     private var lastState = Call.STATE_NEW
+    private var wasRinging = false
+    private var wasActive = false
+    private var wasLocallyDeclined = false
     private val mainHandler = Handler(Looper.getMainLooper())
     private val stopDtmfTone = Runnable { call.stopDtmfTone() }
 
@@ -134,6 +137,7 @@ class OngoingCall(
         if (state == lastState) return
 
         when (state) {
+            Call.STATE_RINGING -> wasRinging = true
             Call.STATE_HOLDING -> {
                 if (lastState == Call.STATE_ACTIVE) {
                     accumulateActiveTime()
@@ -149,6 +153,7 @@ class OngoingCall(
                 return
             }
             Call.STATE_ACTIVE -> {
+                wasActive = true
                 _state.update { it.copy(startTime = CommonUtils.getCurrentTime()) }
             }
         }
@@ -173,6 +178,7 @@ class OngoingCall(
     val isConferenced: Boolean get() = _state.value.isConferenced
     val startTime: Long get() = _state.value.startTime
     val totalTime: Long get() = _state.value.totalTime
+    val shouldNotifyMissedCall: Boolean get() = wasRinging && !wasActive && !wasLocallyDeclined
 
     fun answer() {
         if (state != Call.STATE_RINGING) return
@@ -181,10 +187,15 @@ class OngoingCall(
 
     fun hangup(message: String? = null) {
         if (state == Call.STATE_RINGING) {
+            wasLocallyDeclined = true
             call.reject(message != null, message)
         } else {
             call.disconnect()
         }
+    }
+
+    fun markLocallyDeclined() {
+        wasLocallyDeclined = true
     }
 
     fun hold(hold: Boolean? = null) {

@@ -94,6 +94,7 @@ class CallsHandler @Inject constructor(
 
     override fun hangup(call: OngoingCall, message: String?) {
         if (call.state == Call.STATE_RINGING) {
+            call.markLocallyDeclined()
             call.call.reject(message != null, message)
         } else {
             call.call.disconnect()
@@ -164,6 +165,15 @@ class CallsHandler @Inject constructor(
     fun removeCall(call: Call) {
         val map = HashMap(_calls.value)
         val ongoingCall = map.remove(call) ?: return
+        if (ongoingCall.shouldNotifyMissedCall) {
+            _events.tryEmit(
+                CallEvent.MissedCall(
+                    callerName = ongoingCall.callerName,
+                    callerNumber = ongoingCall.callerNumber,
+                    notificationId = ((System.currentTimeMillis() + ongoingCall.sequence) and Int.MAX_VALUE.toLong()).toInt()
+                )
+            )
+        }
         ongoingCall.tearDown()
         _calls.value = map
         reconcileCallsFromTelecom()
@@ -288,4 +298,5 @@ class CallsHandler @Inject constructor(
     fun attemptStartActivity() {
         context?.let { InCallActivity.start(it) }
     }
+
 }

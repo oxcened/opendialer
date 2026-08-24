@@ -41,6 +41,7 @@ class CallNotificationManager @Inject constructor(
         private const val CHANNEL_ID_INCOMING_CALLS = "dev.alenajam.opendialer.notification_channel.incoming_calls"
         private const val CHANNEL_ID_ONGOING_CALLS = "dev.alenajam.opendialer.notification_channel.ongoing_calls"
         private const val CHANNEL_ID_OUTGOING_CALLS = "dev.alenajam.opendialer.notification_channel.outgoing_calls"
+        private const val CHANNEL_ID_MISSED_CALLS = "dev.alenajam.opendialer.notification_channel.missed_calls"
         private const val NOTIFICATION_ID_CALL = 1
         private const val INTENT_ACTION_CALL_BUTTON_CLICK_ACCEPT = "dev.alenajam.opendialer.CALL_ACCEPT"
         private const val INTENT_ACTION_CALL_BUTTON_CLICK_DECLINE = "dev.alenajam.opendialer.CALL_DECLINE"
@@ -49,6 +50,7 @@ class CallNotificationManager @Inject constructor(
     private var callService: InCallServiceImpl? = null
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private var observationJob: Job? = null
+    private var eventObservationJob: Job? = null
 
     init {
         setupNotificationChannels()
@@ -62,6 +64,8 @@ class CallNotificationManager @Inject constructor(
     fun detach() {
         observationJob?.cancel()
         observationJob = null
+        eventObservationJob?.cancel()
+        eventObservationJob = null
         removeCallNotification()
         this.callService = null
     }
@@ -76,6 +80,11 @@ class CallNotificationManager @Inject constructor(
                 } else {
                     removeCallNotification()
                 }
+            }
+        }
+        eventObservationJob = scope.launch {
+            callManager.events.collectLatest { event ->
+                if (event is CallEvent.MissedCall) notifyMissedCall(event)
             }
         }
     }
@@ -97,9 +106,12 @@ class CallNotificationManager @Inject constructor(
             val channels = listOf(
                 NotificationChannel(CHANNEL_ID_INCOMING_CALLS, context.getString(R.string.channel_incoming_calls), NotificationManager.IMPORTANCE_HIGH),
                 NotificationChannel(CHANNEL_ID_ONGOING_CALLS, context.getString(R.string.channel_ongoing_calls), NotificationManager.IMPORTANCE_DEFAULT),
-                NotificationChannel(CHANNEL_ID_OUTGOING_CALLS, context.getString(R.string.channel_outgoing_calls), NotificationManager.IMPORTANCE_DEFAULT)
+                NotificationChannel(CHANNEL_ID_OUTGOING_CALLS, context.getString(R.string.channel_outgoing_calls), NotificationManager.IMPORTANCE_DEFAULT),
+                NotificationChannel(CHANNEL_ID_MISSED_CALLS, context.getString(R.string.channel_missed_calls), NotificationManager.IMPORTANCE_DEFAULT)
             )
-            channels.forEach { it.setSound(null, null) }
+            channels
+                .filter { it.id != CHANNEL_ID_MISSED_CALLS }
+                .forEach { it.setSound(null, null) }
             nm.createNotificationChannels(channels)
         }
     }
@@ -178,6 +190,70 @@ class CallNotificationManager @Inject constructor(
     private fun notifyOngoingCall(call: OngoingCall) = notifyCall(CHANNEL_ID_ONGOING_CALLS, call, CallType.ONGOING)
     private fun notifyOnHoldCall(call: OngoingCall) = notifyCall(CHANNEL_ID_ONGOING_CALLS, call, CallType.ONGOING)
     private fun notifyDisconnectingCall(call: OngoingCall) = notifyCall(CHANNEL_ID_ONGOING_CALLS, call, CallType.ONGOING)
+
+    private fun notifyMissedCall(call: CallEvent.MissedCall) {
+        val caller = call.callerName ?: call.callerNumber.ifBlank { context.getString(R.string.anonymous) }
+        val openDialerIntent = (
+            context.packageManager.getLaunchIntentForPackage(context.packageName)
+                ?: Intent(Intent.ACTION_MAIN)
+                .addCategory(Intent.CATEGORY_LAUNCHER)
+                .setPackage(context.packageName)
+            ).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        val openDialerPendingIntent = PendingIntent.getActivity(
+            context,
+            call.notificationId,
+            openDialerIntent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Notification.Builder(context, CHANNEL_ID_MISSED_CALLS)
+        } else {
+            @Suppress("DEPRECATION")
+            Notification.Builder(context)
+        }
+        builder.setSmallIcon(R.drawable.ic_notification_call)
+            .setContentTitle(context.getString(R.string.notification_missed_call_title, caller))
+            .setContentIntent(openDialerPendingIntent)
+            .setCategory(Notification.CATEGORY_MISSED_CALL)
+            .setVisibility(Notification.VISIBILITY_PRIVATE)
+            .setAutoCancel(true)
+
+        if (call.callerNumber.isNotBlank()) {
+            val callBackIntent = Intent(Intent.ACTION_CALL, Uri.fromParts("tel", call.callerNumber, null))
+            val callBackPendingIntent = PendingIntent.getActivity(
+                context,
+                call.notificationId,
+                callBackIntent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+            builder.addAction(
+                Notification.Action.Builder(
+                    null,
+                    context.getString(R.string.notification_call_back),
+                    callBackPendingIntent
+                ).build()
+            )
+            val messageIntent = Intent(Intent.ACTION_SENDTO, Uri.fromParts("smsto", call.callerNumber, null))
+            val messagePendingIntent = PendingIntent.getActivity(
+                context,
+                call.notificationId + 1,
+                messageIntent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+            builder.addAction(
+                Notification.Action.Builder(
+                    null,
+                    context.getString(R.string.notification_message),
+                    messagePendingIntent
+                ).build()
+            )
+        }
+
+        context.getSystemService(NotificationManager::class.java)
+            ?.notify(call.notificationId, builder.build())
+    }
 
     private fun createCallerIcon(call: OngoingCall): Icon {
         call.callerImageUri?.takeIf { it.isNotBlank() }?.let { uri ->

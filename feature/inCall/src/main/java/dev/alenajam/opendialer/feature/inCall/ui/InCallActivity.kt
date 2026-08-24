@@ -55,6 +55,7 @@ class InCallActivity : ComponentActivity() {
                 viewModel.events.collect { event ->
                     when (event) {
                         CallEvent.FinishActivity -> finish()
+                        is CallEvent.MissedCall -> Unit
                     }
                 }
             }

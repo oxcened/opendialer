@@ -21,4 +21,10 @@ interface CallManager : InCallCommands {
 
 sealed class CallEvent {
     object FinishActivity : CallEvent()
+
+    data class MissedCall(
+        val callerName: String?,
+        val callerNumber: String,
+        val notificationId: Int
+    ) : CallEvent()
 }
