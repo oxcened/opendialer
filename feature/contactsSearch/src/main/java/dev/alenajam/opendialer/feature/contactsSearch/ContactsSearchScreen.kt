@@ -172,6 +172,16 @@ private fun SearchList(
 ) {
     LazyColumn {
         result?.contacts?.let { contacts ->
+            if (result.query.isBlank() && contacts.isNotEmpty()) {
+                item {
+                    Text(
+                        text = stringResource(R.string.suggested),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+                    )
+                }
+            }
             items(contacts) { contact ->
                 ResultRow(contact, onClick = { onResultClick(contact) })
             }

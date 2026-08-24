@@ -10,4 +10,5 @@
     <string name="searchContactsHeader">All contacts</string>
     <string name="placeholder_search_permissions">To see suggestions, turn on the phone permissions</string>
     <string name="dialpad_button_call_label">Call</string>
+    <string name="suggested">Suggested</string>
 </resources>

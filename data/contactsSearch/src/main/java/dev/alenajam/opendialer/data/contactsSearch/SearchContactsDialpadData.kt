@@ -65,8 +65,9 @@ abstract class SearchContactsDialpadData {
                         continue
                     }
 
-                    val nameMatches = nameMatcher.matches(context, name)
-                    val numberMatches = nameMatcher.matchesNumber(context, number, query) != null
+                    val nameMatches = query.isBlank() || nameMatcher.matches(context, name)
+                    val numberMatches = query.isNotBlank() &&
+                            nameMatcher.matchesNumber(context, number, query) != null
 
                     if (nameMatches || numberMatches) {
                         duplicates.add(contactMatch)

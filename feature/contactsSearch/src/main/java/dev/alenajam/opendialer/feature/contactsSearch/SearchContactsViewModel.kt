@@ -36,6 +36,7 @@ class SearchContactsViewModel
     init {
         _hasRuntimePermission.value = PermissionUtils.hasSearchPermission(app)
         _hasCallRuntimePermission.value = PermissionUtils.hasMakeCallPermission(app)
+        searchContactsByDialpad(prefilledNumber)
     }
 
     fun handleRuntimePermissionGranted(query: String) {
