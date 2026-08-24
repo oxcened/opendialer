@@ -11,10 +11,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.MAIN_ACTIVITY_INTENT_DIAL_EXTRA_ADD_CALL
 import dev.alenajam.opendialer.feature.inCall.R
+import dev.alenajam.opendialer.feature.inCall.service.CallEvent
 import dev.alenajam.opendialer.feature.inCall.service.CallManager
 import dev.alenajam.opendialer.feature.inCall.service.OngoingCall
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -27,6 +29,7 @@ class InCallViewModel @Inject constructor(
     private val callManager: CallManager,
     private val app: Application
 ) : ViewModel() {
+    val events: SharedFlow<CallEvent> = callManager.events
     val uiState: StateFlow<InCallUiState> = combine(
         callManager.displayState,
         callManager.calls,

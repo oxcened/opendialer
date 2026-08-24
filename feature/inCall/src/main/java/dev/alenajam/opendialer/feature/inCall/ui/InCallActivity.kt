@@ -7,10 +7,16 @@ import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import dev.alenajam.opendialer.core.common.ui.InCallUI
+import dev.alenajam.opendialer.feature.inCall.service.CallEvent
 import dev.alenajam.opendialer.feature.inCall.service.CallsHandler
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -19,6 +25,8 @@ class InCallActivity : ComponentActivity() {
     lateinit var inCallUI: InCallUI
     @Inject
     lateinit var callsHandler: CallsHandler
+    
+    private val viewModel: InCallViewModel by viewModels()
 
     var visibility: Boolean = false
         private set
@@ -41,6 +49,17 @@ class InCallActivity : ComponentActivity() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
             window.isNavigationBarContrastEnforced = false
         }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.events.collect { event ->
+                    when (event) {
+                        CallEvent.FinishActivity -> finish()
+                    }
+                }
+            }
+        }
+
         setContent {
             inCallUI.Content()
         }

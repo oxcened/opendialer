@@ -7,8 +7,11 @@ import android.telecom.VideoProfile
 import androidx.annotation.MainThread
 import dev.alenajam.opendialer.feature.inCall.R
 import dev.alenajam.opendialer.feature.inCall.ui.InCallActivity
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -29,6 +32,9 @@ class CallsHandler @Inject constructor(
 
     private val _canAddCall = MutableStateFlow(false)
     override val canAddCall: StateFlow<Boolean> = _canAddCall.asStateFlow()
+
+    private val _events = MutableSharedFlow<CallEvent>(extraBufferCapacity = 1)
+    override val events: SharedFlow<CallEvent> = _events.asSharedFlow()
 
     private var callService: InCallServiceImpl? = null
     private var context: Context? = null
@@ -145,6 +151,7 @@ class CallsHandler @Inject constructor(
 
         if (map.isEmpty()) {
             _displayState.value = CallDisplayState(null, null)
+            _events.tryEmit(CallEvent.FinishActivity)
             NotificationHelper.tearDown(callService)
             return
         }
@@ -156,7 +163,8 @@ class CallsHandler @Inject constructor(
         if (primary != null) {
             val secondary = finalSelection.secondary
             _displayState.value = CallDisplayState(primary, secondary)
-            handleCallNotification(primary, primary.state ?: Call.STATE_NEW)
+            handleCallNotification(primary, primary.state)
+            if (primary.state == Call.STATE_DIALING) attemptStartActivity()
             updateProximitySensor(primary)
         } else {
             _displayState.value = CallDisplayState(null, null)
