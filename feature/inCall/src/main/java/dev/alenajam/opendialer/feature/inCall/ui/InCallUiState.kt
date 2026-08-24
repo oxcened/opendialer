@@ -1,6 +1,7 @@
 package dev.alenajam.opendialer.feature.inCall.ui
 
 import android.telecom.Call
+import dev.alenajam.opendialer.feature.inCall.service.CallAudioRouteUiState
 import dev.alenajam.opendialer.feature.inCall.service.OngoingCall
 
 enum class CallStatus {
@@ -32,6 +33,7 @@ data class InCallUiState(
     val isHolding: Boolean = false,
     val isSpeaker: Boolean = false,
     val isMuted: Boolean = false,
+    val audioRoutes: List<CallAudioRouteUiState> = emptyList(),
     val callerName: String = "",
     val callerNumber: String = "",
     val callerNumberLabel: String = "",

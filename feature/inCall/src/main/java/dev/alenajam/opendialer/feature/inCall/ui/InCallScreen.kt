@@ -87,6 +87,7 @@ internal fun InCallScreen(
                     InCallControls(
                         isMuted = uiState.isMuted,
                         isSpeaker = uiState.isSpeaker,
+                        audioRoutes = uiState.audioRoutes,
                         isHolding = uiState.isHolding,
                         canManageConference = canManageConference,
                         canMerge = canMerge,
@@ -96,6 +97,7 @@ internal fun InCallScreen(
                         onHangup = viewModel::hangup,
                         onMute = viewModel::turnMute,
                         onSpeaker = viewModel::turnSpeaker,
+                        onAudioRouteSelected = viewModel::selectAudioRoute,
                         onHold = viewModel::hold,
                         onAddCall = { viewModel.addCall(activity = context.getActivity() as Activity) },
                         onMerge = { viewModel.merge() },

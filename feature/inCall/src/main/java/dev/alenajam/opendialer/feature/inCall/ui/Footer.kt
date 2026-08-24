@@ -22,6 +22,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -40,11 +42,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.alenajam.opendialer.core.common.ui.Dialpad
 import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
+import dev.alenajam.opendialer.feature.inCall.service.CallAudioRouteUiState
 
 @Composable
 fun InCallControls(
     isMuted: Boolean? = false,
     isSpeaker: Boolean? = false,
+    audioRoutes: List<CallAudioRouteUiState> = emptyList(),
     isHolding: Boolean? = false,
     canManageConference: Boolean = false,
     canMerge: Boolean = false,
@@ -54,6 +58,7 @@ fun InCallControls(
     onHangup: () -> Unit,
     onMute: () -> Unit,
     onSpeaker: () -> Unit,
+    onAudioRouteSelected: (CallAudioRouteUiState) -> Unit = {},
     onHold: () -> Unit,
     onAddCall: () -> Unit,
     onMerge: () -> Unit = {},
@@ -64,6 +69,12 @@ fun InCallControls(
     val icons = LocalAppIcons.current
     var openSection = remember { mutableStateOf<OpenSection?>(null) }
     var dialpadInput = remember { mutableStateOf("") }
+    var audioRoutesExpanded = remember { mutableStateOf(false) }
+    val hasExternalAudioRoute = audioRoutes.any {
+        it.type == android.telecom.CallAudioState.ROUTE_BLUETOOTH ||
+            it.type == android.telecom.CallAudioState.ROUTE_WIRED_HEADSET
+    }
+    val currentAudioRoute = audioRoutes.firstOrNull { it.isSelected }
 
     fun handleDialpadDigit(digit: Char) {
         dialpadInput.value = dialpadInput.value.plus(digit)
@@ -209,12 +220,30 @@ fun InCallControls(
                     onClick = onMute
                 )
 
-                CallButton(
-                    icon = icons.speaker,
-                    label = "Speaker",
-                    isActive = isSpeaker,
-                    onClick = onSpeaker
-                )
+                Box {
+                    CallButton(
+                        icon = icons.speaker,
+                        label = currentAudioRoute?.label ?: "Speaker",
+                        isActive = isSpeaker == true || hasExternalAudioRoute,
+                        onClick = {
+                            if (hasExternalAudioRoute) audioRoutesExpanded.value = true else onSpeaker()
+                        }
+                    )
+                    DropdownMenu(
+                        expanded = audioRoutesExpanded.value,
+                        onDismissRequest = { audioRoutesExpanded.value = false }
+                    ) {
+                        audioRoutes.forEach { route ->
+                            DropdownMenuItem(
+                                text = { Text(if (route.isSelected) "${route.label} ✓" else route.label) },
+                                onClick = {
+                                    audioRoutesExpanded.value = false
+                                    onAudioRouteSelected(route)
+                                }
+                            )
+                        }
+                    }
+                }
 
                 CallButton(
                     icon = icons.more,

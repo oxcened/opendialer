@@ -73,6 +73,14 @@ class TelecomAdapter @Inject constructor() : InCallCommands {
         }
     }
 
+    override fun selectAudioRoute(route: CallAudioRouteUiState) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            if (requestEndpoint(route.type, route.label)) return
+        }
+        @Suppress("DEPRECATION")
+        callService?.setAudioRoute(route.type)
+    }
+
     override fun toggleMute() {
         callService?.setMuted(!isMuted)
     }
@@ -98,9 +106,11 @@ class TelecomAdapter @Inject constructor() : InCallCommands {
         }
 
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    private fun requestEndpoint(type: Int): Boolean {
+    private fun requestEndpoint(type: Int, label: String? = null): Boolean {
         val service = callService ?: return false
-        val endpoint = availableEndpoints.firstOrNull { it.endpointType == type } ?: return false
+        val endpoint = availableEndpoints.firstOrNull {
+            it.endpointType == type && (label == null || it.endpointName.toString() == label)
+        } ?: return false
         service.requestCallEndpointChange(
             endpoint,
             service.mainExecutor,
@@ -111,6 +121,19 @@ class TelecomAdapter @Inject constructor() : InCallCommands {
         )
         return true
     }
+
+    fun availableAudioRoutes(): List<CallAudioRouteUiState> =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            availableEndpoints.map { endpoint ->
+                CallAudioRouteUiState(
+                    type = toLegacyRoute(endpoint.endpointType),
+                    label = endpoint.endpointName.toString().ifBlank { defaultRouteLabel(toLegacyRoute(endpoint.endpointType)) },
+                    isSelected = endpoint == currentEndpoint
+                )
+            }
+        } else {
+            emptyList()
+        }
 
     fun detach(callService: InCallServiceImpl) {
         if (this.callService === callService) {
@@ -123,6 +146,13 @@ class TelecomAdapter @Inject constructor() : InCallCommands {
     }
 
     companion object {
+        fun defaultRouteLabel(route: Int): String = when (route) {
+            CallAudioState.ROUTE_SPEAKER -> "Speaker"
+            CallAudioState.ROUTE_BLUETOOTH -> "Bluetooth"
+            CallAudioState.ROUTE_WIRED_HEADSET -> "Wired headset"
+            else -> "Phone"
+        }
+
         @JvmStatic
         @SuppressLint("InlinedApi")
         fun toLegacyRoute(endpointType: Int): Int = when (endpointType) {

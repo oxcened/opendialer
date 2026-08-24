@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -128,6 +129,7 @@ class CallsHandler @Inject constructor(
     // Audio Commands (Delegated to TelecomAdapter)
     override fun toggleSpeaker() = telecomAdapter.toggleSpeaker()
     override fun toggleBluetooth() = telecomAdapter.toggleBluetooth()
+    override fun selectAudioRoute(route: CallAudioRouteUiState) = telecomAdapter.selectAudioRoute(route)
     override fun toggleMute() = telecomAdapter.toggleMute()
 
     // Lifecycle and Event Methods
@@ -239,7 +241,31 @@ class CallsHandler @Inject constructor(
 
     @MainThread
     fun updateCallAudioState(newAudioState: CallAudioState) {
-        _audioState.value = CallAudioUiState(newAudioState.route, newAudioState.isMuted)
+        val routes = listOf(
+            CallAudioState.ROUTE_EARPIECE,
+            CallAudioState.ROUTE_SPEAKER,
+            CallAudioState.ROUTE_BLUETOOTH,
+            CallAudioState.ROUTE_WIRED_HEADSET
+        ).filter { newAudioState.supportedRouteMask and it != 0 }
+            .map { route ->
+                CallAudioRouteUiState(
+                    type = route,
+                    label = TelecomAdapter.defaultRouteLabel(route),
+                    isSelected = route == newAudioState.route
+                )
+            }
+        _audioState.value = CallAudioUiState(newAudioState.route, newAudioState.isMuted, routes)
+    }
+
+    @MainThread
+    fun updateAvailableAudioRoutes(route: Int, routes: List<CallAudioRouteUiState>) {
+        _audioState.update { current ->
+            CallAudioUiState(
+                route = route,
+                isMuted = current?.isMuted == true,
+                availableRoutes = routes
+            )
+        }
     }
 
     @MainThread

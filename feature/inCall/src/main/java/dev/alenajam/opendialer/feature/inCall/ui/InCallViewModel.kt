@@ -45,6 +45,7 @@ class InCallViewModel @Inject constructor(
             isHolding = primary?.state == Call.STATE_HOLDING,
             isSpeaker = audio?.route == CallAudioState.ROUTE_SPEAKER,
             isMuted = audio?.isMuted == true,
+            audioRoutes = audio?.availableRoutes.orEmpty(),
             callerName = primary?.let { it.callerName ?: it.callerNumber }.orEmpty(),
             callerNumber = primary?.callerNumber.orEmpty(),
             callerNumberLabel = primary?.callerNumberLabel.orEmpty(),
@@ -127,6 +128,8 @@ class InCallViewModel @Inject constructor(
 
     fun turnSpeaker() = callManager.toggleSpeaker()
     fun turnBluetooth() = callManager.toggleBluetooth()
+    fun selectAudioRoute(route: dev.alenajam.opendialer.feature.inCall.service.CallAudioRouteUiState) =
+        callManager.selectAudioRoute(route)
     fun turnMute() = callManager.toggleMute()
 
     fun swap() = callManager.swap()

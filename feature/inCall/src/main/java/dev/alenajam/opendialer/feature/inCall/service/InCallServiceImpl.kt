@@ -47,13 +47,21 @@ class InCallServiceImpl : InCallService() {
     override fun onCallEndpointChanged(callEndpoint: CallEndpoint) {
         super.onCallEndpointChanged(callEndpoint)
         telecomAdapter.onCallEndpointChanged(callEndpoint)
-        callHandler.updateCallEndpoint(TelecomAdapter.toLegacyRoute(callEndpoint.endpointType))
+        callHandler.updateAvailableAudioRoutes(
+            TelecomAdapter.toLegacyRoute(callEndpoint.endpointType),
+            telecomAdapter.availableAudioRoutes()
+        )
     }
 
     @RequiresApi(34)
     override fun onAvailableCallEndpointsChanged(availableEndpoints: List<CallEndpoint>) {
         super.onAvailableCallEndpointsChanged(availableEndpoints)
         telecomAdapter.onAvailableCallEndpointsChanged(availableEndpoints)
+        callHandler.updateAvailableAudioRoutes(
+            telecomAdapter.availableAudioRoutes().firstOrNull { it.isSelected }?.type
+                ?: CallAudioState.ROUTE_EARPIECE,
+            telecomAdapter.availableAudioRoutes()
+        )
     }
 
     @RequiresApi(34)
