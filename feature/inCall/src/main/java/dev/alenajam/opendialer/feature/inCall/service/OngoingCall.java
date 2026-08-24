@@ -27,7 +27,7 @@ public class OngoingCall {
     private long startTime = -1, totalTime = 0;
     private int type;
     private Context context;
-    private final CallsHandler callsHandler = CallsHandler.getInstance();
+    private final CallsHandler callsHandler;
 
     private final Call.Callback callback = new Call.Callback() {
         @Override
@@ -57,11 +57,13 @@ public class OngoingCall {
     };
 
     public OngoingCall() {
+        callsHandler = null;
     }
 
-    public OngoingCall(Context context, Call call) {
+    public OngoingCall(Context context, Call call, CallsHandler callsHandler) {
         this.call = call;
         this.context = context;
+        this.callsHandler = callsHandler;
 
         init();
     }
@@ -112,7 +114,7 @@ public class OngoingCall {
                 this.totalTime = totalTime;
                 break;
             case Call.STATE_DISCONNECTED:
-                CallsHandler.getInstance().removeCall(call);
+                callsHandler.removeCall(call);
                 OngoingCallHelper.handleDisconnectCause(context, call);
                 break;
             case Call.STATE_ACTIVE:

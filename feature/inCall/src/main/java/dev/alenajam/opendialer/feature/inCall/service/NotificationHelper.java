@@ -10,6 +10,9 @@ import android.content.Intent;
 import android.content.pm.ServiceInfo;
 import android.os.Build;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
 import dev.alenajam.opendialer.feature.inCall.R;
 import dev.alenajam.opendialer.feature.inCall.ui.InCallActivity;
 
@@ -135,18 +138,21 @@ public abstract class NotificationHelper {
         removeCallNotification(callService);
     }
 
+    @AndroidEntryPoint
     public static class CallButtonsListener extends BroadcastReceiver {
+        @Inject
+        CallsHandler callHandler;
+
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction() == null) return;
 
-            CallsHandler callHandler = CallsHandler.getInstance();
             OngoingCall mainCall = callHandler.getPrimaryCall().getValue();
             if (mainCall == null) return;
 
             if (intent.getAction().equals(INTENT_ACTION_CALL_BUTTON_CLICK_ACCEPT)) {
                 mainCall.answer();
-                CallsHandler.getInstance().attemptStartActivity();
+                callHandler.attemptStartActivity();
             } else {
                 mainCall.hangup();
             }

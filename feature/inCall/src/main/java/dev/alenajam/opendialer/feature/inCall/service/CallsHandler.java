@@ -1,6 +1,5 @@
 package dev.alenajam.opendialer.feature.inCall.service;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.telecom.Call;
 import android.telecom.CallAudioState;
@@ -19,15 +18,13 @@ import dev.alenajam.opendialer.feature.inCall.ui.InCallActivity;
 
 @Singleton
 public class CallsHandler {
-    private static final MutableLiveData<Map<Call, OngoingCall>> calls = new MutableLiveData<>(new HashMap<>());
-    private static final MutableLiveData<OngoingCall> primaryCall = new MutableLiveData<>();
-    private static final MutableLiveData<OngoingCall> secondaryCall = new MutableLiveData<>();
-    private static final MutableLiveData<CallAudioState> audioState = new MutableLiveData<>();
-    private static final MutableLiveData<Boolean> canAddCall = new MutableLiveData<>();
-    @SuppressLint("StaticFieldLeak")
-    private static CallsHandler instance;
-    private static InCallServiceImpl callService;
-    private static InCallActivity inCallActivity;
+    private final MutableLiveData<Map<Call, OngoingCall>> calls = new MutableLiveData<>(new HashMap<>());
+    private final MutableLiveData<OngoingCall> primaryCall = new MutableLiveData<>();
+    private final MutableLiveData<OngoingCall> secondaryCall = new MutableLiveData<>();
+    private final MutableLiveData<CallAudioState> audioState = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> canAddCall = new MutableLiveData<>();
+    private InCallServiceImpl callService;
+    private InCallActivity inCallActivity;
 
     private Context context;
     private ProximitySensor proximitySensor;
@@ -39,29 +36,21 @@ public class CallsHandler {
     public CallsHandler() {
     }
 
-    public static CallsHandler getInstance() {
-        if (instance == null) {
-            instance = new CallsHandler();
-        }
-
-        return instance;
+    public void setInCallActivity(InCallActivity inCallActivity) {
+        this.inCallActivity = inCallActivity;
     }
 
-    public static void setInCallActivity(InCallActivity inCallActivity) {
-        CallsHandler.inCallActivity = inCallActivity;
-    }
-
-    public static void clearInCallActivity(InCallActivity inCallActivity) {
-        if (inCallActivity == CallsHandler.inCallActivity) {
-            CallsHandler.inCallActivity = null;
+    public void clearInCallActivity(InCallActivity inCallActivity) {
+        if (inCallActivity == this.inCallActivity) {
+            this.inCallActivity = null;
         }
     }
 
-    public static boolean isActivityStarted() {
+    public boolean isActivityStarted() {
         return inCallActivity != null && !inCallActivity.isDestroyed() && !inCallActivity.isFinishing();
     }
 
-    public static boolean isActivityShowing() {
+    public boolean isActivityShowing() {
         if (!isActivityStarted()) return false;
 
         return inCallActivity.getVisibility();
@@ -73,7 +62,7 @@ public class CallsHandler {
             return;
         }
 
-        OngoingCall ongoingCall = new OngoingCall(context, call);
+        OngoingCall ongoingCall = new OngoingCall(context, call, this);
 
         // Copy the map so a new reference is posted. LiveData.postValue with the
         // same mutated-in-place HashMap instance is not detected as a change by
@@ -134,7 +123,7 @@ public class CallsHandler {
         Map<Call, OngoingCall> restoredCalls = new HashMap<>();
         for (Call call : callService.getCalls()) {
             if (call.getState() != Call.STATE_DISCONNECTED) {
-                restoredCalls.put(call, new OngoingCall(context, call));
+                restoredCalls.put(call, new OngoingCall(context, call, this));
             }
         }
 
@@ -151,7 +140,7 @@ public class CallsHandler {
 
         switch (state) {
             case Call.STATE_RINGING:
-                if (!CallsHandler.isActivityShowing())
+                if (!isActivityShowing())
                     NotificationHelper.notifyIncomingCall(context, callService, call.getCallerName());
                 break;
             case Call.STATE_DIALING:
@@ -291,7 +280,7 @@ public class CallsHandler {
 
 
     public void setup(InCallServiceImpl callService, Context context, ProximitySensor proximitySensor) {
-        CallsHandler.callService = callService;
+        this.callService = callService;
         this.context = context;
         this.proximitySensor = proximitySensor;
         calls.observeForever(callsObserver);

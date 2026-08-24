@@ -7,11 +7,13 @@ import android.telecom.CallAudioState;
 import android.telecom.InCallService;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import javax.inject.Inject;
 
 @AndroidEntryPoint
 public class InCallServiceImpl extends InCallService {
     private final TelecomAdapter telecomAdapter = TelecomAdapter.INSTANCE;
-    CallsHandler callHandler = CallsHandler.getInstance();
+    @Inject
+    CallsHandler callHandler;
 
     @Override
     public void onCallAdded(Call call) {

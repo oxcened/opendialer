@@ -17,6 +17,8 @@ import javax.inject.Inject
 class InCallActivity : ComponentActivity() {
     @Inject
     lateinit var inCallUI: InCallUI
+    @Inject
+    lateinit var callsHandler: CallsHandler
 
     var visibility: Boolean = false
         private set
@@ -33,7 +35,7 @@ class InCallActivity : ComponentActivity() {
         enableEdgeToEdge()
         WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
-        CallsHandler.setInCallActivity(this)
+        callsHandler.setInCallActivity(this)
         val flags = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or
                 WindowManager.LayoutParams.FLAG_IGNORE_CHEEK_PRESSES
         window.addFlags(flags)
@@ -57,6 +59,6 @@ class InCallActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        CallsHandler.clearInCallActivity(this)
+        callsHandler.clearInCallActivity(this)
     }
 }
