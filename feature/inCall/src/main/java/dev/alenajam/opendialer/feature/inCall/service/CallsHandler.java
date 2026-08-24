@@ -10,6 +10,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -102,8 +104,10 @@ public class CallsHandler {
     @MainThread
     public void updateCalls() {
         Map<Call, OngoingCall> map = calls.getValue();
-        if ((map.isEmpty() || getPrimaryCallToDisplay() == null) && reconcileCallsFromTelecom()) {
+        CallDisplaySelector.Selection<OngoingCall> selection = selectDisplayCalls(map);
+        if ((map.isEmpty() || selection.getPrimary() == null) && reconcileCallsFromTelecom()) {
             map = calls.getValue();
+            selection = selectDisplayCalls(map);
         }
 
         // finish activity if there are no calls
@@ -115,7 +119,7 @@ public class CallsHandler {
         }
 
         // set primary and secondary calls
-        OngoingCall primary = getPrimaryCallToDisplay();
+        OngoingCall primary = selection.getPrimary();
         if (primary == null) {
             // Conference creation/removal is reported through several callbacks.
             // Keep a surviving call visible while its parent relationship settles
@@ -127,7 +131,7 @@ public class CallsHandler {
         }
 
         if (primary != null) {
-            OngoingCall secondary = getCallToDisplay(primary);
+            OngoingCall secondary = selection.getSecondary();
             displayState.setValue(new CallDisplayState(primary, secondary));
             handleCallNotification(primary, primary.getState());
             if (primary.getState() == Call.STATE_DIALING) attemptStartActivity();
@@ -241,88 +245,19 @@ public class CallsHandler {
         proximitySensor.updateProximitySensorMode(state, audioRoute);
     }
 
-    private OngoingCall getPrimaryCallToDisplay() {
-        if (getFirstRingingCall() != null) return getFirstRingingCall();
-        else if (getFirstDialingCall() != null) return getFirstDialingCall();
-        else if (getFirstConnectingCall() != null) return getFirstConnectingCall();
-        else if (getCallToDisplay(null) != null) return getCallToDisplay(null);
-        return null;
-    }
-
-    private OngoingCall getCallToDisplay(OngoingCall ignore) {
-        if (getFirstActiveCall() != null && getFirstActiveCall() != ignore)
-            return getFirstActiveCall();
-        else if (getFirstHoldingCall() != null && getFirstHoldingCall() != ignore)
-            return getFirstHoldingCall();
-        else if (getSecondHoldingCall() != null && getSecondHoldingCall() != ignore)
-            return getSecondHoldingCall();
-        else if (getFirstDisconnectingCall() != null && getFirstDisconnectingCall() != ignore)
-            return getFirstDisconnectingCall();
-        return null;
-    }
-
-    private OngoingCall getFirstConnectingCall() {
-        return getFirstCallWithState(Call.STATE_CONNECTING);
-    }
-
-    private OngoingCall getFirstDialingCall() {
-        return getFirstCallWithState(Call.STATE_DIALING);
-    }
-
-    private OngoingCall getFirstRingingCall() {
-        return getFirstCallWithState(Call.STATE_RINGING);
-    }
-
-    private OngoingCall getFirstActiveCall() {
-        return getFirstCallWithState(Call.STATE_ACTIVE);
-    }
-
-    private OngoingCall getFirstHoldingCall() {
-        return getFirstCallWithState(Call.STATE_HOLDING);
-    }
-
-    private OngoingCall getSecondHoldingCall() {
-        return getSecondCallWithState(Call.STATE_HOLDING);
-    }
-
-    private OngoingCall getFirstDisconnectingCall() {
-        return getFirstCallWithState(Call.STATE_DISCONNECTING);
-    }
-
-    @Nullable
-    private OngoingCall getFirstCallWithState(int state) {
-        if (calls.getValue() == null) return null;
-
-        OngoingCall first = null;
-        for (OngoingCall current : calls.getValue().values()) {
-            if (current.getState() == state && !current.isConferenced()) {
-                if (first == null || current.getSequence() < first.getSequence()) {
-                    first = current;
-                }
-            }
+    private CallDisplaySelector.Selection<OngoingCall> selectDisplayCalls(
+            Map<Call, OngoingCall> map
+    ) {
+        List<CallDisplaySelector.Candidate<OngoingCall>> candidates = new ArrayList<>();
+        for (OngoingCall call : map.values()) {
+            candidates.add(new CallDisplaySelector.Candidate<>(
+                    call,
+                    call.getState(),
+                    call.isConferenced(),
+                    call.getSequence()
+            ));
         }
-
-        return first;
-    }
-
-    @Nullable
-    private OngoingCall getSecondCallWithState(int state) {
-        if (calls.getValue() == null) return null;
-        OngoingCall first = null;
-        OngoingCall second = null;
-
-        for (OngoingCall current : calls.getValue().values()) {
-            if (current.getState() == state && !current.isConferenced()) {
-                if (first == null || current.getSequence() < first.getSequence()) {
-                    second = first;
-                    first = current;
-                } else if (second == null || current.getSequence() < second.getSequence()) {
-                    second = current;
-                }
-            }
-        }
-
-        return second;
+        return CallDisplaySelector.select(candidates);
     }
 
     public void attemptFinishActivity() {
