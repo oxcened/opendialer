@@ -38,6 +38,7 @@ class InCallViewModel
     val stateLabel = primaryCall.switchMap { getStateLiveData(it) }
     val isHolding = primaryCall.map { it.state == Call.STATE_HOLDING }
     val canMerge = primaryCall.map { it.canBeMerged() }
+    val canManageConference = primaryCall.map { it.isConference }
     val isSpeaker = audioState.map { it.route == CallAudioState.ROUTE_SPEAKER }
     val isMuted = audioState.map { it.isMuted }
     val callerName = primaryCall.map { it.callerName ?: it.callerNumber }

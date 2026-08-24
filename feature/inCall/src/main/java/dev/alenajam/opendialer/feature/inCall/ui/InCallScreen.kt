@@ -54,8 +54,7 @@ internal fun InCallScreen(
     val canHold = !canSwap
     // In a conference with a secondary call, splitting a participant would
     // produce three independent calls, so the split affordance is hidden.
-    val canManageConference =
-            calls.value.any { it.value.isConference() || it.value.isConferenced() }
+    val canManageConference = viewModel.canManageConference.observeAsState(false).value
     val showSplitInManage = canManageConference && !hasSecondaryCall
 
     var showManageSheet by remember { mutableStateOf(false) }
