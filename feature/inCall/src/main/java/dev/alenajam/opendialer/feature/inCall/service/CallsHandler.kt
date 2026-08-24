@@ -38,6 +38,7 @@ class CallsHandler @Inject constructor(
     private var callService: InCallServiceImpl? = null
     private var context: Context? = null
     private var nextCallSequence: Long = 0
+    private var displayUpdateId: Long = 0
 
     // CallManager Implementation (Delegated Actions)
     override fun answer(call: OngoingCall) {
@@ -127,6 +128,8 @@ class CallsHandler @Inject constructor(
     private fun onCallUpdated(call: OngoingCall) {
         call.refreshIdentity()
         resolveContact(call)
+        // Force an emission of the calls map to trigger observers (like the ViewModel)
+        _calls.value = _calls.value.toMap()
         updateCalls()
     }
 
@@ -148,7 +151,7 @@ class CallsHandler @Inject constructor(
         }
 
         if (map.isEmpty()) {
-            _displayState.value = CallDisplayState(null, null)
+            _displayState.value = CallDisplayState(null, null, displayUpdateId++)
             _events.tryEmit(CallEvent.FinishActivity)
             return
         }
@@ -159,10 +162,10 @@ class CallsHandler @Inject constructor(
 
         if (primary != null) {
             val secondary = finalSelection.secondary
-            _displayState.value = CallDisplayState(primary, secondary)
+            _displayState.value = CallDisplayState(primary, secondary, displayUpdateId++)
             if (primary.state == Call.STATE_DIALING) attemptStartActivity()
         } else {
-            _displayState.value = CallDisplayState(null, null)
+            _displayState.value = CallDisplayState(null, null, displayUpdateId++)
         }
     }
 

@@ -2,7 +2,7 @@
 <resources>
     <string name="call_connecting_title">Connecting</string>
     <string name="call_details">Call details</string>
-    <string name="call_dialing_title">Dialing</string>
+    <string name="call_dialing_title">Calling…</string>
     <string name="call_disconnecting_title">Disconnecting</string>
     <string name="call_holding_title">On hold</string>
     <string name="call_ringing_title">Incoming call</string>

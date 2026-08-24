@@ -44,7 +44,7 @@ fun InCallDetails(
         }
 
         Text(
-            text = if (status == CallStatus.ACTIVE && durationMillis > 0) {
+            text = if (status == CallStatus.ACTIVE) {
                 CommonUtils.getDurationTimeString(durationMillis)
             } else {
                 getCallStatusLabel(status)

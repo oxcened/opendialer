@@ -18,7 +18,9 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -68,18 +70,26 @@ class InCallViewModel @Inject constructor(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), InCallUiState())
 
-    val activeCallDuration: Flow<Long> = flow {
-        while (true) {
-            val primary = callManager.displayState.value.primary
-            if (primary?.state == Call.STATE_ACTIVE) {
-                val differenceTime = CommonUtils.getCurrentTime() - primary.startTime + primary.totalTime
-                emit(differenceTime)
+    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+    val activeCallDuration: Flow<Long> = callManager.displayState
+        .flatMapLatest { display ->
+            val primary = display.primary
+            if (primary != null) {
+                flow {
+                    while (true) {
+                        if (primary.state == Call.STATE_ACTIVE) {
+                            val differenceTime = CommonUtils.getCurrentTime() - primary.startTime + primary.totalTime
+                            emit(differenceTime)
+                        } else {
+                            emit(0L)
+                        }
+                        delay(1000)
+                    }
+                }
             } else {
-                emit(0L)
+                flowOf(0L)
             }
-            delay(1000)
-        }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0L)
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0L)
 
     // Call Actions (Delegated to CallManager)
     fun hangup(message: String? = null) {
