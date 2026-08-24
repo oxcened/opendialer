@@ -49,7 +49,7 @@ fun InCallDetails(
             } else {
                 getCallStatusLabel(status)
             },
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
