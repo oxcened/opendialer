@@ -9,34 +9,40 @@ import android.telecom.VideoProfile
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.Contact
 import dev.alenajam.opendialer.feature.inCall.R
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+
+data class OngoingCallState(
+    val callerNumber: String = "",
+    val callerNumberLabel: String = "",
+    val callerName: String? = null,
+    val callerImageUri: String? = null,
+    val startTime: Long = -1,
+    val totalTime: Long = 0,
+    val state: Int = Call.STATE_NEW,
+    val isConference: Boolean = false,
+    val isConferenced: Boolean = false,
+    val canMerge: Boolean = false,
+    val canHold: Boolean = false,
+    val canSplit: Boolean = false,
+    val isAnonymous: Boolean = false
+)
 
 class OngoingCall(
     private val context: Context,
     val call: Call,
-    private val listener: Listener,
+    private val onUpdate: (OngoingCall) -> Unit,
+    private val onRemoved: (Call) -> Unit,
     val sequence: Long
 ) {
-    interface Listener {
-        fun onCallUpdated(call: OngoingCall)
-        fun onCallRemoved(call: android.telecom.Call)
-    }
+    private val _state = MutableStateFlow(OngoingCallState())
+    val stateFlow: StateFlow<OngoingCallState> = _state.asStateFlow()
 
     companion object {
         private const val DTMF_DURATION_MS = 300L
     }
-
-    var callerNumber: String = ""
-        private set
-    var callerNumberLabel: String = ""
-        private set
-    var callerName: String? = null
-        private set
-    var callerImageUri: String? = null
-        private set
-    var startTime: Long = -1
-        private set
-    var totalTime: Long = 0
-        private set
 
     private var lastState = Call.STATE_NEW
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -45,55 +51,83 @@ class OngoingCall(
     private val callback = object : Call.Callback() {
         override fun onStateChanged(call: Call, newState: Int) {
             super.onStateChanged(call, newState)
-            updateState(newState)
-            if (newState != Call.STATE_DISCONNECTED) listener.onCallUpdated(this@OngoingCall)
+            updateCallState(newState)
+            if (newState != Call.STATE_DISCONNECTED) onUpdate(this@OngoingCall)
         }
 
         override fun onConferenceableCallsChanged(call: Call, conferenceableCalls: List<Call>) {
             super.onConferenceableCallsChanged(call, conferenceableCalls)
-            listener.onCallUpdated(this@OngoingCall)
+            syncState()
+            onUpdate(this@OngoingCall)
         }
 
         override fun onParentChanged(call: Call, parent: Call?) {
             super.onParentChanged(call, parent)
-            listener.onCallUpdated(this@OngoingCall)
+            syncState()
+            onUpdate(this@OngoingCall)
         }
 
         override fun onDetailsChanged(call: Call, details: Call.Details) {
             super.onDetailsChanged(call, details)
-            listener.onCallUpdated(this@OngoingCall)
+            syncState()
+            onUpdate(this@OngoingCall)
         }
     }
 
     init {
         call.registerCallback(callback)
         refreshIdentity()
-        updateState(state ?: Call.STATE_NEW)
+        updateCallState(call.state)
     }
 
     fun refreshIdentity() {
-        callerName = null
-        callerNumber = ""
-        callerNumberLabel = ""
-        callerImageUri = null
-        if (isConference) {
-            callerName = context.getString(R.string.conference_call)
-        } else if (!isAnonymous) {
-            val numberUri = call.details.handle
-            callerNumber = numberUri?.schemeSpecificPart ?: ""
-            callerName = callerNumber
+        val isConf = call.details.hasProperty(Call.Details.PROPERTY_CONFERENCE)
+        val handle = call.details.handle
+        val isAnon = handle == null
+        
+        _state.update {
+            it.copy(
+                isConference = isConf,
+                isAnonymous = isAnon,
+                callerName = when {
+                    isConf -> context.getString(R.string.conference_call)
+                    !isAnon -> handle?.schemeSpecificPart
+                    else -> null
+                },
+                callerNumber = if (!isConf && !isAnon) handle?.schemeSpecificPart ?: "" else "",
+                callerNumberLabel = "",
+                callerImageUri = null
+            )
         }
+        syncState()
     }
 
     fun applyContact(contact: Contact?) {
         if (contact == null) return
-        callerName = contact.name
-        callerImageUri = contact.imageUri
-        callerNumberLabel = ContactsContract.CommonDataKinds.Phone.getTypeLabel(
-            context.resources,
-            contact.phoneType,
-            contact.phoneLabel
-        ).toString()
+        _state.update {
+            it.copy(
+                callerName = contact.name,
+                callerImageUri = contact.imageUri,
+                callerNumberLabel = ContactsContract.CommonDataKinds.Phone.getTypeLabel(
+                    context.resources,
+                    contact.phoneType,
+                    contact.phoneLabel
+                ).toString()
+            )
+        }
+        onUpdate(this)
+    }
+
+    private fun syncState() {
+        _state.update {
+            it.copy(
+                isConferenced = call.parent != null,
+                canMerge = call.details.can(Call.Details.CAPABILITY_MERGE_CONFERENCE) || call.conferenceableCalls.isNotEmpty(),
+                canHold = call.state == Call.STATE_HOLDING || call.details.can(Call.Details.CAPABILITY_HOLD),
+                canSplit = call.details.can(Call.Details.CAPABILITY_SEPARATE_FROM_CONFERENCE),
+                state = call.state
+            )
+        }
     }
 
     fun tearDown() {
@@ -102,11 +136,7 @@ class OngoingCall(
         call.unregisterCallback(callback)
     }
 
-    fun updateState(state: Int) {
-        handleCall(state)
-    }
-
-    private fun handleCall(state: Int) {
+    private fun updateCallState(state: Int) {
         if (state == lastState) return
 
         when (state) {
@@ -120,59 +150,60 @@ class OngoingCall(
                     accumulateActiveTime()
                 }
                 lastState = state
-                listener.onCallRemoved(call)
+                onRemoved(call)
                 OngoingCallHelper.handleDisconnectCause(context, call)
                 return
             }
             Call.STATE_ACTIVE -> {
-                this.startTime = CommonUtils.getCurrentTime()
+                _state.update { it.copy(startTime = CommonUtils.getCurrentTime()) }
             }
         }
         lastState = state
+        syncState()
     }
 
     private fun accumulateActiveTime() {
-        if (startTime < 0) return
-        totalTime += CommonUtils.getCurrentTime() - startTime
-        startTime = -1
+        val current = _state.value
+        if (current.startTime < 0) return
+        val newTotal = current.totalTime + (CommonUtils.getCurrentTime() - current.startTime)
+        _state.update { it.copy(totalTime = newTotal, startTime = -1) }
     }
 
-    val state: Int?
-        get() = call.state
+    // Direct access to state for legacy/convenience
+    val state: Int get() = _state.value.state
+    val callerNumber: String get() = _state.value.callerNumber
+    val callerName: String? get() = _state.value.callerName
+    val callerNumberLabel: String get() = _state.value.callerNumberLabel
+    val callerImageUri: String? get() = _state.value.callerImageUri
+    val isConference: Boolean get() = _state.value.isConference
+    val isConferenced: Boolean get() = _state.value.isConferenced
+    val startTime: Long get() = _state.value.startTime
+    val totalTime: Long get() = _state.value.totalTime
 
     fun answer() {
         if (state != Call.STATE_RINGING) return
         call.answer(VideoProfile.STATE_AUDIO_ONLY)
     }
 
-    fun hangup() {
+    fun hangup(message: String? = null) {
         if (state == Call.STATE_RINGING) {
-            call.reject(false, null)
+            call.reject(message != null, message)
         } else {
             call.disconnect()
         }
     }
 
-    fun hangup(message: String) {
-        if (state == Call.STATE_RINGING) {
-            call.reject(true, message)
-        } else {
-            call.disconnect()
-        }
-    }
-
-    fun hold() {
-        if (state == Call.STATE_HOLDING) {
-            call.unhold()
-        } else if (canBeHeld()) {
+    fun hold(hold: Boolean? = null) {
+        val shouldHold = hold ?: (state != Call.STATE_HOLDING)
+        if (shouldHold && canBeHeld()) {
             call.hold()
+        } else if (!shouldHold && state == Call.STATE_HOLDING) {
+            call.unhold()
         }
     }
 
-    fun hold(hold: Boolean) {
-        if (hold && canBeHeld()) call.hold()
-        else if (!hold && state == Call.STATE_HOLDING) call.unhold()
-    }
+    fun canBeHeld(): Boolean = _state.value.canHold
+    fun canBeMerged(): Boolean = _state.value.canMerge
 
     fun playDtmf(digit: Char) {
         if (state != Call.STATE_ACTIVE) return
@@ -182,31 +213,13 @@ class OngoingCall(
         mainHandler.postDelayed(stopDtmfTone, DTMF_DURATION_MS)
     }
 
-    val isAnonymous: Boolean
-        get() = call.details.handle == null
-
-    fun canBeMerged(): Boolean {
-        if (call.details.can(Call.Details.CAPABILITY_MERGE_CONFERENCE)) return true
-        if (call.conferenceableCalls.isNotEmpty()) return true
-        return false
-    }
-
-    fun canBeHeld(): Boolean {
-        return state == Call.STATE_HOLDING || call.details.can(Call.Details.CAPABILITY_HOLD)
-    }
-
-    fun canBeSplit(): Boolean {
-        return call.details.can(Call.Details.CAPABILITY_SEPARATE_FROM_CONFERENCE)
-    }
-
     fun split() {
-        if (!canBeSplit()) return
+        if (!_state.value.canSplit) return
         call.splitFromConference()
     }
 
     fun merge() {
-        if (!canBeMerged()) return
-
+        if (!_state.value.canMerge) return
         val conferenceableCalls = call.conferenceableCalls
         if (conferenceableCalls.isNotEmpty()) {
             call.conference(conferenceableCalls[0])
@@ -214,10 +227,4 @@ class OngoingCall(
             call.mergeConference()
         }
     }
-
-    val isConference: Boolean
-        get() = call.details.hasProperty(Call.Details.PROPERTY_CONFERENCE)
-
-    val isConferenced: Boolean
-        get() = call.parent != null
 }

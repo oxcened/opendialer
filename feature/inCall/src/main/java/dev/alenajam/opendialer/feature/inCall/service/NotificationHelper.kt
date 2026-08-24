@@ -4,6 +4,7 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.Person
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -20,42 +21,22 @@ object NotificationHelper {
     private const val CHANNEL_ID_OUTGOING_CALLS = "dev.alenajam.opendialer.notification_channel.outgoing_calls"
     private const val NOTIFICATION_ID_CALL = 1
     private const val INTENT_ACTION_CALL_BUTTON_CLICK_ACCEPT = "dev.alenajam.opendialer.CALL_ACCEPT"
+    private const val INTENT_ACTION_CALL_BUTTON_CLICK_DECLINE = "dev.alenajam.opendialer.CALL_DECLINE"
 
-    @JvmStatic
     fun setupNotificationChannels(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createCallChannel(
-                context,
-                CHANNEL_ID_INCOMING_CALLS,
-                context.getString(R.string.channel_incoming_calls),
-                NotificationManager.IMPORTANCE_HIGH
-            )
-            createCallChannel(
-                context,
-                CHANNEL_ID_ONGOING_CALLS,
-                context.getString(R.string.channel_ongoing_calls),
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            createCallChannel(
-                context,
-                CHANNEL_ID_OUTGOING_CALLS,
-                context.getString(R.string.channel_outgoing_calls),
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-        }
-    }
+            val nm = context.getSystemService(NotificationManager::class.java) ?: return
 
-    private fun createCallChannel(
-        context: Context,
-        channelId: String,
-        channelName: String,
-        channelImportance: Int
-    ) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationChannel = NotificationChannel(channelId, channelName, channelImportance)
-            notificationChannel.setSound(null, null)
-            val notificationManager = context.getSystemService(NotificationManager::class.java)
-            notificationManager?.createNotificationChannel(notificationChannel)
+            val channels = listOf(
+                NotificationChannel(CHANNEL_ID_INCOMING_CALLS, context.getString(R.string.channel_incoming_calls), NotificationManager.IMPORTANCE_HIGH),
+                NotificationChannel(CHANNEL_ID_ONGOING_CALLS, context.getString(R.string.channel_ongoing_calls), NotificationManager.IMPORTANCE_DEFAULT),
+                NotificationChannel(CHANNEL_ID_OUTGOING_CALLS, context.getString(R.string.channel_outgoing_calls), NotificationManager.IMPORTANCE_DEFAULT)
+            )
+
+            channels.forEach { channel ->
+                channel.setSound(null, null)
+                nm.createNotificationChannel(channel)
+            }
         }
     }
 
@@ -63,18 +44,16 @@ object NotificationHelper {
         context: Context,
         callService: InCallServiceImpl?,
         channelId: String,
-        priority: Int,
-        notificationText: String,
-        fullScreen: Boolean
+        caller: String,
+        type: CallType
     ): Notification? {
         setupNotificationChannels(context)
 
-        val intent = Intent(Intent.ACTION_MAIN, null).apply {
+        val intent = Intent(context, InCallActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NO_USER_ACTION or
                     Intent.FLAG_ACTIVITY_NEW_TASK or
                     Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT or
                     Intent.FLAG_ACTIVITY_NEW_DOCUMENT
-            setClass(context, InCallActivity::class.java)
         }
         val pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_IMMUTABLE)
 
@@ -85,25 +64,41 @@ object NotificationHelper {
             Notification.Builder(context)
         }
 
-        @Suppress("DEPRECATION")
-        builder.setPriority(priority)
-        builder.setContentIntent(pendingIntent)
-        builder.setContentTitle(notificationText)
-        builder.setContentText(notificationText)
-        if (fullScreen) builder.setFullScreenIntent(pendingIntent, true)
         builder.setSmallIcon(R.drawable.ic_notification_call)
-        builder.setCategory(Notification.CATEGORY_CALL)
-        builder.setVisibility(Notification.VISIBILITY_PUBLIC)
-        builder.setOngoing(true)
+            .setContentIntent(pendingIntent)
+            .setCategory(Notification.CATEGORY_CALL)
+            .setVisibility(Notification.VISIBILITY_PUBLIC)
+            .setOngoing(true)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val person = Person.Builder()
+                .setName(caller)
+                .setImportant(true)
+                .build()
+            val style = when (type) {
+                CallType.INCOMING -> Notification.CallStyle.forIncomingCall(person, getDeclineIntent(context), getAcceptIntent(context))
+                CallType.ONGOING -> Notification.CallStyle.forOngoingCall(person, getDeclineIntent(context))
+                CallType.OUTGOING -> Notification.CallStyle.forOngoingCall(person, getDeclineIntent(context))
+            }
+            builder.style = style
+        } else {
+            builder.setContentTitle(caller)
+            builder.setContentText(when (type) {
+                CallType.INCOMING -> context.getString(R.string.notification_incoming_call_title, caller)
+                CallType.ONGOING -> context.getString(R.string.notification_ongoing_call_title, caller)
+                CallType.OUTGOING -> context.getString(R.string.notification_outgoing_call_title, caller)
+            })
+            if (type == CallType.INCOMING) {
+                builder.addAction(Notification.Action.Builder(null, "Decline", getDeclineIntent(context)).build())
+                builder.addAction(Notification.Action.Builder(null, "Answer", getAcceptIntent(context)).build())
+                builder.setFullScreenIntent(pendingIntent, true)
+            }
+        }
 
         if (callService != null) {
             val notification = builder.build()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                callService.startForeground(
-                    NOTIFICATION_ID_CALL,
-                    notification,
-                    ServiceInfo.FOREGROUND_SERVICE_TYPE_PHONE_CALL
-                )
+                callService.startForeground(NOTIFICATION_ID_CALL, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_PHONE_CALL)
             } else {
                 callService.startForeground(NOTIFICATION_ID_CALL, notification)
             }
@@ -112,81 +107,45 @@ object NotificationHelper {
         return null
     }
 
-    @JvmStatic
-    fun notifyIncomingCall(context: Context, callService: InCallServiceImpl, caller: String): Notification? {
-        @Suppress("DEPRECATION")
-        return notifyCall(
-            context,
-            callService,
-            CHANNEL_ID_INCOMING_CALLS,
-            Notification.PRIORITY_MAX,
-            context.getString(R.string.notification_incoming_call_title, caller),
-            true
-        )
+    private fun getAcceptIntent(context: Context): PendingIntent {
+        val intent = Intent(context, CallButtonsListener::class.java).apply {
+            action = INTENT_ACTION_CALL_BUTTON_CLICK_ACCEPT
+        }
+        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
     }
 
-    @JvmStatic
-    fun notifyOutgoingCall(context: Context, callService: InCallServiceImpl, caller: String) {
-        @Suppress("DEPRECATION")
-        notifyCall(
-            context,
-            callService,
-            CHANNEL_ID_OUTGOING_CALLS,
-            Notification.PRIORITY_DEFAULT,
-            context.getString(R.string.notification_outgoing_call_title, caller),
-            false
-        )
+    private fun getDeclineIntent(context: Context): PendingIntent {
+        val intent = Intent(context, CallButtonsListener::class.java).apply {
+            action = INTENT_ACTION_CALL_BUTTON_CLICK_DECLINE
+        }
+        return PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_IMMUTABLE)
     }
 
-    @JvmStatic
-    fun notifyOngoingCall(context: Context, callService: InCallServiceImpl, caller: String) {
-        @Suppress("DEPRECATION")
-        notifyCall(
-            context,
-            callService,
-            CHANNEL_ID_ONGOING_CALLS,
-            Notification.PRIORITY_DEFAULT,
-            context.getString(R.string.notification_ongoing_call_title, caller),
-            false
-        )
-    }
+    fun notifyIncomingCall(context: Context, callService: InCallServiceImpl, caller: String) =
+        notifyCall(context, callService, CHANNEL_ID_INCOMING_CALLS, caller, CallType.INCOMING)
 
-    @JvmStatic
-    fun notifyOnHoldCall(context: Context, callService: InCallServiceImpl, caller: String) {
-        @Suppress("DEPRECATION")
-        notifyCall(
-            context,
-            callService,
-            CHANNEL_ID_ONGOING_CALLS,
-            Notification.PRIORITY_DEFAULT,
-            context.getString(R.string.notification_on_hold_call_title, caller),
-            false
-        )
-    }
+    fun notifyOutgoingCall(context: Context, callService: InCallServiceImpl, caller: String) =
+        notifyCall(context, callService, CHANNEL_ID_OUTGOING_CALLS, caller, CallType.OUTGOING)
 
-    @JvmStatic
-    fun notifyDisconnectingCall(context: Context, callService: InCallServiceImpl, caller: String) {
-        @Suppress("DEPRECATION")
-        notifyCall(
-            context,
-            callService,
-            CHANNEL_ID_ONGOING_CALLS,
-            Notification.PRIORITY_DEFAULT,
-            context.getString(R.string.notification_disconnecting_call_title, caller),
-            false
-        )
-    }
+    fun notifyOngoingCall(context: Context, callService: InCallServiceImpl, caller: String) =
+        notifyCall(context, callService, CHANNEL_ID_ONGOING_CALLS, caller, CallType.ONGOING)
 
-    @JvmStatic
+    fun notifyOnHoldCall(context: Context, callService: InCallServiceImpl, caller: String) =
+        notifyCall(context, callService, CHANNEL_ID_ONGOING_CALLS, caller, CallType.ONGOING)
+
+    fun notifyDisconnectingCall(context: Context, callService: InCallServiceImpl, caller: String) =
+        notifyCall(context, callService, CHANNEL_ID_ONGOING_CALLS, caller, CallType.ONGOING)
+
     fun removeCallNotification(callService: InCallServiceImpl?) {
         @Suppress("DEPRECATION")
         callService?.stopForeground(true)
     }
 
-    @JvmStatic
     fun tearDown(callService: InCallServiceImpl?) {
         removeCallNotification(callService)
     }
+
+    private enum class CallType { INCOMING, ONGOING, OUTGOING }
 
     @AndroidEntryPoint
     class CallButtonsListener : BroadcastReceiver() {
@@ -195,9 +154,7 @@ object NotificationHelper {
 
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action ?: return
-
-            val displayState = callHandler.displayState.value
-            val mainCall = displayState?.primary ?: return
+            val mainCall = callHandler.displayState.value.primary ?: return
 
             if (action == INTENT_ACTION_CALL_BUTTON_CLICK_ACCEPT) {
                 mainCall.answer()

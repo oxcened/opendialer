@@ -17,7 +17,7 @@ import javax.inject.Singleton
 class CallsHandler @Inject constructor(
     private val contactResolver: CallContactResolver,
     private val telecomAdapter: TelecomAdapter
-) : CallManager, OngoingCall.Listener {
+) : CallManager {
     private val _calls = MutableStateFlow<Map<Call, OngoingCall>>(emptyMap())
     override val calls: StateFlow<Map<Call, OngoingCall>> = _calls.asStateFlow()
 
@@ -93,7 +93,13 @@ class CallsHandler @Inject constructor(
         var ongoingCall = map[call]
 
         if (ongoingCall == null) {
-            ongoingCall = OngoingCall(context, call, this, nextCallSequence++)
+            ongoingCall = OngoingCall(
+                context,
+                call,
+                onUpdate = { onCallUpdated(it) },
+                onRemoved = { onCallRemoved(it) },
+                sequence = nextCallSequence++
+            )
             map[call] = ongoingCall
             resolveContact(ongoingCall)
         } else {
@@ -113,14 +119,14 @@ class CallsHandler @Inject constructor(
         updateCalls()
     }
 
-    // OngoingCall.Listener Implementation
-    override fun onCallUpdated(call: OngoingCall) {
+    // Call Update Methods
+    private fun onCallUpdated(call: OngoingCall) {
         call.refreshIdentity()
         resolveContact(call)
         updateCalls()
     }
 
-    override fun onCallRemoved(call: Call) {
+    private fun onCallRemoved(call: Call) {
         removeCall(call)
     }
 
@@ -174,7 +180,13 @@ class CallsHandler @Inject constructor(
 
     private fun addReconciledCall(reconciledCalls: MutableMap<Call, OngoingCall>, call: Call): Boolean {
         if (call.state == Call.STATE_DISCONNECTED || reconciledCalls.containsKey(call)) return false
-        val ongoingCall = OngoingCall(context!!, call, this, nextCallSequence++)
+        val ongoingCall = OngoingCall(
+            context!!,
+            call,
+            onUpdate = { onCallUpdated(it) },
+            onRemoved = { onCallRemoved(it) },
+            sequence = nextCallSequence++
+        )
         reconciledCalls[call] = ongoingCall
         resolveContact(ongoingCall)
         return true

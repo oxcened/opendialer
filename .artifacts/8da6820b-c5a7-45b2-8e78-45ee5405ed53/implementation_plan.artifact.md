@@ -1,34 +1,37 @@
-# Implementation Plan: Service Layer Modernization (Coroutines & DI)
+# Implementation Plan: Notification Modernization & Reactive Call State
 
-This plan covers refactoring `CallContactResolver` to use Coroutines and making `ProximitySensor` fully injectable via Hilt.
+This plan covers modernizing the call notification system using `Notification.CallStyle` and refactoring `OngoingCall` to expose state reactively via `StateFlow`.
 
 ## Proposed Changes
 
 ### [:feature:inCall](file:///Users/alen/StudioProjects/opendialer/feature/inCall)
 
-#### [MODIFY] [CallContactResolver.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/service/CallContactResolver.kt)
-- Remove `ExecutorService` and `Handler`.
-- Inject a `CoroutineScope` (annotated with `@ApplicationScope` if available, or use `Dispatchers.IO` directly).
-- Refactor `resolve` to use `withContext(Dispatchers.IO)`.
-- Keep the `Callback` for now to avoid breaking `CallsHandler`, but internal implementation will be coroutine-based.
+#### [MODIFY] [NotificationHelper.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/service/NotificationHelper.kt)
+- Clean up dead code and commented-out sections.
+- Refactor `notifyCall` to use `Notification.CallStyle` for Android 12+ (API 31+).
+- Use `Person` API for the notification sender.
+- Ensure proper mapping of Telecom actions (Answer/Hangup) to notification actions.
+- Convert `object` to a proper injectable class if it helps with state management, but keeping as `object` is also fine for now if it stays stateless.
 
-#### [MODIFY] [ProximitySensor.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/service/ProximitySensor.kt)
-- Add `@Inject constructor(@ApplicationContext context: Context)`.
-- Mark as `@Singleton` if appropriate (shared across call lifecycle).
-
-#### [MODIFY] [InCallServiceImpl.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/service/InCallServiceImpl.kt)
-- Inject `ProximitySensor` via Hilt.
-- Pass the injected sensor to `callHandler.setup()`.
+#### [MODIFY] [OngoingCall.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/service/OngoingCall.kt)
+- Define an `OngoingCallInfo` data class to hold immutable snapshot of call state.
+- Expose a `StateFlow<OngoingCallInfo>` from `OngoingCall`.
+- Remove the `Listener` interface.
+- Ensure all property updates trigger a new emission in the `StateFlow`.
 
 #### [MODIFY] [CallsHandler.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/service/CallsHandler.kt)
-- Ensure the `resolveContact` call still works with the refactored resolver.
+- Remove `OngoingCall.Listener` implementation.
+- Observe each `OngoingCall`'s `StateFlow` to trigger `updateCalls()`.
+- *Optimization:* Instead of full collection of all flows, just having the `OngoingCall` notify the handler via a simple function call is still technically a "listener", but we can make it more reactive by having `CallsHandler` build its state by combining the flows of active calls.
 
 ## Verification Plan
 
 ### Automated Tests
-- Build the project to ensure DI graphs are correct.
-- Run existing unit tests.
+- Build the project and ensure all components compile.
+- Run unit tests for `CallDisplaySelector`.
 
 ### Manual Verification
-- Verify contact resolution in the In-Call UI.
-- Verify proximity sensor behavior (screen turning off when near earpiece).
+- Verify the new notification style on Android 12+ devices.
+- Test incoming call actions directly from the notification.
+- Verify UI updates in the app when call details change (e.g., contact resolved).
+- Test call duration and state transitions.
