@@ -28,10 +28,11 @@ import dev.alenajam.opendialer.core.common.LocalCustomColorsScheme
 fun IncomingCallControls(
     onHangup: () -> Unit,
     onAnswer: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Surface(
         tonalElevation = 8.dp,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
     ) {
         Row(

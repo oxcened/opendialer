@@ -65,7 +65,8 @@ fun InCallControls(
     onMerge: () -> Unit = {},
     onSwap: () -> Unit = {},
     onManageConference: () -> Unit = {},
-    onDigit: (digit: Char) -> Unit
+    onDigit: (digit: Char) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val icons = LocalAppIcons.current
     var openSection = remember { mutableStateOf<OpenSection?>(null) }
@@ -88,7 +89,7 @@ fun InCallControls(
 
     Surface(
         tonalElevation = 8.dp,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = RoundedCornerShape(topStart = 36.dp, topEnd = 36.dp)
     ) {
