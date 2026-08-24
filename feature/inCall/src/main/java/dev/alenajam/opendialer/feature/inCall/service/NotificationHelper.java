@@ -46,7 +46,7 @@ public abstract class NotificationHelper {
         }
     }
 
-    private static Notification notifyCall(Context context, InCallServiceImpl callService, String channelId, int priority, String notificationText) {
+    private static Notification notifyCall(Context context, InCallServiceImpl callService, String channelId, int priority, String notificationText, boolean fullScreen) {
         // This feature is consumed by more than one application. Do not rely on
         // a host Application class to create the foreground-service channels.
         // Channel creation is idempotent, so ensuring them here is safe.
@@ -66,7 +66,9 @@ public abstract class NotificationHelper {
 
         builder.setPriority(priority);
         builder.setContentIntent(pendingIntent);
-        builder.setFullScreenIntent(pendingIntent, true);
+        builder.setContentTitle(notificationText);
+        builder.setContentText(notificationText);
+        if (fullScreen) builder.setFullScreenIntent(pendingIntent, true);
         builder.setSmallIcon(R.drawable.ic_notification_call);
 
         // TODO rework with native UI instead of RemoteViews
@@ -115,19 +117,19 @@ public abstract class NotificationHelper {
     }
 
     public static Notification notifyIncomingCall(Context context, InCallServiceImpl callService, String caller) {
-        return notifyCall(context, callService, CHANNEL_ID_INCOMING_CALLS, Notification.PRIORITY_MAX, context.getString(R.string.notification_incoming_call_title, caller));
+        return notifyCall(context, callService, CHANNEL_ID_INCOMING_CALLS, Notification.PRIORITY_MAX, context.getString(R.string.notification_incoming_call_title, caller), true);
     }
 
     public static void notifyOutgoingCall(Context context, InCallServiceImpl callService, String caller) {
-        notifyCall(context, callService, CHANNEL_ID_OUTGOING_CALLS, Notification.PRIORITY_DEFAULT, context.getString(R.string.notification_outgoing_call_title, caller));
+        notifyCall(context, callService, CHANNEL_ID_OUTGOING_CALLS, Notification.PRIORITY_DEFAULT, context.getString(R.string.notification_outgoing_call_title, caller), false);
     }
 
     public static void notifyOngoingCall(Context context, InCallServiceImpl callService, String caller) {
-        notifyCall(context, callService, CHANNEL_ID_ONGOING_CALLS, Notification.PRIORITY_DEFAULT, context.getString(R.string.notification_ongoing_call_title, caller));
+        notifyCall(context, callService, CHANNEL_ID_ONGOING_CALLS, Notification.PRIORITY_DEFAULT, context.getString(R.string.notification_ongoing_call_title, caller), false);
     }
 
     public static void notifyOnHoldCall(Context context, InCallServiceImpl callService, String caller) {
-        notifyCall(context, callService, CHANNEL_ID_ONGOING_CALLS, Notification.PRIORITY_DEFAULT, context.getString(R.string.notification_on_hold_call_title, caller));
+        notifyCall(context, callService, CHANNEL_ID_ONGOING_CALLS, Notification.PRIORITY_DEFAULT, context.getString(R.string.notification_on_hold_call_title, caller), false);
     }
 
     public static void removeCallNotification(InCallServiceImpl callService) {

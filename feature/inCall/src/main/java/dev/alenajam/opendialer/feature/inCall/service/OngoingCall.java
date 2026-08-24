@@ -25,6 +25,10 @@ public class OngoingCall {
     private Context context;
     private final CallsHandler callsHandler;
     private final long sequence;
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private final Runnable stopDtmfTone = () -> {
+        if (call != null) call.stopDtmfTone();
+    };
 
     private final Call.Callback callback = new Call.Callback() {
         @Override
@@ -91,6 +95,8 @@ public class OngoingCall {
     }
 
     public void tearDown() {
+        mainHandler.removeCallbacks(stopDtmfTone);
+        call.stopDtmfTone();
         call.unregisterCallback(callback);
     }
 
@@ -206,8 +212,10 @@ public class OngoingCall {
 
     public void playDtmf(char digit) {
         if (call == null || getState() != Call.STATE_ACTIVE) return;
+        mainHandler.removeCallbacks(stopDtmfTone);
+        call.stopDtmfTone();
         call.playDtmfTone(digit);
-        new Handler(Looper.getMainLooper()).postDelayed(call::stopDtmfTone, DTMF_DURATION_MS);
+        mainHandler.postDelayed(stopDtmfTone, DTMF_DURATION_MS);
     }
 
     public boolean isAnonymous() {

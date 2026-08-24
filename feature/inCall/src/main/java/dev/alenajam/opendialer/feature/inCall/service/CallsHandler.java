@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import dev.alenajam.opendialer.feature.inCall.R;
 import dev.alenajam.opendialer.feature.inCall.ui.InCallActivity;
 
 @Singleton
@@ -141,20 +142,23 @@ public class CallsHandler {
 
     private void handleCallNotification(OngoingCall call, int state) {
         if (callService == null) return;
+        String caller = call.getCallerName();
+        if (caller == null || caller.isEmpty()) caller = call.getCallerNumber();
+        if (caller == null || caller.isEmpty()) caller = context.getString(R.string.anonymous);
 
         switch (state) {
             case Call.STATE_RINGING:
                 if (!isActivityShowing())
-                    NotificationHelper.notifyIncomingCall(context, callService, call.getCallerName());
+                    NotificationHelper.notifyIncomingCall(context, callService, caller);
                 break;
             case Call.STATE_DIALING:
-                NotificationHelper.notifyOutgoingCall(context, callService, call.getCallerName());
+                NotificationHelper.notifyOutgoingCall(context, callService, caller);
                 break;
             case Call.STATE_ACTIVE:
-                NotificationHelper.notifyOngoingCall(context, callService, call.getCallerName());
+                NotificationHelper.notifyOngoingCall(context, callService, caller);
                 break;
             case Call.STATE_HOLDING:
-                NotificationHelper.notifyOnHoldCall(context, callService, call.getCallerName());
+                NotificationHelper.notifyOnHoldCall(context, callService, caller);
                 break;
         }
     }
