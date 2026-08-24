@@ -147,7 +147,6 @@ internal fun HomeScreen(
                 when (currentTab) {
                     HomeTab.CALLS -> CallsScreen(
                         onOpenHistory = onOpenHistory,
-                        onOpenDialpad = onOpenDialpad,
                         onOpenContacts = { currentTab = HomeTab.CONTACTS },
                         onAddFavorite = onAddFavorite
                     )

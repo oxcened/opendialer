@@ -30,14 +30,12 @@ import androidx.compose.material.icons.automirrored.outlined.Message
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.CallMade
 import androidx.compose.material.icons.outlined.CallMissed
 import androidx.compose.material.icons.outlined.CallReceived
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Message
-import androidx.compose.material.icons.outlined.Mic
 import androidx.compose.material.icons.outlined.PersonAddAlt
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.Voicemail
@@ -93,7 +91,6 @@ import java.util.Date
 fun CallsScreen(
     viewModel: CallsViewModel = hiltViewModel(),
     onOpenHistory: (callIds: List<Int>) -> Unit,
-    onOpenDialpad: () -> Unit = {},
     onOpenContacts: () -> Unit = {},
     onAddFavorite: () -> Unit = {}
 ) {
@@ -141,7 +138,6 @@ fun CallsScreen(
     Scaffold(
         topBar = {
             Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                SearchBar(onSearchClick = onOpenDialpad)
                 FilterChips(
                     selectedFilter = selectedFilter,
                     onFilterSelected = { selectedFilter = it }
@@ -215,33 +211,6 @@ fun CallsScreen(
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun SearchBar(onSearchClick: () -> Unit) {
-    Surface(
-        onClick = onSearchClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp),
-        shape = RoundedCornerShape(28.dp),
-        color = MaterialTheme.colorScheme.surfaceContainerHigh
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        ) {
-            Icon(Icons.Default.Search, contentDescription = null)
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = "Search contacts",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.weight(1f)
-            )
-            Icon(Icons.Outlined.Mic, contentDescription = null)
         }
     }
 }
