@@ -33,7 +33,8 @@
     <string name="profile_label_options">Options</string>
     <string name="profile_desc_options">Let\'s tweak it a little bit!</string>
     <string name="placeholder_quick_responses">Press the ADD button in the upper right corner to start customizing your quick responses</string>
-    <string name="screen_settings_title">About</string>
+    <string name="screen_settings_title">Settings</string>
+    <string name="screen_about_title">About</string>
     <string name="about_section_developer">Developer</string>
     <string name="about_section_community">Community</string>
     <string name="about_section_open_source">Open source and support</string>
