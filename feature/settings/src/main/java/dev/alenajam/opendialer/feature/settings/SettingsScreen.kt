@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -48,13 +49,20 @@ fun SettingsScreen(
                 .padding(innerPadding.copy(top = innerPadding.calculateTopPadding() + 16.dp, start = 16.dp, end = 16.dp))
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.Top
         ) {
             subpages.forEachIndexed { index, page ->
                 Card(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 1.dp),
                     onClick = { onOpenSubpage(index) },
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
+                    shape = RoundedCornerShape(
+                        topStart = if (index == 0) 20.dp else 2.dp,
+                        topEnd = if (index == 0) 20.dp else 2.dp,
+                        bottomStart = if (index == subpages.lastIndex) 20.dp else 2.dp,
+                        bottomEnd = if (index == subpages.lastIndex) 20.dp else 2.dp
+                    ),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 0.5.dp)
                 ) {
                     Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)) {
                         Text(page.title, style = MaterialTheme.typography.titleMedium)

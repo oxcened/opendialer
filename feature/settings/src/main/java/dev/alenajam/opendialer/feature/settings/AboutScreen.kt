@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -92,7 +93,9 @@ fun AboutScreen(
             AboutLinkCard(
                 title = stringResource(R.string.developer_credit),
                 description = stringResource(R.string.developer_website_description),
-                uri = stringResource(R.string.url_developer)
+                uri = stringResource(R.string.url_developer),
+                roundTop = true,
+                roundBottom = true
             )
 
             Text(
@@ -101,17 +104,23 @@ fun AboutScreen(
                 style = MaterialTheme.typography.titleMedium
             )
 
-            AboutLinkCard(
-                title = stringResource(R.string.join_discord),
-                description = stringResource(R.string.discord_description),
-                uri = stringResource(R.string.url_discord)
-            )
+            Column {
+                AboutLinkCard(
+                    title = stringResource(R.string.join_discord),
+                    description = stringResource(R.string.discord_description),
+                    uri = stringResource(R.string.url_discord),
+                    roundTop = true,
+                    roundBottom = false
+                )
 
-            AboutLinkCard(
-                title = stringResource(R.string.feature_requests),
-                description = stringResource(R.string.feature_requests_description),
-                uri = stringResource(R.string.url_feature_requests)
-            )
+                AboutLinkCard(
+                    title = stringResource(R.string.feature_requests),
+                    description = stringResource(R.string.feature_requests_description),
+                    uri = stringResource(R.string.url_feature_requests),
+                    roundTop = false,
+                    roundBottom = true
+                )
+            }
 
             Text(
                 modifier = Modifier.padding(top = 4.dp),
@@ -119,23 +128,31 @@ fun AboutScreen(
                 style = MaterialTheme.typography.titleMedium
             )
 
-            AboutLinkCard(
-                title = stringResource(R.string.view_source_code),
-                description = stringResource(R.string.open_source_description),
-                uri = stringResource(R.string.url_github_opendialer)
-            )
+            Column {
+                AboutLinkCard(
+                    title = stringResource(R.string.view_source_code),
+                    description = stringResource(R.string.open_source_description),
+                    uri = stringResource(R.string.url_github_opendialer),
+                    roundTop = true,
+                    roundBottom = false
+                )
 
-            AboutLinkCard(
-                title = stringResource(R.string.report_an_issue),
-                description = stringResource(R.string.issues_description),
-                uri = stringResource(R.string.url_github_issues)
-            )
+                AboutLinkCard(
+                    title = stringResource(R.string.report_an_issue),
+                    description = stringResource(R.string.issues_description),
+                    uri = stringResource(R.string.url_github_issues),
+                    roundTop = false,
+                    roundBottom = false
+                )
 
-            AboutLinkCard(
-                title = stringResource(R.string.contact_developer),
-                description = stringResource(R.string.contact_email),
-                uri = stringResource(R.string.url_contact_email)
-            )
+                AboutLinkCard(
+                    title = stringResource(R.string.contact_developer),
+                    description = stringResource(R.string.contact_email),
+                    uri = stringResource(R.string.url_contact_email),
+                    roundTop = false,
+                    roundBottom = true
+                )
+            }
 
             val fontCredit = stringResource(R.string.font_credit)
             if (fontCredit.isNotBlank()) {
@@ -146,7 +163,9 @@ fun AboutScreen(
                 )
                 AboutInfoCard(
                     title = stringResource(R.string.typography_credit_title),
-                    description = fontCredit
+                    description = fontCredit,
+                    roundTop = true,
+                    roundBottom = true
                 )
             }
         }
@@ -156,13 +175,17 @@ fun AboutScreen(
 @Composable
 private fun AboutInfoCard(
     title: String,
-    description: String
+    description: String,
+    roundTop: Boolean,
+    roundBottom: Boolean
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(vertical = 1.dp),
+        shape = groupedCardShape(roundTop, roundBottom),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
-        )
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.5.dp)
     ) {
         AboutCardContent(title = title, description = description)
     }
@@ -172,20 +195,31 @@ private fun AboutInfoCard(
 private fun AboutLinkCard(
     title: String,
     description: String,
-    uri: String
+    uri: String,
+    roundTop: Boolean,
+    roundBottom: Boolean
 ) {
     val uriHandler = LocalUriHandler.current
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(vertical = 1.dp),
         onClick = { uriHandler.openUri(uri) },
+        shape = groupedCardShape(roundTop, roundBottom),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
-        )
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.5.dp)
     ) {
         AboutCardContent(title = title, description = description)
     }
 }
+
+private fun groupedCardShape(roundTop: Boolean, roundBottom: Boolean) = RoundedCornerShape(
+    topStart = if (roundTop) 20.dp else 2.dp,
+    topEnd = if (roundTop) 20.dp else 2.dp,
+    bottomStart = if (roundBottom) 20.dp else 2.dp,
+    bottomEnd = if (roundBottom) 20.dp else 2.dp
+)
 
 @Composable
 private fun AboutCardContent(

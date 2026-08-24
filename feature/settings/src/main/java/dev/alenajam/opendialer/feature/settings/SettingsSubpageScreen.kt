@@ -14,13 +14,21 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.alenajam.opendialer.core.common.copy
 
+val LocalSettingsSubpageNavigator = staticCompositionLocalOf<SettingsSubpageNavigator?> { null }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsSubpageScreen(page: SettingsSubpage, onNavigateBack: () -> Unit) {
+fun SettingsSubpageScreen(
+    page: SettingsSubpage,
+    onNavigateBack: () -> Unit,
+    onNavigateToDestination: (Int) -> Unit
+) {
     Scaffold(topBar = {
         TopAppBar(title = { Text(page.title) }, navigationIcon = {
             IconButton(onClick = onNavigateBack) {
@@ -31,6 +39,10 @@ fun SettingsSubpageScreen(page: SettingsSubpage, onNavigateBack: () -> Unit) {
         Column(
             modifier = Modifier.padding(padding.copy(top = padding.calculateTopPadding() + 16.dp, start = 16.dp, end = 16.dp))
                 .fillMaxSize().verticalScroll(rememberScrollState())
-        ) { page.content(this) }
+        ) {
+            CompositionLocalProvider(
+                LocalSettingsSubpageNavigator provides SettingsSubpageNavigator(onNavigateToDestination)
+            ) { page.content(this@Column) }
+        }
     }
 }

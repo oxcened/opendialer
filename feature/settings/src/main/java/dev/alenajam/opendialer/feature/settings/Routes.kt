@@ -10,3 +10,6 @@ data object AboutRoute
 
 @Serializable
 data class SettingsSubpageRoute(val index: Int)
+
+@Serializable
+data class SettingsSubpageDestinationRoute(val subpageIndex: Int, val destinationIndex: Int)

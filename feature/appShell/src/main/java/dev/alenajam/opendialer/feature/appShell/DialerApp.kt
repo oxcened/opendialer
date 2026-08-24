@@ -36,6 +36,7 @@ import dev.alenajam.opendialer.feature.settings.AboutRoute
 import dev.alenajam.opendialer.feature.settings.AboutScreen
 import dev.alenajam.opendialer.feature.settings.SettingsSubpage
 import dev.alenajam.opendialer.feature.settings.SettingsSubpageRoute
+import dev.alenajam.opendialer.feature.settings.SettingsSubpageDestinationRoute
 import dev.alenajam.opendialer.feature.settings.SettingsSubpageScreen
 import kotlinx.serialization.Serializable
 
@@ -115,8 +116,21 @@ fun DialerApp(
                 composable<SettingsSubpageRoute> { backStackEntry ->
                     val route = backStackEntry.toRoute<SettingsSubpageRoute>()
                     settingsSubpages.getOrNull(route.index)?.let { page ->
-                        SettingsSubpageScreen(page, onNavigateBack = { navController.popBackStack() })
+                        SettingsSubpageScreen(
+                            page = page,
+                            onNavigateBack = { navController.popBackStack() },
+                            onNavigateToDestination = { destinationIndex ->
+                                navController.navigate(SettingsSubpageDestinationRoute(route.index, destinationIndex))
+                            }
+                        )
                     }
+                }
+                composable<SettingsSubpageDestinationRoute> { backStackEntry ->
+                    val route = backStackEntry.toRoute<SettingsSubpageDestinationRoute>()
+                    settingsSubpages.getOrNull(route.subpageIndex)
+                        ?.destinations
+                        ?.getOrNull(route.destinationIndex)
+                        ?.content { navController.popBackStack() }
                 }
             }
         }

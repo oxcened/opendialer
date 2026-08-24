@@ -55,6 +55,23 @@ fun AddFavoriteScreen(
     onNavigateBack: () -> Unit,
     viewModel: ContactsViewModel = hiltViewModel()
 ) {
+    ContactPickerScreen(
+        onNavigateBack = onNavigateBack,
+        onContactSelected = { contact ->
+            viewModel.toggleFavorite(contact.id, true)
+            onNavigateBack()
+        },
+        viewModel = viewModel
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ContactPickerScreen(
+    onNavigateBack: () -> Unit,
+    onContactSelected: (DialerContact) -> Unit,
+    viewModel: ContactsViewModel = hiltViewModel()
+) {
     val contacts by viewModel.contacts.collectAsStateWithLifecycle()
     val hasPermission by viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
     var isSearching by remember { mutableStateOf(false) }
@@ -177,8 +194,7 @@ fun AddFavoriteScreen(
                                 FavoritePickerRow(
                                     contact = item.contact,
                                     onClick = {
-                                        viewModel.toggleFavorite(item.contact.id, true)
-                                        onNavigateBack()
+                                        onContactSelected(item.contact)
                                     }
                                 )
                             }
