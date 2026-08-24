@@ -1,31 +1,40 @@
-# Implementation Plan: Expandable Search Results in Dialpad
+# Implementation Plan: Call Log Enhancements & Favorite Management
 
-This plan covers enhancing the search results in the dialpad with expandable rows and quick actions, consistent with the rest of the app.
+This plan covers improving the call log filtering, aligning UI headers, and enhancing favorite contact management with a long-press menu and simplified picker.
+
+## User Review Required
+
+> [!IMPORTANT]
+> - Long-pressing a favorite contact will now show a "Remove from favorites" option.
+> - The "Add to favorites" screen will now close immediately after picking a contact.
+> - Call log filters (Missed, Contacts, Non-spam) will now correctly filter the list.
 
 ## Proposed Changes
 
-### [:feature:contactsSearch](file:///Users/alen/StudioProjects/opendialer/feature/contactsSearch)
+### [:feature:calls](file:///Users/alen/StudioProjects/opendialer/feature/calls)
 
-#### [MODIFY] [ContactsSearchScreen.kt](file:///Users/alen/StudioProjects/opendialer/feature/contactsSearch/src/main/java/dev/alenajam/opendialer/feature/contactsSearch/ContactsSearchScreen.kt)
-- Add `openRowKey` state to track the expanded row.
-- Update `SearchList` to pass `isOpen` and `onClick` to `ResultRow`.
-- Update `ResultRow` to:
-    - Support expansion using `AnimatedVisibility`.
-    - Include a `Phone` icon button on the far right for immediate calling.
-    - Show actions like "Message", "Add to contact" (if not saved), "Open contact" (if saved), and "History" in the expanded area.
-- Add `ResultActionRow` helper composable (similar to `CallRowButton` or `ContactActionRow`).
+#### [MODIFY] [CallsScreen.kt](file:///Users/alen/StudioProjects/opendialer/feature/calls/src/main/java/dev/alenajam/opendialer/feature/calls/CallsScreen.kt)
+- **Point 1 (Remove Favorite):** Add a `DropdownMenu` to `FavoriteItem` triggered by long-press. Use `Modifier.combinedClickable` (requires `ExperimentalFoundationApi`).
+- **Point 3 (Header Alignment):** Update `CallDateHeader` to match the "Favorites" header style (typography, padding, and capitalization).
+- **Point 4 (Filtering):** Implement filtering logic for "Contacts" (where `isContactSaved()` is true) and "Non-spam" (not blocked) in the `filteredCalls` remember block.
 
-#### [MODIFY] [SearchContactsViewModel.kt](file:///Users/alen/StudioProjects/opendialer/feature/contactsSearch/src/main/java/dev/alenajam/opendialer/feature/contactsSearch/SearchContactsViewModel.kt)
-- Add `openContact(activity: Activity, contactId: Int)` method.
-- (Optional) Add `getHistoryIds` if I decide to implement the History action fully, otherwise I'll use a placeholder or simpler approach for now as it might require injecting more dependencies.
+#### [MODIFY] [CallsViewModel.kt](file:///Users/alen/StudioProjects/opendialer/feature/calls/src/main/java/dev/alenajam/opendialer/feature/calls/CallsViewModel.kt)
+- Add `unstarContact(contactId: Int)` to handle removal from favorites.
+
+### [:feature:contacts](file:///Users/alen/StudioProjects/opendialer/feature/contacts)
+
+#### [MODIFY] [AddFavoriteScreen.kt](file:///Users/alen/StudioProjects/opendialer/feature/contacts/src/main/java/dev/alenajam/opendialer/feature/contacts/AddFavoriteScreen.kt)
+- **Point 2 (Simplified Picker):**
+    - Remove the Star icon from `FavoritePickerRow`.
+    - Update `FavoritePickerRow` to call `onToggleFavorite` and immediately trigger a callback to close the screen.
 
 ## Verification Plan
 
 ### Automated Tests
-- Build project to ensure no compilation errors.
+- Build project and ensure no compilation errors.
 
 ### Manual Verification
-- Perform a search in the dialpad.
-- Verify that tapping a result row expands it.
-- Verify that the call button on the right works.
-- Verify that expanded actions (Message, etc.) work correctly.
+- **Remove Favorite:** Long-press a favorite, select remove, and verify it disappears from the bar.
+- **Add Favorite:** Go to Add, tap a contact, verify the screen closes and the contact is added.
+- **Header Alignment:** Visually check that "Favorites" and "Today" headers look identical.
+- **Filtering:** Tap "Missed", "Contacts", and "Non-spam" chips and verify the list filters correctly.

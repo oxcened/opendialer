@@ -48,7 +48,7 @@ class ContactsViewModel
     }
 
     fun handleRuntimePermissionGranted() {
-        _hasRuntimePermission.value = true
+        _hasRuntimePermission.value = PermissionUtils.hasContactsPermission(app)
         getContacts()
     }
 
@@ -77,5 +77,11 @@ class ContactsViewModel
 
     fun openContact(contactId: Int) {
         CommonUtils.showContactDetail(app, contactId)
+    }
+
+    fun toggleFavorite(contactId: Int, isFavorite: Boolean) {
+        viewModelScope.launch {
+            contactsRepository.toggleFavorite(contactId, isFavorite)
+        }
     }
 }

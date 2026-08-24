@@ -4,4 +4,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface ContactsRepository {
     fun getContacts(): Flow<List<DialerContactEntity>>
+    suspend fun toggleFavorite(contactId: Int, isFavorite: Boolean)
 }

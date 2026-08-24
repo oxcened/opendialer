@@ -12,8 +12,10 @@ import dev.alenajam.opendialer.data.calls.CallsRepositoryImpl
 import dev.alenajam.opendialer.data.calls.DialerCall
 import dev.alenajam.opendialer.data.callsCache.CacheRepositoryImpl
 import dev.alenajam.opendialer.data.contacts.ContactsRepositoryImpl
+import dev.alenajam.opendialer.data.contacts.DialerContact
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -29,6 +31,8 @@ class CallsViewModel
 ) : ViewModel() {
     private val _calls = MutableStateFlow<List<DialerCall>>(emptyList())
     val calls: StateFlow<List<DialerCall>> = _calls
+    private val _favorites = MutableStateFlow<List<DialerContact>>(emptyList())
+    val favorites: StateFlow<List<DialerContact>> = _favorites.asStateFlow()
     private val _hasRuntimePermission = MutableStateFlow(false)
     val hasRuntimePermission: StateFlow<Boolean> = _hasRuntimePermission
     private val _lastInvalidateCache = MutableStateFlow<LocalDateTime?>(null)
@@ -57,7 +61,10 @@ class CallsViewModel
         if (!hasContactsRuntimePermission) return
 
         viewModelScope.launch {
-            contactsRepository.getContacts().collect { shouldInvalidateCache = true }
+            contactsRepository.getContacts().collect { contacts ->
+                shouldInvalidateCache = true
+                _favorites.value = DialerContact.mapList(contacts).filter { it.starred }
+            }
         }
     }
 
@@ -97,6 +104,12 @@ class CallsViewModel
     fun openContact(call: DialerCall) {
         ContactsHelper.getContactByPhoneNumber(app, call.contactInfo.number)?.let {
             CommonUtils.showContactDetail(app, it.id)
+        }
+    }
+
+    fun unstarContact(contactId: Int) {
+        viewModelScope.launch {
+            contactsRepository.toggleFavorite(contactId, false)
         }
     }
 

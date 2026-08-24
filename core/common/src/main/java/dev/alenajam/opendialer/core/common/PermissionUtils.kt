@@ -11,7 +11,7 @@ object PermissionUtils {
     val recentsPermissions = arrayOf(Manifest.permission.READ_CALL_LOG, Manifest.permission.WRITE_CALL_LOG)
 
     @JvmField
-    val contactsPermissions = arrayOf(Manifest.permission.READ_CONTACTS)
+    val contactsPermissions = arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS)
 
     @JvmField
     val searchPermissions = arrayOf(Manifest.permission.READ_CONTACTS)

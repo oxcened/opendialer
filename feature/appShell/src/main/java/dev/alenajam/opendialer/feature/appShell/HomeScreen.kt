@@ -49,6 +49,7 @@ internal fun HomeScreen(
     onOpenDialpad: () -> Unit,
     onOpenHistory: (ids: List<Int>) -> Unit,
     onOpenSettings: () -> Unit,
+    onAddFavorite: () -> Unit = {},
 ) {
     var currentTab by remember { mutableStateOf(HomeTab.CALLS) }
     var searchQuery by remember { mutableStateOf("") }
@@ -144,7 +145,12 @@ internal fun HomeScreen(
                 ContactsScreen(searchQuery = searchQuery, onOpenHistory = onOpenHistory)
             } else {
                 when (currentTab) {
-                    HomeTab.CALLS -> CallsScreen(onOpenHistory = onOpenHistory)
+                    HomeTab.CALLS -> CallsScreen(
+                        onOpenHistory = onOpenHistory,
+                        onOpenDialpad = onOpenDialpad,
+                        onOpenContacts = { currentTab = HomeTab.CONTACTS },
+                        onAddFavorite = onAddFavorite
+                    )
                     HomeTab.CONTACTS -> ContactsScreen(onOpenHistory = onOpenHistory)
                 }
             }

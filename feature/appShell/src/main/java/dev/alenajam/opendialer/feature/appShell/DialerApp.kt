@@ -26,6 +26,7 @@ import dev.alenajam.opendialer.core.common.ui.AppThemeExtension
 import dev.alenajam.opendialer.core.common.ui.DefaultAppIcons
 import dev.alenajam.opendialer.feature.callDetail.CallDetailRoute
 import dev.alenajam.opendialer.feature.callDetail.CallDetailScreen
+import dev.alenajam.opendialer.feature.contacts.AddFavoriteScreen
 import dev.alenajam.opendialer.feature.contactsSearch.ContactsSearchRoute
 import dev.alenajam.opendialer.feature.contactsSearch.ContactsSearchScreen
 import dev.alenajam.opendialer.feature.settings.SettingsRoute
@@ -34,6 +35,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 private data object HomeRoute
+
+@Serializable
+data object AddFavoriteRoute
 
 @Composable
 fun DialerApp(
@@ -75,7 +79,11 @@ fun DialerApp(
                         onOpenDialpad = { navController.navigate(ContactsSearchRoute()) },
                         onOpenHistory = { navController.navigate(CallDetailRoute(callIds = it)) },
                         onOpenSettings = { navController.navigate(SettingsRoute) },
+                        onAddFavorite = { navController.navigate(AddFavoriteRoute) }
                     )
+                }
+                composable<AddFavoriteRoute> {
+                    AddFavoriteScreen(onNavigateBack = { navController.popBackStack() })
                 }
                 composable<ContactsSearchRoute> {
                     ContactsSearchScreen(

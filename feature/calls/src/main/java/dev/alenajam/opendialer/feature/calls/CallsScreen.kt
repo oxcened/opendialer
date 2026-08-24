@@ -4,33 +4,51 @@ import android.provider.ContactsContract
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Message
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.CallMade
 import androidx.compose.material.icons.outlined.CallMissed
 import androidx.compose.material.icons.outlined.CallReceived
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Message
+import androidx.compose.material.icons.outlined.Mic
 import androidx.compose.material.icons.outlined.PersonAddAlt
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.Voicemail
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,6 +59,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -50,6 +69,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
@@ -61,6 +81,7 @@ import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.data.calls.CallType
 import dev.alenajam.opendialer.data.calls.ContactInfo
 import dev.alenajam.opendialer.data.calls.DialerCall
+import dev.alenajam.opendialer.data.contacts.DialerContact
 import org.ocpsoft.prettytime.PrettyTime
 import java.time.LocalDate
 import java.time.ZoneId
@@ -71,7 +92,10 @@ import java.util.Date
 @Composable
 fun CallsScreen(
     viewModel: CallsViewModel = hiltViewModel(),
-    onOpenHistory: (callIds: List<Int>) -> Unit
+    onOpenHistory: (callIds: List<Int>) -> Unit,
+    onOpenDialpad: () -> Unit = {},
+    onOpenContacts: () -> Unit = {},
+    onAddFavorite: () -> Unit = {}
 ) {
     val requestPermissions =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
@@ -81,12 +105,25 @@ fun CallsScreen(
         }
 
     val calls = viewModel.calls.collectAsStateWithLifecycle()
+    val favorites = viewModel.favorites.collectAsStateWithLifecycle()
     val lastInvalidateCache = viewModel.lastInvalidateCache.collectAsStateWithLifecycle()
     val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
     var openRowId by remember { mutableStateOf<Int?>(null) }
+    var favoritesExpanded by remember { mutableStateOf(true) }
+    var selectedFilter by remember { mutableStateOf("All") }
+
     val icons = LocalAppIcons.current
-    val callsByDate = remember(calls.value) {
-        calls.value.groupBy { call ->
+    val filteredCalls = remember(calls.value, selectedFilter) {
+        when (selectedFilter) {
+            "Missed" -> calls.value.filter { it.type == CallType.MISSED || it.type == CallType.REJECTED }
+            "Contacts" -> calls.value.filter { it.isContactSaved() }
+            "Non-spam" -> calls.value.filter { it.type != CallType.BLOCKED }
+            else -> calls.value
+        }
+    }
+
+    val callsByDate = remember(filteredCalls) {
+        filteredCalls.groupBy { call ->
             call.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
         }
     }
@@ -101,57 +138,292 @@ fun CallsScreen(
         viewModel.stopCache()
     }
 
-    Surface(modifier = Modifier.fillMaxSize()) {
-        if (!hasPermission.value) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(
-                    8.dp,
-                    alignment = Alignment.CenterVertically
-                ),
-            ) {
-                Text(
-                    text = stringResource(R.string.placeholder_call_log),
-                    textAlign = TextAlign.Center,
+    Scaffold(
+        topBar = {
+            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                SearchBar(onSearchClick = onOpenDialpad)
+                FilterChips(
+                    selectedFilter = selectedFilter,
+                    onFilterSelected = { selectedFilter = it }
                 )
-                OutlinedButton(
-                    onClick = { requestPermissions.launch(input = PermissionUtils.recentsPermissions) }
+            }
+        }
+    ) { innerPadding ->
+        Surface(modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)) {
+            if (!hasPermission.value) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(
+                        8.dp,
+                        alignment = Alignment.CenterVertically
+                    ),
+                    modifier = Modifier.padding(16.dp)
                 ) {
-                    Text(text = stringResource(R.string.turn_on))
+                    Text(
+                        text = stringResource(R.string.placeholder_call_log),
+                        textAlign = TextAlign.Center,
+                    )
+                    OutlinedButton(
+                        onClick = { requestPermissions.launch(input = PermissionUtils.recentsPermissions) }
+                    ) {
+                        Text(text = stringResource(R.string.turn_on))
+                    }
+                }
+                return@Surface
+            }
+
+            LazyColumn(
+                contentPadding = PaddingValues(bottom = 100.dp)
+            ) {
+                item {
+                    FavoritesSection(
+                        favorites = favorites.value,
+                        expanded = favoritesExpanded,
+                        onToggleExpand = { favoritesExpanded = !favoritesExpanded },
+                        onAddClick = onAddFavorite,
+                        onViewContactsClick = onOpenContacts,
+                        onFavoriteClick = { viewModel.makeCall(it.number) },
+                        onRemoveFavorite = { viewModel.unstarContact(it.id) }
+                    )
+                }
+
+                callsByDate.forEach { (date, callsForDate) ->
+                    item(key = "header-$date") {
+                        CallDateHeader(date)
+                    }
+                    itemsIndexed(callsForDate, key = { _, call -> call.id }) { index, call ->
+                        LaunchedEffect(
+                            call,
+                            lastInvalidateCache.value
+                        ) { viewModel.updateContactInfo(call) }
+                        val isOpen = openRowId == call.id
+
+                        CallRow(call = call,
+                            isOpen = isOpen,
+                            roundTop = index == 0,
+                            roundBottom = index == callsForDate.lastIndex,
+                            icons = icons,
+                            onClick = { openRowId = if (isOpen) null else call.id },
+                            makeCall = { viewModel.makeCall(call.contactInfo.number!!) },
+                            sendMessage = { viewModel.sendMessage(call.contactInfo.number!!) },
+                            addContact = { viewModel.addToContact(call.contactInfo.number!!) },
+                            openContact = { viewModel.openContact(call) },
+                            openHistory = { onOpenHistory(call.childCalls.map { it.id }) }
+                        )
+                    }
                 }
             }
-            return@Surface
+        }
+    }
+}
+
+@Composable
+private fun SearchBar(onSearchClick: () -> Unit) {
+    Surface(
+        onClick = onSearchClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        shape = RoundedCornerShape(28.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
+            Icon(Icons.Default.Search, contentDescription = null)
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = "Search contacts",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.weight(1f)
+            )
+            Icon(Icons.Outlined.Mic, contentDescription = null)
+        }
+    }
+}
+
+@Composable
+private fun FilterChips(
+    selectedFilter: String,
+    onFilterSelected: (String) -> Unit
+) {
+    val filters = listOf("All", "Missed", "Contacts", "Non-spam")
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+    ) {
+        filters.forEach { filter ->
+            FilterChip(
+                selected = selectedFilter == filter,
+                onClick = { onFilterSelected(filter) },
+                label = { Text(filter) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun FavoritesSection(
+    favorites: List<DialerContact>,
+    expanded: Boolean,
+    onToggleExpand: () -> Unit,
+    onAddClick: () -> Unit,
+    onViewContactsClick: () -> Unit,
+    onFavoriteClick: (DialerContact) -> Unit,
+    onRemoveFavorite: (DialerContact) -> Unit
+) {
+    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onToggleExpand)
+        ) {
+            Text(
+                text = "Favorites",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Icon(
+                imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                contentDescription = null,
+                modifier = Modifier.size(20.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = "View contacts",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f))
+                    .clickable(onClick = onViewContactsClick)
+                    .padding(horizontal = 12.dp, vertical = 6.dp)
+            )
         }
 
-        LazyColumn(
-            contentPadding = PaddingValues(bottom = 100.dp)
-        ) {
-            callsByDate.forEach { (date, callsForDate) ->
-                item(key = "header-$date") {
-                    CallDateHeader(date)
+        AnimatedVisibility(visible = expanded) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+                    .padding(top = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                // Add button
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.width(60.dp)
+                ) {
+                    Surface(
+                        onClick = onAddClick,
+                        modifier = Modifier.size(56.dp),
+                        shape = RoundedCornerShape(28.dp),
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(Icons.Outlined.PersonAddAlt, contentDescription = null)
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Add",
+                        style = MaterialTheme.typography.labelMedium,
+                        textAlign = TextAlign.Center
+                    )
                 }
-                itemsIndexed(callsForDate, key = { _, call -> call.id }) { index, call ->
-                    LaunchedEffect(
-                        call,
-                        lastInvalidateCache.value
-                    ) { viewModel.updateContactInfo(call) }
-                    val isOpen = openRowId == call.id
 
-                    CallRow(call = call,
-                        isOpen = isOpen,
-                        roundTop = index == 0,
-                        roundBottom = index == callsForDate.lastIndex,
-                        icons = icons,
-                        onClick = { openRowId = if (isOpen) null else call.id },
-                        makeCall = { viewModel.makeCall(call.contactInfo.number!!) },
-                        sendMessage = { viewModel.sendMessage(call.contactInfo.number!!) },
-                        addContact = { viewModel.addToContact(call.contactInfo.number!!) },
-                        openContact = { viewModel.openContact(call) },
-                        openHistory = { onOpenHistory(call.childCalls.map { it.id }) }
+                // Favorites list
+                favorites.forEach { favorite ->
+                    FavoriteItem(
+                        favorite = favorite,
+                        onClick = { onFavoriteClick(favorite) },
+                        onRemove = { onRemoveFavorite(favorite) }
                     )
                 }
             }
         }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun FavoriteItem(
+    favorite: DialerContact,
+    onClick: () -> Unit,
+    onRemove: () -> Unit
+) {
+    var showMenu by remember { mutableStateOf(false) }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .width(60.dp)
+    ) {
+        val placeholder = forwardingPainter(
+            painter = rememberVectorPainter(Icons.Filled.AccountCircle),
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary)
+        )
+        Box(contentAlignment = Alignment.BottomEnd) {
+            AsyncImage(
+                model = favorite.image,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(RoundedCornerShape(28.dp))
+                    .combinedClickable(
+                        onClick = onClick,
+                        onLongClick = { showMenu = true }
+                    ),
+                placeholder = placeholder,
+                error = placeholder,
+                fallback = placeholder
+            )
+
+            Surface(
+                color = Color.White,
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier.size(20.dp),
+                shadowElevation = 2.dp
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Outlined.Phone,
+                        contentDescription = null,
+                        modifier = Modifier.size(12.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+            
+            DropdownMenu(
+                expanded = showMenu,
+                onDismissRequest = { showMenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text("Remove") },
+                    onClick = {
+                        onRemove()
+                        showMenu = false
+                    }
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = favorite.name,
+            style = MaterialTheme.typography.labelMedium,
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 
@@ -166,9 +438,9 @@ private fun CallDateHeader(date: LocalDate) {
 
     Text(
         text = label,
-        modifier = Modifier.padding(start = 16.dp, top = 24.dp, end = 16.dp, bottom = 8.dp),
-        style = MaterialTheme.typography.titleSmall,
-        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        style = MaterialTheme.typography.titleMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
 }
 
