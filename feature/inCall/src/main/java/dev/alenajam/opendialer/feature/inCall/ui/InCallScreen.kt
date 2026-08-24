@@ -93,6 +93,7 @@ internal fun InCallScreen(
                         canMerge = canMerge,
                         canSwap = canSwap,
                         canHold = canHold,
+                        showAddCall = !hasSecondaryCall,
                         canAddCall = canAddCall,
                         onHangup = viewModel::hangup,
                         onMute = viewModel::turnMute,

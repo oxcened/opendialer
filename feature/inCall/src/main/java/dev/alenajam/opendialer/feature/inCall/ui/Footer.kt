@@ -54,6 +54,7 @@ fun InCallControls(
     canMerge: Boolean = false,
     canSwap: Boolean = false,
     canHold: Boolean = true,
+    showAddCall: Boolean = true,
     canAddCall: Boolean = true,
     onHangup: () -> Unit,
     onMute: () -> Unit,
@@ -127,7 +128,9 @@ fun InCallControls(
                     }
 
                     val moreActions = buildList {
-                        if (canAddCall) add(MoreAction(icons.addCall, "Add call", onAddCall))
+                        if (showAddCall) {
+                            add(MoreAction(icons.addCall, "Add call", onAddCall, enabled = canAddCall))
+                        }
                         if (canHold) add(MoreAction(icons.pause, "Hold", onHold, isHolding == true))
                         if (canMerge) add(MoreAction(icons.merge, "Merge", onMerge))
                         if (canSwap) add(MoreAction(icons.swapCalls, "Swap", onSwap))
@@ -282,7 +285,8 @@ private fun MoreActionRow(
 ) {
     Surface(
         onClick = action.onClick,
-        color = Color.White,
+        enabled = action.enabled,
+        color = if (action.enabled) Color.White else MaterialTheme.colorScheme.surfaceContainerHigh,
         shape = RoundedCornerShape(
             topStart = if (roundTop) 20.dp else 2.dp,
             topEnd = if (roundTop) 20.dp else 2.dp,
@@ -311,14 +315,21 @@ private fun MoreActionRow(
                         contentDescription = null,
                         tint = if (action.isActive) {
                             MaterialTheme.colorScheme.onPrimary
-                        } else {
+                        } else if (action.enabled) {
                             MaterialTheme.colorScheme.onSurface
+                        } else {
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
                         }
                     )
                 }
             }
             Spacer(modifier = Modifier.width(16.dp))
-            Text(text = action.label, style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = action.label,
+                style = MaterialTheme.typography.bodyLarge,
+                color = if (action.enabled) MaterialTheme.colorScheme.onSurface
+                else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+            )
         }
     }
 }
@@ -327,5 +338,6 @@ private data class MoreAction(
     val icon: ImageVector,
     val label: String,
     val onClick: () -> Unit,
-    val isActive: Boolean = false
+    val isActive: Boolean = false,
+    val enabled: Boolean = true
 )
