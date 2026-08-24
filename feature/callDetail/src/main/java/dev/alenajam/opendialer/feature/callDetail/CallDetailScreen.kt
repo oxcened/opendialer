@@ -21,20 +21,30 @@ import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Message
+import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Voicemail
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -49,6 +59,7 @@ import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.forwardingPainter
 import dev.alenajam.opendialer.core.common.functional.EventObserver
 import dev.alenajam.opendialer.data.calls.CallType
+import dev.alenajam.opendialer.data.calls.CallOption
 import dev.alenajam.opendialer.data.calls.ContactInfo
 import dev.alenajam.opendialer.data.calls.DetailCall
 import dev.alenajam.opendialer.data.calls.DialerCall
@@ -61,17 +72,31 @@ fun CallDetailScreen(
     onNavigateBack: () -> Unit
 ) {
     val call = viewModel.call.observeAsState()
+    val detailOptions = viewModel.detailOptions.observeAsState(emptyList())
     val isAnon = call.value?.isAnonymous() == true
     val childCalls = call.value?.childCalls ?: emptyList()
+
+    LaunchedEffect(call.value) {
+        call.value?.let(viewModel::getDetailOptions)
+    }
     
     viewModel.deletedDetailCalls.observe(
         LocalLifecycleOwner.current,
         EventObserver { onNavigateBack() })
+    viewModel.blockedCaller.observe(
+        LocalLifecycleOwner.current,
+        EventObserver { call.value?.let(viewModel::getDetailOptions) })
+    viewModel.unblockedCaller.observe(
+        LocalLifecycleOwner.current,
+        EventObserver { call.value?.let(viewModel::getDetailOptions) })
 
     Scaffold(
         topBar = {
             TopBar(
                 call = call.value,
+                options = detailOptions.value,
+                onBlock = { viewModel.blockCaller(call.value!!) },
+                onUnblock = { viewModel.unblockCaller(call.value!!) },
                 onNavigateBack = onNavigateBack
             )
         },
@@ -105,8 +130,41 @@ fun CallDetailScreen(
 @Composable
 private fun TopBar(
     call: DialerCall?,
+    options: List<CallOption>,
+    onBlock: () -> Unit,
+    onUnblock: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
+    val canBlock = options.any { it.id == CallOption.ID_BLOCK_CALLER }
+    val canUnblock = options.any { it.id == CallOption.ID_UNBLOCK_CALLER }
+    var menuExpanded by remember { mutableStateOf(false) }
+    var showBlockConfirmation by remember { mutableStateOf(false) }
+
+    if (showBlockConfirmation && call != null) {
+        val caller = call.contactInfo.name?.takeIf { it.isNotBlank() }
+            ?: call.contactInfo.number.orEmpty()
+        AlertDialog(
+            onDismissRequest = { showBlockConfirmation = false },
+            title = { Text("Block $caller?") },
+            text = { Text("You won't receive calls or texts from this number.") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showBlockConfirmation = false
+                        onBlock()
+                    }
+                ) {
+                    Text("Block")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showBlockConfirmation = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+
     TopAppBar(
         title = {
             if (call != null) {
@@ -139,6 +197,36 @@ private fun TopBar(
                 onClick = onNavigateBack
             ) {
                 Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
+            }
+        },
+        actions = {
+            if (canBlock || canUnblock) {
+                IconButton(onClick = { menuExpanded = true }) {
+                    Icon(Icons.Outlined.MoreVert, contentDescription = "More options")
+                }
+                DropdownMenu(
+                    expanded = menuExpanded,
+                    onDismissRequest = { menuExpanded = false }
+                ) {
+                    if (canBlock) {
+                        DropdownMenuItem(
+                            text = { Text("Block") },
+                            onClick = {
+                                menuExpanded = false
+                                showBlockConfirmation = true
+                            }
+                        )
+                    }
+                    if (canUnblock) {
+                        DropdownMenuItem(
+                            text = { Text("Unblock") },
+                            onClick = {
+                                menuExpanded = false
+                                onUnblock()
+                            }
+                        )
+                    }
+                }
             }
         }
     )
@@ -262,7 +350,7 @@ private val callMock = DialerCall(
 @Preview(showBackground = true)
 @Composable
 private fun TopBarPreview() {
-    TopBar(call = callMock) {}
+    TopBar(call = callMock, options = emptyList(), onBlock = {}, onUnblock = {}) {}
 }
 
 @Preview(showBackground = true)
