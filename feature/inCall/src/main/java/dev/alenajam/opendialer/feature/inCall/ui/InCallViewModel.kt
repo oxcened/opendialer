@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -67,9 +68,11 @@ class InCallViewModel @Inject constructor(
                         status = CallStatus.fromTelecomState(it.state),
                         isConferenced = it.isConferenced
                     )
-                }
+            }
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), InCallUiState())
+    }
+        .filter { it.status != CallStatus.IDLE }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), InCallUiState())
 
     @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
     val activeCallDuration: Flow<Long> = callManager.displayState
