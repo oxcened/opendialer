@@ -32,29 +32,26 @@ class InCallViewModel
     private val app: Application
 ) : ViewModel() {
     private val displayState: LiveData<CallDisplayState> = callHandler.displayState
-    val primaryCall = displayState.map { it.primary ?: OngoingCall.ONGOING_CALL_NULL }
-    val secondaryCall = displayState.map { it.secondary ?: OngoingCall.ONGOING_CALL_NULL }
+    val primaryCall = displayState.map { it.primary }
+    val secondaryCall = displayState.map { it.secondary }
     val calls: LiveData<Map<Call, OngoingCall>> = callHandler.calls
     private val audioState: LiveData<CallAudioState> = callHandler.audioState
     val canAddCall: LiveData<Boolean> = callHandler.canAddCall
     private var statusTimer: Timer? = null
     val stateLabel = primaryCall.switchMap { getStateLiveData(it) }
-    val isHolding = primaryCall.map { it.state == Call.STATE_HOLDING }
-    val canHold = primaryCall.map { it.canBeHeld() }
-    val canMerge = primaryCall.map { it.canBeMerged() }
-    val canManageConference = primaryCall.map { it.isConference }
+    val isHolding = primaryCall.map { it?.state == Call.STATE_HOLDING }
+    val canHold = primaryCall.map { it?.canBeHeld() == true }
+    val canMerge = primaryCall.map { it?.canBeMerged() == true }
+    val canManageConference = primaryCall.map { it?.isConference == true }
     val isSpeaker = audioState.map { it.route == CallAudioState.ROUTE_SPEAKER }
     val isMuted = audioState.map { it.isMuted }
-    val callerName = primaryCall.map { it.callerName ?: it.callerNumber }
-    val callerNumber = primaryCall.map { it.callerNumber }
-    val callerNumberLabel = primaryCall.map { it.callerNumberLabel }
-    val callerImageUri = primaryCall.map { it.callerImageUri }
-    val isIncoming = primaryCall.map { it.state == Call.STATE_RINGING  }
-    val hasSecondaryCall = secondaryCall.map { it != null && it != OngoingCall.ONGOING_CALL_NULL }
-    val secondaryCallerName = secondaryCall.map {
-        if (it == null || it == OngoingCall.ONGOING_CALL_NULL) null
-        else it.callerName ?: it.callerNumber
-    }
+    val callerName = primaryCall.map { it?.let { call -> call.callerName ?: call.callerNumber }.orEmpty() }
+    val callerNumber = primaryCall.map { it?.callerNumber.orEmpty() }
+    val callerNumberLabel = primaryCall.map { it?.callerNumberLabel.orEmpty() }
+    val callerImageUri = primaryCall.map { it?.callerImageUri }
+    val isIncoming = primaryCall.map { it?.state == Call.STATE_RINGING }
+    val hasSecondaryCall = secondaryCall.map { it != null }
+    val secondaryCallerName = secondaryCall.map { it?.let { call -> call.callerName ?: call.callerNumber } }
 
     override fun onCleared() {
         super.onCleared()
@@ -62,10 +59,10 @@ class InCallViewModel
         statusTimer = null
     }
 
-    fun getStateLiveData(call: OngoingCall): LiveData<String> {
+    fun getStateLiveData(call: OngoingCall?): LiveData<String> {
         statusTimer?.cancel()
         statusTimer = null
-        val initialValue = when (call.state) {
+        val initialValue = when (call?.state) {
             Call.STATE_RINGING -> app.getString(R.string.call_ringing_title)
             Call.STATE_CONNECTING -> app.getString(R.string.call_connecting_title)
             Call.STATE_HOLDING -> app.getString(R.string.call_holding_title)
@@ -76,7 +73,7 @@ class InCallViewModel
             else -> ""
         }
         val liveData = MutableLiveData(initialValue)
-        if (call.state == Call.STATE_ACTIVE) {
+        if (call?.state == Call.STATE_ACTIVE) {
             statusTimer = fixedRateTimer(period = 1000) {
                 val differenceTime =
                     CommonUtils.getCurrentTime() - call.startTime + call.totalTime
@@ -106,7 +103,7 @@ class InCallViewModel
 
     fun swap() {
         val secondary = secondaryCall.value
-        if (secondary == null || secondary == OngoingCall.ONGOING_CALL_NULL) return
+        if (secondary == null) return
         secondary.hold(false)
     }
 

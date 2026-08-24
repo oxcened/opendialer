@@ -161,14 +161,13 @@ public class CallsHandler {
 
     private void updateProximitySensor(OngoingCall pCall) {
         OngoingCall call = pCall;
-        if (call == null || call == OngoingCall.ONGOING_CALL_NULL) {
+        if (call == null) {
             CallDisplayState currentDisplayState = displayState.getValue();
             call = currentDisplayState == null ? null : currentDisplayState.getPrimary();
         }
 
         if (proximitySensor == null
                 || call == null
-                || call == OngoingCall.ONGOING_CALL_NULL
                 || audioState.getValue() == null)
             return;
 

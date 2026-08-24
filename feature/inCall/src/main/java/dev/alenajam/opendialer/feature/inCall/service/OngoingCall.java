@@ -1,6 +1,5 @@
 package dev.alenajam.opendialer.feature.inCall.service;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Handler;
@@ -20,8 +19,6 @@ import dev.alenajam.opendialer.feature.inCall.R;
 
 public class OngoingCall {
     private static final int DTMF_DURATION_MS = 300;
-    @SuppressLint("StaticFieldLeak")
-    public static OngoingCall ONGOING_CALL_NULL = new OngoingCall();
     private Call call;
     private String callerNumber = "", callerNumberLabel = "", keypadText = "", callerName, callerImageUri = null;
     private long startTime = -1, totalTime = 0;
@@ -55,10 +52,6 @@ public class OngoingCall {
             callsHandler.updateCalls();
         }
     };
-
-    public OngoingCall() {
-        callsHandler = null;
-    }
 
     public OngoingCall(Context context, Call call, CallsHandler callsHandler) {
         this.call = call;
