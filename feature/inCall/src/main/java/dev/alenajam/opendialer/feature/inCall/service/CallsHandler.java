@@ -98,7 +98,7 @@ public class CallsHandler {
     @MainThread
     public void updateCalls() {
         Map<Call, OngoingCall> map = calls.getValue();
-        if (map.isEmpty() && restoreCallsFromTelecom()) {
+        if ((map.isEmpty() || getPrimaryCallToDisplay() == null) && reconcileCallsFromTelecom()) {
             map = calls.getValue();
         }
 
@@ -113,35 +113,66 @@ public class CallsHandler {
         // set primary and secondary calls
         OngoingCall primary = getPrimaryCallToDisplay();
         if (primary == null) {
-            displayState.setValue(new CallDisplayState(null, null));
-        } else {
+            // Conference creation/removal is reported through several callbacks.
+            // Keep a surviving call visible while its parent relationship settles
+            // instead of briefly publishing an empty screen and closing the UI.
+            primary = getPreviousVisibleCall(map);
+        }
+        if (primary == null) {
+            primary = getFirstTrackedCall(map);
+        }
+
+        if (primary != null) {
             OngoingCall secondary = getCallToDisplay(primary);
             displayState.setValue(new CallDisplayState(primary, secondary));
             handleCallNotification(primary, primary.getState());
             if (primary.getState() == Call.STATE_DIALING) attemptStartActivity();
             updateProximitySensor(primary);
+        } else {
+            displayState.setValue(new CallDisplayState(null, null));
         }
     }
 
-    private boolean restoreCallsFromTelecom() {
+    private boolean reconcileCallsFromTelecom() {
         if (callService == null) return false;
 
-        Map<Call, OngoingCall> restoredCalls = new HashMap<>();
+        Map<Call, OngoingCall> reconciledCalls = new HashMap<>(calls.getValue());
+        boolean changed = false;
         for (Call call : callService.getCalls()) {
-            if (call.getState() != Call.STATE_DISCONNECTED) {
-                restoredCalls.put(
+            if (call.getState() != Call.STATE_DISCONNECTED && !reconciledCalls.containsKey(call)) {
+                reconciledCalls.put(
                         call,
                         new OngoingCall(context, call, this, nextCallSequence++)
                 );
+                changed = true;
             }
         }
 
-        if (restoredCalls.isEmpty()) return false;
+        if (!changed) return false;
 
-        // A conference can survive after its independent companion call is
-        // removed even when all local entries were cleared during the handoff.
-        calls.setValue(restoredCalls);
+        // Telecom can expose a new conference parent before onCallAdded reaches
+        // us, or retain it after an independent companion call is removed.
+        calls.setValue(reconciledCalls);
         return true;
+    }
+
+    @Nullable
+    private OngoingCall getPreviousVisibleCall(Map<Call, OngoingCall> map) {
+        CallDisplayState previous = displayState.getValue();
+        if (previous == null || previous.getPrimary() == null) return null;
+
+        OngoingCall call = previous.getPrimary();
+        return map.containsValue(call) && call.getState() != Call.STATE_DISCONNECTED ? call : null;
+    }
+
+    @Nullable
+    private OngoingCall getFirstTrackedCall(Map<Call, OngoingCall> map) {
+        OngoingCall first = null;
+        for (OngoingCall current : map.values()) {
+            if (current.getState() == Call.STATE_DISCONNECTED) continue;
+            if (first == null || current.getSequence() < first.getSequence()) first = current;
+        }
+        return first;
     }
 
     private void handleCallNotification(OngoingCall call, int state) {
@@ -201,8 +232,6 @@ public class CallsHandler {
             return getSecondHoldingCall();
         else if (getFirstDisconnectingCall() != null && getFirstDisconnectingCall() != ignore)
             return getFirstDisconnectingCall();
-        else if (getFirstDisconnectedCall() != null && getFirstDisconnectedCall() != ignore)
-            return getFirstDisconnectedCall();
         return null;
     }
 
@@ -232,10 +261,6 @@ public class CallsHandler {
 
     private OngoingCall getFirstDisconnectingCall() {
         return getFirstCallWithState(Call.STATE_DISCONNECTING);
-    }
-
-    private OngoingCall getFirstDisconnectedCall() {
-        return getFirstCallWithState(Call.STATE_DISCONNECTED);
     }
 
     @Nullable
