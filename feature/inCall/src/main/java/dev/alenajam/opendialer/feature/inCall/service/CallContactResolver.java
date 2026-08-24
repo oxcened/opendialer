@@ -3,6 +3,7 @@ package dev.alenajam.opendialer.feature.inCall.service;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -18,6 +19,8 @@ import dev.alenajam.opendialer.core.common.ContactsHelper;
 
 @Singleton
 public class CallContactResolver {
+    private static final String TAG = "CallContactResolver";
+
     public interface Callback {
         void onResolved(@Nullable Contact contact);
     }
@@ -36,9 +39,10 @@ public class CallContactResolver {
             Contact contact = null;
             try {
                 contact = ContactsHelper.getContactByPhoneNumber(context, phoneNumber);
-            } catch (RuntimeException ignored) {
+            } catch (RuntimeException exception) {
                 // Keep the phone number fallback when contact access is denied or
                 // the provider becomes unavailable while a call is arriving.
+                Log.w(TAG, "Unable to resolve call contact", exception);
             }
             Contact resolvedContact = contact;
             mainHandler.post(() -> callback.onResolved(resolvedContact));
