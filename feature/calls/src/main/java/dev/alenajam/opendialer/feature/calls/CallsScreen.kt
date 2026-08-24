@@ -138,7 +138,7 @@ fun CallsScreen(
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
-            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                 FilterChips(
                     selectedFilter = selectedFilter,
                     onFilterSelected = { selectedFilter = it }
@@ -228,9 +228,9 @@ private fun FilterChips(
     val filters = listOf("All", "Missed", "Contacts", "Non-spam")
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
     ) {
         filters.forEach { filter ->
             FilterChip(
