@@ -1,7 +1,6 @@
 package dev.alenajam.opendialer.feature.inCall.ui
 
 import android.app.Activity
-import android.app.Application
 import android.content.Intent
 import android.telecom.Call
 import android.telecom.CallAudioState
@@ -10,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.MAIN_ACTIVITY_INTENT_DIAL_EXTRA_ADD_CALL
-import dev.alenajam.opendialer.feature.inCall.R
 import dev.alenajam.opendialer.feature.inCall.service.CallEvent
 import dev.alenajam.opendialer.feature.inCall.service.CallManager
 import dev.alenajam.opendialer.feature.inCall.service.OngoingCall
@@ -26,10 +24,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class InCallViewModel @Inject constructor(
-    private val callManager: CallManager,
-    private val app: Application
+    private val callManager: CallManager
 ) : ViewModel() {
     val events: SharedFlow<CallEvent> = callManager.events
+    
     val uiState: StateFlow<InCallUiState> = combine(
         callManager.displayState,
         callManager.calls,
@@ -41,7 +39,7 @@ class InCallViewModel @Inject constructor(
         val conferenceChildren = primary?.call?.children.orEmpty().toSet()
 
         InCallUiState(
-            stateLabel = getStateLabel(primary),
+            status = CallStatus.fromTelecomState(primary?.state),
             isHolding = primary?.state == Call.STATE_HOLDING,
             isSpeaker = audio?.route == CallAudioState.ROUTE_SPEAKER,
             isMuted = audio?.isMuted == true,
@@ -63,41 +61,25 @@ class InCallViewModel @Inject constructor(
                         call = it,
                         callerName = (it.callerName ?: it.callerNumber).ifBlank { "Unknown" },
                         callerImageUri = it.callerImageUri,
-                        state = it.state,
+                        status = CallStatus.fromTelecomState(it.state),
                         isConferenced = it.isConferenced
                     )
                 }
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), InCallUiState())
 
-    val durationLabel: Flow<String> = flow {
+    val activeCallDuration: Flow<Long> = flow {
         while (true) {
             val primary = callManager.displayState.value.primary
             if (primary?.state == Call.STATE_ACTIVE) {
-                emit(getDurationLabel(primary))
+                val differenceTime = CommonUtils.getCurrentTime() - primary.startTime + primary.totalTime
+                emit(differenceTime)
             } else {
-                emit("")
+                emit(0L)
             }
             delay(1000)
         }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-
-    private fun getStateLabel(call: OngoingCall?): String =
-        when (call?.state) {
-            Call.STATE_RINGING -> app.getString(R.string.call_ringing_title)
-            Call.STATE_CONNECTING -> app.getString(R.string.call_connecting_title)
-            Call.STATE_HOLDING -> app.getString(R.string.call_holding_title)
-            Call.STATE_DIALING -> app.getString(R.string.call_dialing_title)
-            Call.STATE_DISCONNECTING -> app.getString(R.string.call_disconnecting_title)
-            Call.STATE_DISCONNECTED -> app.getString(R.string.call_disconnected_title)
-            Call.STATE_ACTIVE -> getDurationLabel(call)
-            else -> ""
-        }
-
-    private fun getDurationLabel(call: OngoingCall): String {
-        val differenceTime = CommonUtils.getCurrentTime() - call.startTime + call.totalTime
-        return CommonUtils.getDurationTimeString(differenceTime)
-    }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0L)
 
     // Call Actions (Delegated to CallManager)
     fun hangup(message: String? = null) {

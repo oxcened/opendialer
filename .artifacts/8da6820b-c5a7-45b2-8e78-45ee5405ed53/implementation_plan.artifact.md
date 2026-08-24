@@ -1,33 +1,32 @@
-# Implementation Plan: Side-Effect Extraction (Hardware)
+# Implementation Plan: Phase 2 - ViewModel Purity
 
-This plan covers extracting hardware management (Proximity Sensor) from `CallsHandler` into a dedicated `CallHardwareManager`.
+This plan covers refactoring the `InCallViewModel` to be "pure" by removing dependencies on Android resources and string formatting, moving that responsibility to the UI layer.
 
 ## Proposed Changes
 
 ### [:feature:inCall](file:///Users/alen/StudioProjects/opendialer/feature/inCall)
 
-#### [NEW] [CallHardwareManager.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/service/CallHardwareManager.kt)
-- Injectable `@Singleton` class.
-- Injects `CallManager` and `ProximitySensor`.
-- Reactively observes `CallManager.displayState` and `CallManager.audioState` using coroutines.
-- Manages the proximity sensor lifecycle (updates mode based on call and audio state).
+#### [MODIFY] [InCallUiState.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/ui/InCallUiState.kt)
+- Define `CallStatus` enum to represent different call states (Ringing, Active, etc.).
+- Update `InCallUiState` to use `CallStatus` instead of `stateLabel: String`.
+- Update `ConferenceParticipantUiState` to use `CallStatus`.
 
-#### [MODIFY] [CallsHandler.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/service/CallsHandler.kt)
-- Remove `proximitySensor` field and related logic.
-- Remove `updateProximitySensor` method.
-- Update `setup()` and `tearDown()` signatures and implementation.
+#### [MODIFY] [InCallViewModel.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/ui/InCallViewModel.kt)
+- Remove `Application` dependency.
+- Remove `getStateLabel` and `getDurationLabel` methods.
+- Update `uiState` derivation to set `CallStatus` based on `OngoingCall` state.
+- Refactor `durationLabel` flow to emit raw milliseconds (Long) instead of formatted strings.
 
-#### [MODIFY] [InCallServiceImpl.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/service/InCallServiceImpl.kt)
-- Inject `CallHardwareManager`.
-- Call `hardwareManager.attach()` in `onBind`.
-- Call `hardwareManager.detach()` in `onUnbind`.
-- Simplify `callHandler.setup()` call.
+#### [MODIFY] [InCallScreen.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/ui/InCallScreen.kt)
+- Implement a helper method/composable to map `CallStatus` to localized strings using `stringResource()`.
+- Format the duration (received as Long) using `CommonUtils.getDurationTimeString()`.
 
 ## Verification Plan
 
 ### Automated Tests
 - Build project to ensure no compilation errors.
-- Run existing unit tests.
+- Unit tests for `InCallViewModel` (can now be tested without Robolectric/Android dependencies).
 
 ### Manual Verification
-- Verify proximity sensor behavior (screen turning off when near earpiece during an active call, and staying on during speaker/bluetooth/disconnected states).
+- Verify that call state labels (Ringing, Dialing, etc.) are still correctly displayed and localized.
+- Verify that the call timer still updates correctly.

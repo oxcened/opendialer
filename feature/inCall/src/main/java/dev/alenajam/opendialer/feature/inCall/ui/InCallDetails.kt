@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.feature.inCall.R
 
 @Composable
@@ -21,7 +22,8 @@ fun InCallDetails(
     callerName: String,
     callerNumber: String,
     callerNumberLabel: String,
-    stateLabel: String,
+    status: CallStatus,
+    durationMillis: Long,
     callerImageUri: String? = null,
     modifier: Modifier = Modifier,
     showCallerImage: Boolean = true
@@ -42,7 +44,11 @@ fun InCallDetails(
         }
 
         Text(
-            text = stateLabel,
+            text = if (status == CallStatus.ACTIVE && durationMillis > 0) {
+                CommonUtils.getDurationTimeString(durationMillis)
+            } else {
+                getCallStatusLabel(status)
+            },
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -69,4 +75,15 @@ fun InCallDetails(
             )
         }
     }
+}
+
+@Composable
+fun getCallStatusLabel(status: CallStatus): String = when (status) {
+    CallStatus.RINGING -> stringResource(R.string.call_ringing_title)
+    CallStatus.CONNECTING -> stringResource(R.string.call_connecting_title)
+    CallStatus.HOLDING -> stringResource(R.string.call_holding_title)
+    CallStatus.DIALING -> stringResource(R.string.call_dialing_title)
+    CallStatus.DISCONNECTING -> stringResource(R.string.call_disconnecting_title)
+    CallStatus.DISCONNECTED -> stringResource(R.string.call_disconnected_title)
+    else -> ""
 }

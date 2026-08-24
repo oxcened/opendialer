@@ -29,7 +29,7 @@ internal fun InCallScreen(
     viewModel: InCallViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val durationLabel by viewModel.durationLabel.collectAsStateWithLifecycle("")
+    val durationMillis by viewModel.activeCallDuration.collectAsStateWithLifecycle(0L)
     val context = LocalContext.current
 
     val canMerge = uiState.canMerge
@@ -121,7 +121,8 @@ internal fun InCallScreen(
                     callerName = uiState.callerName,
                     callerNumber = uiState.callerNumber,
                     callerNumberLabel = uiState.callerNumberLabel,
-                    stateLabel = durationLabel.ifBlank { uiState.stateLabel },
+                    status = uiState.status,
+                    durationMillis = durationMillis,
                     callerImageUri = uiState.callerImageUri,
                     modifier = Modifier
                         .fillMaxSize()

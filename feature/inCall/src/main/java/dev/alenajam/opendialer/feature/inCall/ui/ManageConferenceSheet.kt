@@ -1,6 +1,5 @@
 package dev.alenajam.opendialer.feature.inCall.ui
 
-import android.telecom.Call
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -106,15 +105,8 @@ private fun ConferenceParticipantRow(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                val subtitle = when (participant.state) {
-                    Call.STATE_ACTIVE -> "Active"
-                    Call.STATE_HOLDING -> "On hold"
-                    Call.STATE_RINGING -> "Ringing"
-                    Call.STATE_DIALING -> "Dialing"
-                    Call.STATE_CONNECTING -> "Connecting"
-                    else -> null
-                }
-                if (subtitle != null) {
+                val subtitle = getCallStatusLabel(participant.status)
+                if (subtitle.isNotEmpty()) {
                     Text(
                         text = subtitle,
                         style = MaterialTheme.typography.bodySmall,
