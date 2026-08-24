@@ -25,6 +25,7 @@ public class OngoingCall {
     private int type;
     private Context context;
     private final CallsHandler callsHandler;
+    private final long sequence;
 
     private final Call.Callback callback = new Call.Callback() {
         @Override
@@ -53,10 +54,11 @@ public class OngoingCall {
         }
     };
 
-    public OngoingCall(Context context, Call call, CallsHandler callsHandler) {
+    public OngoingCall(Context context, Call call, CallsHandler callsHandler, long sequence) {
         this.call = call;
         this.context = context;
         this.callsHandler = callsHandler;
+        this.sequence = sequence;
 
         init();
     }
@@ -156,6 +158,10 @@ public class OngoingCall {
 
     public long getTotalTime() {
         return totalTime;
+    }
+
+    public long getSequence() {
+        return sequence;
     }
 
     public int getType() {

@@ -28,6 +28,7 @@ public class CallsHandler {
 
     private Context context;
     private ProximitySensor proximitySensor;
+    private long nextCallSequence;
     private final Observer<Map<Call, OngoingCall>> callsObserver = ongoingCalls -> updateCalls();
     private final Observer<CallAudioState> audioStateObserver = audioState -> updateAudioState();
 
@@ -62,7 +63,7 @@ public class CallsHandler {
             return;
         }
 
-        OngoingCall ongoingCall = new OngoingCall(context, call, this);
+        OngoingCall ongoingCall = new OngoingCall(context, call, this, nextCallSequence++);
 
         // Copy the map so a new reference is posted. LiveData.postValue with the
         // same mutated-in-place HashMap instance is not detected as a change by
@@ -123,7 +124,10 @@ public class CallsHandler {
         Map<Call, OngoingCall> restoredCalls = new HashMap<>();
         for (Call call : callService.getCalls()) {
             if (call.getState() != Call.STATE_DISCONNECTED) {
-                restoredCalls.put(call, new OngoingCall(context, call, this));
+                restoredCalls.put(
+                        call,
+                        new OngoingCall(context, call, this, nextCallSequence++)
+                );
             }
         }
 
@@ -234,28 +238,36 @@ public class CallsHandler {
     private OngoingCall getFirstCallWithState(int state) {
         if (calls.getValue() == null) return null;
 
+        OngoingCall first = null;
         for (OngoingCall current : calls.getValue().values()) {
             if (current.getState() == state && !current.isConferenced()) {
-                return current;
+                if (first == null || current.getSequence() < first.getSequence()) {
+                    first = current;
+                }
             }
         }
 
-        return null;
+        return first;
     }
 
     @Nullable
     private OngoingCall getSecondCallWithState(int state) {
         if (calls.getValue() == null) return null;
-        int count = 0;
+        OngoingCall first = null;
+        OngoingCall second = null;
 
         for (OngoingCall current : calls.getValue().values()) {
             if (current.getState() == state && !current.isConferenced()) {
-                if (count == 0) count++;
-                else return current;
+                if (first == null || current.getSequence() < first.getSequence()) {
+                    second = first;
+                    first = current;
+                } else if (second == null || current.getSequence() < second.getSequence()) {
+                    second = current;
+                }
             }
         }
 
-        return null;
+        return second;
     }
 
     public void attemptFinishActivity() {
