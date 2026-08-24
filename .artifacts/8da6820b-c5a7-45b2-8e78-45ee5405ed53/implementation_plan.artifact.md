@@ -1,51 +1,33 @@
-# Implementation Plan: Core Common Modernization
+# Implementation Plan: Side-Effect Extraction (Hardware)
 
-This plan covers the migration of core utility and model classes in the `:core:common` module from Java to Kotlin.
+This plan covers extracting hardware management (Proximity Sensor) from `CallsHandler` into a dedicated `CallHardwareManager`.
 
 ## Proposed Changes
 
-### [:core:common](file:///Users/alen/StudioProjects/opendialer/core/common)
+### [:feature:inCall](file:///Users/alen/StudioProjects/opendialer/feature/inCall)
 
-#### [NEW] [Contact.kt](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/Contact.kt)
-#### [DELETE] [Contact.java](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/Contact.java)
-- Convert to a Kotlin `data class`.
-- Use default parameters to replace multiple constructors.
-- Maintain `Serializable` for compatibility.
+#### [NEW] [CallHardwareManager.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/service/CallHardwareManager.kt)
+- Injectable `@Singleton` class.
+- Injects `CallManager` and `ProximitySensor`.
+- Reactively observes `CallManager.displayState` and `CallManager.audioState` using coroutines.
+- Manages the proximity sensor lifecycle (updates mode based on call and audio state).
 
-#### [NEW] [ContactsHelper.kt](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/ContactsHelper.kt)
-#### [DELETE] [ContactsHelper.java](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/ContactsHelper.java)
-- Convert to a Kotlin `object`.
-- Keep the `getContactByPhoneNumber` logic.
+#### [MODIFY] [CallsHandler.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/service/CallsHandler.kt)
+- Remove `proximitySensor` field and related logic.
+- Remove `updateProximitySensor` method.
+- Update `setup()` and `tearDown()` signatures and implementation.
 
-#### [NEW] [PermissionUtils.kt](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/PermissionUtils.kt)
-#### [DELETE] [PermissionUtils.java](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/PermissionUtils.java)
-- Convert to a Kotlin `object`.
-
-#### [NEW] [DefaultPhoneUtils.kt](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/DefaultPhoneUtils.kt)
-#### [DELETE] [DefaultPhoneUtils.java](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/DefaultPhoneUtils.java)
-- Convert to a Kotlin `object`.
-
-#### [NEW] [SharedPreferenceHelper.kt](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/SharedPreferenceHelper.kt)
-#### [DELETE] [SharedPreferenceHelper.java](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/SharedPreferenceHelper.java)
-- Convert to a Kotlin `class` (it's not abstract/static).
-
-#### [NEW] [MyDialog.kt](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/MyDialog.kt)
-#### [DELETE] [MyDialog.java](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/MyDialog.java)
-- Convert to Kotlin.
-- Use property access for views.
-
-#### [NEW] [CommonUtils.kt](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/CommonUtils.kt)
-#### [DELETE] [CommonUtils.java](file:///Users/alen/StudioProjects/opendialer/core/common/src/main/java/dev/alenajam/opendialer/core/common/CommonUtils.java)
-- Convert to a Kotlin `object`.
-- This is a large file, so I'll handle it carefully.
+#### [MODIFY] [InCallServiceImpl.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/service/InCallServiceImpl.kt)
+- Inject `CallHardwareManager`.
+- Call `hardwareManager.attach()` in `onBind`.
+- Call `hardwareManager.detach()` in `onUnbind`.
+- Simplify `callHandler.setup()` call.
 
 ## Verification Plan
 
 ### Automated Tests
-- Run all unit tests in the project (since `:core:common` is used everywhere).
-- Build the project to ensure no Java interop issues.
+- Build project to ensure no compilation errors.
+- Run existing unit tests.
 
 ### Manual Verification
-- Verify contact lookup still works.
-- Verify permission checks are still correct.
-- Verify call making/SMS logic (in `CommonUtils`) still works.
+- Verify proximity sensor behavior (screen turning off when near earpiece during an active call, and staying on during speaker/bluetooth/disconnected states).

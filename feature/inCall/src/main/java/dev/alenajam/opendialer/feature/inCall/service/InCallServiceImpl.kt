@@ -20,7 +20,10 @@ class InCallServiceImpl : InCallService() {
     lateinit var telecomAdapter: TelecomAdapter
 
     @Inject
-    lateinit var proximitySensor: ProximitySensor
+    lateinit var notificationManager: CallNotificationManager
+
+    @Inject
+    lateinit var hardwareManager: CallHardwareManager
 
     override fun onCallAdded(call: Call) {
         super.onCallAdded(call)
@@ -73,16 +76,19 @@ class InCallServiceImpl : InCallService() {
     override fun onBind(intent: Intent): IBinder? {
         callHandler.setup(
             this,
-            applicationContext,
-            proximitySensor
+            applicationContext
         )
         telecomAdapter.attach(this)
+        notificationManager.attach(this)
+        hardwareManager.attach()
         return super.onBind(intent)
     }
 
     override fun onUnbind(intent: Intent): Boolean {
         callHandler.tearDown()
         telecomAdapter.detach(this)
+        notificationManager.detach()
+        hardwareManager.detach()
         return super.onUnbind(intent)
     }
 

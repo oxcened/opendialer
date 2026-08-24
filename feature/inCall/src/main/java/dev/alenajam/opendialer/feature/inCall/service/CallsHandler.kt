@@ -5,7 +5,6 @@ import android.telecom.Call
 import android.telecom.CallAudioState
 import android.telecom.VideoProfile
 import androidx.annotation.MainThread
-import dev.alenajam.opendialer.feature.inCall.R
 import dev.alenajam.opendialer.feature.inCall.ui.InCallActivity
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,7 +37,6 @@ class CallsHandler @Inject constructor(
 
     private var callService: InCallServiceImpl? = null
     private var context: Context? = null
-    private var proximitySensor: ProximitySensor? = null
     private var nextCallSequence: Long = 0
 
     // CallManager Implementation (Delegated Actions)
@@ -152,7 +150,6 @@ class CallsHandler @Inject constructor(
         if (map.isEmpty()) {
             _displayState.value = CallDisplayState(null, null)
             _events.tryEmit(CallEvent.FinishActivity)
-            NotificationHelper.tearDown(callService)
             return
         }
 
@@ -163,9 +160,7 @@ class CallsHandler @Inject constructor(
         if (primary != null) {
             val secondary = finalSelection.secondary
             _displayState.value = CallDisplayState(primary, secondary)
-            handleCallNotification(primary, primary.state)
             if (primary.state == Call.STATE_DIALING) attemptStartActivity()
-            updateProximitySensor(primary)
         } else {
             _displayState.value = CallDisplayState(null, null)
         }
@@ -220,28 +215,6 @@ class CallsHandler @Inject constructor(
         return map.values.filter { it.state != Call.STATE_DISCONNECTED }.minByOrNull { it.sequence }
     }
 
-    private fun handleCallNotification(call: OngoingCall, state: Int) {
-        val service = callService ?: return
-        var caller = call.callerName
-        if (caller.isNullOrEmpty()) caller = call.callerNumber
-        if (caller.isNullOrEmpty()) caller = context?.getString(R.string.anonymous) ?: "Anonymous"
-
-        when (state) {
-            Call.STATE_RINGING -> NotificationHelper.notifyIncomingCall(context!!, service, caller)
-            Call.STATE_DIALING -> NotificationHelper.notifyOutgoingCall(context!!, service, caller)
-            Call.STATE_ACTIVE -> NotificationHelper.notifyOngoingCall(context!!, service, caller)
-            Call.STATE_HOLDING -> NotificationHelper.notifyOnHoldCall(context!!, service, caller)
-            Call.STATE_DISCONNECTING -> NotificationHelper.notifyDisconnectingCall(context!!, service, caller)
-        }
-    }
-
-    private fun updateProximitySensor(pCall: OngoingCall?) {
-        val call = pCall ?: _displayState.value.primary ?: return
-        val sensor = proximitySensor ?: return
-        val currentAudioState = _audioState.value ?: return
-        sensor.updateProximitySensorMode(call.state ?: Call.STATE_NEW, currentAudioState.route)
-    }
-
     private fun selectDisplayCalls(map: Map<Call, OngoingCall>): CallDisplaySelector.Selection<OngoingCall> {
         val candidates = map.values.map {
             CallDisplaySelector.Candidate(it, it.state ?: Call.STATE_NEW, it.isConferenced, it.sequence)
@@ -249,10 +222,9 @@ class CallsHandler @Inject constructor(
         return CallDisplaySelector.select(candidates)
     }
 
-    fun setup(callService: InCallServiceImpl, context: Context, proximitySensor: ProximitySensor) {
+    fun setup(callService: InCallServiceImpl, context: Context) {
         this.callService = callService
         this.context = context
-        this.proximitySensor = proximitySensor
         updateCalls()
     }
 
@@ -262,24 +234,19 @@ class CallsHandler @Inject constructor(
         _displayState.value = CallDisplayState(null, null)
         _audioState.value = null
         _canAddCall.value = false
-        NotificationHelper.tearDown(callService)
         callService = null
         context = null
-        proximitySensor?.tearDown()
-        proximitySensor = null
     }
 
     @MainThread
     fun updateCallAudioState(newAudioState: CallAudioState) {
         _audioState.value = CallAudioUiState(newAudioState.route, newAudioState.isMuted)
-        updateProximitySensor(null)
     }
 
     @MainThread
     fun updateCallEndpoint(route: Int) {
         val isMuted = _audioState.value?.isMuted == true
         _audioState.value = CallAudioUiState(route, isMuted)
-        updateProximitySensor(null)
     }
 
     @MainThread

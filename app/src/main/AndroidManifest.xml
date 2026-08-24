@@ -78,7 +78,7 @@
         </service>
 
         <receiver
-            android:name=".feature.inCall.service.NotificationHelper$CallButtonsListener"
+            android:name=".feature.inCall.service.CallNotificationManager$CallButtonsListener"
             android:exported="true">
             <intent-filter>
                 <action android:name="dev.alenajam.opendialer.CALL_ACCEPT" />
