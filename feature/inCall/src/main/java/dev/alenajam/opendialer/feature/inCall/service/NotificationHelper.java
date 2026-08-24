@@ -147,7 +147,8 @@ public abstract class NotificationHelper {
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction() == null) return;
 
-            OngoingCall mainCall = callHandler.getPrimaryCall().getValue();
+            CallDisplayState displayState = callHandler.getDisplayState().getValue();
+            OngoingCall mainCall = displayState == null ? null : displayState.getPrimary();
             if (mainCall == null) return;
 
             if (intent.getAction().equals(INTENT_ACTION_CALL_BUTTON_CLICK_ACCEPT)) {

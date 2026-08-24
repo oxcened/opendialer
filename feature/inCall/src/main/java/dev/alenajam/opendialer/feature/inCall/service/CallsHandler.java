@@ -19,8 +19,8 @@ import dev.alenajam.opendialer.feature.inCall.ui.InCallActivity;
 @Singleton
 public class CallsHandler {
     private final MutableLiveData<Map<Call, OngoingCall>> calls = new MutableLiveData<>(new HashMap<>());
-    private final MutableLiveData<OngoingCall> primaryCall = new MutableLiveData<>();
-    private final MutableLiveData<OngoingCall> secondaryCall = new MutableLiveData<>();
+    private final MutableLiveData<CallDisplayState> displayState =
+            new MutableLiveData<>(new CallDisplayState(null, null));
     private final MutableLiveData<CallAudioState> audioState = new MutableLiveData<>();
     private final MutableLiveData<Boolean> canAddCall = new MutableLiveData<>();
     private InCallServiceImpl callService;
@@ -98,22 +98,22 @@ public class CallsHandler {
 
         // finish activity if there are no calls
         if (map.isEmpty()) {
+            displayState.setValue(new CallDisplayState(null, null));
             attemptFinishActivity();
             NotificationHelper.tearDown(callService);
+            return;
         }
 
         // set primary and secondary calls
         OngoingCall primary = getPrimaryCallToDisplay();
         if (primary == null) {
-            primaryCall.postValue(OngoingCall.ONGOING_CALL_NULL);
+            displayState.setValue(new CallDisplayState(null, null));
         } else {
-            primaryCall.postValue(primary);
+            OngoingCall secondary = getCallToDisplay(primary);
+            displayState.setValue(new CallDisplayState(primary, secondary));
             handleCallNotification(primary, primary.getState());
             if (primary.getState() == Call.STATE_DIALING) attemptStartActivity();
             updateProximitySensor(primary);
-            OngoingCall secondary = getCallToDisplay(primary);
-            if (secondary == null) secondaryCall.postValue(OngoingCall.ONGOING_CALL_NULL);
-            else secondaryCall.postValue(secondary);
         }
     }
 
@@ -162,7 +162,8 @@ public class CallsHandler {
     private void updateProximitySensor(OngoingCall pCall) {
         OngoingCall call = pCall;
         if (call == null || call == OngoingCall.ONGOING_CALL_NULL) {
-            call = primaryCall.getValue();
+            CallDisplayState currentDisplayState = displayState.getValue();
+            call = currentDisplayState == null ? null : currentDisplayState.getPrimary();
         }
 
         if (proximitySensor == null
@@ -304,12 +305,8 @@ public class CallsHandler {
         return canAddCall;
     }
 
-    public MutableLiveData<OngoingCall> getPrimaryCall() {
-        return primaryCall;
-    }
-
-    public MutableLiveData<OngoingCall> getSecondaryCall() {
-        return secondaryCall;
+    public MutableLiveData<CallDisplayState> getDisplayState() {
+        return displayState;
     }
 
     public MutableLiveData<Map<Call, OngoingCall>> getCalls() {

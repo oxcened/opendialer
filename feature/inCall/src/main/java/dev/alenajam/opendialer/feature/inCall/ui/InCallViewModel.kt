@@ -15,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.MAIN_ACTIVITY_INTENT_DIAL_EXTRA_ADD_CALL
 import dev.alenajam.opendialer.feature.inCall.R
+import dev.alenajam.opendialer.feature.inCall.service.CallDisplayState
 import dev.alenajam.opendialer.feature.inCall.service.CallsHandler
 import dev.alenajam.opendialer.feature.inCall.service.InCallCommands
 import dev.alenajam.opendialer.feature.inCall.service.OngoingCall
@@ -30,11 +31,12 @@ class InCallViewModel
     private val inCallCommands: InCallCommands,
     private val app: Application
 ) : ViewModel() {
-    val primaryCall: MutableLiveData<OngoingCall> = callHandler.primaryCall
-    val secondaryCall: MutableLiveData<OngoingCall> = callHandler.secondaryCall
-    val calls: MutableLiveData<Map<Call, OngoingCall>> = callHandler.calls
-    private val audioState: MutableLiveData<CallAudioState> = callHandler.audioState
-    val canAddCall: MutableLiveData<Boolean> = callHandler.canAddCall
+    private val displayState: LiveData<CallDisplayState> = callHandler.displayState
+    val primaryCall = displayState.map { it.primary ?: OngoingCall.ONGOING_CALL_NULL }
+    val secondaryCall = displayState.map { it.secondary ?: OngoingCall.ONGOING_CALL_NULL }
+    val calls: LiveData<Map<Call, OngoingCall>> = callHandler.calls
+    private val audioState: LiveData<CallAudioState> = callHandler.audioState
+    val canAddCall: LiveData<Boolean> = callHandler.canAddCall
     private var statusTimer: Timer? = null
     val stateLabel = primaryCall.switchMap { getStateLiveData(it) }
     val isHolding = primaryCall.map { it.state == Call.STATE_HOLDING }
@@ -61,6 +63,8 @@ class InCallViewModel
     }
 
     fun getStateLiveData(call: OngoingCall): LiveData<String> {
+        statusTimer?.cancel()
+        statusTimer = null
         val initialValue = when (call.state) {
             Call.STATE_RINGING -> app.getString(R.string.call_ringing_title)
             Call.STATE_CONNECTING -> app.getString(R.string.call_connecting_title)
@@ -73,7 +77,6 @@ class InCallViewModel
         }
         val liveData = MutableLiveData(initialValue)
         if (call.state == Call.STATE_ACTIVE) {
-            statusTimer?.cancel()
             statusTimer = fixedRateTimer(period = 1000) {
                 val differenceTime =
                     CommonUtils.getCurrentTime() - call.startTime + call.totalTime
