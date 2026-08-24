@@ -1,6 +1,7 @@
 package dev.alenajam.opendialer.feature.inCall.service;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
 import android.telecom.Call;
 import android.telecom.CallAudioState;
@@ -35,8 +36,10 @@ public class InCallServiceImpl extends InCallService {
     @Override
     public void onCallAudioStateChanged(CallAudioState audioState) {
         super.onCallAudioStateChanged(audioState);
-        callHandler.updateCallAudioState(audioState);
         telecomAdapter.onLegacyAudioStateChanged(audioState);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            callHandler.updateCallAudioState(audioState);
+        }
     }
 
     @Override
