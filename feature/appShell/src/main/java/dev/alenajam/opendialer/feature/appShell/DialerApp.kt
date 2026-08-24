@@ -17,6 +17,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import dev.alenajam.opendialer.core.common.DefaultPhoneUtils
 import dev.alenajam.opendialer.core.common.MAIN_ACTIVITY_INTENT_DIAL_EXTRA_ADD_CALL
 import dev.alenajam.opendialer.core.common.getActivity
@@ -31,6 +32,11 @@ import dev.alenajam.opendialer.feature.contactsSearch.ContactsSearchRoute
 import dev.alenajam.opendialer.feature.contactsSearch.ContactsSearchScreen
 import dev.alenajam.opendialer.feature.settings.SettingsRoute
 import dev.alenajam.opendialer.feature.settings.SettingsScreen
+import dev.alenajam.opendialer.feature.settings.AboutRoute
+import dev.alenajam.opendialer.feature.settings.AboutScreen
+import dev.alenajam.opendialer.feature.settings.SettingsSubpage
+import dev.alenajam.opendialer.feature.settings.SettingsSubpageRoute
+import dev.alenajam.opendialer.feature.settings.SettingsSubpageScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -43,6 +49,7 @@ data object AddFavoriteRoute
 fun DialerApp(
     icons: AppIcons = DefaultAppIcons,
     themeExtension: AppThemeExtension = AppThemeExtension(),
+    settingsSubpages: List<SettingsSubpage> = emptyList(),
 ) {
     val navController = rememberNavController()
 
@@ -79,6 +86,7 @@ fun DialerApp(
                         onOpenDialpad = { number -> navController.navigate(ContactsSearchRoute(number)) },
                         onOpenHistory = { navController.navigate(CallDetailRoute(callIds = it)) },
                         onOpenSettings = { navController.navigate(SettingsRoute) },
+                        onOpenAbout = { navController.navigate(AboutRoute) },
                         onAddFavorite = { navController.navigate(AddFavoriteRoute) }
                     )
                 }
@@ -95,7 +103,20 @@ fun DialerApp(
                     CallDetailScreen(onNavigateBack = { navController.popBackStack() })
                 }
                 composable<SettingsRoute> {
-                    SettingsScreen(onNavigateBack = { navController.popBackStack() })
+                    SettingsScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                        subpages = settingsSubpages,
+                        onOpenSubpage = { navController.navigate(SettingsSubpageRoute(it)) }
+                    )
+                }
+                composable<AboutRoute> {
+                    AboutScreen(onNavigateBack = { navController.popBackStack() })
+                }
+                composable<SettingsSubpageRoute> { backStackEntry ->
+                    val route = backStackEntry.toRoute<SettingsSubpageRoute>()
+                    settingsSubpages.getOrNull(route.index)?.let { page ->
+                        SettingsSubpageScreen(page, onNavigateBack = { navController.popBackStack() })
+                    }
                 }
             }
         }

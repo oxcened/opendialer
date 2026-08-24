@@ -49,6 +49,7 @@ internal fun HomeScreen(
     onOpenDialpad: (String) -> Unit,
     onOpenHistory: (ids: List<Int>) -> Unit,
     onOpenSettings: () -> Unit,
+    onOpenAbout: () -> Unit,
     onAddFavorite: () -> Unit = {},
 ) {
     var currentTab by remember { mutableStateOf(HomeTab.CALLS) }
@@ -89,8 +90,12 @@ internal fun HomeScreen(
                                         onDismissRequest = { expanded = false },
                                     ) {
                                         DropdownMenuItem(
-                                            text = { Text(stringResource(R.string.home_menu_settings_label)) },
+                                            text = { Text(stringResource(R.string.screen_settings_title)) },
                                             onClick = onOpenSettings,
+                                        )
+                                        DropdownMenuItem(
+                                            text = { Text(stringResource(R.string.screen_about_title)) },
+                                            onClick = onOpenAbout,
                                         )
                                     }
                                 }
