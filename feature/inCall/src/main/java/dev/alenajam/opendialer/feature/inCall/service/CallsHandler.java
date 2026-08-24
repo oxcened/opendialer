@@ -311,6 +311,17 @@ public class CallsHandler {
     }
 
     public void tearDown() {
+        Map<Call, OngoingCall> map = calls.getValue();
+        if (map != null) {
+            for (OngoingCall call : map.values()) {
+                call.tearDown();
+            }
+        }
+        calls.setValue(new HashMap<>());
+        displayState.setValue(new CallDisplayState(null, null));
+        audioState.setValue(null);
+        canAddCall.setValue(false);
+        NotificationHelper.tearDown(callService);
         callService = null;
         context = null;
         if (proximitySensor != null) proximitySensor.tearDown();
