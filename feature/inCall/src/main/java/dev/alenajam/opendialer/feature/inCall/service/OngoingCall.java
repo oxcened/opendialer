@@ -14,21 +14,18 @@ import javax.annotation.Nullable;
 
 import dev.alenajam.opendialer.core.common.CommonUtils;
 import dev.alenajam.opendialer.core.common.Contact;
-import dev.alenajam.opendialer.core.common.ContactsHelper;
 import dev.alenajam.opendialer.feature.inCall.R;
 
 public class OngoingCall {
     private static final int DTMF_DURATION_MS = 300;
-    private Call call;
-    private String callerNumber = "", callerNumberLabel = "", keypadText = "", callerName, callerImageUri = null;
+    private final Call call;
+    private String callerNumber = "", callerNumberLabel = "", callerName, callerImageUri = null;
     private long startTime = -1, totalTime = 0;
-    private Context context;
+    private final Context context;
     private final CallsHandler callsHandler;
     private final long sequence;
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
-    private final Runnable stopDtmfTone = () -> {
-        if (call != null) call.stopDtmfTone();
-    };
+    private final Runnable stopDtmfTone;
 
     private final Call.Callback callback = new Call.Callback() {
         @Override
@@ -53,7 +50,7 @@ public class OngoingCall {
         @Override
         public void onDetailsChanged(Call call, Call.Details details) {
             super.onDetailsChanged(call, details);
-            callsHandler.updateCalls();
+            callsHandler.onCallDetailsChanged(OngoingCall.this);
         }
     };
 
@@ -62,36 +59,36 @@ public class OngoingCall {
         this.context = context;
         this.callsHandler = callsHandler;
         this.sequence = sequence;
+        this.stopDtmfTone = call::stopDtmfTone;
 
-        init();
+        call.registerCallback(callback);
+        refreshIdentity();
+        updateState(getState());
     }
 
-    private void init() {
-        call.registerCallback(callback);
-
+    public void refreshIdentity() {
+        callerName = null;
+        callerNumber = "";
+        callerNumberLabel = "";
+        callerImageUri = null;
         if (isConference()) {
             callerName = context.getString(R.string.conference_call);
-        } else if (isAnonymous()) {
-            // callerName = context.getString(R.string.anonymous);
-        } else {
+        } else if (!isAnonymous()) {
             Uri numberUri = call.getDetails().getHandle();
             callerNumber = numberUri.getSchemeSpecificPart();
-            Contact savedContact = ContactsHelper.getContactByPhoneNumber(context, callerNumber);
-
-            if (savedContact != null) {
-                callerName = savedContact.getName();
-                callerImageUri = savedContact.getImageUri();
-                callerNumberLabel = ContactsContract.CommonDataKinds.Phone.getTypeLabel(
-                        context.getResources(),
-                        savedContact.getPhoneType(),
-                        savedContact.getPhoneLabel()
-                ).toString();
-            } else {
-                callerName = callerNumber;
-            }
+            callerName = callerNumber;
         }
+    }
 
-        updateState(getState());
+    public void applyContact(@Nullable Contact contact) {
+        if (contact == null) return;
+        callerName = contact.getName();
+        callerImageUri = contact.getImageUri();
+        callerNumberLabel = ContactsContract.CommonDataKinds.Phone.getTypeLabel(
+                context.getResources(),
+                contact.getPhoneType(),
+                contact.getPhoneLabel()
+        ).toString();
     }
 
     public void tearDown() {
@@ -125,10 +122,6 @@ public class OngoingCall {
         return call;
     }
 
-    public void setCall(Call call) {
-        this.call = call;
-    }
-
     public String getCallerNumber() {
         return callerNumber;
     }
@@ -145,14 +138,6 @@ public class OngoingCall {
     @Nullable
     public String getCallerImageUri() {
         return callerImageUri;
-    }
-
-    public String getKeypadText() {
-        return keypadText;
-    }
-
-    public void setKeypadText(String keypadText) {
-        this.keypadText = keypadText;
     }
 
     public long getStartTime() {

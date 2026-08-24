@@ -31,8 +31,11 @@ public class CallsHandler {
     private Context context;
     private ProximitySensor proximitySensor;
     private long nextCallSequence;
+    private final CallContactResolver contactResolver;
+
     @Inject
-    public CallsHandler() {
+    public CallsHandler(CallContactResolver contactResolver) {
+        this.contactResolver = contactResolver;
     }
 
     public void setInCallActivity(InCallActivity inCallActivity) {
@@ -74,6 +77,7 @@ public class CallsHandler {
         // Telecom and Call callbacks run on the main thread. Publish immediately
         // so simultaneous conference updates cannot overwrite one another.
         calls.setValue(map);
+        resolveContact(ongoingCall);
         updateCalls();
     }
 
@@ -144,6 +148,7 @@ public class CallsHandler {
                         call,
                         new OngoingCall(context, call, this, nextCallSequence++)
                 );
+                resolveContact(reconciledCalls.get(call));
                 changed = true;
             }
         }
@@ -154,6 +159,27 @@ public class CallsHandler {
         // us, or retain it after an independent companion call is removed.
         calls.setValue(reconciledCalls);
         return true;
+    }
+
+    @MainThread
+    void onCallDetailsChanged(OngoingCall ongoingCall) {
+        ongoingCall.refreshIdentity();
+        resolveContact(ongoingCall);
+        updateCalls();
+    }
+
+    private void resolveContact(OngoingCall ongoingCall) {
+        String number = ongoingCall.getCallerNumber();
+        if (number.isEmpty() || ongoingCall.isConference()) return;
+
+        contactResolver.resolve(number, contact -> {
+            Map<Call, OngoingCall> currentCalls = calls.getValue();
+            if (currentCalls == null || currentCalls.get(ongoingCall.getCall()) != ongoingCall) return;
+            if (!number.equals(ongoingCall.getCallerNumber())) return;
+
+            ongoingCall.applyContact(contact);
+            updateCalls();
+        });
     }
 
     @Nullable
