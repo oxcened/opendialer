@@ -81,6 +81,15 @@ class CallsViewModel
 
     fun makeCall(activity: Activity, number: String) = CommonUtils.makeCall(activity, number)
     fun makeCall(number: String) = CommonUtils.makeCall(app, number)
+    fun copyNumber(number: String) = CommonUtils.copyToClipobard(app, number)
+
+    fun blockNumber(number: String) {
+        viewModelScope.launch { callsRepository.blockCaller(number) }
+    }
+
+    fun deleteCall(call: DialerCall) {
+        viewModelScope.launch { callsRepository.deleteCalls(call.childCalls) }
+    }
 
     fun callDetail(call: DialerCall) {
         //navController.navigateToCallDetail(call.childCalls.map { it.id })

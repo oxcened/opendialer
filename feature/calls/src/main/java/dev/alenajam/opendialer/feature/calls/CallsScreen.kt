@@ -42,6 +42,7 @@ import androidx.compose.material.icons.outlined.Voicemail
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -49,6 +50,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -89,7 +91,8 @@ fun CallsScreen(
     viewModel: CallsViewModel = hiltViewModel(),
     onOpenHistory: (callIds: List<Int>) -> Unit,
     onOpenContacts: () -> Unit = {},
-    onAddFavorite: () -> Unit = {}
+    onAddFavorite: () -> Unit = {},
+    onEditNumberBeforeCall: (String) -> Unit = {}
 ) {
     val requestPermissions =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
@@ -204,7 +207,11 @@ fun CallsScreen(
                             sendMessage = { viewModel.sendMessage(call.contactInfo.number!!) },
                             addContact = { viewModel.addToContact(call.contactInfo.number!!) },
                             openContact = { viewModel.openContact(call) },
-                            openHistory = { onOpenHistory(call.childCalls.map { it.id }) }
+                            openHistory = { onOpenHistory(call.childCalls.map { it.id }) },
+                            copyNumber = { viewModel.copyNumber(call.contactInfo.number!!) },
+                            editNumberBeforeCall = { onEditNumberBeforeCall(call.contactInfo.number!!) },
+                            blockNumber = { viewModel.blockNumber(call.contactInfo.number!!) },
+                            deleteCall = { viewModel.deleteCall(call) }
                         )
                     }
                 }
@@ -417,7 +424,14 @@ private fun CallRow(
     addContact: () -> Unit,
     openContact: () -> Unit,
     openHistory: () -> Unit,
+    copyNumber: () -> Unit,
+    editNumberBeforeCall: () -> Unit,
+    blockNumber: () -> Unit,
+    deleteCall: () -> Unit,
 ) {
+    var contextMenuExpanded by remember { mutableStateOf(false) }
+    var showBlockConfirmation by remember { mutableStateOf(false) }
+    var showDeleteConfirmation by remember { mutableStateOf(false) }
     val resources = LocalContext.current.resources
     val relativeTime = PrettyTime().format(call.date)
     val phoneType = call.contactInfo.type
@@ -431,18 +445,20 @@ private fun CallRow(
         }
         .orEmpty()
 
-    Surface(
-        onClick = onClick,
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 1.dp),
-        shape = RoundedCornerShape(
+    Box {
+        Surface(
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 1.dp)
+                .combinedClickable(onClick = onClick, onLongClick = { contextMenuExpanded = true }),
+            shape = RoundedCornerShape(
             topStart = if (roundTop) 20.dp else 2.dp,
             topEnd = if (roundTop) 20.dp else 2.dp,
             bottomStart = if (roundBottom) 20.dp else 2.dp,
             bottomEnd = if (roundBottom) 20.dp else 2.dp,
         ),
-        color = Color.White,
-        shadowElevation = 0.5.dp,
-    ) {
+            color = Color.White,
+            shadowElevation = 0.5.dp,
+        ) {
         Column {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -547,6 +563,54 @@ private fun CallRow(
                 }
             }
         }
+        }
+
+        DropdownMenu(
+            expanded = contextMenuExpanded,
+            onDismissRequest = { contextMenuExpanded = false }
+        ) {
+            if (!call.isAnonymous()) {
+                DropdownMenuItem(text = { Text("Copy number") }, onClick = {
+                    contextMenuExpanded = false
+                    copyNumber()
+                })
+                DropdownMenuItem(text = { Text("Edit number before call") }, onClick = {
+                    contextMenuExpanded = false
+                    editNumberBeforeCall()
+                })
+                DropdownMenuItem(text = { Text("Block") }, onClick = {
+                    contextMenuExpanded = false
+                    showBlockConfirmation = true
+                })
+            }
+            DropdownMenuItem(text = { Text("Delete") }, onClick = {
+                contextMenuExpanded = false
+                showDeleteConfirmation = true
+            })
+        }
+    }
+
+    if (showBlockConfirmation) {
+        AlertDialog(
+            onDismissRequest = { showBlockConfirmation = false },
+            title = { Text("Block ${call.contactInfo.number}?") },
+            text = { Text("You won't receive calls or texts from this number.") },
+            confirmButton = {
+                TextButton(onClick = { showBlockConfirmation = false; blockNumber() }) { Text("Block") }
+            },
+            dismissButton = { TextButton(onClick = { showBlockConfirmation = false }) { Text("Cancel") } }
+        )
+    }
+    if (showDeleteConfirmation) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirmation = false },
+            title = { Text("Delete call from history?") },
+            text = { Text("This removes this call from your call log.") },
+            confirmButton = {
+                TextButton(onClick = { showDeleteConfirmation = false; deleteCall() }) { Text("Delete") }
+            },
+            dismissButton = { TextButton(onClick = { showDeleteConfirmation = false }) { Text("Cancel") } }
+        )
     }
 }
 
@@ -614,7 +678,11 @@ private fun IncomingCallPreview() {
         addContact = {},
         openContact = {},
         sendMessage = {},
-        openHistory = {})
+        openHistory = {},
+        copyNumber = {},
+        editNumberBeforeCall = {},
+        blockNumber = {},
+        deleteCall = {})
 }
 
 @Preview(showBackground = true)
@@ -630,7 +698,11 @@ private fun OutgoingCallPreview() {
         addContact = {},
         openContact = {},
         sendMessage = {},
-        openHistory = {})
+        openHistory = {},
+        copyNumber = {},
+        editNumberBeforeCall = {},
+        blockNumber = {},
+        deleteCall = {})
 }
 
 @Preview(showBackground = true)
@@ -646,5 +718,9 @@ private fun AnonymousCallPreview() {
         addContact = {},
         openContact = {},
         sendMessage = {},
-        openHistory = {})
+        openHistory = {},
+        copyNumber = {},
+        editNumberBeforeCall = {},
+        blockNumber = {},
+        deleteCall = {})
 }

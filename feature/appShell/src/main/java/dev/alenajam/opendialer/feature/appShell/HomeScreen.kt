@@ -46,7 +46,7 @@ private enum class HomeTab {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun HomeScreen(
-    onOpenDialpad: () -> Unit,
+    onOpenDialpad: (String) -> Unit,
     onOpenHistory: (ids: List<Int>) -> Unit,
     onOpenSettings: () -> Unit,
     onAddFavorite: () -> Unit = {},
@@ -135,7 +135,7 @@ internal fun HomeScreen(
             }
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = onOpenDialpad) {
+            FloatingActionButton(onClick = { onOpenDialpad("") }) {
                 Icon(Icons.Outlined.Dialpad, contentDescription = null)
             }
         },
@@ -148,7 +148,8 @@ internal fun HomeScreen(
                     HomeTab.CALLS -> CallsScreen(
                         onOpenHistory = onOpenHistory,
                         onOpenContacts = { currentTab = HomeTab.CONTACTS },
-                        onAddFavorite = onAddFavorite
+                        onAddFavorite = onAddFavorite,
+                        onEditNumberBeforeCall = onOpenDialpad
                     )
                     HomeTab.CONTACTS -> ContactsScreen(onOpenHistory = onOpenHistory)
                 }

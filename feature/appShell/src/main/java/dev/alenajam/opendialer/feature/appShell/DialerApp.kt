@@ -76,7 +76,7 @@ fun DialerApp(
             NavHost(navController = navController, startDestination = HomeRoute) {
                 composable<HomeRoute> {
                     HomeScreen(
-                        onOpenDialpad = { navController.navigate(ContactsSearchRoute()) },
+                        onOpenDialpad = { number -> navController.navigate(ContactsSearchRoute(number)) },
                         onOpenHistory = { navController.navigate(CallDetailRoute(callIds = it)) },
                         onOpenSettings = { navController.navigate(SettingsRoute) },
                         onAddFavorite = { navController.navigate(AddFavoriteRoute) }
