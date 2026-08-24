@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
@@ -116,58 +115,23 @@ fun InCallControls(
                         }
                     }
 
-                    Surface(
-                        color = MaterialTheme.colorScheme.surfaceContainerLowest,
-                        shape = RoundedCornerShape(28.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Column {
-                            if (canAddCall) {
-                                MoreActionRow(
-                                    icon = icons.addCall,
-                                    label = "Add call",
-                                    onClick = onAddCall
-                                )
-                                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                            }
-                            if (canHold) {
-                                MoreActionRow(
-                                    icon = icons.pause,
-                                    label = "Hold",
-                                    isActive = isHolding,
-                                    onClick = onHold
-                                )
-                                if (canMerge || canSwap || canManageConference) {
-                                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                                }
-                            }
-                            if (canMerge) {
-                                MoreActionRow(
-                                    icon = icons.merge,
-                                    label = "Merge",
-                                    onClick = onMerge
-                                )
-                                if (canSwap || canManageConference) {
-                                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                                }
-                            }
-                            if (canSwap) {
-                                MoreActionRow(
-                                    icon = icons.swapCalls,
-                                    label = "Swap",
-                                    onClick = onSwap
-                                )
-                                if (canManageConference) {
-                                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                                }
-                            }
-                            if (canManageConference) {
-                                MoreActionRow(
-                                    icon = icons.more,
-                                    label = "Manage",
-                                    onClick = onManageConference
-                                )
-                            }
+                    val moreActions = buildList {
+                        if (canAddCall) add(MoreAction(icons.addCall, "Add call", onAddCall))
+                        if (canHold) add(MoreAction(icons.pause, "Hold", onHold, isHolding == true))
+                        if (canMerge) add(MoreAction(icons.merge, "Merge", onMerge))
+                        if (canSwap) add(MoreAction(icons.swapCalls, "Swap", onSwap))
+                        if (canManageConference) {
+                            add(MoreAction(icons.more, "Manage", onManageConference))
+                        }
+                    }
+
+                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        moreActions.forEachIndexed { index, action ->
+                            MoreActionRow(
+                                action = action,
+                                roundTop = index == 0,
+                                roundBottom = index == moreActions.lastIndex
+                            )
                         }
                     }
                 }
@@ -267,14 +231,20 @@ fun InCallControls(
 
 @Composable
 private fun MoreActionRow(
-    icon: ImageVector,
-    label: String,
-    isActive: Boolean? = false,
-    onClick: () -> Unit
+    action: MoreAction,
+    roundTop: Boolean,
+    roundBottom: Boolean
 ) {
     Surface(
-        onClick = onClick,
-        color = Color.Transparent,
+        onClick = action.onClick,
+        color = Color.White,
+        shape = RoundedCornerShape(
+            topStart = if (roundTop) 20.dp else 2.dp,
+            topEnd = if (roundTop) 20.dp else 2.dp,
+            bottomStart = if (roundBottom) 20.dp else 2.dp,
+            bottomEnd = if (roundBottom) 20.dp else 2.dp
+        ),
+        shadowElevation = 0.5.dp,
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
@@ -282,7 +252,7 @@ private fun MoreActionRow(
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
         ) {
             Surface(
-                color = if (isActive == true) {
+                color = if (action.isActive) {
                     MaterialTheme.colorScheme.primary
                 } else {
                     MaterialTheme.colorScheme.surfaceContainerHigh
@@ -292,9 +262,9 @@ private fun MoreActionRow(
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
-                        imageVector = icon,
+                        imageVector = action.icon,
                         contentDescription = null,
-                        tint = if (isActive == true) {
+                        tint = if (action.isActive) {
                             MaterialTheme.colorScheme.onPrimary
                         } else {
                             MaterialTheme.colorScheme.onSurface
@@ -303,7 +273,14 @@ private fun MoreActionRow(
                 }
             }
             Spacer(modifier = Modifier.width(16.dp))
-            Text(text = label, style = MaterialTheme.typography.bodyLarge)
+            Text(text = action.label, style = MaterialTheme.typography.bodyLarge)
         }
     }
 }
+
+private data class MoreAction(
+    val icon: ImageVector,
+    val label: String,
+    val onClick: () -> Unit,
+    val isActive: Boolean = false
+)

@@ -235,6 +235,12 @@ public class OngoingCall {
         return false;
     }
 
+    public boolean canBeHeld() {
+        if (call == null) return false;
+        return getState() == Call.STATE_HOLDING
+                || call.getDetails().can(Call.Details.CAPABILITY_HOLD);
+    }
+
     public boolean canBeSplit() {
         if (call == null) return false;
         return call.getDetails().can(Call.Details.CAPABILITY_SEPARATE_FROM_CONFERENCE);

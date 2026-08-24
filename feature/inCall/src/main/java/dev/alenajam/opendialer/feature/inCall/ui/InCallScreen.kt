@@ -41,6 +41,7 @@ internal fun InCallScreen(
     val context = LocalContext.current
 
     val canMerge = viewModel.canMerge.observeAsState(false).value
+    val telecomCanHold = viewModel.canHold.observeAsState(false).value
     val hasSecondaryCall = viewModel.hasSecondaryCall.observeAsState(false).value
     val secondaryCallerName = viewModel.secondaryCallerName.observeAsState(null).value
     val canSwap = hasSecondaryCall
@@ -51,7 +52,7 @@ internal fun InCallScreen(
     val canAddCall = viewModel.canAddCall.observeAsState(false).value && !hasSecondaryCall
     // When two calls are present, Swap replaces Hold in the More panel (they
     // would otherwise both toggle the same primary/secondary state).
-    val canHold = !canSwap
+    val canHold = telecomCanHold && !canSwap
     // In a conference with a secondary call, splitting a participant would
     // produce three independent calls, so the split affordance is hidden.
     val canManageConference = viewModel.canManageConference.observeAsState(false).value

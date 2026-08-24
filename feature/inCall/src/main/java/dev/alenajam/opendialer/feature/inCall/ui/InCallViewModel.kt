@@ -37,6 +37,7 @@ class InCallViewModel
     private var statusTimer: Timer? = null
     val stateLabel = primaryCall.switchMap { getStateLiveData(it) }
     val isHolding = primaryCall.map { it.state == Call.STATE_HOLDING }
+    val canHold = primaryCall.map { it.canBeHeld() }
     val canMerge = primaryCall.map { it.canBeMerged() }
     val canManageConference = primaryCall.map { it.isConference }
     val isSpeaker = audioState.map { it.route == CallAudioState.ROUTE_SPEAKER }
