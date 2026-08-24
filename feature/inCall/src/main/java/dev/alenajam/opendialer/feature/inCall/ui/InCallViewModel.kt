@@ -58,6 +58,7 @@ class InCallViewModel
         val primary = callState.primary
         val secondary = callState.secondary
         val audio = audioState.value
+        val conferenceChildren = primary?.call?.children.orEmpty().toSet()
         updateDurationJob(primary)
 
         _uiState.value = InCallUiState(
@@ -77,7 +78,7 @@ class InCallViewModel
             hasSecondaryCall = secondary != null,
             secondaryCallerName = secondary?.let { it.callerName ?: it.callerNumber },
             conferenceParticipants = calls.value.orEmpty().values
-                .filter { it.isConferenced() }
+                .filter { it.isConferenced() || conferenceChildren.contains(it.call) }
                 .map {
                     ConferenceParticipantUiState(
                         call = it,

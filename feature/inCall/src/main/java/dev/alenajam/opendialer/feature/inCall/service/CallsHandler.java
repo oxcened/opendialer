@@ -109,6 +109,9 @@ public class CallsHandler {
     @MainThread
     public void updateCalls() {
         Map<Call, OngoingCall> map = calls.getValue();
+        if (reconcileCallsFromTelecom()) {
+            map = calls.getValue();
+        }
         CallDisplaySelector.Selection<OngoingCall> selection = selectDisplayCalls(map);
         if ((map.isEmpty() || selection.getPrimary() == null) && reconcileCallsFromTelecom()) {
             map = calls.getValue();
@@ -152,13 +155,9 @@ public class CallsHandler {
         Map<Call, OngoingCall> reconciledCalls = new HashMap<>(calls.getValue());
         boolean changed = false;
         for (Call call : callService.getCalls()) {
-            if (call.getState() != Call.STATE_DISCONNECTED && !reconciledCalls.containsKey(call)) {
-                reconciledCalls.put(
-                        call,
-                        new OngoingCall(context, call, this, nextCallSequence++)
-                );
-                resolveContact(reconciledCalls.get(call));
-                changed = true;
+            changed |= addReconciledCall(reconciledCalls, call);
+            for (Call child : call.getChildren()) {
+                changed |= addReconciledCall(reconciledCalls, child);
             }
         }
 
@@ -167,6 +166,17 @@ public class CallsHandler {
         // Telecom can expose a new conference parent before onCallAdded reaches
         // us, or retain it after an independent companion call is removed.
         calls.setValue(reconciledCalls);
+        return true;
+    }
+
+    private boolean addReconciledCall(Map<Call, OngoingCall> reconciledCalls, Call call) {
+        if (call.getState() == Call.STATE_DISCONNECTED || reconciledCalls.containsKey(call)) {
+            return false;
+        }
+
+        OngoingCall ongoingCall = new OngoingCall(context, call, this, nextCallSequence++);
+        reconciledCalls.put(call, ongoingCall);
+        resolveContact(ongoingCall);
         return true;
     }
 
