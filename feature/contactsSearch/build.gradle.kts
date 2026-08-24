@@ -35,6 +35,7 @@ android {
 
 dependencies {
     implementation(project(":data:contactsSearch"))
+    implementation(project(":data:calls"))
     implementation(project(":core:common"))
     implementation(project(":core:aosp"))
 

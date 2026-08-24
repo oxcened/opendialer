@@ -78,7 +78,9 @@ fun DialerApp(
                     )
                 }
                 composable<ContactsSearchRoute> {
-                    ContactsSearchScreen()
+                    ContactsSearchScreen(
+                        onOpenHistory = { navController.navigate(CallDetailRoute(callIds = it)) }
+                    )
                 }
                 composable<CallDetailRoute> {
                     CallDetailScreen(onNavigateBack = { navController.popBackStack() })

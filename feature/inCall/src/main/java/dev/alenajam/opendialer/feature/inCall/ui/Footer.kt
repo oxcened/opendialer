@@ -147,16 +147,32 @@ fun InCallControls(
                 ) + fadeOut()
             ) {
                 Column(
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier.padding(bottom = 8.dp)
                 ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Text(text = "Dialpad", style = MaterialTheme.typography.titleMedium)
+                        Spacer(modifier = Modifier.weight(1f))
+                        IconButton(
+                            onClick = { toggleSectionButton(OpenSection.DIALPAD) }
+                        ) {
+                            Icon(imageVector = Icons.Outlined.Close, contentDescription = "Close")
+                        }
+                    }
+
                     TextField(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
-                            .padding(bottom = 8.dp)
                             .fillMaxWidth(),
                         value = TextFieldValue(text = dialpadInput.value),
                         onValueChange = { dialpadInput.value = it.text },
-                        textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
+                        textStyle = LocalTextStyle.current.copy(
+                            textAlign = TextAlign.Center,
+                            fontSize = MaterialTheme.typography.headlineMedium.fontSize
+                        ),
                         colors = TextFieldDefaults.colors(
                             unfocusedContainerColor = Color.Transparent,
                             focusedContainerColor = Color.Transparent,
@@ -177,7 +193,7 @@ fun InCallControls(
                 horizontalArrangement = Arrangement.SpaceAround,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 24.dp, top = 24.dp)
+                    .padding(bottom = 16.dp, top = 16.dp)
             ) {
                 CallButton(
                     icon = icons.dialpad,

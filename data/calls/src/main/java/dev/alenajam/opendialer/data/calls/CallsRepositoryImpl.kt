@@ -15,7 +15,9 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class CallsRepositoryImpl
 @Inject constructor(private val app: Application) : CallsRepository {
     override fun getCalls(): Flow<List<DialerCallEntity>> =

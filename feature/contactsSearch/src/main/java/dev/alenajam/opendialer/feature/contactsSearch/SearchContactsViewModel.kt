@@ -2,6 +2,7 @@ package dev.alenajam.opendialer.feature.contactsSearch
 
 import android.app.Activity
 import android.app.Application
+import android.telephony.PhoneNumberUtils
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,10 +11,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.core.aosp.SmartDialNameMatcher
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.PermissionUtils
+import dev.alenajam.opendialer.data.calls.CallsRepository
+import dev.alenajam.opendialer.data.calls.DialerCallEntity
 import dev.alenajam.opendialer.data.contactsSearch.DialerSearchContact
 import dev.alenajam.opendialer.data.contactsSearch.DialerSearchContactEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,14 +26,16 @@ class SearchContactsViewModel
     savedStateHandle: SavedStateHandle,
     private val app: Application,
     private val searchContactsUseCase: SearchContacts,
-    private val searchContactsDialpadUseCase: SearchContactsDialpad
+    private val searchContactsDialpadUseCase: SearchContactsDialpad,
+    private val callsRepository: CallsRepository
 ) : ViewModel() {
     private val _result = MutableStateFlow<Result?>(null)
     val result: StateFlow<Result?> = _result
     private val _hasRuntimePermission = MutableStateFlow(false)
     val hasRuntimePermission: StateFlow<Boolean> = _hasRuntimePermission
     private val _hasCallRuntimePermission = MutableStateFlow(false)
-    private val hasCallRuntimePermission: StateFlow<Boolean> = _hasCallRuntimePermission
+    val hasCallRuntimePermission: StateFlow<Boolean> = _hasCallRuntimePermission
+    private val _calls = MutableStateFlow<List<DialerCallEntity>>(emptyList())
     private val contactsSearch = savedStateHandle.toRoute<ContactsSearchRoute>()
     val prefilledNumber = contactsSearch.prefilledNumber
 
@@ -37,11 +43,20 @@ class SearchContactsViewModel
         _hasRuntimePermission.value = PermissionUtils.hasSearchPermission(app)
         _hasCallRuntimePermission.value = PermissionUtils.hasMakeCallPermission(app)
         searchContactsByDialpad(prefilledNumber)
+        getCalls()
+    }
+
+    private fun getCalls() {
+        if (!PermissionUtils.hasRecentsPermission(app)) return
+        viewModelScope.launch {
+            callsRepository.getCalls().collect { _calls.value = it }
+        }
     }
 
     fun handleRuntimePermissionGranted(query: String) {
         _hasRuntimePermission.value = true
         searchContactsByDialpad(query)
+        getCalls()
     }
 
     fun handleCallRuntimePermissionGranted() {
@@ -86,6 +101,14 @@ class SearchContactsViewModel
 
     fun addToContact(activity: Activity, number: String) =
         CommonUtils.addContactAsExisting(activity, number)
+
+    fun openContact(activity: Activity, contactId: Int) {
+        CommonUtils.showContactDetail(activity, contactId)
+    }
+
+    fun getHistoryIds(number: String): List<Int> = _calls.value
+        .filter { PhoneNumberUtils.compare(it.number, number) }
+        .map { it.id }
 
     class Result(
         val query: String,

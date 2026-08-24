@@ -33,7 +33,6 @@ data class OngoingCallState(
 class OngoingCall(
     private val context: Context,
     val call: Call,
-    private val onUpdate: (OngoingCall) -> Unit,
     private val onRemoved: (Call) -> Unit,
     val sequence: Long
 ) {
@@ -52,25 +51,21 @@ class OngoingCall(
         override fun onStateChanged(call: Call, newState: Int) {
             super.onStateChanged(call, newState)
             updateCallState(newState)
-            if (newState != Call.STATE_DISCONNECTED) onUpdate(this@OngoingCall)
         }
 
         override fun onConferenceableCallsChanged(call: Call, conferenceableCalls: List<Call>) {
             super.onConferenceableCallsChanged(call, conferenceableCalls)
             syncState()
-            onUpdate(this@OngoingCall)
         }
 
         override fun onParentChanged(call: Call, parent: Call?) {
             super.onParentChanged(call, parent)
             syncState()
-            onUpdate(this@OngoingCall)
         }
 
         override fun onDetailsChanged(call: Call, details: Call.Details) {
             super.onDetailsChanged(call, details)
             syncState()
-            onUpdate(this@OngoingCall)
         }
     }
 
@@ -115,7 +110,6 @@ class OngoingCall(
                 ).toString()
             )
         }
-        onUpdate(this)
     }
 
     private fun syncState() {

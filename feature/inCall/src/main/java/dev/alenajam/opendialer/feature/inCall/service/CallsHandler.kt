@@ -6,12 +6,23 @@ import android.telecom.CallAudioState
 import android.telecom.VideoProfile
 import androidx.annotation.MainThread
 import dev.alenajam.opendialer.feature.inCall.ui.InCallActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,11 +31,23 @@ class CallsHandler @Inject constructor(
     private val contactResolver: CallContactResolver,
     private val telecomAdapter: TelecomAdapter
 ) : CallManager {
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+
     private val _calls = MutableStateFlow<Map<Call, OngoingCall>>(emptyMap())
     override val calls: StateFlow<Map<Call, OngoingCall>> = _calls.asStateFlow()
 
-    private val _displayState = MutableStateFlow(CallDisplayState(null, null))
-    override val displayState: StateFlow<CallDisplayState> = _displayState.asStateFlow()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override val displayState: StateFlow<CallDisplayState> = _calls
+        .flatMapLatest { map ->
+            if (map.isEmpty()) {
+                flowOf(CallDisplayState(null, null))
+            } else {
+                combine(map.values.map { it.stateFlow }) { _ ->
+                    deriveDisplayState(map)
+                }
+            }
+        }
+        .stateIn(scope, SharingStarted.Eagerly, CallDisplayState(null, null))
 
     private val _audioState = MutableStateFlow<CallAudioUiState?>(null)
     override val audioState: StateFlow<CallAudioUiState?> = _audioState.asStateFlow()
@@ -38,7 +61,28 @@ class CallsHandler @Inject constructor(
     private var callService: InCallServiceImpl? = null
     private var context: Context? = null
     private var nextCallSequence: Long = 0
-    private var displayUpdateId: Long = 0
+
+    init {
+        // Observe displayState to handle side-effects like Activity start/finish
+        displayState.onEach { state ->
+            if (state.primary == null && _calls.value.isEmpty()) {
+                _events.tryEmit(CallEvent.FinishActivity)
+            } else if (state.primary?.state == Call.STATE_DIALING) {
+                attemptStartActivity()
+            }
+        }.launchIn(scope)
+    }
+
+    private fun deriveDisplayState(map: Map<Call, OngoingCall>): CallDisplayState {
+        val selection = selectDisplayCalls(map)
+        val primary = selection.primary ?: getPreviousVisibleCall(map) ?: getFirstTrackedCall(map)
+        return CallDisplayState(
+            primary = primary,
+            primaryState = primary?.stateFlow?.value,
+            secondary = selection.secondary,
+            secondaryState = selection.secondary?.stateFlow?.value
+        )
+    }
 
     // CallManager Implementation (Delegated Actions)
     override fun answer(call: OngoingCall) {
@@ -77,7 +121,7 @@ class CallsHandler @Inject constructor(
     }
 
     override fun swap() {
-        val secondary = _displayState.value.secondary ?: return
+        val secondary = displayState.value.secondary ?: return
         hold(secondary, false)
     }
 
@@ -101,8 +145,7 @@ class CallsHandler @Inject constructor(
             ongoingCall = OngoingCall(
                 context,
                 call,
-                onUpdate = { onCallUpdated(it) },
-                onRemoved = { onCallRemoved(it) },
+                onRemoved = { removeCall(it) },
                 sequence = nextCallSequence++
             )
             map[call] = ongoingCall
@@ -112,7 +155,7 @@ class CallsHandler @Inject constructor(
         }
 
         _calls.value = map
-        updateCalls()
+        reconcileCallsFromTelecom()
     }
 
     @MainThread
@@ -121,52 +164,7 @@ class CallsHandler @Inject constructor(
         val ongoingCall = map.remove(call) ?: return
         ongoingCall.tearDown()
         _calls.value = map
-        updateCalls()
-    }
-
-    // Call Update Methods
-    private fun onCallUpdated(call: OngoingCall) {
-        call.refreshIdentity()
-        resolveContact(call)
-        // Force an emission of the calls map to trigger observers (like the ViewModel)
-        _calls.value = _calls.value.toMap()
-        updateCalls()
-    }
-
-    private fun onCallRemoved(call: Call) {
-        removeCall(call)
-    }
-
-    @MainThread
-    fun updateCalls() {
-        var map = _calls.value
-        if (reconcileCallsFromTelecom()) {
-            map = _calls.value
-        }
-
-        val selection = selectDisplayCalls(map)
-        if ((map.isEmpty() || selection.primary == null) && reconcileCallsFromTelecom()) {
-            map = _calls.value
-            // selection = selectDisplayCalls(map) // selection is val now
-        }
-
-        if (map.isEmpty()) {
-            _displayState.value = CallDisplayState(null, null, displayUpdateId++)
-            _events.tryEmit(CallEvent.FinishActivity)
-            return
-        }
-
-        // Use the new selection after potential second reconciliation
-        val finalSelection = if (selection.primary == null && map.isNotEmpty()) selectDisplayCalls(map) else selection
-        val primary = finalSelection.primary ?: getPreviousVisibleCall(map) ?: getFirstTrackedCall(map)
-
-        if (primary != null) {
-            val secondary = finalSelection.secondary
-            _displayState.value = CallDisplayState(primary, secondary, displayUpdateId++)
-            if (primary.state == Call.STATE_DIALING) attemptStartActivity()
-        } else {
-            _displayState.value = CallDisplayState(null, null, displayUpdateId++)
-        }
+        reconcileCallsFromTelecom()
     }
 
     private fun reconcileCallsFromTelecom(): Boolean {
@@ -189,8 +187,7 @@ class CallsHandler @Inject constructor(
         val ongoingCall = OngoingCall(
             context!!,
             call,
-            onUpdate = { onCallUpdated(it) },
-            onRemoved = { onCallRemoved(it) },
+            onRemoved = { removeCall(it) },
             sequence = nextCallSequence++
         )
         reconciledCalls[call] = ongoingCall
@@ -205,12 +202,12 @@ class CallsHandler @Inject constructor(
             if (_calls.value[ongoingCall.call] !== ongoingCall) return@resolve
             if (number != ongoingCall.callerNumber) return@resolve
             ongoingCall.applyContact(contact)
-            updateCalls()
+            // No need to manually trigger update, stateFlow emission in OngoingCall handles it
         }
     }
 
     private fun getPreviousVisibleCall(map: Map<Call, OngoingCall>): OngoingCall? {
-        val previous = _displayState.value.primary ?: return null
+        val previous = displayState.value.primary ?: return null
         return if (map.containsValue(previous) && previous.state != Call.STATE_DISCONNECTED) previous else null
     }
 
@@ -220,7 +217,7 @@ class CallsHandler @Inject constructor(
 
     private fun selectDisplayCalls(map: Map<Call, OngoingCall>): CallDisplaySelector.Selection<OngoingCall> {
         val candidates = map.values.map {
-            CallDisplaySelector.Candidate(it, it.state ?: Call.STATE_NEW, it.isConferenced, it.sequence)
+            CallDisplaySelector.Candidate(it, it.state, it.isConferenced, it.sequence)
         }
         return CallDisplaySelector.select(candidates)
     }
@@ -228,13 +225,12 @@ class CallsHandler @Inject constructor(
     fun setup(callService: InCallServiceImpl, context: Context) {
         this.callService = callService
         this.context = context
-        updateCalls()
+        reconcileCallsFromTelecom()
     }
 
     fun tearDown() {
         _calls.value.values.forEach { it.tearDown() }
         _calls.value = emptyMap()
-        _displayState.value = CallDisplayState(null, null)
         _audioState.value = null
         _canAddCall.value = false
         callService = null

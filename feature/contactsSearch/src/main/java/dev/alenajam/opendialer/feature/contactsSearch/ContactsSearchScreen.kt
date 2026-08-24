@@ -3,6 +3,8 @@ package dev.alenajam.opendialer.feature.contactsSearch
 import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,11 +16,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Backspace
 import androidx.compose.material.icons.automirrored.outlined.Message
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.PersonAddAlt
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.Button
@@ -60,10 +64,12 @@ import dev.alenajam.opendialer.data.contactsSearch.DialerSearchContact
 @Composable
 fun ContactsSearchScreen(
     viewModel: SearchContactsViewModel = hiltViewModel(),
+    onOpenHistory: (callIds: List<Int>) -> Unit = {},
 ) {
     val result = viewModel.result.collectAsStateWithLifecycle()
     val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
     var query by remember { mutableStateOf(viewModel.prefilledNumber) }
+    var openRowKey by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
     val requestCallPermissions =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -108,7 +114,17 @@ fun ContactsSearchScreen(
             Column {
                 SearchList(
                     result = result.value,
-                    onResultClick = { makeCall(it.number) }
+                    openRowKey = openRowKey,
+                    onRowClick = { key -> openRowKey = if (openRowKey == key) null else key },
+                    onCall = { makeCall(it.number) },
+                    onMessage = { viewModel.sendMessage(context.getActivity() as Activity, it.number) },
+                    onAddContact = { viewModel.addToContact(context.getActivity() as Activity, it.number) },
+                    onOpenContact = { viewModel.openContact(context.getActivity() as Activity, it.contactId) },
+                    onHistory = {
+                        viewModel.getHistoryIds(it.number)
+                            .takeIf { ids -> ids.isNotEmpty() }
+                            ?.let(onOpenHistory)
+                    }
                 )
 
                 ActionsList(
@@ -168,7 +184,13 @@ private fun PermissionPrompt(
 @Composable
 private fun SearchList(
     result: SearchContactsViewModel.Result?,
-    onResultClick: (contact: DialerSearchContact) -> Unit
+    openRowKey: String?,
+    onRowClick: (key: String) -> Unit,
+    onCall: (contact: DialerSearchContact) -> Unit,
+    onMessage: (contact: DialerSearchContact) -> Unit,
+    onAddContact: (contact: DialerSearchContact) -> Unit,
+    onOpenContact: (contact: DialerSearchContact) -> Unit,
+    onHistory: (contact: DialerSearchContact) -> Unit
 ) {
     LazyColumn {
         result?.contacts?.let { contacts ->
@@ -183,7 +205,18 @@ private fun SearchList(
                 }
             }
             items(contacts) { contact ->
-                ResultRow(contact, onClick = { onResultClick(contact) })
+                val rowKey = "${contact.contactId}-${contact.number}"
+                val isOpen = openRowKey == rowKey
+                ResultRow(
+                    contact = contact,
+                    isOpen = isOpen,
+                    onClick = { onRowClick(rowKey) },
+                    onCall = { onCall(contact) },
+                    onMessage = { onMessage(contact) },
+                    onAddContact = { onAddContact(contact) },
+                    onOpenContact = { onOpenContact(contact) },
+                    onHistory = { onHistory(contact) }
+                )
             }
         }
     }
@@ -192,7 +225,13 @@ private fun SearchList(
 @Composable
 private fun ResultRow(
     contact: DialerSearchContact,
-    onClick: () -> Unit
+    isOpen: Boolean,
+    onClick: () -> Unit,
+    onCall: () -> Unit,
+    onMessage: () -> Unit,
+    onAddContact: () -> Unit,
+    onOpenContact: () -> Unit,
+    onHistory: () -> Unit
 ) {
     Surface(onClick = onClick) {
         Column {
@@ -208,7 +247,12 @@ private fun ResultRow(
                 AsyncImage(
                     model = contact.image,
                     contentDescription = null,
-                    modifier = Modifier.size(50.dp),
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clickable(
+                            enabled = contact.contactId > 0,
+                            onClick = onOpenContact
+                        ),
                     placeholder = placeholder,
                     error = placeholder,
                     fallback = placeholder
@@ -226,7 +270,84 @@ private fun ResultRow(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
+
+                IconButton(onClick = onCall) {
+                    Icon(
+                        imageVector = Icons.Outlined.Phone,
+                        contentDescription = stringResource(R.string.call_contact)
+                    )
+                }
             }
+
+            AnimatedVisibility(visible = isOpen) {
+                Column(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(1.dp)
+                ) {
+                    if (contact.contactId > 0) {
+                        ResultActionRow(
+                            icon = Icons.Default.AccountCircle,
+                            label = stringResource(R.string.open_contact),
+                            roundTop = true,
+                            onClick = onOpenContact
+                        )
+                    } else {
+                        ResultActionRow(
+                            icon = Icons.Outlined.PersonAddAlt,
+                            label = stringResource(R.string.add_to_a_contact),
+                            roundTop = true,
+                            onClick = onAddContact
+                        )
+                    }
+
+                    ResultActionRow(
+                        icon = Icons.AutoMirrored.Outlined.Message,
+                        label = stringResource(R.string.send_message),
+                        onClick = onMessage
+                    )
+
+                    ResultActionRow(
+                        icon = Icons.Outlined.History,
+                        label = stringResource(R.string.contact_history),
+                        roundBottom = true,
+                        onClick = onHistory
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ResultActionRow(
+    icon: ImageVector,
+    label: String,
+    roundTop: Boolean = false,
+    roundBottom: Boolean = false,
+    onClick: () -> Unit
+) {
+    Surface(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        shape = RoundedCornerShape(
+            topStart = if (roundTop) 12.dp else 2.dp,
+            topEnd = if (roundTop) 12.dp else 2.dp,
+            bottomStart = if (roundBottom) 12.dp else 2.dp,
+            bottomEnd = if (roundBottom) 12.dp else 2.dp,
+        ),
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(text = label, style = MaterialTheme.typography.bodyLarge)
         }
     }
 }
@@ -327,7 +448,10 @@ private fun Footer(
                     modifier = Modifier.weight(1f),
                     value = TextFieldValue(text = query, selection = selection),
                     onValueChange = { selection = it.selection },
-                    textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
+                    textStyle = LocalTextStyle.current.copy(
+                        textAlign = TextAlign.Center,
+                        fontSize = MaterialTheme.typography.headlineMedium.fontSize
+                    ),
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = Color.Transparent,
                         focusedContainerColor = Color.Transparent,

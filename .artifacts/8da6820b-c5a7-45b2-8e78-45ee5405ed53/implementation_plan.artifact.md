@@ -1,32 +1,31 @@
-# Implementation Plan: Phase 2 - ViewModel Purity
+# Implementation Plan: Expandable Search Results in Dialpad
 
-This plan covers refactoring the `InCallViewModel` to be "pure" by removing dependencies on Android resources and string formatting, moving that responsibility to the UI layer.
+This plan covers enhancing the search results in the dialpad with expandable rows and quick actions, consistent with the rest of the app.
 
 ## Proposed Changes
 
-### [:feature:inCall](file:///Users/alen/StudioProjects/opendialer/feature/inCall)
+### [:feature:contactsSearch](file:///Users/alen/StudioProjects/opendialer/feature/contactsSearch)
 
-#### [MODIFY] [InCallUiState.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/ui/InCallUiState.kt)
-- Define `CallStatus` enum to represent different call states (Ringing, Active, etc.).
-- Update `InCallUiState` to use `CallStatus` instead of `stateLabel: String`.
-- Update `ConferenceParticipantUiState` to use `CallStatus`.
+#### [MODIFY] [ContactsSearchScreen.kt](file:///Users/alen/StudioProjects/opendialer/feature/contactsSearch/src/main/java/dev/alenajam/opendialer/feature/contactsSearch/ContactsSearchScreen.kt)
+- Add `openRowKey` state to track the expanded row.
+- Update `SearchList` to pass `isOpen` and `onClick` to `ResultRow`.
+- Update `ResultRow` to:
+    - Support expansion using `AnimatedVisibility`.
+    - Include a `Phone` icon button on the far right for immediate calling.
+    - Show actions like "Message", "Add to contact" (if not saved), "Open contact" (if saved), and "History" in the expanded area.
+- Add `ResultActionRow` helper composable (similar to `CallRowButton` or `ContactActionRow`).
 
-#### [MODIFY] [InCallViewModel.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/ui/InCallViewModel.kt)
-- Remove `Application` dependency.
-- Remove `getStateLabel` and `getDurationLabel` methods.
-- Update `uiState` derivation to set `CallStatus` based on `OngoingCall` state.
-- Refactor `durationLabel` flow to emit raw milliseconds (Long) instead of formatted strings.
-
-#### [MODIFY] [InCallScreen.kt](file:///Users/alen/StudioProjects/opendialer/feature/inCall/src/main/java/dev/alenajam/opendialer/feature/inCall/ui/InCallScreen.kt)
-- Implement a helper method/composable to map `CallStatus` to localized strings using `stringResource()`.
-- Format the duration (received as Long) using `CommonUtils.getDurationTimeString()`.
+#### [MODIFY] [SearchContactsViewModel.kt](file:///Users/alen/StudioProjects/opendialer/feature/contactsSearch/src/main/java/dev/alenajam/opendialer/feature/contactsSearch/SearchContactsViewModel.kt)
+- Add `openContact(activity: Activity, contactId: Int)` method.
+- (Optional) Add `getHistoryIds` if I decide to implement the History action fully, otherwise I'll use a placeholder or simpler approach for now as it might require injecting more dependencies.
 
 ## Verification Plan
 
 ### Automated Tests
 - Build project to ensure no compilation errors.
-- Unit tests for `InCallViewModel` (can now be tested without Robolectric/Android dependencies).
 
 ### Manual Verification
-- Verify that call state labels (Ringing, Dialing, etc.) are still correctly displayed and localized.
-- Verify that the call timer still updates correctly.
+- Perform a search in the dialpad.
+- Verify that tapping a result row expands it.
+- Verify that the call button on the right works.
+- Verify that expanded actions (Message, etc.) work correctly.
