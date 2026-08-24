@@ -22,7 +22,6 @@ public class OngoingCall {
     private Call call;
     private String callerNumber = "", callerNumberLabel = "", keypadText = "", callerName, callerImageUri = null;
     private long startTime = -1, totalTime = 0;
-    private int type;
     private Context context;
     private final CallsHandler callsHandler;
     private final long sequence;
@@ -65,8 +64,6 @@ public class OngoingCall {
 
     private void init() {
         call.registerCallback(callback);
-
-        type = getState() == Call.STATE_RINGING ? OngoingCallHelper.CALL_TYPE_INCOMING : OngoingCallHelper.CALL_TYPE_OUTGOING;
 
         if (isConference()) {
             callerName = context.getString(R.string.conference_call);
@@ -164,21 +161,13 @@ public class OngoingCall {
         return sequence;
     }
 
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
     public Integer getState() {
         if (call == null) return null;
         return call.getState();
     }
 
     public void answer() {
-        if (call == null) return;
+        if (call == null || getState() != Call.STATE_RINGING) return;
         call.answer(VideoProfile.STATE_AUDIO_ONLY);
     }
 
@@ -204,19 +193,19 @@ public class OngoingCall {
         if (call == null) return;
         if (getState() == Call.STATE_HOLDING) {
             call.unhold();
-        } else {
+        } else if (canBeHeld()) {
             call.hold();
         }
     }
 
     public void hold(boolean hold) {
         if (call == null) return;
-        if (hold) call.hold();
-        else call.unhold();
+        if (hold && canBeHeld()) call.hold();
+        else if (!hold && getState() == Call.STATE_HOLDING) call.unhold();
     }
 
     public void playDtmf(char digit) {
-        if (call == null) return;
+        if (call == null || getState() != Call.STATE_ACTIVE) return;
         call.playDtmfTone(digit);
         new Handler(Looper.getMainLooper()).postDelayed(call::stopDtmfTone, DTMF_DURATION_MS);
     }
@@ -248,8 +237,19 @@ public class OngoingCall {
     }
 
     public void split() {
-        if (call == null) return;
+        if (call == null || !canBeSplit()) return;
         call.splitFromConference();
+    }
+
+    public void merge() {
+        if (call == null || !canBeMerged()) return;
+
+        List<Call> conferenceableCalls = call.getConferenceableCalls();
+        if (!conferenceableCalls.isEmpty()) {
+            call.conference(conferenceableCalls.get(0));
+        } else if (call.getDetails().can(Call.Details.CAPABILITY_MERGE_CONFERENCE)) {
+            call.mergeConference();
+        }
     }
 
     public boolean isConference() {

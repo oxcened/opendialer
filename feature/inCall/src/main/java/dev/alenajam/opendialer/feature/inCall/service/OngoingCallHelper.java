@@ -7,12 +7,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import java.util.List;
-
 public abstract class OngoingCallHelper {
-    public static final int CALL_TYPE_OUTGOING = 0;
-    public static final int CALL_TYPE_INCOMING = 1;
-
     public static boolean handleDisconnectCause(Context context, Call call) {
         boolean hasCause = false;
         if (isDisconnectedByError(call)) {
@@ -35,18 +30,5 @@ public abstract class OngoingCallHelper {
     public static boolean isDisconnectedByError(Call call) {
         int code = call.getDetails().getDisconnectCause().getCode();
         return code != DisconnectCause.LOCAL && code != DisconnectCause.REMOTE;
-    }
-
-    public static void merge(OngoingCall oCall) {
-        Call call = oCall.getCall();
-        if (call == null) return;
-
-        List<Call> conferenceable = call.getConferenceableCalls();
-
-        if (!conferenceable.isEmpty()) {
-            call.conference(conferenceable.get(0));
-        } else if (call.getDetails().can(Call.Details.CAPABILITY_MERGE_CONFERENCE)) {
-            call.mergeConference();
-        }
     }
 }

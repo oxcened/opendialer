@@ -18,7 +18,6 @@ import dev.alenajam.opendialer.feature.inCall.service.CallDisplayState
 import dev.alenajam.opendialer.feature.inCall.service.CallsHandler
 import dev.alenajam.opendialer.feature.inCall.service.InCallCommands
 import dev.alenajam.opendialer.feature.inCall.service.OngoingCall
-import dev.alenajam.opendialer.feature.inCall.service.OngoingCallHelper
 import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -144,7 +143,7 @@ class InCallViewModel
         )
     )
 
-    fun merge() = displayState.value?.primary?.let { OngoingCallHelper.merge(it) }
+    fun merge() = displayState.value?.primary?.merge()
 
     fun swap() {
         val secondary = displayState.value?.secondary
