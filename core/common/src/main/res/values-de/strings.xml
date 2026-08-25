@@ -1,3 +1,2 @@
-<resources>
-    <string-array name="array_quick_responses"><item>Kann gerade nicht sprechen. Was gibt\'s?</item><item>Ich rufe gleich zurück.</item><item>Ich rufe später zurück.</item><item>Kann gerade nicht sprechen. Ruf später nochmal an.</item></string-array>
-</resources>
+<?xml version="1.0" encoding="utf-8"?>
+<resources></resources>
