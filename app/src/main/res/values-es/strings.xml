@@ -1,26 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string-array name="array_quick_responses">
-        <item name="array_quick_responses0">No puedo hablar ahora. ¿Qué pasa?</item>
-        <item name="array_quick_responses1">Ahora mismo te vuelvo a llamar.</item>
-        <item name="array_quick_responses2">Te llamaré más tarde.</item>
-        <item name="array_quick_responses3">No puedo hablar ahora. ¿Hablamos luego?</item>
-    </string-array>
-    <string name="call_details">Detalles de la llamada</string>
     <string name="channel_incoming_calls">Llamadas entrantes</string>
     <string name="channel_ongoing_calls">Llamadas en curso</string>
     <string name="channel_outgoing_calls">Llamadas salientes</string>
     <string name="contacts">Contactos</string>
     <string name="copy_number">Copiar número</string>
     <string name="edit_number_before_call">Editar número antes de llamar</string>
-    <string name="error_write_something">¡Debes escribir algo!</string>
-    <string name="option" comment="option&#10;&#10;This is used as the toolbar title for the settings screen.">Opción</string>
-    <string name="profile">Perfil</string>
     <string name="recents">Recientes</string>
     <string name="write_your_own">Escribe tu mensaje...</string>
     <string name="placeholder_call_log">Para ver el registro de llamadas, debes activar los permisos</string>
     <string name="turn_on">Activar</string>
-    <string name="info">Información</string>
-    <string name="searchContacts">Buscar contactos</string>
-    <string name="nothingHere">Mmh..No hay nada aquí</string>
 </resources>

@@ -4,7 +4,7 @@ import android.app.Application;
 
 import dagger.hilt.android.HiltAndroidApp;
 import dev.alenajam.opendialer.helper.NotificationHelper;
-import dev.alenajam.opendialer.helper.SharedPreferenceHelper;
+import dev.alenajam.opendialer.core.common.SharedPreferenceHelper;
 
 @HiltAndroidApp
 public class App extends Application {

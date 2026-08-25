@@ -9,6 +9,4 @@
         <item name="array_quick_responses3">Can\'t talk now. Call me later?</item>
     </string-array>
     <string name="write_your_own">Write your own…</string>
-    <string name="error_write_something">You have to write something!</string>
-    <string name="your_text_here">Your text here</string>
 </resources>

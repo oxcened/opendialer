@@ -1,26 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string-array name="array_quick_responses">
-        <item name="array_quick_responses0">Kan ikke snakke nå. Hva skjer?</item>
-        <item name="array_quick_responses1">Jeg ringer deg straks tilbake.</item>
-        <item name="array_quick_responses2">Jeg ringer deg senere.</item>
-        <item name="array_quick_responses3">Kan ikke snakke nå. Ring meg senere?</item>
-    </string-array>
-    <string name="call_details">Anropsdetaljer</string>
     <string name="channel_incoming_calls">Innkommende samtaler</string>
     <string name="channel_ongoing_calls">Pågående samtaler</string>
     <string name="channel_outgoing_calls">Utgående samtaler</string>
     <string name="contacts">Kontakter</string>
     <string name="copy_number">Kopier nummer</string>
     <string name="edit_number_before_call">Rediger nummer før anrop</string>
-    <string name="error_write_something">Du må skrive noe!</string>
-    <string name="option" comment="option&#10;&#10;This is used as the toolbar title for the settings screen.">Valg</string>
-    <string name="profile">Profil</string>
     <string name="recents">Nylige</string>
     <string name="write_your_own">Skriv din egen…</string>
     <string name="placeholder_call_log">For å se samtaleloggen din, slå på telefontillatelser</string>
     <string name="turn_on">Skru på</string>
-    <string name="info">Info</string>
-    <string name="searchContacts">Søk i kontakter</string>
-    <string name="nothingHere">Mmh..ingenting her</string>
 </resources>

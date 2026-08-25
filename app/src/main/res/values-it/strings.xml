@@ -1,26 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string-array name="array_quick_responses">
-        <item name="array_quick_responses0">Non posso parlare ora. Cosa c\'è?</item>
-        <item name="array_quick_responses1">Ti richiamo subito.</item>
-        <item name="array_quick_responses2">Ti chiamo dopo.</item>
-        <item name="array_quick_responses3">Non posso parlare ora. Mi chiami dopo?</item>
-    </string-array>
-    <string name="call_details">Dettagli chiamata</string>
     <string name="channel_incoming_calls">Chiamate in arrivo</string>
     <string name="channel_ongoing_calls">Chiamate in corso</string>
     <string name="channel_outgoing_calls">Chiamate in uscita</string>
     <string name="contacts">Contatti</string>
     <string name="copy_number">Copia numero</string>
     <string name="edit_number_before_call">Modifica numero prima di chiamare</string>
-    <string name="error_write_something">Devi scrivere qualcosa!</string>
-    <string name="option" comment="option&#10;&#10;This is used as the toolbar title for the settings screen.">Opzioni</string>
-    <string name="profile">Profilo</string>
     <string name="recents">Recenti</string>
     <string name="write_your_own">Personalizza…</string>
     <string name="placeholder_call_log">Per vedere il tuo registro chiamate, attiva i permessi del telefono</string>
     <string name="turn_on">Attiva</string>
-    <string name="info">Info</string>
-    <string name="searchContacts">Cerca contatti</string>
-    <string name="nothingHere">Mmh..niente</string>
 </resources>

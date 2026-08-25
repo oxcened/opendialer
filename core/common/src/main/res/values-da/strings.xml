@@ -1,0 +1,3 @@
+<resources>
+    <string-array name="array_quick_responses"><item>Kan ikke snakke nu. Hvad er der?</item><item>Jeg ringer tilbage lige om lidt.</item><item>Jeg ringer til dig senere.</item><item>Kan ikke tale nu. Kan du ringe senere?</item></string-array>
+</resources>

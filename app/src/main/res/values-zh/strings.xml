@@ -1,26 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string-array name="array_quick_responses">
-        <item name="array_quick_responses0">现在不能讲话。 有什么事？</item>
-        <item name="array_quick_responses1">我会尽快联系你。</item>
-        <item name="array_quick_responses2">我晚点会联系你。</item>
-        <item name="array_quick_responses3">现在无法讲话。能晚点再联系我吗？</item>
-    </string-array>
-    <string name="call_details">通话细节</string>
     <string name="channel_incoming_calls">来电</string>
     <string name="channel_ongoing_calls">来电</string>
     <string name="channel_outgoing_calls">呼出电话</string>
     <string name="contacts">通讯录</string>
     <string name="copy_number">拷贝号码</string>
     <string name="edit_number_before_call">通话前编辑号码</string>
-    <string name="error_write_something">你必需输入一些进去！</string>
-    <string name="option" comment="option&#10;&#10;This is used as the toolbar title for the settings screen.">选项</string>
-    <string name="profile">个人资料</string>
     <string name="recents">最近的</string>
     <string name="write_your_own">编辑自定义信息</string>
     <string name="placeholder_call_log">查看通话记录请开启电话访问权限</string>
     <string name="turn_on">开启</string>
-    <string name="info">信息</string>
-    <string name="searchContacts">搜索联系人</string>
-    <string name="nothingHere">Mmh..nothing here</string>
 </resources>

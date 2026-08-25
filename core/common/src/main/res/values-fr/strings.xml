@@ -1,0 +1,3 @@
+<resources>
+    <string-array name="array_quick_responses"><item>Je ne peux pas parler maintenant. Qu\'y a-t-il ?</item><item>Je vous rappelle au plus vite.</item><item>Je vous rappelle plus tard.</item><item>Je ne peux pas parler pour le moment. Pouvez-vous me rappeler plus tard ?</item></string-array>
+</resources>
