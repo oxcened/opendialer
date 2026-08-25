@@ -1,3 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="array_quick_responses"><item>Kan ikke snakke nu. Hvad er der?</item><item>Jeg ringer tilbage lige om lidt.</item><item>Jeg ringer til dig senere.</item><item>Kan ikke tale nu. Kan du ringe senere?</item></string-array>
+    <string-array name="array_quick_responses">
+        <item name="array_quick_responses0">Kan ikke snakke nu. Hvad er der?</item>
+        <item name="array_quick_responses1">Jeg ringer tilbage lige om lidt.</item>
+        <item name="array_quick_responses2">Jeg ringer til dig senere.</item>
+        <item name="array_quick_responses3">Kan ikke tale nu. Kan du ringe senere?</item>
+    </string-array>
 </resources>

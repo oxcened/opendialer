@@ -1,3 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="array_quick_responses"><item>Nu pot vorbi acum. Ce este?</item><item>Te sun înapoi imediat.</item><item>Te sun mai târziu.</item><item>Nu pot vorbi acum. Sună-mă mai târziu?</item></string-array>
+    <string-array name="array_quick_responses">
+        <item name="array_quick_responses0">Nu pot vorbi acum. Ce este?</item>
+        <item name="array_quick_responses1">Te sun înapoi imediat.</item>
+        <item name="array_quick_responses2">Te sun mai târziu.</item>
+        <item name="array_quick_responses3">Nu pot vorbi acum. Sună-mă mai târziu?</item>
+    </string-array>
 </resources>

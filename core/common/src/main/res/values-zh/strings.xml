@@ -1,3 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="array_quick_responses"><item>现在不能讲话。有什么事？</item><item>我会尽快联系你。</item><item>我晚点会联系你。</item><item>现在无法讲话。能晚点再联系我吗？</item></string-array>
+    <string-array name="array_quick_responses">
+        <item name="array_quick_responses0">现在不能讲话。有什么事？</item>
+        <item name="array_quick_responses1">我会尽快联系你。</item>
+        <item name="array_quick_responses2">我晚点会联系你。</item>
+        <item name="array_quick_responses3">现在无法讲话。能晚点再联系我吗？</item>
+    </string-array>
 </resources>

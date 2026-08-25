@@ -8,6 +8,4 @@
     <string name="edit_number_before_call">Modifică numerul înainte de a Apela</string>
     <string name="recents">Recent</string>
     <string name="write_your_own">Personalizează…</string>
-    <string name="placeholder_call_log">To see your call log, turn on the phone permissions</string>
-    <string name="turn_on">Turn on</string>
 </resources>
