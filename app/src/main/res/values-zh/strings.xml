@@ -1,2 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"></resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="channel_incoming_calls">来电</string>
+    <string name="channel_ongoing_calls">来电</string>
+    <string name="channel_outgoing_calls">呼出电话</string>
+    <string name="contacts">通讯录</string>
+    <string name="copy_number">拷贝号码</string>
+    <string name="edit_number_before_call">通话前编辑号码</string>
+    <string name="recents">最近的</string>
+    <string name="write_your_own">编辑自定义信息</string>
+    <string name="placeholder_call_log">查看通话记录请开启电话访问权限</string>
+    <string name="turn_on">开启</string>
+</resources>
