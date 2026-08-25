@@ -42,12 +42,14 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.alenajam.opendialer.core.common.ui.ContactAvatar
 import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.data.contacts.DialerContact
+import dev.alenajam.opendialer.feature.contacts.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -104,7 +106,7 @@ fun ContactPickerScreen(
         buildList {
             val favorites = contacts.filter { it.starred }.sortedBy { it.name }
             if (favorites.isNotEmpty()) {
-                add(ContactListItem.Header("Favorites"))
+                add(ContactListItem.Header(label = "", isFavorites = true))
                 addAll(favorites.map { ContactListItem.ContactItem(it) })
             }
 
@@ -133,7 +135,7 @@ fun ContactPickerScreen(
                             onSearch = {},
                             expanded = false,
                             onExpandedChange = {},
-                            placeholder = { Text("Search contacts") },
+                            placeholder = { Text(stringResource(R.string.search_contacts)) },
                             leadingIcon = {
                                 Icon(Icons.Outlined.Search, contentDescription = null)
                             },
@@ -145,7 +147,7 @@ fun ContactPickerScreen(
                                         isSearching = false
                                     }
                                 }) {
-                                    Icon(Icons.Outlined.Close, contentDescription = "Close search")
+                                    Icon(Icons.Outlined.Close, contentDescription = stringResource(R.string.close_search))
                                 }
                             },
                             modifier = Modifier.focusRequester(searchFocusRequester)
@@ -159,15 +161,15 @@ fun ContactPickerScreen(
                 ) {}
             } else {
                 TopAppBar(
-                    title = { Text("Choose a contact") },
+                    title = { Text(stringResource(R.string.choose_contact)) },
                     navigationIcon = {
                         IconButton(onClick = onNavigateBack) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.navigate_back))
                         }
                     },
                     actions = {
                         IconButton(onClick = { isSearching = true }) {
-                            Icon(Icons.Outlined.Search, contentDescription = "Search")
+                            Icon(Icons.Outlined.Search, contentDescription = stringResource(R.string.search))
                         }
                     }
                 )
@@ -188,7 +190,7 @@ fun ContactPickerScreen(
                     items(items) { item ->
                         when (item) {
                             is ContactListItem.Header -> {
-                                SectionHeader(text = item.label)
+                                SectionHeader(text = item.label, isFavorites = item.isFavorites)
                             }
                             is ContactListItem.ContactItem -> {
                                 FavoritePickerRow(
@@ -207,19 +209,19 @@ fun ContactPickerScreen(
 }
 
 private sealed class ContactListItem {
-    data class Header(val label: String) : ContactListItem()
+    data class Header(val label: String, val isFavorites: Boolean = false) : ContactListItem()
     data class ContactItem(val contact: DialerContact) : ContactListItem()
 }
 
 @Composable
-private fun SectionHeader(text: String) {
+private fun SectionHeader(text: String, isFavorites: Boolean = false) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        if (text == "Favorites") {
+        if (isFavorites) {
             Icon(
                 imageVector = Icons.Default.Star,
                 contentDescription = null,
@@ -229,7 +231,7 @@ private fun SectionHeader(text: String) {
             Spacer(modifier = Modifier.width(8.dp))
         }
         Text(
-            text = text,
+            text = if (isFavorites) stringResource(R.string.favorites) else text,
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -249,11 +251,11 @@ private fun PermissionPrompt(
         modifier = Modifier.padding(16.dp)
     ) {
         Text(
-            text = "To manage favorites, turn on the contacts permissions",
+            text = stringResource(R.string.favorites_permission_prompt),
             textAlign = TextAlign.Center
         )
         Button(onClick = requestPermissions) {
-            Text(text = "Turn on")
+            Text(text = stringResource(R.string.turn_on))
         }
     }
 }

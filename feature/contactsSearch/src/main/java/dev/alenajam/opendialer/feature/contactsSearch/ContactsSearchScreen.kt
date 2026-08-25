@@ -537,7 +537,7 @@ private fun Footer(
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Outlined.Backspace,
-                        contentDescription = "Backspace"
+                        contentDescription = stringResource(R.string.backspace)
                     )
                 }
             }

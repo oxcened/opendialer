@@ -141,8 +141,8 @@ private fun TopBar(
             ?: call.contactInfo.number.orEmpty()
         AlertDialog(
             onDismissRequest = { showBlockConfirmation = false },
-            title = { Text("Block $caller?") },
-            text = { Text("You won't receive calls or texts from this number.") },
+            title = { Text(stringResource(R.string.block_confirmation_title, caller)) },
+            text = { Text(stringResource(R.string.block_confirmation_message)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -150,12 +150,12 @@ private fun TopBar(
                         onBlock()
                     }
                 ) {
-                    Text("Block")
+                    Text(stringResource(R.string.blockThisCaller))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showBlockConfirmation = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -192,7 +192,7 @@ private fun TopBar(
         actions = {
             if (canBlock || canUnblock) {
                 IconButton(onClick = { menuExpanded = true }) {
-                    Icon(Icons.Outlined.MoreVert, contentDescription = "More options")
+                    Icon(Icons.Outlined.MoreVert, contentDescription = stringResource(R.string.more_options))
                 }
                 DropdownMenu(
                     expanded = menuExpanded,
@@ -200,7 +200,7 @@ private fun TopBar(
                 ) {
                     if (canBlock) {
                         DropdownMenuItem(
-                            text = { Text("Block") },
+                            text = { Text(stringResource(R.string.blockThisCaller)) },
                             onClick = {
                                 menuExpanded = false
                                 showBlockConfirmation = true
@@ -209,7 +209,7 @@ private fun TopBar(
                     }
                     if (canUnblock) {
                         DropdownMenuItem(
-                            text = { Text("Unblock") },
+                            text = { Text(stringResource(R.string.unblockThisCaller)) },
                             onClick = {
                                 menuExpanded = false
                                 onUnblock()
@@ -235,17 +235,17 @@ private fun BottomBar(
         actions = {
             if (!isAnon) {
                 IconButton(onClick = sendMessage) {
-                    Icon(Icons.Outlined.Message, contentDescription = "Localized description")
+                    Icon(Icons.Outlined.Message, contentDescription = stringResource(R.string.send_message))
                 }
                 IconButton(onClick = copyNumber) {
-                    Icon(Icons.Outlined.ContentCopy, contentDescription = "Localized description")
+                    Icon(Icons.Outlined.ContentCopy, contentDescription = stringResource(R.string.copy_number))
                 }
                 IconButton(onClick = dialNumber) {
-                    Icon(Icons.Outlined.Edit, contentDescription = "Localized description")
+                    Icon(Icons.Outlined.Edit, contentDescription = stringResource(R.string.edit_number_before_call))
                 }
             }
             IconButton(onClick = deleteCalls) {
-                Icon(Icons.Outlined.Delete, contentDescription = "Localized description")
+                Icon(Icons.Outlined.Delete, contentDescription = stringResource(R.string.delete))
             }
         },
         floatingActionButton = {
@@ -255,7 +255,7 @@ private fun BottomBar(
                     containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
                     elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
                 ) {
-                    Icon(Icons.Outlined.Call, "Localized description")
+                    Icon(Icons.Outlined.Call, stringResource(R.string.action_call))
                 }
             }
         }

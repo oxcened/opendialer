@@ -50,7 +50,7 @@ fun ManageConferenceSheet(
                 .padding(bottom = 24.dp)
         ) {
             Text(
-                text = "Manage",
+                text = stringResource(R.string.conference_manage),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
                     .fillMaxWidth()

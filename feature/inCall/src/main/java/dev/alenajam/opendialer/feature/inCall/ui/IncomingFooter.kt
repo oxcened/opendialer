@@ -89,7 +89,7 @@ fun IncomingCallControls(
                 ) {
                     Icon(Icons.AutoMirrored.Outlined.Message, contentDescription = null)
                     Spacer(modifier = Modifier.width(10.dp))
-                    Text("Message", style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(R.string.action_message), style = MaterialTheme.typography.titleMedium)
                 }
             }
 
@@ -115,7 +115,7 @@ fun IncomingCallControls(
                         )
                     }
 
-                    Text(text = "Decline")
+                    Text(text = declineDescription)
                 }
 
                 Column(
@@ -136,7 +136,7 @@ fun IncomingCallControls(
                         )
                     }
 
-                    Text(text = "Answer")
+                    Text(text = answerDescription)
                 }
             }
         }
@@ -163,7 +163,7 @@ fun IncomingCallControls(
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Write your own…", modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp))
+                    Text(stringResource(R.string.write_your_own), modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp))
                 }
             }
         }
@@ -172,7 +172,7 @@ fun IncomingCallControls(
     if (showCustomMessage) {
         AlertDialog(
             onDismissRequest = { showCustomMessage = false },
-            title = { Text("Reply with a message") },
+            title = { Text(stringResource(R.string.reply_with_message)) },
             text = { TextField(value = customMessage, onValueChange = { customMessage = it }) },
             confirmButton = {
                 TextButton(
@@ -181,9 +181,9 @@ fun IncomingCallControls(
                         showCustomMessage = false
                         onMessage(customMessage)
                     }
-                ) { Text("Send") }
+                ) { Text(stringResource(R.string.action_send)) }
             },
-            dismissButton = { TextButton(onClick = { showCustomMessage = false }) { Text("Cancel") } }
+            dismissButton = { TextButton(onClick = { showCustomMessage = false }) { Text(stringResource(R.string.action_cancel)) } }
         )
     }
 }

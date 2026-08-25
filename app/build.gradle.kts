@@ -45,7 +45,10 @@ android {
     }
 
     lint {
-        disable.add("MissingTranslation")
+        baseline = file("lint-baseline.xml")
+        enable += setOf("HardcodedText", "UnusedResources")
+        checkDependencies = true
+        abortOnError = true
     }
 
     compileOptions {

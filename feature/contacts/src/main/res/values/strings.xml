@@ -9,4 +9,11 @@
     <string name="contact_history">History</string>
     <string name="new_contact">New contact</string>
     <string name="all_contacts">All contacts</string>
+    <string name="search_contacts">Search contacts</string>
+    <string name="close_search">Close search</string>
+    <string name="choose_contact">Choose a contact</string>
+    <string name="navigate_back">Back</string>
+    <string name="search">Search</string>
+    <string name="favorites">Favorites</string>
+    <string name="favorites_permission_prompt">To manage favorites, turn on the contacts permissions</string>
 </resources>

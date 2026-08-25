@@ -23,4 +23,9 @@
     <string name="voicemail_call">Voicemail Call</string>
     <string name="numberBlocked">%1$s blocked</string>
     <string name="numberUnblocked">%1$s unblocked</string>
+    <string name="block_confirmation_title">Block %1$s?</string>
+    <string name="block_confirmation_message">You won\'t receive calls or texts from this number.</string>
+    <string name="more_options">More options</string>
+    <string name="action_call">Call</string>
+    <string name="cancel">Cancel</string>
 </resources>

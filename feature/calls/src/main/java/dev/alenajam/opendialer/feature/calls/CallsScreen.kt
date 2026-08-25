@@ -86,6 +86,13 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Date
 
+private enum class CallFilter(val labelRes: Int) {
+    ALL(R.string.filter_all),
+    MISSED(R.string.filter_missed),
+    CONTACTS(R.string.filter_contacts),
+    NON_SPAM(R.string.filter_non_spam),
+}
+
 @Composable
 fun CallsScreen(
     viewModel: CallsViewModel = hiltViewModel(),
@@ -106,14 +113,14 @@ fun CallsScreen(
     val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
     var openRowId by remember { mutableStateOf<Int?>(null) }
     var favoritesExpanded by remember { mutableStateOf(true) }
-    var selectedFilter by remember { mutableStateOf("All") }
+    var selectedFilter by remember { mutableStateOf(CallFilter.ALL) }
 
     val icons = LocalAppIcons.current
     val filteredCalls = remember(calls.value, selectedFilter) {
         when (selectedFilter) {
-            "Missed" -> calls.value.filter { it.type == CallType.MISSED || it.type == CallType.REJECTED }
-            "Contacts" -> calls.value.filter { it.isContactSaved() }
-            "Non-spam" -> calls.value.filter { it.type != CallType.BLOCKED }
+            CallFilter.MISSED -> calls.value.filter { it.type == CallType.MISSED || it.type == CallType.REJECTED }
+            CallFilter.CONTACTS -> calls.value.filter { it.isContactSaved() }
+            CallFilter.NON_SPAM -> calls.value.filter { it.type != CallType.BLOCKED }
             else -> calls.value
         }
     }
@@ -214,10 +221,10 @@ fun CallsScreen(
 
 @Composable
 private fun FilterChips(
-    selectedFilter: String,
-    onFilterSelected: (String) -> Unit
+    selectedFilter: CallFilter,
+    onFilterSelected: (CallFilter) -> Unit
 ) {
-    val filters = listOf("All", "Missed", "Contacts", "Non-spam")
+    val filters = CallFilter.entries
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
@@ -228,7 +235,7 @@ private fun FilterChips(
             FilterChip(
                 selected = selectedFilter == filter,
                 onClick = { onFilterSelected(filter) },
-                label = { Text(filter) }
+            label = { Text(stringResource(filter.labelRes)) }
             )
         }
     }
@@ -253,7 +260,7 @@ private fun FavoritesSection(
                 .clickable(onClick = onToggleExpand)
         ) {
             Text(
-                text = "Favorites",
+                text = stringResource(R.string.favorites),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -265,7 +272,7 @@ private fun FavoritesSection(
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = "View contacts",
+                text = stringResource(R.string.view_contacts),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
@@ -308,7 +315,7 @@ private fun FavoritesSection(
                     }
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Add",
+                        text = stringResource(R.string.add),
                         style = MaterialTheme.typography.labelMedium,
                         textAlign = TextAlign.Center
                     )
@@ -367,7 +374,7 @@ private fun FavoriteItem(
                 onDismissRequest = { showMenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text("Remove") },
+                    text = { Text(stringResource(R.string.remove)) },
                     onClick = {
                         onRemove()
                         showMenu = false
@@ -533,7 +540,7 @@ private fun CallRow(
                     if (!call.isAnonymous()) {
                         if (!call.isContactSaved()) {
                             CallRowButton(
-                                label = "Add contact",
+                                label = stringResource(R.string.add_to_a_contact),
                                 icon = icons.personAdd,
                                 roundTop = true,
                                 onClick = addContact
@@ -541,7 +548,7 @@ private fun CallRow(
                         }
 
                         CallRowButton(
-                            label = "Message",
+                            label = stringResource(R.string.send_message),
                             icon = icons.message,
                             roundTop = call.isContactSaved(),
                             onClick = sendMessage,
@@ -549,7 +556,7 @@ private fun CallRow(
                     }
 
                     CallRowButton(
-                        label = "History",
+                        label = stringResource(R.string.history),
                         icon = icons.history,
                         roundTop = call.isAnonymous(),
                         roundBottom = true,
@@ -565,20 +572,20 @@ private fun CallRow(
             onDismissRequest = { contextMenuExpanded = false }
         ) {
             if (!call.isAnonymous()) {
-                DropdownMenuItem(text = { Text("Copy number") }, onClick = {
+                DropdownMenuItem(text = { Text(stringResource(R.string.copy_number)) }, onClick = {
                     contextMenuExpanded = false
                     copyNumber()
                 })
-                DropdownMenuItem(text = { Text("Edit number before call") }, onClick = {
+                DropdownMenuItem(text = { Text(stringResource(R.string.edit_number_before_call)) }, onClick = {
                     contextMenuExpanded = false
                     editNumberBeforeCall()
                 })
-                DropdownMenuItem(text = { Text("Block") }, onClick = {
+                DropdownMenuItem(text = { Text(stringResource(R.string.blockThisCaller)) }, onClick = {
                     contextMenuExpanded = false
                     showBlockConfirmation = true
                 })
             }
-            DropdownMenuItem(text = { Text("Delete") }, onClick = {
+            DropdownMenuItem(text = { Text(stringResource(R.string.delete)) }, onClick = {
                 contextMenuExpanded = false
                 showDeleteConfirmation = true
             })
@@ -588,23 +595,23 @@ private fun CallRow(
     if (showBlockConfirmation) {
         AlertDialog(
             onDismissRequest = { showBlockConfirmation = false },
-            title = { Text("Block ${call.contactInfo.number}?") },
-            text = { Text("You won't receive calls or texts from this number.") },
+            title = { Text(stringResource(R.string.block_confirmation_title, call.contactInfo.number.orEmpty())) },
+            text = { Text(stringResource(R.string.block_confirmation_message)) },
             confirmButton = {
-                TextButton(onClick = { showBlockConfirmation = false; blockNumber() }) { Text("Block") }
+                TextButton(onClick = { showBlockConfirmation = false; blockNumber() }) { Text(stringResource(R.string.blockThisCaller)) }
             },
-            dismissButton = { TextButton(onClick = { showBlockConfirmation = false }) { Text("Cancel") } }
+            dismissButton = { TextButton(onClick = { showBlockConfirmation = false }) { Text(stringResource(R.string.cancel)) } }
         )
     }
     if (showDeleteConfirmation) {
         AlertDialog(
             onDismissRequest = { showDeleteConfirmation = false },
-            title = { Text("Delete call from history?") },
-            text = { Text("This removes this call from your call log.") },
+            title = { Text(stringResource(R.string.delete_call_title)) },
+            text = { Text(stringResource(R.string.delete_call_message)) },
             confirmButton = {
-                TextButton(onClick = { showDeleteConfirmation = false; deleteCall() }) { Text("Delete") }
+                TextButton(onClick = { showDeleteConfirmation = false; deleteCall() }) { Text(stringResource(R.string.delete)) }
             },
-            dismissButton = { TextButton(onClick = { showDeleteConfirmation = false }) { Text("Cancel") } }
+            dismissButton = { TextButton(onClick = { showDeleteConfirmation = false }) { Text(stringResource(R.string.cancel)) } }
         )
     }
 }

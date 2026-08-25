@@ -36,4 +36,14 @@
     <string name="conference_split">Split</string>
     <string name="conference_end_call">End call</string>
     <string name="conference_manage">Manage</string>
+    <string name="action_add_call">Add call</string>
+    <string name="action_hold">Hold</string>
+    <string name="control_dialpad">Dialpad</string>
+    <string name="control_mute">Mute</string>
+    <string name="control_speaker">Speaker</string>
+    <string name="control_more">More</string>
+    <string name="reply_with_message">Reply with a message</string>
+    <string name="action_send">Send</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="write_your_own">Write your own…</string>
 </resources>

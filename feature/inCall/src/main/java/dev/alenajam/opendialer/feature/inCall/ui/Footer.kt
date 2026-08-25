@@ -126,7 +126,7 @@ fun InCallControls(
                             .fillMaxWidth()
                             .padding(bottom = 16.dp)
                     ) {
-                        Text(text = "More", style = MaterialTheme.typography.titleMedium)
+                        Text(text = stringResource(R.string.control_more), style = MaterialTheme.typography.titleMedium)
                         Spacer(modifier = Modifier.weight(1f))
                         IconButton(
                             onClick = { toggleSectionButton(OpenSection.ADDITIONAL_ACTIONS) }
@@ -137,13 +137,13 @@ fun InCallControls(
 
                     val moreActions = buildList {
                         if (showAddCall) {
-                            add(MoreAction(icons.addCall, "Add call", onAddCall, enabled = canAddCall))
+                            add(MoreAction(icons.addCall, stringResource(R.string.action_add_call), onAddCall, enabled = canAddCall))
                         }
-                        if (canHold) add(MoreAction(icons.pause, "Hold", onHold, isHolding == true))
-                        if (canMerge) add(MoreAction(icons.merge, "Merge", onMerge))
-                        if (canSwap) add(MoreAction(icons.swapCalls, "Swap", onSwap))
+                        if (canHold) add(MoreAction(icons.pause, stringResource(R.string.action_hold), onHold, isHolding == true))
+                        if (canMerge) add(MoreAction(icons.merge, stringResource(R.string.conference_merge), onMerge))
+                        if (canSwap) add(MoreAction(icons.swapCalls, stringResource(R.string.conference_swap), onSwap))
                         if (canManageConference) {
-                            add(MoreAction(icons.more, "Manage", onManageConference))
+                            add(MoreAction(icons.more, stringResource(R.string.conference_manage), onManageConference))
                         }
                     }
 
@@ -176,7 +176,7 @@ fun InCallControls(
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        Text(text = "Dialpad", style = MaterialTheme.typography.titleMedium)
+                        Text(text = stringResource(R.string.control_dialpad), style = MaterialTheme.typography.titleMedium)
                         Spacer(modifier = Modifier.weight(1f))
                         IconButton(
                             onClick = { toggleSectionButton(OpenSection.DIALPAD) }
@@ -219,14 +219,14 @@ fun InCallControls(
             ) {
                 CallButton(
                     icon = icons.dialpad,
-                    label = "Dialpad",
+                    label = stringResource(R.string.control_dialpad),
                     isActive = openSection.value == OpenSection.DIALPAD,
                     onClick = { toggleSectionButton(OpenSection.DIALPAD) }
                 )
 
                 CallButton(
                     icon = icons.mute,
-                    label = "Mute",
+                    label = stringResource(R.string.control_mute),
                     isActive = isMuted,
                     onClick = onMute
                 )
@@ -234,7 +234,7 @@ fun InCallControls(
                 Box {
                     CallButton(
                         icon = icons.speaker,
-                        label = currentAudioRoute?.label ?: "Speaker",
+                        label = currentAudioRoute?.label ?: stringResource(R.string.control_speaker),
                         isActive = isSpeaker == true || hasExternalAudioRoute,
                         onClick = {
                             if (hasExternalAudioRoute) audioRoutesExpanded.value = true else onSpeaker()
@@ -258,7 +258,7 @@ fun InCallControls(
 
                 CallButton(
                     icon = icons.more,
-                    label = "More",
+                    label = stringResource(R.string.control_more),
                     isActive = openSection.value == OpenSection.ADDITIONAL_ACTIONS,
                     onClick = { toggleSectionButton(OpenSection.ADDITIONAL_ACTIONS) }
                 )

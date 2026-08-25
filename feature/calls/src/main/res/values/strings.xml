@@ -19,4 +19,18 @@
     <string name="call_log_date_today">Today</string>
     <string name="call_log_date_yesterday">Yesterday</string>
     <string name="call_log_type_time">%1$s • %2$s</string>
+    <string name="filter_all">All</string>
+    <string name="filter_missed">Missed</string>
+    <string name="filter_contacts">Contacts</string>
+    <string name="filter_non_spam">Non-spam</string>
+    <string name="favorites">Favorites</string>
+    <string name="view_contacts">View contacts</string>
+    <string name="add">Add</string>
+    <string name="remove">Remove</string>
+    <string name="history">History</string>
+    <string name="block_confirmation_title">Block %1$s?</string>
+    <string name="block_confirmation_message">You won\'t receive calls or texts from this number.</string>
+    <string name="delete_call_title">Delete call from history?</string>
+    <string name="delete_call_message">This removes this call from your call log.</string>
+    <string name="cancel">Cancel</string>
 </resources>
