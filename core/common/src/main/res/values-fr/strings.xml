@@ -1,2 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string-array name="array_quick_responses">
+        <item name="array_quick_responses0">Je ne peux pas parler maintenant. Qu\'y a-t-il ?</item>
+        <item name="array_quick_responses1">Je vous rappelle au plus vite.</item>
+        <item name="array_quick_responses2">Je vous rappelle plus tard.</item>
+        <item name="array_quick_responses3">Je ne peux pas parler pour le moment. Pouvez-vous me rappeler plus tard ?</item>
+    </string-array>
+</resources>
