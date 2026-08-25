@@ -1,2 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"></resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="channel_incoming_calls">Apel în intrare</string>
+    <string name="channel_ongoing_calls">Apel în curs</string>
+    <string name="channel_outgoing_calls">Apel în eșire</string>
+    <string name="contacts">Contacte</string>
+    <string name="copy_number">Copiază numerul</string>
+    <string name="edit_number_before_call">Modifică numerul înainte de a Apela</string>
+    <string name="recents">Recent</string>
+    <string name="write_your_own">Personalizează…</string>
+</resources>
