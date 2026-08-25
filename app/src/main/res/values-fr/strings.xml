@@ -3,6 +3,7 @@
     <string name="channel_incoming_calls">Appels entrants</string>
     <string name="channel_ongoing_calls">Appel en cours</string>
     <string name="channel_outgoing_calls">Appel sortant</string>
+    <string name="contacts">Contacts</string>
     <string name="copy_number">Copier le numéro</string>
     <string name="edit_number_before_call">Éditer le numéro avant l\'appel</string>
     <string name="recents">Récents</string>
