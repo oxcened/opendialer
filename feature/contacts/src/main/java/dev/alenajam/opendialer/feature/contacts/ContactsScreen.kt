@@ -27,7 +27,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -113,7 +112,7 @@ fun ContactsScreen(
                     text = stringResource(R.string.placeholder_contacts),
                     textAlign = TextAlign.Center,
                 )
-                OutlinedButton(
+                Button(
                     onClick = { requestPermissions.launch(input = PermissionUtils.contactsPermissions) }
                 ) {
                     Text(text = stringResource(R.string.turn_on))

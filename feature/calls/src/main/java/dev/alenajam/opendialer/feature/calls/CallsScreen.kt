@@ -44,10 +44,10 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -165,7 +165,7 @@ fun CallsScreen(
                         text = stringResource(R.string.placeholder_call_log),
                         textAlign = TextAlign.Center,
                     )
-                    OutlinedButton(
+                    Button(
                         onClick = { requestPermissions.launch(input = PermissionUtils.recentsPermissions) }
                     ) {
                         Text(text = stringResource(R.string.turn_on))

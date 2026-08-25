@@ -114,6 +114,14 @@ fun AboutScreen(
                 )
 
                 AboutLinkCard(
+                    title = stringResource(R.string.contribute_translations),
+                    description = stringResource(R.string.contribute_translations_description),
+                    uri = stringResource(R.string.url_crowdin_opendialer),
+                    roundTop = false,
+                    roundBottom = false
+                )
+
+                AboutLinkCard(
                     title = stringResource(R.string.feature_requests),
                     description = stringResource(R.string.feature_requests_description),
                     uri = stringResource(R.string.url_feature_requests),
