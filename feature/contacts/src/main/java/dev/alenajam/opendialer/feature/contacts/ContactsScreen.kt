@@ -90,8 +90,14 @@ fun ContactsScreen(
                     .contains(normalizedQuery)
         }
     }
-    val contactListItems = remember(filteredContacts) {
-        buildContactListItems(filteredContacts)
+    val groupBySection = searchQuery.isBlank()
+    val allContactsLabel = stringResource(R.string.all_contacts)
+    val contactListItems = remember(filteredContacts, groupBySection, allContactsLabel) {
+        buildContactListItems(
+            contacts = filteredContacts,
+            groupBySection = groupBySection,
+            allContactsLabel = allContactsLabel,
+        )
     }
 
     Surface(modifier = Modifier.fillMaxSize()) {
@@ -117,18 +123,20 @@ fun ContactsScreen(
         }
 
         LazyColumn {
-            item(key = "new-contact") {
-                Button(
-                    onClick = { CommonUtils.createContact(context, null) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                ) {
-                    Icon(Icons.Outlined.PersonAddAlt1, contentDescription = null)
-                    Text(
-                        text = stringResource(R.string.new_contact),
-                        modifier = Modifier.padding(start = 8.dp),
-                    )
+            if (searchQuery.isBlank()) {
+                item(key = "new-contact") {
+                    Button(
+                        onClick = { CommonUtils.createContact(context, null) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                    ) {
+                        Icon(Icons.Outlined.PersonAddAlt1, contentDescription = null)
+                        Text(
+                            text = stringResource(R.string.new_contact),
+                            modifier = Modifier.padding(start = 8.dp),
+                        )
+                    }
                 }
             }
             items(
@@ -184,7 +192,11 @@ private sealed class ContactsListEntry {
     ) : ContactsListEntry()
 }
 
-private fun buildContactListItems(contacts: List<DialerContact>): List<ContactsListEntry> = buildList {
+private fun buildContactListItems(
+    contacts: List<DialerContact>,
+    groupBySection: Boolean,
+    allContactsLabel: String,
+): List<ContactsListEntry> = buildList {
     fun addSection(label: String, sectionContacts: List<DialerContact>) {
         if (sectionContacts.isEmpty()) return
         add(ContactsListEntry.Header(label))
@@ -201,6 +213,11 @@ private fun buildContactListItems(contacts: List<DialerContact>): List<ContactsL
     }
 
     val sortedContacts = contacts.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
+    if (!groupBySection) {
+        addSection(allContactsLabel, sortedContacts)
+        return@buildList
+    }
+
     addSection("Favorites", sortedContacts.filter { it.starred })
     sortedContacts
         .groupBy { it.name.firstOrNull()?.uppercaseChar()?.toString() ?: "#" }
