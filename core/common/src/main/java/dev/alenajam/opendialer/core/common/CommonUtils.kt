@@ -11,6 +11,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.media.AudioManager
 import android.net.Uri
+import android.os.Bundle
 import android.os.SystemClock
 import android.provider.ContactsContract
 import android.provider.Settings
@@ -164,6 +165,16 @@ object CommonUtils {
                 context.startActivity(intent)
             }
         }
+    }
+
+    @JvmStatic
+    @SuppressLint("MissingPermission")
+    fun makeVoicemailCall(context: Context) {
+        if (!PermissionUtils.hasMakeCallPermission(context)) return
+
+        val telecomManager = context.getSystemService(Context.TELECOM_SERVICE) as? TelecomManager
+            ?: return
+        telecomManager.placeCall(Uri.fromParts("voicemail", "", null), Bundle.EMPTY)
     }
 
     @JvmStatic

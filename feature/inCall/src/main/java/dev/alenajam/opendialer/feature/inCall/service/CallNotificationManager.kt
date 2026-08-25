@@ -117,7 +117,7 @@ class CallNotificationManager @Inject constructor(
     }
 
     private fun notifyCall(channelId: String, call: OngoingCall, type: CallType) {
-        val caller = call.callerName ?: call.callerNumber.ifBlank { context.getString(R.string.anonymous) }
+        val caller = callerLabel(call.callerName, call.callerNumber)
         val intent = Intent(context, InCallActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NO_USER_ACTION or
                     Intent.FLAG_ACTIVITY_NEW_TASK or
@@ -192,7 +192,7 @@ class CallNotificationManager @Inject constructor(
     private fun notifyDisconnectingCall(call: OngoingCall) = notifyCall(CHANNEL_ID_ONGOING_CALLS, call, CallType.ONGOING)
 
     private fun notifyMissedCall(call: CallEvent.MissedCall) {
-        val caller = call.callerName ?: call.callerNumber.ifBlank { context.getString(R.string.anonymous) }
+        val caller = callerLabel(call.callerName, call.callerNumber)
         val openDialerIntent = (
             context.packageManager.getLaunchIntentForPackage(context.packageName)
                 ?: Intent(Intent.ACTION_MAIN)
@@ -282,6 +282,11 @@ class CallNotificationManager @Inject constructor(
 
         return Icon.createWithBitmap(bitmap)
     }
+
+    private fun callerLabel(callerName: String?, callerNumber: String): String =
+        callerName?.trim()?.takeIf(String::isNotEmpty)
+            ?: callerNumber.trim().takeIf(String::isNotEmpty)
+            ?: context.getString(R.string.anonymous)
 
     private fun removeCallNotification() {
         @Suppress("DEPRECATION")

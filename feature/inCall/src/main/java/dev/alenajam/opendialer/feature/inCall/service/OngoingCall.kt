@@ -80,17 +80,19 @@ class OngoingCall(
         val isConf = call.details.hasProperty(Call.Details.PROPERTY_CONFERENCE)
         val handle = call.details.handle
         val isAnon = handle == null
-        
+        val isVoicemail = handle?.scheme.equals("voicemail", ignoreCase = true)
+
         _state.update {
             it.copy(
                 isConference = isConf,
                 isAnonymous = isAnon,
                 callerName = when {
                     isConf -> context.getString(R.string.conference_call)
+                    isVoicemail -> context.getString(R.string.voicemail)
                     !isAnon -> handle?.schemeSpecificPart
                     else -> null
                 },
-                callerNumber = if (!isConf && !isAnon) handle?.schemeSpecificPart ?: "" else "",
+                callerNumber = if (!isConf && !isAnon && !isVoicemail) handle?.schemeSpecificPart ?: "" else "",
                 callerNumberLabel = "",
                 callerImageUri = null
             )

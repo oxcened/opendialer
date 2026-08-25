@@ -14,6 +14,7 @@ import androidx.compose.material.icons.outlined.Dialpad
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Voicemail
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,14 +34,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.alenajam.opendialer.feature.calls.CallsScreen
+import dev.alenajam.opendialer.core.common.CommonUtils
+import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.feature.contacts.ContactsScreen
+import dev.alenajam.opendialer.feature.voicemail.VoicemailScreen
 
 private enum class HomeTab {
     CALLS,
     CONTACTS,
+    VOICEMAIL,
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,6 +58,7 @@ internal fun HomeScreen(
     onOpenAbout: () -> Unit,
     onAddFavorite: () -> Unit = {},
 ) {
+    val context = LocalContext.current
     var currentTab by remember { mutableStateOf(HomeTab.CALLS) }
     var searchQuery by remember { mutableStateOf("") }
 
@@ -89,6 +96,17 @@ internal fun HomeScreen(
                                         expanded = expanded,
                                         onDismissRequest = { expanded = false },
                                     ) {
+                                        DropdownMenuItem(
+                                            text = { Text(stringResource(R.string.call_voicemail)) },
+                                            onClick = {
+                                                expanded = false
+                                                if (PermissionUtils.hasMakeCallPermission(context)) {
+                                                    CommonUtils.makeVoicemailCall(context)
+                                                } else {
+                                                    currentTab = HomeTab.VOICEMAIL
+                                                }
+                                            },
+                                        )
                                         DropdownMenuItem(
                                             text = { Text(stringResource(R.string.screen_settings_title)) },
                                             onClick = onOpenSettings,
@@ -137,6 +155,14 @@ internal fun HomeScreen(
                     label = { Text(stringResource(R.string.contacts)) },
                     onClick = { currentTab = HomeTab.CONTACTS },
                 )
+                NavigationBarItem(
+                    selected = currentTab == HomeTab.VOICEMAIL,
+                    icon = {
+                        Icon(Icons.Outlined.Voicemail, contentDescription = null)
+                    },
+                    label = { Text(stringResource(R.string.voicemail)) },
+                    onClick = { currentTab = HomeTab.VOICEMAIL },
+                )
             }
         },
         floatingActionButton = {
@@ -157,6 +183,7 @@ internal fun HomeScreen(
                         onEditNumberBeforeCall = onOpenDialpad
                     )
                     HomeTab.CONTACTS -> ContactsScreen(onOpenHistory = onOpenHistory)
+                    HomeTab.VOICEMAIL -> VoicemailScreen()
                 }
             }
         }

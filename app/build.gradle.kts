@@ -64,7 +64,9 @@ dependencies {
     implementation(project(":feature:inCall"))
     implementation(project(":feature:contactsSearch"))
     implementation(project(":feature:settings"))
+    implementation(project(":feature:voicemail"))
     implementation(project(":data:calls"))
+    implementation(project(":data:voicemail"))
     implementation(project(":core:common"))
 
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))

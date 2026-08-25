@@ -1,6 +1,9 @@
 package dev.alenajam.opendialer.data.calls
 
+import android.Manifest
 import android.content.ContentResolver
+import android.content.Context
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.provider.CallLog.Calls
@@ -9,7 +12,17 @@ import android.util.Log
 abstract class CallsData {
     companion object {
         private val TAG = CallsData::class.simpleName
-        val URI: Uri = Calls.CONTENT_URI
+        /**
+         * Includes carrier-provided visual voicemail when the app holds the default dialer
+         * voicemail role. Other installations continue to read the regular call log.
+         */
+        fun getUri(context: Context): Uri = if (
+            context.checkSelfPermission(Manifest.permission.READ_VOICEMAIL) == PackageManager.PERMISSION_GRANTED
+        ) {
+            Calls.CONTENT_URI_WITH_VOICEMAIL
+        } else {
+            Calls.CONTENT_URI
+        }
         private const val LIMIT = 1000
 
         private val projection = arrayOf(
@@ -47,8 +60,8 @@ abstract class CallsData {
             )
         """
 
-        fun getCursor(contentResolver: ContentResolver): Cursor? = contentResolver.query(
-            URI
+        fun getCursor(contentResolver: ContentResolver, uri: Uri): Cursor? = contentResolver.query(
+            uri
                 .buildUpon()
                 .appendQueryParameter(Calls.LIMIT_PARAM_KEY, LIMIT.toString())
                 .build(),

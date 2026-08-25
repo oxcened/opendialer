@@ -25,6 +25,7 @@ dependencies {
     implementation(project(":feature:contacts"))
     implementation(project(":feature:contactsSearch"))
     implementation(project(":feature:settings"))
+    implementation(project(":feature:voicemail"))
 
     implementation(libs.androidx.core.ktx)
     implementation(platform(libs.androidx.compose.bom))

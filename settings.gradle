@@ -29,6 +29,7 @@ include(
         ":data:callsCache",
         ":data:contacts",
         ":data:contactsSearch",
+        ":data:voicemail",
 
         // features
         ":feature:callDetail",
@@ -38,6 +39,7 @@ include(
         ":feature:inCall",
         ":feature:appShell",
         ":feature:settings",
+        ":feature:voicemail",
 
         // app
         ":app",

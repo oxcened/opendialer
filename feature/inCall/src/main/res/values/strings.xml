@@ -25,6 +25,7 @@
     <string name="control_state_on">On</string>
     <string name="control_state_off">Off</string>
     <string name="conference_call">Conference call</string>
+    <string name="voicemail">Voicemail</string>
     <string name="anonymous">Anonymous</string>
     <string name="caller_number_subtitle">%1$s · %2$s</string>
     <string name="conference_merge">Merge</string>

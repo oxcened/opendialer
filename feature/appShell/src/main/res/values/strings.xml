@@ -4,6 +4,8 @@
     <string name="recents">Recents</string>
     <string name="search_contacts">Search contacts</string>
     <string name="clear_search">Clear search</string>
+    <string name="call_voicemail">Call voicemail</string>
+    <string name="voicemail">Voicemail</string>
     <string name="default_phone_title">Set OpenDialer as default</string>
     <string name="default_phone_description">OpenDialer can only make and receive calls when it’s your default phone app.</string>
     <string name="default_phone_button">Set as default</string>

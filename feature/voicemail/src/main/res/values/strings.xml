@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="call_voicemail">Call voicemail</string>
+    <string name="placeholder_voicemail">To use voicemail, turn on the phone permissions</string>
+    <string name="turn_on">Turn on</string>
+    <string name="retry">Retry</string>
+    <string name="visual_voicemail_unavailable">Can’t activate visual voicemail</string>
+    <string name="visual_voicemail_unavailable_description">Your carrier or device doesn’t currently provide visual voicemail. You can still call to check voicemail.</string>
+    <string name="visual_voicemail_no_messages">No voicemail messages</string>
+    <string name="visual_voicemail_no_messages_description">Visual voicemail is ready. New messages will appear here.</string>
+    <string name="unknown_caller">Unknown caller</string>
+    <string name="play_voicemail">Play voicemail</string>
+    <string name="playing">Playing voicemail</string>
+</resources>

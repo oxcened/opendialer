@@ -22,18 +22,19 @@ class CallsRepositoryImpl
 @Inject constructor(private val app: Application) : CallsRepository {
     override fun getCalls(): Flow<List<DialerCallEntity>> =
         callbackFlow {
+            val callsUri = CallsData.getUri(app)
             val observer = object : ContentObserver(null) {
                 override fun onChange(selfChange: Boolean) {
-                    CallsData.getCursor(app.contentResolver)?.let {
+                    CallsData.getCursor(app.contentResolver, callsUri)?.let {
                         trySend(CallsData.getData(it))
                         it.close()
                     }
                 }
             }
 
-            app.contentResolver.registerContentObserver(CallsData.URI, true, observer)
+            app.contentResolver.registerContentObserver(callsUri, true, observer)
 
-            CallsData.getCursor(app.contentResolver)?.let {
+            CallsData.getCursor(app.contentResolver, callsUri)?.let {
                 trySend(CallsData.getData(it))
                 it.close()
             }

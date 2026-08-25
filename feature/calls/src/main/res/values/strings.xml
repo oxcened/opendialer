@@ -17,6 +17,7 @@
     <string name="call_log_type_time">%1$s • %2$s</string>
     <string name="filter_all">All</string>
     <string name="filter_missed">Missed</string>
+    <string name="filter_voicemail">Voicemail</string>
     <string name="filter_contacts">Contacts</string>
     <string name="filter_non_spam">Non-spam</string>
     <string name="favorites">Favorites</string>
