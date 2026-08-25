@@ -34,12 +34,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.alenajam.opendialer.feature.calls.CallsScreen
-import dev.alenajam.opendialer.core.common.CommonUtils
-import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.feature.contacts.ContactsScreen
 import dev.alenajam.opendialer.feature.voicemail.VoicemailScreen
 
@@ -58,7 +55,6 @@ internal fun HomeScreen(
     onOpenAbout: () -> Unit,
     onAddFavorite: () -> Unit = {},
 ) {
-    val context = LocalContext.current
     var currentTab by remember { mutableStateOf(HomeTab.CALLS) }
     var searchQuery by remember { mutableStateOf("") }
 
@@ -96,17 +92,6 @@ internal fun HomeScreen(
                                         expanded = expanded,
                                         onDismissRequest = { expanded = false },
                                     ) {
-                                        DropdownMenuItem(
-                                            text = { Text(stringResource(R.string.call_voicemail)) },
-                                            onClick = {
-                                                expanded = false
-                                                if (PermissionUtils.hasMakeCallPermission(context)) {
-                                                    CommonUtils.makeVoicemailCall(context)
-                                                } else {
-                                                    currentTab = HomeTab.VOICEMAIL
-                                                }
-                                            },
-                                        )
                                         DropdownMenuItem(
                                             text = { Text(stringResource(R.string.screen_settings_title)) },
                                             onClick = onOpenSettings,

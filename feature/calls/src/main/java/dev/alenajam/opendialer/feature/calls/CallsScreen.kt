@@ -90,9 +90,7 @@ import java.util.Date
 private enum class CallFilter(val labelRes: Int) {
     ALL(R.string.filter_all),
     MISSED(R.string.filter_missed),
-    VOICEMAIL(R.string.filter_voicemail),
     CONTACTS(R.string.filter_contacts),
-    NON_SPAM(R.string.filter_non_spam),
 }
 
 @Composable
@@ -121,11 +119,7 @@ fun CallsScreen(
     val filteredCalls = remember(calls.value, selectedFilter) {
         when (selectedFilter) {
             CallFilter.MISSED -> calls.value.filter { it.type == CallType.MISSED || it.type == CallType.REJECTED }
-            CallFilter.VOICEMAIL -> calls.value.filter {
-                it.type == CallType.VOICEMAIL || it.isVoicemailNumber
-            }
             CallFilter.CONTACTS -> calls.value.filter { it.isContactSaved() }
-            CallFilter.NON_SPAM -> calls.value.filter { it.type != CallType.BLOCKED }
             else -> calls.value
         }
     }
