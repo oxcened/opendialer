@@ -50,26 +50,33 @@ fun SettingsScreen(
 ) {
     val context = LocalContext.current
     val canManageBlockedNumbers = BlockedNumberContract.canCurrentUserBlockNumbers(context)
+    val displayOptionsTitle = stringResource(R.string.display_options)
+    val displayOptionsDescription = stringResource(R.string.display_options_description)
+    val quickResponsesTitle = stringResource(R.string.customize_quick_responses)
+    val quickResponsesDescription = stringResource(R.string.customize_quick_responses_description)
+    val manageBlockedNumbersTitle = stringResource(R.string.manageBlockedNumbers)
+    val manageBlockedNumbersDescription = stringResource(R.string.manage_blocked_numbers_description)
+    val extensionTitle = stringResource(R.string.app_name)
     val dialerItems = buildList {
         add(
             SettingsListItem(
-                title = context.getString(R.string.display_options),
-                description = context.getString(R.string.display_options_description),
+                title = displayOptionsTitle,
+                description = displayOptionsDescription,
                 onClick = onOpenDisplayOptions
             )
         )
         add(
             SettingsListItem(
-                title = context.getString(R.string.customize_quick_responses),
-                description = context.getString(R.string.customize_quick_responses_description),
+                title = quickResponsesTitle,
+                description = quickResponsesDescription,
                 onClick = onOpenQuickResponses
             )
         )
         if (canManageBlockedNumbers) {
             add(
                 SettingsListItem(
-                    title = context.getString(R.string.manageBlockedNumbers),
-                    description = context.getString(R.string.manage_blocked_numbers_description),
+                    title = manageBlockedNumbersTitle,
+                    description = manageBlockedNumbersDescription,
                     onClick = {
                         try {
                             val telecomManager = context.getSystemService(Context.TELECOM_SERVICE)
@@ -92,8 +99,6 @@ fun SettingsScreen(
     val extensionItems = subpages.mapIndexed { index, page ->
         SettingsListItem(page.title, page.description) { onOpenSubpage(index) }
     }
-    val extensionTitle = appLabel(context)
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -146,9 +151,6 @@ private fun SettingsSection(title: String, items: List<SettingsListItem>) {
         )
     }
 }
-
-private fun appLabel(context: Context): String =
-    context.applicationInfo.loadLabel(context.packageManager).toString()
 
 @Composable
 private fun SettingsCard(
