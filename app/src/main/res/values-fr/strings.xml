@@ -1,26 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string-array name="array_quick_responses">
-        <item name="array_quick_responses0">Je ne peux pas parler maintenant. Qu\'y a-t-il ?\u0020</item>
-        <item name="array_quick_responses1">Je vous rappelle au plus vite.</item>
-        <item name="array_quick_responses2">Je vous rappelle plus tard.</item>
-        <item name="array_quick_responses3">Je ne peux pas parler pour le moment. Pouvez vous me rappeler plus tard ?</item>
-    </string-array>
-    <string name="call_details">Détails de l\'appel</string>
-    <string name="channel_incoming_calls">Appels entrants</string>
-    <string name="channel_ongoing_calls">Appel en cours</string>
-    <string name="channel_outgoing_calls">Appel sortant</string>
-    <string name="contacts">Contacts</string>
-    <string name="copy_number">Copier le numéro</string>
-    <string name="edit_number_before_call">Éditer le numéro avant l\'appel</string>
-    <string name="error_write_something">Vous devez écrire quelque chose !</string>
-    <string name="option" comment="option&#10;&#10;This is used as the toolbar title for the settings screen.">Option</string>
-    <string name="profile">Profil</string>
-    <string name="recents">Récents</string>
-    <string name="write_your_own">Écrire votre message...</string>
-    <string name="placeholder_call_log">Pour voir votre historique d\'appel, activer les permissions du téléphone</string>
-    <string name="turn_on">Activer</string>
-    <string name="info">Informations</string>
-    <string name="searchContacts">Rechercher des contacts</string>
-    <string name="nothingHere">Mmh...rien ici</string>
-</resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"></resources>
