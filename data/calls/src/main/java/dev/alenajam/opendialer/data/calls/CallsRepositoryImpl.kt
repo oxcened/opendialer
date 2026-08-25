@@ -18,15 +18,17 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class CallsRepositoryImpl
-@Inject constructor(private val app: Application) : CallsRepository {
+class CallsRepositoryImpl @Inject constructor(
+    private val app: Application,
+    private val voicemailNumberProvider: VoicemailNumberProvider,
+) : CallsRepository {
     override fun getCalls(): Flow<List<DialerCallEntity>> =
         callbackFlow {
             val callsUri = CallsData.getUri(app)
             val observer = object : ContentObserver(null) {
                 override fun onChange(selfChange: Boolean) {
                     CallsData.getCursor(app.contentResolver, callsUri)?.let {
-                        trySend(CallsData.getData(it))
+                        trySend(CallsData.getData(it, voicemailNumberProvider.getNumbers()))
                         it.close()
                     }
                 }
@@ -35,7 +37,7 @@ class CallsRepositoryImpl
             app.contentResolver.registerContentObserver(callsUri, true, observer)
 
             CallsData.getCursor(app.contentResolver, callsUri)?.let {
-                trySend(CallsData.getData(it))
+                trySend(CallsData.getData(it, voicemailNumberProvider.getNumbers()))
                 it.close()
             }
 
@@ -50,7 +52,7 @@ class CallsRepositoryImpl
     ): Either<Failure, List<DialerCallEntity>> {
         val cursor =
             CallDetailData.getCursor(contentResolver, ids) ?: return Either.Left(Failure.NoData)
-        val data = CallDetailData.getData(cursor)
+        val data = CallDetailData.getData(cursor, voicemailNumberProvider.getNumbers())
 
         return if (data.isEmpty()) {
             Either.Left(Failure.NoData)

@@ -14,7 +14,8 @@ data class DialerCall(
     val options: List<CallOption>,
     var childCalls: List<DetailCall>,
     val countryIso: String? = null,
-    val contactInfo: ContactInfo
+    val contactInfo: ContactInfo,
+    val isVoicemailNumber: Boolean = false,
 ) : Serializable {
     companion object {
         fun mapList(list: List<DialerCallEntity>): List<DialerCall> {
@@ -88,6 +89,7 @@ data class DialerCall(
                     options = options,
                     childCalls = listOfNotNull(DetailCall.map(call)),
                     countryIso = call.countryIso,
+                    isVoicemailNumber = call.isVoicemailNumber,
                     contactInfo = ContactInfo(
                         name = call.name,
                         number = contactNumber,

@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.database.Cursor
 import android.net.Uri
 import android.provider.CallLog.Calls
+import android.telephony.PhoneNumberUtils
 import android.util.Log
 
 abstract class CallDetailData {
@@ -62,20 +63,25 @@ abstract class CallDetailData {
                 Calls.DEFAULT_SORT_ORDER
             )
 
-        fun getData(cursor: Cursor): List<DialerCallEntity> {
+        fun getData(
+            cursor: Cursor,
+            voicemailNumbers: Set<String> = emptySet(),
+        ): List<DialerCallEntity> {
             val start = System.currentTimeMillis()
             val list = mutableListOf<DialerCallEntity>()
 
             if (cursor.moveToFirst()) {
                 do {
+                    val number = cursor.getString(cursor.getColumnIndexOrThrow(Calls.NUMBER))
+                    val type = cursor.getInt(cursor.getColumnIndexOrThrow(Calls.TYPE))
                     list.add(
                         DialerCallEntity(
                             id = cursor.getInt(cursor.getColumnIndexOrThrow(Calls._ID)),
-                            number = cursor.getString(cursor.getColumnIndexOrThrow(Calls.NUMBER)),
+                            number = number,
                             name = cursor.getString(cursor.getColumnIndexOrThrow(Calls.CACHED_NAME)),
                             date = cursor.getLong(cursor.getColumnIndexOrThrow(Calls.DATE)),
                             duration = cursor.getLong(cursor.getColumnIndexOrThrow(Calls.DURATION)),
-                            type = cursor.getInt(cursor.getColumnIndexOrThrow(Calls.TYPE)),
+                            type = type,
                             isNew = cursor.getInt(cursor.getColumnIndexOrThrow(Calls.NEW)),
                             photoUri = cursor.getString(cursor.getColumnIndexOrThrow(Calls.CACHED_PHOTO_URI))
                                 ?.takeIf { it.isNotBlank() },
@@ -88,7 +94,10 @@ abstract class CallDetailData {
                             lookupUri = cursor.getString(cursor.getColumnIndexOrThrow(Calls.CACHED_LOOKUP_URI)),
                             postDialDigits = cursor.getString(cursor.getColumnIndexOrThrow(Calls.POST_DIAL_DIGITS)),
                             matchedNumber = cursor.getString(cursor.getColumnIndexOrThrow(Calls.CACHED_MATCHED_NUMBER)),
-                            numberType = cursor.getInt(cursor.getColumnIndexOrThrow(Calls.CACHED_NUMBER_TYPE))
+                            numberType = cursor.getInt(cursor.getColumnIndexOrThrow(Calls.CACHED_NUMBER_TYPE)),
+                            isVoicemailNumber = type == Calls.OUTGOING_TYPE && voicemailNumbers.any {
+                                PhoneNumberUtils.compare(number, it)
+                            },
                         )
                     )
                 } while (cursor.moveToNext())

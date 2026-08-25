@@ -18,5 +18,6 @@ class DialerCallEntity(
     val photoId: Long? = null,
     val postDialDigits: String? = null,
     val matchedNumber: String? = null,
-    val numberType: Int? = null
+    val numberType: Int? = null,
+    val isVoicemailNumber: Boolean = false,
 )

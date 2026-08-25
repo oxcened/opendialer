@@ -37,6 +37,7 @@ import androidx.compose.material.icons.outlined.CallMissed
 import androidx.compose.material.icons.outlined.CallReceived
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Message
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PersonAddAlt
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.Voicemail
@@ -120,7 +121,9 @@ fun CallsScreen(
     val filteredCalls = remember(calls.value, selectedFilter) {
         when (selectedFilter) {
             CallFilter.MISSED -> calls.value.filter { it.type == CallType.MISSED || it.type == CallType.REJECTED }
-            CallFilter.VOICEMAIL -> calls.value.filter { it.type == CallType.VOICEMAIL }
+            CallFilter.VOICEMAIL -> calls.value.filter {
+                it.type == CallType.VOICEMAIL || it.isVoicemailNumber
+            }
             CallFilter.CONTACTS -> calls.value.filter { it.isContactSaved() }
             CallFilter.NON_SPAM -> calls.value.filter { it.type != CallType.BLOCKED }
             else -> calls.value
@@ -470,10 +473,17 @@ private fun CallRow(
                 modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp),
             ) {
                 ContactAvatar(
-                    name = call.contactInfo.name,
-                    photoUri = call.contactInfo.photoUri,
+                    name = call.contactInfo.name.takeUnless { call.isVoicemailNumber },
+                    photoUri = call.contactInfo.photoUri.takeUnless { call.isVoicemailNumber },
                     colorKey = call.contactInfo.number.orEmpty(),
-                    contentDescription = if (call.isContactSaved()) {
+                    fallbackIcon = if (call.isVoicemailNumber) {
+                        Icons.Outlined.Voicemail
+                    } else {
+                        Icons.Outlined.Person
+                    },
+                    contentDescription = if (call.isVoicemailNumber) {
+                        stringResource(R.string.filter_voicemail)
+                    } else if (call.isContactSaved()) {
                         stringResource(R.string.open_contact)
                     } else {
                         null
@@ -482,14 +492,15 @@ private fun CallRow(
                         .size(50.dp)
                         .clip(CircleShape)
                         .clickable(
-                            enabled = call.isContactSaved(),
+                            enabled = call.isContactSaved() && !call.isVoicemailNumber,
                             onClick = openContact
                         )
                 )
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = if (call.isAnonymous()) stringResource(id = R.string.anonymous)
+                        text = if (call.isVoicemailNumber) stringResource(R.string.filter_voicemail)
+                        else if (call.isAnonymous()) stringResource(id = R.string.anonymous)
                         else if (!call.contactInfo.name.isNullOrBlank()) call.contactInfo.name!!
                         else call.contactInfo.number!!,
                         style = MaterialTheme.typography.bodyLarge,

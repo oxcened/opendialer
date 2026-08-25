@@ -21,6 +21,7 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Voicemail
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
@@ -70,6 +71,7 @@ fun CallDetailScreen(
     val call = viewModel.call.observeAsState()
     val detailOptions = viewModel.detailOptions.observeAsState(emptyList())
     val isAnon = call.value?.isAnonymous() == true
+    val isVoicemailNumber = call.value?.isVoicemailNumber == true
     val childCalls = call.value?.childCalls ?: emptyList()
 
     LaunchedEffect(call.value) {
@@ -114,8 +116,11 @@ fun CallDetailScreen(
                 .padding(innerPadding)
         ) {
             LazyColumn {
-                items(childCalls) { call ->
-                    CallRow(call = call)
+                items(childCalls) { detailCall ->
+                    CallRow(
+                        call = detailCall,
+                        isVoicemailNumber = isVoicemailNumber,
+                    )
                 }
             }
         }
@@ -168,14 +173,25 @@ private fun TopBar(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     ContactAvatar(
-                        name = call.contactInfo.name,
-                        photoUri = call.contactInfo.photoUri,
+                        name = call.contactInfo.name.takeUnless { call.isVoicemailNumber },
+                        photoUri = call.contactInfo.photoUri.takeUnless { call.isVoicemailNumber },
                         colorKey = call.contactInfo.number.orEmpty(),
+                        fallbackIcon = if (call.isVoicemailNumber) {
+                            Icons.Outlined.Voicemail
+                        } else {
+                            Icons.Outlined.Person
+                        },
+                        contentDescription = if (call.isVoicemailNumber) {
+                            stringResource(R.string.voicemail)
+                        } else {
+                            null
+                        },
                         modifier = Modifier.size(50.dp)
                     )
                     Spacer(modifier = Modifier.size(8.dp))
                     Text(
-                        text = if (call.isAnonymous()) stringResource(id = R.string.anonymous)
+                        text = if (call.isVoicemailNumber) stringResource(R.string.voicemail)
+                        else if (call.isAnonymous()) stringResource(id = R.string.anonymous)
                         else if (!call.contactInfo.name.isNullOrBlank()) call.contactInfo.name!!
                         else call.contactInfo.number!!,
                     )
@@ -264,7 +280,8 @@ private fun BottomBar(
 
 @Composable
 private fun CallRow(
-    call: DetailCall
+    call: DetailCall,
+    isVoicemailNumber: Boolean = false,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -272,7 +289,9 @@ private fun CallRow(
         modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp),
     ) {
         Icon(
-            imageVector = when (call.type) {
+            imageVector = if (isVoicemailNumber) {
+                Icons.Outlined.Voicemail
+            } else when (call.type) {
                 CallType.INCOMING, CallType.ANSWERED_EXTERNALLY -> Icons.Outlined.CallReceived
                 CallType.OUTGOING -> Icons.Outlined.CallMade
                 CallType.MISSED, CallType.REJECTED -> Icons.Outlined.CallMissed
@@ -283,7 +302,9 @@ private fun CallRow(
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = when (call.type) {
+                text = if (isVoicemailNumber) {
+                    stringResource(R.string.voicemail_call)
+                } else when (call.type) {
                     CallType.OUTGOING -> stringResource(id = R.string.outgoing_call)
                     CallType.INCOMING, CallType.ANSWERED_EXTERNALLY -> stringResource(id = R.string.incoming_call)
                     CallType.MISSED -> stringResource(id = R.string.missed_call)
