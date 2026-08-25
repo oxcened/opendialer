@@ -13,13 +13,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.automirrored.outlined.Message
 import androidx.compose.material.icons.outlined.Phone
+import androidx.compose.material.icons.outlined.PersonAddAlt1
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -42,6 +47,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.alenajam.opendialer.core.common.ui.ContactAvatar
+import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.data.contacts.DialerContact
 
@@ -60,6 +66,7 @@ fun ContactsScreen(
 
     val contacts = viewModel.contacts.collectAsStateWithLifecycle()
     val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
+    val context = LocalContext.current
     var openRowKey by remember { mutableStateOf<String?>(null) }
     var pendingCallNumber by remember { mutableStateOf<String?>(null) }
     val requestCallPermissions = rememberLauncherForActivityResult(
@@ -82,6 +89,9 @@ fun ContactsScreen(
                 normalizedQuery.isNotEmpty() && PhoneNumberUtils.normalizeNumber(contact.number)
                     .contains(normalizedQuery)
         }
+    }
+    val contactListItems = remember(filteredContacts) {
+        buildContactListItems(filteredContacts)
     }
 
     Surface(modifier = Modifier.fillMaxSize()) {
@@ -107,34 +117,119 @@ fun ContactsScreen(
         }
 
         LazyColumn {
-            itemsIndexed(
-                filteredContacts,
-                key = { _, contact -> "${contact.id}-${contact.number}" },
-            ) { index, contact ->
-                val rowKey = "${contact.id}-${contact.number}"
-                val isOpen = openRowKey == rowKey
-                ContactRow(
-                    contact = contact,
-                    isOpen = isOpen,
-                    roundTop = index == 0,
-                    roundBottom = index == filteredContacts.lastIndex,
-                    onClick = { openRowKey = if (isOpen) null else rowKey },
-                    onOpenContact = { viewModel.openContact(contact.id) },
-                    onCall = {
-                        if (!viewModel.makeCall(contact.number)) {
-                            pendingCallNumber = contact.number
-                            requestCallPermissions.launch(PermissionUtils.makeCallPermissions)
-                        }
-                    },
-                    onMessage = { viewModel.sendMessage(contact.number) },
-                    onHistory = {
-                        viewModel.getHistoryIds(contact.number)
-                            .takeIf { it.isNotEmpty() }
-                            ?.let(onOpenHistory)
-                    },
-                )
+            item(key = "new-contact") {
+                Button(
+                    onClick = { CommonUtils.createContact(context, null) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                ) {
+                    Icon(Icons.Outlined.PersonAddAlt1, contentDescription = null)
+                    Text(
+                        text = stringResource(R.string.new_contact),
+                        modifier = Modifier.padding(start = 8.dp),
+                    )
+                }
+            }
+            items(
+                items = contactListItems,
+                key = { item ->
+                    when (item) {
+                        is ContactsListEntry.Header -> "header-${item.label}"
+                        is ContactsListEntry.Contact ->
+                            "contact-${item.sectionLabel}-${item.contact.id}-${item.contact.number}"
+                    }
+                },
+            ) { item ->
+                when (item) {
+                    is ContactsListEntry.Header -> ContactSectionHeader(item.label)
+                    is ContactsListEntry.Contact -> {
+                        val rowKey = "${item.contact.id}-${item.contact.number}"
+                        val isOpen = openRowKey == rowKey
+                        ContactRow(
+                            contact = item.contact,
+                            isOpen = isOpen,
+                            roundTop = item.isFirstInSection,
+                            roundBottom = item.isLastInSection,
+                            onClick = { openRowKey = if (isOpen) null else rowKey },
+                            onOpenContact = { viewModel.openContact(item.contact.id) },
+                            onCall = {
+                                if (!viewModel.makeCall(item.contact.number)) {
+                                    pendingCallNumber = item.contact.number
+                                    requestCallPermissions.launch(PermissionUtils.makeCallPermissions)
+                                }
+                            },
+                            onMessage = { viewModel.sendMessage(item.contact.number) },
+                            onHistory = {
+                                viewModel.getHistoryIds(item.contact.number)
+                                    .takeIf { it.isNotEmpty() }
+                                    ?.let(onOpenHistory)
+                            },
+                        )
+                    }
+                }
             }
         }
+    }
+}
+
+private sealed class ContactsListEntry {
+    data class Header(val label: String) : ContactsListEntry()
+
+    data class Contact(
+        val contact: DialerContact,
+        val sectionLabel: String,
+        val isFirstInSection: Boolean,
+        val isLastInSection: Boolean,
+    ) : ContactsListEntry()
+}
+
+private fun buildContactListItems(contacts: List<DialerContact>): List<ContactsListEntry> = buildList {
+    fun addSection(label: String, sectionContacts: List<DialerContact>) {
+        if (sectionContacts.isEmpty()) return
+        add(ContactsListEntry.Header(label))
+        sectionContacts.forEachIndexed { index, contact ->
+            add(
+                ContactsListEntry.Contact(
+                    contact = contact,
+                    sectionLabel = label,
+                    isFirstInSection = index == 0,
+                    isLastInSection = index == sectionContacts.lastIndex,
+                )
+            )
+        }
+    }
+
+    val sortedContacts = contacts.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
+    addSection("Favorites", sortedContacts.filter { it.starred })
+    sortedContacts
+        .groupBy { it.name.firstOrNull()?.uppercaseChar()?.toString() ?: "#" }
+        .toSortedMap()
+        .forEach { (initial, sectionContacts) -> addSection(initial, sectionContacts) }
+}
+
+@Composable
+private fun ContactSectionHeader(label: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+    ) {
+        if (label == "Favorites") {
+            Icon(
+                imageVector = Icons.Default.Star,
+                contentDescription = null,
+                modifier = Modifier.size(16.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(8.dp))
+        }
+        Text(
+            text = label,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 
@@ -181,6 +276,7 @@ private fun ContactRow(
                     colorKey = contact.number,
                     modifier = Modifier
                         .size(50.dp)
+                        .clip(CircleShape)
                         .clickable(onClick = onOpenContact)
                 )
 

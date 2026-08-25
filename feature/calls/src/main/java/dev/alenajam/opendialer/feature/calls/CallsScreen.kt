@@ -26,6 +26,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Message
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -257,6 +258,7 @@ private fun FavoritesSection(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
                 .clickable(onClick = onToggleExpand)
         ) {
             Text(
@@ -291,7 +293,14 @@ private fun FavoritesSection(
                     .padding(top = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-                // Add button
+                favorites.forEach { favorite ->
+                    FavoriteItem(
+                        favorite = favorite,
+                        onClick = { onFavoriteClick(favorite) },
+                        onRemove = { onRemoveFavorite(favorite) }
+                    )
+                }
+
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.width(60.dp)
@@ -311,15 +320,6 @@ private fun FavoritesSection(
                         text = "Add",
                         style = MaterialTheme.typography.labelMedium,
                         textAlign = TextAlign.Center
-                    )
-                }
-
-                // Favorites list
-                favorites.forEach { favorite ->
-                    FavoriteItem(
-                        favorite = favorite,
-                        onClick = { onFavoriteClick(favorite) },
-                        onRemove = { onRemoveFavorite(favorite) }
                     )
                 }
             }
@@ -348,6 +348,7 @@ private fun FavoriteItem(
                 colorKey = favorite.number,
                 modifier = Modifier
                     .size(56.dp)
+                    .clip(CircleShape)
                     .combinedClickable(
                         onClick = onClick,
                         onLongClick = { showMenu = true }
@@ -478,6 +479,7 @@ private fun CallRow(
                     },
                     modifier = Modifier
                         .size(50.dp)
+                        .clip(CircleShape)
                         .clickable(
                             enabled = call.isContactSaved(),
                             onClick = openContact

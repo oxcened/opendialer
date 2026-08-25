@@ -108,7 +108,7 @@ fun ContactPickerScreen(
                 addAll(favorites.map { ContactListItem.ContactItem(it) })
             }
 
-            contacts.filter { !it.starred }
+            contacts
                 .groupBy { it.name.firstOrNull()?.uppercaseChar() ?: '#' }
                 .toSortedMap()
                 .forEach { (char, contactsForChar) ->

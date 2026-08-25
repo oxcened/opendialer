@@ -7,4 +7,5 @@
     <string name="call_contact">Call contact</string>
     <string name="message_contact">Message</string>
     <string name="contact_history">History</string>
+    <string name="new_contact">New contact</string>
 </resources>

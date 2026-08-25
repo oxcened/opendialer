@@ -226,10 +226,12 @@ object CommonUtils {
 
     @JvmStatic
     fun createContact(context: Context, number: String?) {
-        if (number.isNullOrEmpty()) return
         val createContactIntent = Intent(Intent.ACTION_INSERT)
         createContactIntent.type = ContactsContract.Contacts.CONTENT_TYPE
-        createContactIntent.putExtra(ContactsContract.Intents.Insert.PHONE, number)
+        number?.takeIf { it.isNotEmpty() }?.let {
+            createContactIntent.putExtra(ContactsContract.Intents.Insert.PHONE, it)
+        }
+        if (context !is Activity) createContactIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(createContactIntent)
     }
 
