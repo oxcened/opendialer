@@ -91,23 +91,13 @@ fun AboutScreen(
             )
 
             Column {
-                val teamMemberName = stringResource(R.string.team_member_name)
                 AboutLinkCard(
                     title = stringResource(R.string.developer_credit),
                     description = stringResource(R.string.developer_role),
                     uri = stringResource(R.string.url_developer),
                     roundTop = true,
-                    roundBottom = teamMemberName.isBlank()
+                    roundBottom = true
                 )
-
-                if (teamMemberName.isNotBlank()) {
-                    AboutInfoCard(
-                        title = teamMemberName,
-                        description = stringResource(R.string.team_member_description),
-                        roundTop = false,
-                        roundBottom = true
-                    )
-                }
             }
 
             Text(
