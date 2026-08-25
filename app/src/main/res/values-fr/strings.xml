@@ -1,2 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"></resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="channel_incoming_calls">Appels entrants</string>
+    <string name="channel_ongoing_calls">Appel en cours</string>
+    <string name="channel_outgoing_calls">Appel sortant</string>
+    <string name="copy_number">Copier le numéro</string>
+    <string name="edit_number_before_call">Éditer le numéro avant l\'appel</string>
+    <string name="recents">Récents</string>
+    <string name="write_your_own">Écrire votre message...</string>
+    <string name="placeholder_call_log">Pour voir votre historique d\'appel, activer les permissions du téléphone</string>
+    <string name="turn_on">Activer</string>
+</resources>
