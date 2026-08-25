@@ -90,13 +90,22 @@ fun AboutScreen(
                 style = MaterialTheme.typography.titleMedium
             )
 
-            AboutLinkCard(
-                title = stringResource(R.string.developer_credit),
-                description = stringResource(R.string.developer_website_description),
-                uri = stringResource(R.string.url_developer),
-                roundTop = true,
-                roundBottom = true
-            )
+            Column {
+                AboutLinkCard(
+                    title = stringResource(R.string.developer_credit),
+                    description = stringResource(R.string.developer_role),
+                    uri = stringResource(R.string.url_developer),
+                    roundTop = true,
+                    roundBottom = false
+                )
+
+                AboutInfoCard(
+                    title = stringResource(R.string.team_member_alessandro_pusceddu),
+                    description = stringResource(R.string.team_member_description),
+                    roundTop = false,
+                    roundBottom = true
+                )
+            }
 
             Text(
                 modifier = Modifier.padding(top = 4.dp),
