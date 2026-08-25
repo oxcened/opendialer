@@ -1,13 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="channel_incoming_calls">Eingehende Anrufe</string>
-    <string name="channel_ongoing_calls">Laufende Anrufe</string>
-    <string name="channel_outgoing_calls">Abgehende Anrufe</string>
-    <string name="contacts">Kontakte</string>
-    <string name="copy_number">Nummer kopieren</string>
-    <string name="edit_number_before_call">Nummer vor dem Anruf bearbeiten</string>
-    <string name="recents">Anrufliste</string>
-    <string name="write_your_own">Tippe deine Eigene...</string>
-    <string name="placeholder_call_log">Um deine Anrufliste zu sehen, erteile die Telefon-Berechtigung</string>
-    <string name="turn_on">Einschalten</string>
-</resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"></resources>
