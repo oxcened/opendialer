@@ -1,26 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string-array name="array_quick_responses">
-        <item name="array_quick_responses0">Kann gerade nicht sprechen. Was gibt\'s?</item>
-        <item name="array_quick_responses1">Ich rufe gleich zurück.</item>
-        <item name="array_quick_responses2">Ich rufe später zurück.</item>
-        <item name="array_quick_responses3">Kann gerade nicht sprechen. Ruf später nochmal an.</item>
-    </string-array>
-    <string name="call_details">Anrufdetails</string>
-    <string name="channel_incoming_calls">Eingehende Anrufe</string>
-    <string name="channel_ongoing_calls">Laufende Anrufe</string>
-    <string name="channel_outgoing_calls">Abgehende Anrufe</string>
-    <string name="contacts">Kontakte</string>
-    <string name="copy_number">Nummer kopieren</string>
-    <string name="edit_number_before_call">Nummer vor dem Anruf bearbeiten</string>
-    <string name="error_write_something">Du musst schon etwas schreiben!</string>
-    <string name="option" comment="option&#10;&#10;This is used as the toolbar title for the settings screen.">Optionen</string>
-    <string name="profile">Profil</string>
-    <string name="recents">Anrufliste</string>
-    <string name="write_your_own">Tippe deine Eigene...</string>
-    <string name="placeholder_call_log">Um deine Anrufliste zu sehen, erteile die Telefon-Berechtigung</string>
-    <string name="turn_on">Einschalten</string>
-    <string name="info">Info</string>
-    <string name="searchContacts">Kontakte durchsuchen</string>
-    <string name="nothingHere">Mmh..Hier ist nichts</string>
-</resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"></resources>
