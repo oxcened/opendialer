@@ -54,6 +54,7 @@ androidx-preference-ktx = { group = "androidx.preference", name = "preference-kt
 androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "androidx-recyclerview" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 picasso = { group = "com.squareup.picasso", name = "picasso", version.ref = "picasso" }
 prettytime = { group = "org.ocpsoft.prettytime", name = "prettytime", version.ref = "prettytime" }

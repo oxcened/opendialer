@@ -53,7 +53,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -104,7 +103,6 @@ fun CallsScreen(
 
     val calls = viewModel.calls.collectAsStateWithLifecycle()
     val favorites = viewModel.favorites.collectAsStateWithLifecycle()
-    val lastInvalidateCache = viewModel.lastInvalidateCache.collectAsStateWithLifecycle()
     val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
     var openRowId by remember { mutableStateOf<Int?>(null) }
     var favoritesExpanded by remember { mutableStateOf(true) }
@@ -126,9 +124,6 @@ fun CallsScreen(
         }
     }
 
-    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
-        viewModel.attemptInvalidateCache()
-    }
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         viewModel.startCache()
     }
@@ -192,10 +187,6 @@ fun CallsScreen(
                         CallDateHeader(date)
                     }
                     itemsIndexed(callsForDate, key = { _, call -> call.id }) { index, call ->
-                        LaunchedEffect(
-                            call,
-                            lastInvalidateCache.value
-                        ) { viewModel.updateContactInfo(call) }
                         val isOpen = openRowId == call.id
 
                         CallRow(call = call,

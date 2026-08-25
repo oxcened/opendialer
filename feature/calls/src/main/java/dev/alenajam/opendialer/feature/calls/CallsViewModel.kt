@@ -7,26 +7,24 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.ContactsHelper
 import dev.alenajam.opendialer.core.common.PermissionUtils
-import dev.alenajam.opendialer.data.calls.CallsRepositoryImpl
+import dev.alenajam.opendialer.data.calls.CallsRepository
 import dev.alenajam.opendialer.data.calls.DialerCall
-import dev.alenajam.opendialer.data.callsCache.CacheRepositoryImpl
-import dev.alenajam.opendialer.data.contacts.ContactsRepositoryImpl
+import dev.alenajam.opendialer.data.callsCache.CacheRepository
+import dev.alenajam.opendialer.data.contacts.ContactsRepository
 import dev.alenajam.opendialer.data.contacts.DialerContact
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
 class CallsViewModel
 @Inject constructor(
-    private val callsRepository: CallsRepositoryImpl,
-    private val contactsRepository: ContactsRepositoryImpl,
+    private val callsRepository: CallsRepository,
+    private val contactsRepository: ContactsRepository,
     private val app: Application,
-    private val cacheRepository: CacheRepositoryImpl,
-    private val startCacheUseCase: StartCache
+    private val cacheRepository: CacheRepository,
 ) : ViewModel() {
     private val _calls = MutableStateFlow<List<DialerCall>>(emptyList())
     val calls: StateFlow<List<DialerCall>> = _calls
@@ -34,10 +32,8 @@ class CallsViewModel
     val favorites: StateFlow<List<DialerContact>> = _favorites.asStateFlow()
     private val _hasRuntimePermission = MutableStateFlow(false)
     val hasRuntimePermission: StateFlow<Boolean> = _hasRuntimePermission
-    private val _lastInvalidateCache = MutableStateFlow<LocalDateTime?>(null)
-    val lastInvalidateCache: StateFlow<LocalDateTime?> = _lastInvalidateCache
-    private var shouldInvalidateCache = false
     private var hasContactsRuntimePermission = false
+    private var isCacheRunning = false
 
     init {
         _hasRuntimePermission.value = PermissionUtils.hasRecentsPermission(app)
@@ -51,7 +47,9 @@ class CallsViewModel
 
         viewModelScope.launch {
             callsRepository.getCalls().collect { calls ->
-                _calls.value = DialerCall.mapList(calls)
+                val dialerCalls = DialerCall.mapList(calls)
+                _calls.value = dialerCalls
+                if (isCacheRunning) refreshContactInfo(dialerCalls)
             }
         }
     }
@@ -61,8 +59,9 @@ class CallsViewModel
 
         viewModelScope.launch {
             contactsRepository.getContacts().collect { contacts ->
-                shouldInvalidateCache = true
                 _favorites.value = DialerContact.mapList(contacts).filter { it.starred }
+                cacheRepository.invalidate()
+                if (isCacheRunning) refreshContactInfo()
             }
         }
     }
@@ -101,49 +100,38 @@ class CallsViewModel
         }
     }
 
-    fun updateContactInfo(call: DialerCall) {
-        if (call.isAnonymous() || !hasContactsRuntimePermission) {
-            return
-        }
-
-        val callLogInfo = call.contactInfo
-
-        cacheRepository.requestUpdateContactInfo(
-            viewModelScope,
-            call.number,
-            call.countryIso,
-            callLogInfo = dev.alenajam.opendialer.data.callsCache.ContactInfo(
-                name = callLogInfo.name,
-                number = callLogInfo.number,
-                photoUri = callLogInfo.photoUri,
-                type = callLogInfo.type,
-                label = callLogInfo.label,
-                lookupUri = callLogInfo.lookupUri,
-                normalizedNumber = callLogInfo.normalizedNumber,
-                formattedNumber = callLogInfo.formattedNumber,
-                geoDescription = callLogInfo.geoDescription,
-                photoId = callLogInfo.photoId
-            )
-        )
-    }
-
     fun startCache() {
-        startCacheUseCase(viewModelScope, Unit) { /* TODO handle failure */ }
+        cacheRepository.start()
+        isCacheRunning = true
+        refreshContactInfo()
     }
 
     fun stopCache() {
+        isCacheRunning = false
         cacheRepository.stop()
     }
 
-    fun invalidateCache() {
-        cacheRepository.invalidate()
-        _lastInvalidateCache.value = LocalDateTime.now()
-    }
+    private fun refreshContactInfo(calls: List<DialerCall> = _calls.value) {
+        if (!hasContactsRuntimePermission) return
 
-    fun attemptInvalidateCache() {
-        if (shouldInvalidateCache) {
-            invalidateCache()
-            shouldInvalidateCache = false
+        calls.filterNot(DialerCall::isAnonymous).forEach { call ->
+            val callLogInfo = call.contactInfo
+            cacheRepository.requestUpdateContactInfo(
+                number = call.number,
+                countryIso = call.countryIso,
+                callLogInfo = dev.alenajam.opendialer.data.callsCache.ContactInfo(
+                    name = callLogInfo.name,
+                    number = callLogInfo.number,
+                    photoUri = callLogInfo.photoUri,
+                    type = callLogInfo.type,
+                    label = callLogInfo.label,
+                    lookupUri = callLogInfo.lookupUri,
+                    normalizedNumber = callLogInfo.normalizedNumber,
+                    formattedNumber = callLogInfo.formattedNumber,
+                    geoDescription = callLogInfo.geoDescription,
+                    photoId = callLogInfo.photoId,
+                ),
+            )
         }
     }
 }

@@ -8,6 +8,9 @@ import dev.alenajam.opendialer.core.aosp.UriUtils
 import dev.alenajam.opendialer.core.common.exception.Failure
 import dev.alenajam.opendialer.core.common.functional.Either
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,26 +19,31 @@ import javax.inject.Singleton
 @Singleton
 class CacheRepositoryImpl
 @Inject constructor(private val app: Application) : CacheRepository {
-    companion object {
-        private val TAG = CacheRepositoryImpl::class.simpleName
-    }
-
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private var channel: Channel<ContactInfoRequest>? = null
-    private val updatedNumbers = mutableSetOf<NumberWithCountryIso>()
+    private var worker: Job? = null
+    private val requestDeduplicator = ContactInfoRequestDeduplicator()
 
-    override suspend fun start(): Either<Failure, Unit> {
-        channel = Channel()
-        channel?.let {
-            for (request in it) {
+    @Synchronized
+    override fun start() {
+        if (worker?.isActive == true) return
+
+        val requests = Channel<ContactInfoRequest>(Channel.BUFFERED)
+        channel = requests
+        worker = scope.launch {
+            for (request in requests) {
                 attemptUpdateContactInfo(request)
             }
         }
-        return Either.Right(Unit)
     }
 
+    @Synchronized
     override fun stop() {
         channel?.cancel()
         channel = null
+        worker?.cancel()
+        worker = null
+        requestDeduplicator.clear()
     }
 
     private fun attemptUpdateContactInfo(request: ContactInfoRequest) {
@@ -63,30 +71,35 @@ class CacheRepositoryImpl
         )
     }
 
+    @Synchronized
     override fun requestUpdateContactInfo(
-        coroutineScope: CoroutineScope,
         number: String?,
         countryIso: String?,
         callLogInfo: ContactInfo
     ): Either<Failure, Unit> {
-        val numberWithCountryIso = NumberWithCountryIso(number, countryIso)
+        if (number == null) return Either.Right(Unit)
 
-        if (!updatedNumbers.contains(numberWithCountryIso)) {
-            updatedNumbers.add(numberWithCountryIso)
-            val request = ContactInfoRequest(
-                numberWithCountryIso.number,
-                numberWithCountryIso.countryIso,
-                callLogInfo
-            )
-
-            coroutineScope.launch { channel?.send(request) }
+        val requests = channel ?: return Either.Left(Failure.LocalFailure)
+        if (!requestDeduplicator.markIfNew(number, countryIso)) {
+            return Either.Right(Unit)
         }
 
-        return Either.Right(Unit)
+        val request = ContactInfoRequest(
+            number,
+            countryIso,
+            callLogInfo
+        )
+        return if (requests.trySend(request).isSuccess) {
+            Either.Right(Unit)
+        } else {
+            requestDeduplicator.remove(number, countryIso)
+            Either.Left(Failure.LocalFailure)
+        }
     }
 
+    @Synchronized
     override fun invalidate() {
-        updatedNumbers.clear()
+        requestDeduplicator.clear()
     }
 }
 

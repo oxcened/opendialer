@@ -103,6 +103,11 @@ public class ContactInfoHelper {
                 needsUpdate = true;
             }
 
+            if (!TextUtils.equals(updatedInfo.getLookupUri(), callLogInfo.getLookupUri())) {
+                values.put(Calls.CACHED_LOOKUP_URI, updatedInfo.getLookupUri());
+                needsUpdate = true;
+            }
+
             if (!Objects.equals(updatedInfo.getType(), callLogInfo.getType())) {
                 values.put(Calls.CACHED_NUMBER_TYPE, updatedInfo.getType());
                 needsUpdate = true;
@@ -122,6 +127,12 @@ public class ContactInfoHelper {
 
             if (!TextUtils.equals(updatedInfo.getNumber(), callLogInfo.getNumber())) {
                 values.put(Calls.CACHED_MATCHED_NUMBER, updatedInfo.getNumber());
+                needsUpdate = true;
+            }
+
+            if (!TextUtils.isEmpty(updatedInfo.getFormattedNumber())
+                    && !TextUtils.equals(updatedInfo.getFormattedNumber(), callLogInfo.getFormattedNumber())) {
+                values.put(Calls.CACHED_FORMATTED_NUMBER, updatedInfo.getFormattedNumber());
                 needsUpdate = true;
             }
 
