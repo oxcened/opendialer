@@ -1,2 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string-array name="array_quick_responses">
+        <item name="array_quick_responses0">Kan ikke snakke nå. Hva skjer?</item>
+        <item name="array_quick_responses1">Jeg ringer deg straks tilbake.</item>
+        <item name="array_quick_responses2">Jeg ringer deg senere.</item>
+        <item name="array_quick_responses3">Kan ikke snakke nå. Ring meg senere?</item>
+    </string-array>
+</resources>
