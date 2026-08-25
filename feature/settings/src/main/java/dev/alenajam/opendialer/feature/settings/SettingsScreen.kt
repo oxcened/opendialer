@@ -1,9 +1,16 @@
 package dev.alenajam.opendialer.feature.settings
 
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.provider.BlockedNumberContract
+import android.telecom.TelecomManager
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,18 +27,73 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.alenajam.opendialer.core.common.copy
 
+private data class SettingsListItem(
+    val title: String,
+    val description: String?,
+    val onClick: () -> Unit
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     onNavigateBack: () -> Unit,
+    onOpenQuickResponses: () -> Unit = {},
+    onOpenDisplayOptions: () -> Unit = {},
     subpages: List<SettingsSubpage> = emptyList(),
     onOpenSubpage: (Int) -> Unit = {}
 ) {
+    val context = LocalContext.current
+    val canManageBlockedNumbers = BlockedNumberContract.canCurrentUserBlockNumbers(context)
+    val dialerItems = buildList {
+        add(
+            SettingsListItem(
+                title = context.getString(R.string.display_options),
+                description = context.getString(R.string.display_options_description),
+                onClick = onOpenDisplayOptions
+            )
+        )
+        add(
+            SettingsListItem(
+                title = context.getString(R.string.customize_quick_responses),
+                description = context.getString(R.string.customize_quick_responses_description),
+                onClick = onOpenQuickResponses
+            )
+        )
+        if (canManageBlockedNumbers) {
+            add(
+                SettingsListItem(
+                    title = context.getString(R.string.manageBlockedNumbers),
+                    description = context.getString(R.string.manage_blocked_numbers_description),
+                    onClick = {
+                        try {
+                            val telecomManager = context.getSystemService(Context.TELECOM_SERVICE)
+                                as? TelecomManager
+                            val intent = telecomManager?.createManageBlockedNumbersIntent()
+                                ?: throw ActivityNotFoundException()
+                            context.startActivity(intent)
+                        } catch (_: ActivityNotFoundException) {
+                            Toast.makeText(
+                                context,
+                                R.string.manage_blocked_numbers_unavailable,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                )
+            )
+        }
+    }
+    val extensionItems = subpages.mapIndexed { index, page ->
+        SettingsListItem(page.title, page.description) { onOpenSubpage(index) }
+    }
+    val extensionTitle = appLabel(context)
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -51,25 +113,60 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Top
         ) {
-            subpages.forEachIndexed { index, page ->
-                Card(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 1.dp),
-                    onClick = { onOpenSubpage(index) },
-                    shape = RoundedCornerShape(
-                        topStart = if (index == 0) 20.dp else 2.dp,
-                        topEnd = if (index == 0) 20.dp else 2.dp,
-                        bottomStart = if (index == subpages.lastIndex) 20.dp else 2.dp,
-                        bottomEnd = if (index == subpages.lastIndex) 20.dp else 2.dp
-                    ),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 0.5.dp)
-                ) {
-                    Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)) {
-                        Text(page.title, style = MaterialTheme.typography.titleMedium)
-                        page.description?.let { Text(it, style = MaterialTheme.typography.bodyMedium) }
-                    }
-                }
+            SettingsSection(
+                title = stringResource(R.string.dialer),
+                items = dialerItems
+            )
+            if (extensionItems.isNotEmpty()) {
+                Spacer(Modifier.height(12.dp))
+                SettingsSection(title = extensionTitle, items = extensionItems)
             }
+        }
+    }
+}
+
+@Composable
+private fun SettingsSection(title: String, items: List<SettingsListItem>) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.titleMedium,
+        modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp)
+    )
+    items.forEachIndexed { index, item ->
+        SettingsCard(
+            title = item.title,
+            description = item.description,
+            onClick = item.onClick,
+            shape = RoundedCornerShape(
+                topStart = if (index == 0) 20.dp else 2.dp,
+                topEnd = if (index == 0) 20.dp else 2.dp,
+                bottomStart = if (index == items.lastIndex) 20.dp else 2.dp,
+                bottomEnd = if (index == items.lastIndex) 20.dp else 2.dp
+            )
+        )
+    }
+}
+
+private fun appLabel(context: Context): String =
+    context.applicationInfo.loadLabel(context.packageManager).toString()
+
+@Composable
+private fun SettingsCard(
+    title: String,
+    description: String?,
+    onClick: () -> Unit,
+    shape: RoundedCornerShape = RoundedCornerShape(20.dp)
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 1.dp),
+        onClick = onClick,
+        shape = shape,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.5.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(title, style = MaterialTheme.typography.titleMedium)
+            description?.let { Text(it, style = MaterialTheme.typography.bodyMedium) }
         }
     }
 }

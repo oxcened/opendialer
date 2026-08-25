@@ -298,7 +298,7 @@ private fun MoreActionRow(
     Surface(
         onClick = action.onClick,
         enabled = action.enabled,
-        color = if (action.enabled) Color.White else MaterialTheme.colorScheme.surfaceContainerHigh,
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
         shape = RoundedCornerShape(
             topStart = if (roundTop) 20.dp else 2.dp,
             topEnd = if (roundTop) 20.dp else 2.dp,

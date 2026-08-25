@@ -9,6 +9,12 @@ data object SettingsRoute
 data object AboutRoute
 
 @Serializable
+data object QuickResponsesRoute
+
+@Serializable
+data object DisplayOptionsRoute
+
+@Serializable
 data class SettingsSubpageRoute(val index: Int)
 
 @Serializable

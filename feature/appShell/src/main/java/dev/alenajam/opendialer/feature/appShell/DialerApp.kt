@@ -32,6 +32,10 @@ import dev.alenajam.opendialer.feature.contactsSearch.ContactsSearchRoute
 import dev.alenajam.opendialer.feature.contactsSearch.ContactsSearchScreen
 import dev.alenajam.opendialer.feature.settings.SettingsRoute
 import dev.alenajam.opendialer.feature.settings.SettingsScreen
+import dev.alenajam.opendialer.feature.settings.QuickResponsesRoute
+import dev.alenajam.opendialer.feature.settings.QuickResponsesScreen
+import dev.alenajam.opendialer.feature.settings.DisplayOptionsRoute
+import dev.alenajam.opendialer.feature.settings.DisplayOptionsScreen
 import dev.alenajam.opendialer.feature.settings.AboutRoute
 import dev.alenajam.opendialer.feature.settings.AboutScreen
 import dev.alenajam.opendialer.feature.settings.SettingsSubpage
@@ -106,12 +110,20 @@ fun DialerApp(
                 composable<SettingsRoute> {
                     SettingsScreen(
                         onNavigateBack = { navController.popBackStack() },
+                        onOpenQuickResponses = { navController.navigate(QuickResponsesRoute) },
+                        onOpenDisplayOptions = { navController.navigate(DisplayOptionsRoute) },
                         subpages = settingsSubpages,
                         onOpenSubpage = { navController.navigate(SettingsSubpageRoute(it)) }
                     )
                 }
                 composable<AboutRoute> {
                     AboutScreen(onNavigateBack = { navController.popBackStack() })
+                }
+                composable<QuickResponsesRoute> {
+                    QuickResponsesScreen(onNavigateBack = { navController.popBackStack() })
+                }
+                composable<DisplayOptionsRoute> {
+                    DisplayOptionsScreen(onNavigateBack = { navController.popBackStack() })
                 }
                 composable<SettingsSubpageRoute> { backStackEntry ->
                     val route = backStackEntry.toRoute<SettingsSubpageRoute>()

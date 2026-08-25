@@ -41,7 +41,7 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import dev.alenajam.opendialer.core.common.LocalCustomColorsScheme
-import dev.alenajam.opendialer.core.common.R as CommonR
+import dev.alenajam.opendialer.core.common.SharedPreferenceHelper
 import dev.alenajam.opendialer.feature.inCall.R
 
 @Composable
@@ -53,7 +53,7 @@ fun IncomingCallControls(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val quickResponses = remember { context.resources.getStringArray(CommonR.array.array_quick_responses) }
+    val quickResponses = remember { SharedPreferenceHelper.getQuickResponses(context) }
     var showQuickResponses by remember { mutableStateOf(false) }
     var showCustomMessage by remember { mutableStateOf(false) }
     var customMessage by remember { mutableStateOf("") }
@@ -77,7 +77,7 @@ fun IncomingCallControls(
             Surface(
                 onClick = { showQuickResponses = true },
                 shape = RoundedCornerShape(28.dp),
-                color = Color.White,
+                color = MaterialTheme.colorScheme.surfaceContainerHigh,
                 modifier = Modifier.semantics {
                     contentDescription = messageDescription
                     role = Role.Button

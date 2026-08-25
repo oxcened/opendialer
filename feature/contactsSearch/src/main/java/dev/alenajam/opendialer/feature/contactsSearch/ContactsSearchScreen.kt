@@ -17,7 +17,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -29,6 +29,8 @@ import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.PersonAddAlt
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -211,12 +213,14 @@ private fun SearchList(
                     )
                 }
             }
-            items(contacts) { contact ->
+            itemsIndexed(contacts) { index, contact ->
                 val rowKey = "${contact.contactId}-${contact.number}"
                 val isOpen = openRowKey == rowKey
                 ResultRow(
                     contact = contact,
                     isOpen = isOpen,
+                    isFirst = index == 0,
+                    isLast = index == contacts.lastIndex,
                     onClick = { onRowClick(rowKey) },
                     onCall = { onCall(contact) },
                     onMessage = { onMessage(contact) },
@@ -233,6 +237,8 @@ private fun SearchList(
 private fun ResultRow(
     contact: DialerSearchContact,
     isOpen: Boolean,
+    isFirst: Boolean,
+    isLast: Boolean,
     onClick: () -> Unit,
     onCall: () -> Unit,
     onMessage: () -> Unit,
@@ -240,7 +246,20 @@ private fun ResultRow(
     onOpenContact: () -> Unit,
     onHistory: () -> Unit
 ) {
-    Surface(onClick = onClick) {
+    Card(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 1.dp),
+        shape = RoundedCornerShape(
+            topStart = if (isFirst) 20.dp else 2.dp,
+            topEnd = if (isFirst) 20.dp else 2.dp,
+            bottomStart = if (isLast) 20.dp else 2.dp,
+            bottomEnd = if (isLast) 20.dp else 2.dp
+        ),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.5.dp)
+    ) {
         Column {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),

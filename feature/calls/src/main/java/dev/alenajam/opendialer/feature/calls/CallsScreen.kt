@@ -444,19 +444,21 @@ private fun CallRow(
             ).toString()
         }
         .orEmpty()
+    val cardShape = RoundedCornerShape(
+        topStart = if (roundTop) 20.dp else 2.dp,
+        topEnd = if (roundTop) 20.dp else 2.dp,
+        bottomStart = if (roundBottom) 20.dp else 2.dp,
+        bottomEnd = if (roundBottom) 20.dp else 2.dp,
+    )
 
     Box {
         Surface(
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 1.dp)
+                .clip(cardShape)
                 .combinedClickable(onClick = onClick, onLongClick = { contextMenuExpanded = true }),
-            shape = RoundedCornerShape(
-            topStart = if (roundTop) 20.dp else 2.dp,
-            topEnd = if (roundTop) 20.dp else 2.dp,
-            bottomStart = if (roundBottom) 20.dp else 2.dp,
-            bottomEnd = if (roundBottom) 20.dp else 2.dp,
-        ),
-            color = Color.White,
+            shape = cardShape,
+            color = MaterialTheme.colorScheme.surfaceContainerHigh,
             shadowElevation = 0.5.dp,
         ) {
         Column {

@@ -29,7 +29,7 @@ public abstract class SharedPreferenceHelper {
 
         String theme = sharedPreferences.getString(SharedPreferenceHelper.KEY_SETTING_THEME, null);
         try {
-            CommonUtils.setTheme(theme == null ? AppCompatDelegate.MODE_NIGHT_NO : Integer.parseInt(theme));
+            CommonUtils.setTheme(theme == null ? AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM : Integer.parseInt(theme));
         } catch (NumberFormatException e) {
             if (e.getLocalizedMessage() != null)
                 Log.d(App.class.getSimpleName(), e.getLocalizedMessage());
