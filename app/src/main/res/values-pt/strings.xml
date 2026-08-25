@@ -1,13 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="channel_incoming_calls">Chamadas em entrada</string>
-    <string name="channel_ongoing_calls">Chamadas em progresso</string>
-    <string name="channel_outgoing_calls">Chamadas em saída</string>
-    <string name="contacts">Contatos</string>
-    <string name="copy_number">Copia numero</string>
-    <string name="edit_number_before_call">Muda numero antes de ligar</string>
-    <string name="recents">Recentes</string>
-    <string name="write_your_own">Personalização...</string>
-    <string name="placeholder_call_log">Para ver o seu registro de chamadas, veja as permissões do telefone</string>
-    <string name="turn_on">Ligue</string>
-</resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"></resources>
