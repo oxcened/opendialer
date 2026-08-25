@@ -1,3 +1,19 @@
 files:
   - source: app/src/main/res/values/strings.xml
     translation: /app/src/main/res/values-%two_letters_code%/%original_file_name%
+  - source: /core/common/src/main/res/values/strings.xml
+    translation: /core/common/src/main/res/values-%two_letters_code%/strings.xml
+  - source: /feature/appShell/src/main/res/values/strings.xml
+    translation: /feature/appShell/src/main/res/values-%two_letters_code%/strings.xml
+  - source: /feature/callDetail/src/main/res/values/strings.xml
+    translation: /feature/callDetail/src/main/res/values-%two_letters_code%/strings.xml
+  - source: /feature/calls/src/main/res/values/strings.xml
+    translation: /feature/calls/src/main/res/values-%two_letters_code%/strings.xml
+  - source: /feature/contacts/src/main/res/values/strings.xml
+    translation: /feature/contacts/src/main/res/values-%two_letters_code%/strings.xml
+  - source: /feature/contactsSearch/src/main/res/values/strings.xml
+    translation: /feature/contactsSearch/src/main/res/values-%two_letters_code%/strings.xml
+  - source: /feature/inCall/src/main/res/values/strings.xml
+    translation: /feature/inCall/src/main/res/values-%two_letters_code%/strings.xml
+  - source: /feature/settings/src/main/res/values/strings.xml
+    translation: /feature/settings/src/main/res/values-%two_letters_code%/strings.xml
