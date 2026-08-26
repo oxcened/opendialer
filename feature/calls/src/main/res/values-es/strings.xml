@@ -14,7 +14,6 @@
     <string name="open_contact" comment="Menu action that opens the selected person's contact details.">Abrir contacto</string>
     <string name="call_log_date_today" comment="Date-group heading for calls made or received today.">Hoy</string>
     <string name="call_log_date_yesterday" comment="Date-group heading for calls made or received yesterday.">Ayer</string>
-    <string name="call_log_type_time" comment="Call-log summary. %1$s is the call type and %2$s is the call time.">%1$s • %2$s</string>
     <string name="filter_all" comment="Call-history filter that includes every call.">Todas</string>
     <string name="filter_missed" comment="Call-history filter that includes only missed calls.">Perdidas</string>
     <string name="filter_voicemail" comment="Call-history filter that includes only voicemail entries.">Buzón de voz</string>
