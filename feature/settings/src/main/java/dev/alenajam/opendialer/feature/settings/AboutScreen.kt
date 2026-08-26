@@ -110,6 +110,13 @@ fun AboutScreen(
             )
 
             Column {
+                val monsterDialerTranslationTitle =
+                    stringResource(R.string.contribute_monsterdialer_translations)
+                val monsterDialerTranslationDescription =
+                    stringResource(R.string.contribute_monsterdialer_translations_description)
+                val monsterDialerTranslationUri =
+                    stringResource(R.string.url_crowdin_monsterdialer)
+
                 AboutLinkCard(
                     title = stringResource(R.string.join_discord),
                     description = stringResource(R.string.discord_description),
@@ -117,6 +124,19 @@ fun AboutScreen(
                     roundTop = true,
                     roundBottom = false
                 )
+
+                if (monsterDialerTranslationTitle.isNotBlank() &&
+                    monsterDialerTranslationDescription.isNotBlank() &&
+                    monsterDialerTranslationUri.isNotBlank()
+                ) {
+                    AboutLinkCard(
+                        title = monsterDialerTranslationTitle,
+                        description = monsterDialerTranslationDescription,
+                        uri = monsterDialerTranslationUri,
+                        roundTop = false,
+                        roundBottom = false
+                    )
+                }
 
                 AboutLinkCard(
                     title = stringResource(R.string.contribute_translations),

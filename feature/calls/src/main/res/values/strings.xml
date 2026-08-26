@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="copy_number">Copy number</string>
-    <string name="create_new_contact">Create new contact</string>
-    <string name="add_to_a_contact">Add to a contact</string>
-    <string name="send_message">Send message</string>
-    <string name="edit_number_before_call">Edit number before call</string>
-    <string name="blockThisCaller">Block this caller</string>
-    <string name="unblockThisCaller">Unblock this caller</string>
-    <string name="delete">Delete</string>
-    <string name="anonymous">Anonymous</string>
-    <string name="placeholder_call_log">To see your call log, turn on the phone permissions</string>
-    <string name="turn_on">Turn on</string>
-    <string name="open_contact">Open contact</string>
-    <string name="call_log_date_today">Today</string>
-    <string name="call_log_date_yesterday">Yesterday</string>
-    <string name="call_log_type_time">%1$s • %2$s</string>
-    <string name="filter_all">All</string>
-    <string name="filter_missed">Missed</string>
-    <string name="filter_voicemail">Voicemail</string>
-    <string name="filter_contacts">Contacts</string>
-    <string name="favorites">Favorites</string>
-    <string name="view_contacts">View contacts</string>
-    <string name="add">Add</string>
-    <string name="remove">Remove</string>
-    <string name="history">History</string>
-    <string name="block_confirmation_title">Block %1$s?</string>
-    <string name="block_confirmation_message">You won\'t receive calls or texts from this number.</string>
-    <string name="delete_call_title">Delete call from history?</string>
-    <string name="delete_call_message">This removes this call from your call log.</string>
-    <string name="cancel">Cancel</string>
+    <string name="copy_number" comment="Menu action that copies a phone number to the clipboard.">Copy number</string>
+    <string name="create_new_contact" comment="Menu action that creates a contact from the selected phone number.">Create new contact</string>
+    <string name="add_to_a_contact" comment="Menu action that adds the selected phone number to an existing contact.">Add to a contact</string>
+    <string name="send_message" comment="Menu action that starts a text message to the selected phone number.">Send message</string>
+    <string name="edit_number_before_call" comment="Menu action that lets the user edit a phone number before calling it.">Edit number before call</string>
+    <string name="blockThisCaller" comment="Menu action that blocks calls and messages from the selected caller.">Block this caller</string>
+    <string name="unblockThisCaller" comment="Menu action that removes the block from the selected caller.">Unblock this caller</string>
+    <string name="delete" comment="Menu action that deletes the selected call-log entry.">Delete</string>
+    <string name="anonymous" comment="Fallback caller name when the phone number is withheld.">Anonymous</string>
+    <string name="placeholder_call_log" comment="Empty-state message shown when phone permission is required to display call history.">To see your call log, turn on the phone permissions</string>
+    <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">Turn on</string>
+    <string name="open_contact" comment="Menu action that opens the selected person's contact details.">Open contact</string>
+    <string name="call_log_date_today" comment="Date-group heading for calls made or received today.">Today</string>
+    <string name="call_log_date_yesterday" comment="Date-group heading for calls made or received yesterday.">Yesterday</string>
+    <string name="call_log_type_time" comment="Call-log summary. %1$s is the call type and %2$s is the call time.">%1$s • %2$s</string>
+    <string name="filter_all" comment="Call-history filter that includes every call.">All</string>
+    <string name="filter_missed" comment="Call-history filter that includes only missed calls.">Missed</string>
+    <string name="filter_voicemail" comment="Call-history filter that includes only voicemail entries.">Voicemail</string>
+    <string name="filter_contacts" comment="Call-history filter that includes only saved contacts.">Contacts</string>
+    <string name="favorites" comment="Heading or navigation label for favorite contacts.">Favorites</string>
+    <string name="view_contacts" comment="Button that opens the full contact list.">View contacts</string>
+    <string name="add" comment="Button that adds the selected item.">Add</string>
+    <string name="remove" comment="Button that removes the selected item.">Remove</string>
+    <string name="history" comment="Action that opens the selected contact's call history.">History</string>
+    <string name="block_confirmation_title" comment="Title of the block-caller confirmation dialog. %1$s is the caller name or phone number.">Block %1$s?</string>
+    <string name="block_confirmation_message" comment="Explanation in the block-caller confirmation dialog.">You won\'t receive calls or texts from this number.</string>
+    <string name="delete_call_title" comment="Title of the dialog confirming removal of a call-log entry.">Delete call from history?</string>
+    <string name="delete_call_message" comment="Explanation in the dialog confirming removal of a call-log entry.">This removes this call from your call log.</string>
+    <string name="cancel" comment="Button that dismisses the current dialog without applying changes.">Cancel</string>
 </resources>
