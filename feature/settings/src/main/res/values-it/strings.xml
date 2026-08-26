@@ -1,2 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="customize_quick_responses" comment="Settings item title for editing preset decline-with-message replies.">Personalizza risposte rapide</string>
+    <string name="customize_quick_responses_description" comment="Settings item summary for preset decline-with-message replies.">Modifica i messaggi inviati quando rifiuti una chiamata</string>
+    <string name="edit_quick_response" comment="Title of the dialog for editing a preset decline-with-message reply.">Modifica risposta rapida</string>
+    <string name="add" comment="Button that adds the selected item.">Aggiungi</string>
+    <string name="quick_response" comment="Text-field label for a preset decline-with-message reply.">Risposta rapida</string>
+    <string name="save" comment="Button that saves the edited setting.">Salva</string>
+    <string name="cancel" comment="Button that dismisses the current dialog without applying changes.">Annulla</string>
+    <string name="light" comment="Theme option that always uses the light color scheme.">Chiaro</string>
+    <string name="dark" comment="Theme option that always uses the dark color scheme.">Scuro</string>
+    <string name="set_battery_saver" comment="Theme option that follows the device or battery-saver setting.">Usa impostazione di sistema</string>
+    <string name="theme" comment="Settings item title for choosing the app color theme.">Tema</string>
+    <string name="display_options" comment="Settings section title for appearance preferences.">Opzioni di visualizzazione</string>
+    <string name="display_options_description" comment="Settings section summary for appearance preferences.">Scegli l’aspetto di OpenDialer</string>
+    <string name="dialer" comment="Settings section title for phone-related preferences.">Telefono</string>
+    <string name="manageBlockedNumbers" comment="Settings item title that opens the system blocked-number list.">Gestisci numeri bloccati</string>
+    <string name="manage_blocked_numbers_description" comment="Settings item summary for reviewing blocked phone numbers.">Controlla e sblocca i numeri di telefono</string>
+    <string name="manage_blocked_numbers_unavailable" comment="Message shown when the device has no blocked-number settings screen.">Le impostazioni dei numeri bloccati non sono disponibili su questo dispositivo</string>
+    <string name="screen_settings_title" comment="Title of the Settings screen.">Impostazioni</string>
+    <string name="screen_about_title" comment="Title of the About screen.">Informazioni</string>
+    <string name="about_section_developer" comment="Heading for developer information on the About screen.">Sviluppatore</string>
+    <string name="about_section_community" comment="Heading for community links on the About screen.">Community</string>
+    <string name="about_section_open_source" comment="Heading for source-code and support links on the About screen.">Open source e assistenza</string>
+    <string name="about_section_credits" comment="Heading for third-party credits on the About screen.">Riconoscimenti</string>
+    <string name="typography_credit_title" comment="Title of the font credit card on the About screen.">Tipografia</string>
+    <string name="developer_website" comment="Description of the developer website link. %1$s is the website domain.">Visita %1$s</string>
+    <string name="join_discord" comment="Title of the community Discord link on the About screen.">Unisciti a Discord</string>
+    <string name="discord_description" comment="Description of the community Discord link on the About screen.">Parla con la community e segui lo sviluppo</string>
+    <string name="contribute_translations" comment="Title of the OpenDialer translation contribution link on the About screen.">Contribuisci alle traduzioni</string>
+    <string name="contribute_translations_description" comment="Description of the OpenDialer translation contribution link on the About screen.">Aiuta a rendere OpenDialer disponibile in più lingue.</string>
+    <string name="feature_requests" comment="Title of the feature-request link on the About screen.">Richieste di funzionalità</string>
+    <string name="feature_requests_description" comment="Description of the feature-request link on the About screen.">Proponi e vota nuove idee per OpenDialer.</string>
+    <string name="view_source_code" comment="Title of the source-code link on the About screen.">Visualizza codice sorgente</string>
+    <string name="open_source_description" comment="Description of the source-code link on the About screen.">OpenDialer è open source. Esplora il codice e contribuisci su GitHub.</string>
+    <string name="report_an_issue" comment="Title of the issue-reporting link on the About screen.">Segnala un problema</string>
+    <string name="issues_description" comment="Description of the issue-reporting link on the About screen.">Hai trovato un problema o hai un’idea? Apri una segnalazione su GitHub.</string>
+    <string name="contact_developer" comment="Title of the developer email link on the About screen.">Contatti</string>
+    <string name="font_credit_format" comment="Font credit. %1$s is the font name and %2$s is the font author.">%1$s di %2$s</string>
+</resources>
