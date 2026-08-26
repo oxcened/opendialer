@@ -93,7 +93,10 @@ fun AboutScreen(
             Column {
                 AboutLinkCard(
                     title = stringResource(R.string.developer_credit),
-                    description = stringResource(R.string.developer_role),
+                    description = stringResource(
+                        R.string.developer_website,
+                        stringResource(R.string.developer_domain)
+                    ),
                     uri = stringResource(R.string.url_developer),
                     roundTop = true,
                     roundBottom = true
@@ -164,8 +167,9 @@ fun AboutScreen(
                 )
             }
 
-            val fontCredit = stringResource(R.string.font_credit)
-            if (fontCredit.isNotBlank()) {
+            val fontName = stringResource(R.string.font_name)
+            val fontAuthor = stringResource(R.string.font_author)
+            if (fontName.isNotBlank() && fontAuthor.isNotBlank()) {
                 Text(
                     modifier = Modifier.padding(top = 4.dp),
                     text = stringResource(R.string.about_section_credits),
@@ -173,7 +177,7 @@ fun AboutScreen(
                 )
                 AboutInfoCard(
                     title = stringResource(R.string.typography_credit_title),
-                    description = fontCredit,
+                    description = stringResource(R.string.font_credit_format, fontName, fontAuthor),
                     roundTop = true,
                     roundBottom = true
                 )

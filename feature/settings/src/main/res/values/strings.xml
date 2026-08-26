@@ -27,7 +27,8 @@
     <string name="about_section_credits">Credits</string>
     <string name="typography_credit_title">Typography</string>
     <string name="developer_credit" translatable="false">Alen Ajam</string>
-    <string name="developer_role" translatable="false">alenajam.dev</string>
+    <string name="developer_domain" translatable="false">alenajam.dev</string>
+    <string name="developer_website">Visit %1$s</string>
     <string name="url_developer" translatable="false">https://alenajam.dev</string>
     <string name="join_discord">Join the Discord</string>
     <string name="discord_description">Chat with the community and follow development</string>
@@ -47,5 +48,7 @@
     <string name="contact_developer">Contact</string>
     <string name="contact_email" translatable="false">hello@alenajam.dev</string>
     <string name="url_contact_email" translatable="false">mailto:hello@alenajam.dev</string>
-    <string name="font_credit" translatable="false"></string>
+    <string name="font_name" translatable="false"></string>
+    <string name="font_author" translatable="false"></string>
+    <string name="font_credit_format">%1$s by %2$s</string>
 </resources>
