@@ -7,7 +7,12 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.firebase.crashlytics)
-    alias(libs.plugins.google.services)
+}
+
+// Firebase is used for production telemetry, but local debug builds should not
+// require credentials that are intentionally excluded from source control.
+if (file("google-services.json").isFile) {
+    apply(plugin = "com.google.gms.google-services")
 }
 
 val appVersionName = providers.gradleProperty("appVersionName").orNull
