@@ -2,6 +2,7 @@ package dev.alenajam.opendialer.feature.appShell
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,48 +37,57 @@ internal fun DefaultPhoneScreen(onSetAsDefault: () -> Unit) {
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background,
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 32.dp, vertical = 48.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            DefaultPhoneIllustration()
-            Spacer(Modifier.height(64.dp))
-            Text(
-                text = stringResource(R.string.default_phone_title),
-                color = MaterialTheme.colorScheme.onBackground,
-                style = MaterialTheme.typography.headlineMedium,
-                textAlign = TextAlign.Center,
-            )
-            Spacer(Modifier.height(20.dp))
-            Text(
-                text = stringResource(R.string.default_phone_description),
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Normal,
-                ),
-                textAlign = TextAlign.Center,
-            )
-            Spacer(Modifier.height(28.dp))
-            Button(
-                onClick = onSetAsDefault,
-                shape = RoundedCornerShape(24.dp),
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+            val isCompactHeight = maxHeight < 720.dp
+            val verticalPadding = if (isCompactHeight) 24.dp else 48.dp
+            val illustrationSize = if (isCompactHeight) 180.dp else 280.dp
+            val illustrationSpacing = if (isCompactHeight) 24.dp else 64.dp
+            val titleSpacing = if (isCompactHeight) 12.dp else 20.dp
+            val buttonSpacing = if (isCompactHeight) 20.dp else 28.dp
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 32.dp, vertical = verticalPadding),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
             ) {
+                DefaultPhoneIllustration(illustrationSize = illustrationSize)
+                Spacer(Modifier.height(illustrationSpacing))
                 Text(
-                    text = stringResource(R.string.default_phone_button),
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp),
+                    text = stringResource(R.string.default_phone_title),
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.headlineMedium,
+                    textAlign = TextAlign.Center,
                 )
+                Spacer(Modifier.height(titleSpacing))
+                Text(
+                    text = stringResource(R.string.default_phone_description),
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Normal,
+                    ),
+                    textAlign = TextAlign.Center,
+                )
+                Spacer(Modifier.height(buttonSpacing))
+                Button(
+                    onClick = onSetAsDefault,
+                    shape = RoundedCornerShape(24.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.default_phone_button),
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp),
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-private fun DefaultPhoneIllustration() {
+private fun DefaultPhoneIllustration(illustrationSize: androidx.compose.ui.unit.Dp) {
     val outline = MaterialTheme.colorScheme.outline
     val primaryContainer = MaterialTheme.colorScheme.primaryContainer
     val primary = MaterialTheme.colorScheme.primary
@@ -87,7 +97,7 @@ private fun DefaultPhoneIllustration() {
     val shadow = MaterialTheme.colorScheme.surfaceContainerHighest
 
     androidx.compose.foundation.layout.Box(
-        modifier = Modifier.size(280.dp),
+        modifier = Modifier.size(illustrationSize),
         contentAlignment = Alignment.Center,
     ) {
         Canvas(Modifier.fillMaxSize()) {

@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.ui.ContactAvatar
 import dev.alenajam.opendialer.feature.inCall.R
@@ -26,7 +27,8 @@ fun InCallDetails(
     durationMillis: Long,
     callerImageUri: String? = null,
     modifier: Modifier = Modifier,
-    showCallerImage: Boolean = true
+    showCallerImage: Boolean = true,
+    useCompactCallerText: Boolean = false,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -44,11 +46,18 @@ fun InCallDetails(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(if (useCompactCallerText) 0.dp else 8.dp))
 
         Text(
             text = displayName,
-            style = MaterialTheme.typography.headlineLarge,
+            style = if (useCompactCallerText) {
+                MaterialTheme.typography.headlineLarge.copy(
+                    fontSize = 24.sp,
+                    lineHeight = 28.sp,
+                )
+            } else {
+                MaterialTheme.typography.headlineLarge
+            },
             textAlign = TextAlign.Center,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
@@ -61,7 +70,11 @@ fun InCallDetails(
                 } else {
                     stringResource(R.string.caller_number_subtitle, callerNumberLabel, callerNumber)
                 },
-                style = MaterialTheme.typography.bodyLarge,
+                style = if (useCompactCallerText) {
+                    MaterialTheme.typography.bodyMedium
+                } else {
+                    MaterialTheme.typography.bodyLarge
+                },
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
