@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="channel_incoming_calls">Llamadas entrantes</string>
-    <string name="channel_ongoing_calls">Llamadas en curso</string>
-    <string name="channel_outgoing_calls">Llamadas salientes</string>
-    <string name="contacts">Contactos</string>
-    <string name="copy_number">Copiar número</string>
-    <string name="edit_number_before_call">Editar número antes de llamar</string>
-    <string name="recents">Recientes</string>
-    <string name="write_your_own">Escribe tu mensaje...</string>
-    <string name="placeholder_call_log">Para ver el registro de llamadas, debes activar los permisos</string>
-    <string name="turn_on">Activar</string>
+    <string name="channel_incoming_calls" comment="Android notification channel for incoming calls.">Llamadas entrantes</string>
+    <string name="channel_ongoing_calls" comment="Android notification channel for active calls.">Llamadas en curso</string>
+    <string name="channel_outgoing_calls" comment="Android notification channel for outgoing calls.">Llamadas salientes</string>
+    <string name="contacts" comment="Bottom navigation tab for the contact list.">Contactos</string>
+    <string name="copy_number" comment="Action to copy a phone number to the clipboard.">Copiar número</string>
+    <string name="edit_number_before_call" comment="Action that opens a dialpad to edit a phone number before calling.">Editar número antes de llamar</string>
+    <string name="recents" comment="Bottom navigation tab for the recent-call list.">Recientes</string>
+    <string name="write_your_own" comment="Option to type a custom reply when declining an incoming call.">Escribe tu mensaje...</string>
+    <string name="placeholder_call_log" comment="Empty-state message asking the user to grant phone permissions.">Para ver el registro de llamadas, debes activar los permisos</string>
+    <string name="turn_on" comment="Button that opens settings to enable the required permission.">Activar</string>
 </resources>

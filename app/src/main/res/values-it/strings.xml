@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="channel_incoming_calls">Chiamate in arrivo</string>
-    <string name="channel_ongoing_calls">Chiamate in corso</string>
-    <string name="channel_outgoing_calls">Chiamate in uscita</string>
-    <string name="contacts">Contatti</string>
-    <string name="copy_number">Copia numero</string>
-    <string name="edit_number_before_call">Modifica numero prima di chiamare</string>
-    <string name="recents">Recenti</string>
-    <string name="write_your_own">Personalizza…</string>
-    <string name="placeholder_call_log">Per vedere il tuo registro chiamate, attiva i permessi del telefono</string>
-    <string name="turn_on">Attiva</string>
+    <string name="channel_incoming_calls" comment="Android notification channel for incoming calls.">Chiamate in arrivo</string>
+    <string name="channel_ongoing_calls" comment="Android notification channel for active calls.">Chiamate in corso</string>
+    <string name="channel_outgoing_calls" comment="Android notification channel for outgoing calls.">Chiamate in uscita</string>
+    <string name="contacts" comment="Bottom navigation tab for the contact list.">Contatti</string>
+    <string name="copy_number" comment="Action to copy a phone number to the clipboard.">Copia numero</string>
+    <string name="edit_number_before_call" comment="Action that opens a dialpad to edit a phone number before calling.">Modifica numero prima di chiamare</string>
+    <string name="recents" comment="Bottom navigation tab for the recent-call list.">Recenti</string>
+    <string name="write_your_own" comment="Option to type a custom reply when declining an incoming call.">Personalizza…</string>
+    <string name="placeholder_call_log" comment="Empty-state message asking the user to grant phone permissions.">Per vedere il tuo registro chiamate, attiva i permessi del telefono</string>
+    <string name="turn_on" comment="Button that opens settings to enable the required permission.">Attiva</string>
 </resources>

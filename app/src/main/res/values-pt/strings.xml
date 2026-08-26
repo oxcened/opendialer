@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="channel_incoming_calls">Chamadas em entrada</string>
-    <string name="channel_ongoing_calls">Chamadas em progresso</string>
-    <string name="channel_outgoing_calls">Chamadas em saída</string>
-    <string name="contacts">Contatos</string>
-    <string name="copy_number">Copia numero</string>
-    <string name="edit_number_before_call">Muda numero antes de ligar</string>
-    <string name="recents">Recentes</string>
-    <string name="write_your_own">Personalização...</string>
-    <string name="placeholder_call_log">Para ver o seu registro de chamadas, veja as permissões do telefone</string>
-    <string name="turn_on">Ligue</string>
+    <string name="channel_incoming_calls" comment="Android notification channel for incoming calls.">Chamadas em entrada</string>
+    <string name="channel_ongoing_calls" comment="Android notification channel for active calls.">Chamadas em progresso</string>
+    <string name="channel_outgoing_calls" comment="Android notification channel for outgoing calls.">Chamadas em saída</string>
+    <string name="contacts" comment="Bottom navigation tab for the contact list.">Contatos</string>
+    <string name="copy_number" comment="Action to copy a phone number to the clipboard.">Copia numero</string>
+    <string name="edit_number_before_call" comment="Action that opens a dialpad to edit a phone number before calling.">Muda numero antes de ligar</string>
+    <string name="recents" comment="Bottom navigation tab for the recent-call list.">Recentes</string>
+    <string name="write_your_own" comment="Option to type a custom reply when declining an incoming call.">Personalização...</string>
+    <string name="placeholder_call_log" comment="Empty-state message asking the user to grant phone permissions.">Para ver o seu registro de chamadas, veja as permissões do telefone</string>
+    <string name="turn_on" comment="Button that opens settings to enable the required permission.">Ligue</string>
 </resources>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="array_quick_responses">
+    <string-array name="array_quick_responses" comment="Default text-message replies offered when declining an incoming call.">
         <item name="array_quick_responses0">现在不能讲话。有什么事？</item>
         <item name="array_quick_responses1">我会尽快联系你。</item>
         <item name="array_quick_responses2">我晚点会联系你。</item>
