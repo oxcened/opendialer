@@ -1,0 +1,56 @@
+name: Discord Release Notification
+
+on:
+  release:
+    types: [published]
+
+permissions: {}
+
+jobs:
+  notify-discord:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build Discord payload
+        env:
+          EVENT_PATH: ${{ github.event_path }}
+          PAYLOAD_PATH: ${{ runner.temp }}/discord-release-payload.json
+        run: |
+          jq '
+            .release as $release
+            | ($release.tag_name | test("^v?[0-9]+\\.[0-9]+\\.0$")) as $is_major_or_minor
+            | (if $is_major_or_minor then "@everyone\n" else "" end) as $mention
+            | ($release.name // $release.tag_name) as $release_name
+            | ($release.body // "") as $notes
+            | {
+                content: ($mention + "A new release of OpenDialer is available!"),
+                allowed_mentions: {
+                  parse: (if $is_major_or_minor then ["everyone"] else [] end)
+                },
+                embeds: [
+                  ({
+                    title: ("OpenDialer " + $release_name),
+                    url: $release.html_url,
+                    fields: [
+                      {
+                        name: "Tag",
+                        value: $release.tag_name,
+                        inline: true
+                      }
+                    ]
+                  }
+                  + (if $notes == "" then {} else {description: $notes[0:4096]} end))
+                ]
+              }
+          ' "$EVENT_PATH" > "$PAYLOAD_PATH"
+
+      - name: Notify Discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          PAYLOAD_PATH: ${{ runner.temp }}/discord-release-payload.json
+        run: |
+          test -n "$DISCORD_WEBHOOK"
+          curl --fail --silent --show-error --location \
+            --header "Content-Type: application/json" \
+            --data-binary "@$PAYLOAD_PATH" \
+            "$DISCORD_WEBHOOK"
