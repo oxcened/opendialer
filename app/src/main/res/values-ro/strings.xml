@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="channel_incoming_calls" comment="Android notification channel for incoming calls.">Apel în intrare</string>
-    <string name="channel_ongoing_calls" comment="Android notification channel for active calls.">Apel în curs</string>
-    <string name="channel_outgoing_calls" comment="Android notification channel for outgoing calls.">Apel în eșire</string>
+    <string name="channel_incoming_calls" comment="Android notification channel for incoming calls.">Apeluri primite</string>
+    <string name="channel_ongoing_calls" comment="Android notification channel for active calls.">Apeluri în curs</string>
+    <string name="channel_outgoing_calls" comment="Android notification channel for outgoing calls.">Apeluri efectuate</string>
     <string name="contacts" comment="Bottom navigation tab for the contact list.">Contacte</string>
-    <string name="copy_number" comment="Action to copy a phone number to the clipboard.">Copiază numerul</string>
-    <string name="edit_number_before_call" comment="Action that opens a dialpad to edit a phone number before calling.">Modifică numerul înainte de a Apela</string>
-    <string name="recents" comment="Bottom navigation tab for the recent-call list.">Recent</string>
-    <string name="write_your_own" comment="Option to type a custom reply when declining an incoming call.">Personalizează…</string>
-    <string name="placeholder_call_log" comment="Empty-state message asking the user to grant phone permissions.">Pentru a vedea istoricul apelurilor, activează permisiunile pentru telefon</string>
+    <string name="copy_number" comment="Action to copy a phone number to the clipboard.">Copiază numărul</string>
+    <string name="edit_number_before_call" comment="Action that opens a dialpad to edit a phone number before calling.">Editează numărul înainte de apel</string>
+    <string name="recents" comment="Bottom navigation tab for the recent-call list.">Recente</string>
+    <string name="write_your_own" comment="Option to type a custom reply when declining an incoming call.">Scrie propriul răspuns…</string>
+    <string name="placeholder_call_log" comment="Empty-state message asking the user to grant phone permissions.">Activează permisiunile pentru telefon pentru a vedea istoricul apelurilor</string>
     <string name="turn_on" comment="Button that opens settings to enable the required permission.">Activează</string>
 </resources>
