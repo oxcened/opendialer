@@ -1,2 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="copy_number" comment="Menu action that copies a phone number to the clipboard.">Copiar número</string>
+    <string name="create_new_contact" comment="Menu action that creates a contact from the selected phone number.">Crear contacto</string>
+    <string name="add_to_a_contact" comment="Menu action that adds the selected phone number to an existing contact.">Añadir a un contacto</string>
+    <string name="send_message" comment="Menu action that starts a text message to the selected phone number.">Enviar mensaje</string>
+    <string name="edit_number_before_call" comment="Menu action that lets the user edit a phone number before calling it.">Editar número antes de llamar</string>
+    <string name="blockThisCaller" comment="Menu action that blocks calls and messages from the selected caller.">Bloquear a este emisor</string>
+    <string name="unblockThisCaller" comment="Menu action that removes the block from the selected caller.">Desbloquear a este emisor</string>
+    <string name="delete" comment="Menu action that deletes the selected call-log entry.">Eliminar</string>
+    <string name="anonymous" comment="Fallback caller name when the phone number is withheld.">Anónimo</string>
+    <string name="placeholder_call_log" comment="Empty-state message shown when phone permission is required to display call history.">Activa los permisos del teléfono para ver el historial de llamadas</string>
+    <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">Activar</string>
+    <string name="open_contact" comment="Menu action that opens the selected person's contact details.">Abrir contacto</string>
+    <string name="call_log_date_today" comment="Date-group heading for calls made or received today.">Hoy</string>
+    <string name="call_log_date_yesterday" comment="Date-group heading for calls made or received yesterday.">Ayer</string>
+    <string name="call_log_type_time" comment="Call-log summary. %1$s is the call type and %2$s is the call time.">%1$s • %2$s</string>
+    <string name="filter_all" comment="Call-history filter that includes every call.">Todas</string>
+    <string name="filter_missed" comment="Call-history filter that includes only missed calls.">Perdidas</string>
+    <string name="filter_voicemail" comment="Call-history filter that includes only voicemail entries.">Buzón de voz</string>
+    <string name="filter_contacts" comment="Call-history filter that includes only saved contacts.">Contactos</string>
+    <string name="favorites" comment="Heading or navigation label for favorite contacts.">Favoritos</string>
+    <string name="view_contacts" comment="Button that opens the full contact list.">Ver contactos</string>
+    <string name="add" comment="Button that adds the selected item.">Añadir</string>
+    <string name="remove" comment="Button that removes the selected item.">Quitar</string>
+    <string name="history" comment="Action that opens the selected contact's call history.">Historial</string>
+    <string name="block_confirmation_title" comment="Title of the block-caller confirmation dialog. %1$s is the caller name or phone number.">¿Bloquear a %1$s?</string>
+    <string name="block_confirmation_message" comment="Explanation in the block-caller confirmation dialog.">No recibirás llamadas ni mensajes de este número.</string>
+    <string name="delete_call_title" comment="Title of the dialog confirming removal of a call-log entry.">¿Eliminar la llamada del historial?</string>
+    <string name="delete_call_message" comment="Explanation in the dialog confirming removal of a call-log entry.">Esta llamada se eliminará del historial de llamadas.</string>
+    <string name="cancel" comment="Button that dismisses the current dialog without applying changes.">Cancelar</string>
+</resources>

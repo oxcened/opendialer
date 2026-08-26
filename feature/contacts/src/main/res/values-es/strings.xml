@@ -1,2 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="placeholder_contacts" comment="Empty-state message shown when contacts permission is required to display contacts.">Activa el permiso de contactos para ver tus contactos</string>
+    <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">Activar</string>
+    <string name="contact_phone_subtitle" comment="Contact-list subtitle. %1$s is the phone-number label and %2$s is the phone number.">%1$s · %2$s</string>
+    <string name="call_contact" comment="Action that calls the selected contact.">Llamar al contacto</string>
+    <string name="message_contact" comment="Action that starts a text message to the selected contact.">Mensaje</string>
+    <string name="contact_history" comment="Action that opens the selected contact's call history.">Historial</string>
+    <string name="new_contact" comment="Button that opens the system form for creating a contact.">Nuevo contacto</string>
+    <string name="all_contacts" comment="Heading for the complete contact list.">Todos los contactos</string>
+    <string name="search_contacts" comment="Search field hint or action for finding contacts.">Buscar contactos</string>
+    <string name="close_search" comment="Accessibility label for closing contact search.">Cerrar búsqueda</string>
+    <string name="choose_contact" comment="Title of a screen or dialog where the user selects a contact.">Elige un contacto</string>
+    <string name="navigate_back" comment="Accessibility label for navigating to the previous screen.">Atrás</string>
+    <string name="search" comment="Accessibility label for starting a search.">Buscar</string>
+    <string name="favorites" comment="Heading or navigation label for favorite contacts.">Favoritos</string>
+    <string name="favorites_permission_prompt" comment="Message shown when contacts permission is required to manage favorites.">Activa el permiso de contactos para gestionar los favoritos</string>
+</resources>
