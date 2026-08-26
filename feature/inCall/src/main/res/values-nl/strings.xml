@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="call_connecting_title" comment="Call-state label shown while a call is connecting.">Verbinden…</string>
+    <string name="call_dialing_title" comment="Call-state label shown while dialing an outgoing call.">Bellen…</string>
+    <string name="call_disconnecting_title" comment="Call-state label shown while ending a call.">Ophangen…</string>
+    <string name="call_holding_title" comment="Call-state label shown when the current call is on hold.">In de wacht</string>
+    <string name="call_ringing_title" comment="Call-state label shown for a ringing incoming call.">Inkomend gesprek</string>
+    <string name="call_disconnected_title" comment="Call-state label shown after a call has ended.">Gesprek beëindigd</string>
+    <string name="channel_incoming_calls" comment="Android notification-channel name for incoming-call notifications.">Inkomende gesprekken</string>
+    <string name="channel_ongoing_calls" comment="Android notification-channel name for active-call notifications.">Lopende gesprekken</string>
+    <string name="channel_outgoing_calls" comment="Android notification-channel name for outgoing-call notifications.">Uitgaande gesprekken</string>
+    <string name="channel_missed_calls" comment="Android notification-channel name for missed-call notifications.">Gemiste oproepen</string>
+    <string name="notification_incoming_call_title" comment="Incoming-call notification title. %1$s is the caller name or phone number.">Inkomend gesprek: %1$s</string>
+    <string name="notification_ongoing_call_title" comment="Active-call notification title. %1$s is the caller name or phone number.">Lopend gesprek: %1$s</string>
+    <string name="notification_outgoing_call_title" comment="Outgoing-call notification title. %1$s is the contact name or phone number.">Bellen naar: %1$s</string>
+    <string name="notification_missed_call_title" comment="Missed-call notification title. %1$s is the caller name or phone number.">Gemiste oproep van %1$s</string>
+    <string name="notification_call_back" comment="Notification action that calls back a missed caller.">Terugbellen</string>
+    <string name="notification_message" comment="Notification action that starts a text message to the caller.">Bericht</string>
+    <string name="action_answer" comment="Incoming-call button that answers the call.">Beantwoorden</string>
+    <string name="action_decline" comment="Incoming-call button that declines the call.">Weigeren</string>
+    <string name="action_end_call" comment="In-call button that ends the current call.">Gesprek beëindigen</string>
+    <string name="action_message" comment="Incoming-call button that declines the call with a text response.">Bericht</string>
+    <string name="action_close" comment="Button that closes the finished-call screen.">Sluiten</string>
+    <string name="action_split" comment="Conference-call action that separates a participant into a private call.">Splitsen</string>
+    <string name="control_state_on" comment="Accessibility state indicating that an in-call control is enabled.">Aan</string>
+    <string name="control_state_off" comment="Accessibility state indicating that an in-call control is disabled.">Uit</string>
+    <string name="conference_call" comment="Caller-name label used when multiple participants are in one call.">Conferentiegesprek</string>
+    <string name="voicemail" comment="Label for voicemail in navigation or call information.">Voicemail</string>
+    <string name="anonymous" comment="Fallback caller name when the phone number is withheld.">Anoniem</string>
+    <string name="caller_number_subtitle" comment="Caller subtitle. %1$s is the phone-number label and %2$s is the phone number.">%1$s · %2$s</string>
+    <string name="conference_merge" comment="In-call action that combines separate calls into a conference.">Samenvoegen</string>
+    <string name="conference_swap" comment="In-call action that switches between the active and held calls.">Wisselen</string>
+    <string name="conference_manage" comment="In-call action that opens conference-participant controls.">Beheren</string>
+    <string name="action_add_call" comment="In-call action that starts another call while keeping the current call.">Gesprek toevoegen</string>
+    <string name="action_hold" comment="In-call action that places the current call on hold.">In de wacht zetten</string>
+    <string name="control_dialpad" comment="In-call control that opens the numeric dialpad.">Toetsenblok</string>
+    <string name="control_mute" comment="In-call control that mutes or unmutes the microphone.">Dempen</string>
+    <string name="control_speaker" comment="In-call control that enables or disables speakerphone.">Luidspreker</string>
+    <string name="control_more" comment="In-call control that opens additional call actions.">Meer</string>
+    <string name="reply_with_message" comment="Title of the panel for declining an incoming call with a text response.">Beantwoorden met een bericht</string>
+    <string name="action_send" comment="Button that sends the typed quick-response message.">Versturen</string>
+    <string name="action_cancel" comment="Button that closes the quick-response panel without sending a message.">Annuleren</string>
+    <string name="write_your_own" comment="Option for composing a custom reply instead of using a preset response.">Schrijf je eigen antwoord…</string>
+</resources>

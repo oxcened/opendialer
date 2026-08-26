@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="channel_incoming_calls">Incoming Calls</string>
-    <string name="channel_ongoing_calls">Ongoing Calls</string>
-    <string name="channel_outgoing_calls">Outgoing Calls</string>
-    <string name="contacts">Contacts</string>
-    <string name="copy_number">Copy number</string>
-    <string name="edit_number_before_call">Edit number before call</string>
-    <string name="recents">Recents</string>
-    <string name="write_your_own">Write your own…</string>
-    <string name="placeholder_call_log">To see your call log, turn on the phone permissions</string>
-    <string name="turn_on">Turn on</string>
+    <string name="channel_incoming_calls" comment="Android notification channel for incoming calls.">Inkomende gesprekken</string>
+    <string name="channel_ongoing_calls" comment="Android notification channel for active calls.">Lopende gesprekken</string>
+    <string name="channel_outgoing_calls" comment="Android notification channel for outgoing calls.">Uitgaande gesprekken</string>
+    <string name="contacts" comment="Bottom navigation tab for the contact list.">Contacten</string>
+    <string name="copy_number" comment="Action to copy a phone number to the clipboard.">Nummer kopiëren</string>
+    <string name="edit_number_before_call" comment="Action that opens a dialpad to edit a phone number before calling.">Nummer bewerken vóór bellen</string>
+    <string name="recents" comment="Bottom navigation tab for the recent-call list.">Recent</string>
+    <string name="write_your_own" comment="Option to type a custom reply when declining an incoming call.">Schrijf je eigen antwoord…</string>
+    <string name="placeholder_call_log" comment="Empty-state message asking the user to grant phone permissions.">Schakel de telefoonmachtigingen in om je oproepgeschiedenis te bekijken</string>
+    <string name="turn_on" comment="Button that opens settings to enable the required permission.">Inschakelen</string>
 </resources>
