@@ -91,23 +91,16 @@ fun AboutScreen(
             )
 
             Column {
-                val teamMemberName = stringResource(R.string.team_member_name)
                 AboutLinkCard(
                     title = stringResource(R.string.developer_credit),
-                    description = stringResource(R.string.developer_role),
+                    description = stringResource(
+                        R.string.developer_website,
+                        stringResource(R.string.developer_domain)
+                    ),
                     uri = stringResource(R.string.url_developer),
                     roundTop = true,
-                    roundBottom = teamMemberName.isBlank()
+                    roundBottom = true
                 )
-
-                if (teamMemberName.isNotBlank()) {
-                    AboutInfoCard(
-                        title = teamMemberName,
-                        description = stringResource(R.string.team_member_description),
-                        roundTop = false,
-                        roundBottom = true
-                    )
-                }
             }
 
             Text(
@@ -117,6 +110,13 @@ fun AboutScreen(
             )
 
             Column {
+                val monsterDialerTranslationTitle =
+                    stringResource(R.string.contribute_monsterdialer_translations)
+                val monsterDialerTranslationDescription =
+                    stringResource(R.string.contribute_monsterdialer_translations_description)
+                val monsterDialerTranslationUri =
+                    stringResource(R.string.url_crowdin_monsterdialer)
+
                 AboutLinkCard(
                     title = stringResource(R.string.join_discord),
                     description = stringResource(R.string.discord_description),
@@ -124,6 +124,19 @@ fun AboutScreen(
                     roundTop = true,
                     roundBottom = false
                 )
+
+                if (monsterDialerTranslationTitle.isNotBlank() &&
+                    monsterDialerTranslationDescription.isNotBlank() &&
+                    monsterDialerTranslationUri.isNotBlank()
+                ) {
+                    AboutLinkCard(
+                        title = monsterDialerTranslationTitle,
+                        description = monsterDialerTranslationDescription,
+                        uri = monsterDialerTranslationUri,
+                        roundTop = false,
+                        roundBottom = false
+                    )
+                }
 
                 AboutLinkCard(
                     title = stringResource(R.string.contribute_translations),
@@ -174,8 +187,9 @@ fun AboutScreen(
                 )
             }
 
-            val fontCredit = stringResource(R.string.font_credit)
-            if (fontCredit.isNotBlank()) {
+            val fontName = stringResource(R.string.font_name)
+            val fontAuthor = stringResource(R.string.font_author)
+            if (fontName.isNotBlank() && fontAuthor.isNotBlank()) {
                 Text(
                     modifier = Modifier.padding(top = 4.dp),
                     text = stringResource(R.string.about_section_credits),
@@ -183,7 +197,7 @@ fun AboutScreen(
                 )
                 AboutInfoCard(
                     title = stringResource(R.string.typography_credit_title),
-                    description = fontCredit,
+                    description = stringResource(R.string.font_credit_format, fontName, fontAuthor),
                     roundTop = true,
                     roundBottom = true
                 )

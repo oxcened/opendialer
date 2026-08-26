@@ -1,4 +1,4 @@
-package dev.alenajam.opendialer.feature.calls
+package dev.alenajam.opendialer.feature.contacts
 
 import android.app.Application
 import android.content.pm.PackageManager
@@ -12,8 +12,6 @@ import dev.alenajam.opendialer.data.calls.CallsRepository
 import dev.alenajam.opendialer.data.calls.DetailCall
 import dev.alenajam.opendialer.data.calls.DialerCall
 import dev.alenajam.opendialer.data.calls.DialerCallEntity
-import dev.alenajam.opendialer.data.callsCache.CacheRepository
-import dev.alenajam.opendialer.data.callsCache.ContactInfo
 import dev.alenajam.opendialer.data.contacts.ContactsRepository
 import dev.alenajam.opendialer.data.contacts.DialerContactEntity
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +29,7 @@ import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class CallsViewModelTest {
+class ContactsViewModelTest {
     private val dispatcher = StandardTestDispatcher()
 
     @Before
@@ -45,52 +43,46 @@ class CallsViewModelTest {
     }
 
     @Test
-    fun `contact changes refresh cached info without a screen row effect`() = runTest(dispatcher) {
-        val callsRepository = FakeCallsRepository(listOf(callEntity()))
-        val contactsRepository = FakeContactsRepository()
-        val cacheRepository = FakeCacheRepository()
-        val viewModel = CallsViewModel(
-            callsRepository = callsRepository,
+    fun `load contacts when permission is granted`() = runTest(dispatcher) {
+        val contact = contactEntity(id = 1, name = "John Doe")
+        val contactsRepository = FakeContactsRepository(listOf(contact))
+        val callsRepository = FakeCallsRepository(emptyList())
+        val viewModel = ContactsViewModel(
             contactsRepository = contactsRepository,
+            callsRepository = callsRepository,
             app = PermissionGrantedApplication(),
-            cacheRepository = cacheRepository,
             callPlacementRepository = FakeCallPlacementRepository(),
         )
-        advanceUntilIdle()
-        val invalidationsBeforeContactChange = cacheRepository.invalidations
 
-        viewModel.startCache()
-        advanceUntilIdle()
-        assertEquals(1, cacheRepository.updateRequests)
-        val updateRequestsBeforeContactChange = cacheRepository.updateRequests
-
-        contactsRepository.emit(listOf(contactEntity(name = "Ada Lovelace")))
         advanceUntilIdle()
 
-        assertEquals(invalidationsBeforeContactChange + 1, cacheRepository.invalidations)
-        assertEquals(updateRequestsBeforeContactChange + 1, cacheRepository.updateRequests)
+        assertEquals(1, viewModel.contacts.value.size)
+        assertEquals("John Doe", viewModel.contacts.value[0].name)
     }
 
-    private fun callEntity() = DialerCallEntity(
-        id = 1,
-        number = "6505551212",
-        name = null,
-        date = 0,
-        duration = 0,
-        type = 1,
-        isNew = 0,
-        photoUri = null,
-        countryIso = "US",
-        label = null,
-        lookupUri = null,
-    )
+    @Test
+    fun `toggle favorite calls repository`() = runTest(dispatcher) {
+        val contactsRepository = FakeContactsRepository(emptyList())
+        val viewModel = ContactsViewModel(
+            contactsRepository = contactsRepository,
+            callsRepository = FakeCallsRepository(emptyList()),
+            app = PermissionGrantedApplication(),
+            callPlacementRepository = FakeCallPlacementRepository(),
+        )
 
-    private fun contactEntity(name: String) = DialerContactEntity(
-        id = 1,
+        viewModel.toggleFavorite(1, true)
+        advanceUntilIdle()
+
+        assertEquals(1, contactsRepository.toggledContactId)
+        assertEquals(true, contactsRepository.toggledIsFavorite)
+    }
+
+    private fun contactEntity(id: Int, name: String) = DialerContactEntity(
+        id = id,
         name = name,
         starred = 0,
         photoUri = null,
-        number = "6505551212",
+        number = "123456789",
         phoneType = 2,
         phoneLabel = null,
     )
@@ -100,10 +92,23 @@ private class PermissionGrantedApplication : Application() {
     override fun checkSelfPermission(permission: String): Int = PackageManager.PERMISSION_GRANTED
 }
 
-private class FakeCallsRepository(calls: List<DialerCallEntity>) : CallsRepository {
-    private val calls = MutableStateFlow(calls)
+private class FakeContactsRepository(contacts: List<DialerContactEntity>) : ContactsRepository {
+    private val contactsFlow = MutableStateFlow(contacts)
+    var toggledContactId: Int? = null
+    var toggledIsFavorite: Boolean? = null
 
-    override fun getCalls(): Flow<List<DialerCallEntity>> = calls
+    override fun getContacts(): Flow<List<DialerContactEntity>> = contactsFlow
+
+    override suspend fun toggleFavorite(contactId: Int, isFavorite: Boolean) {
+        toggledContactId = contactId
+        toggledIsFavorite = isFavorite
+    }
+}
+
+private class FakeCallsRepository(calls: List<DialerCallEntity>) : CallsRepository {
+    private val callsFlow = MutableStateFlow(calls)
+
+    override fun getCalls(): Flow<List<DialerCallEntity>> = callsFlow
 
     override suspend fun getCallByIds(
         contentResolver: android.content.ContentResolver,
@@ -127,38 +132,4 @@ private class FakeCallPlacementRepository : CallPlacementRepository {
 
     override fun placeVoicemailCall(account: CallAccount?): CallPlacementResult =
         CallPlacementResult.Placed
-}
-
-private class FakeContactsRepository : ContactsRepository {
-    private val contacts = MutableStateFlow<List<DialerContactEntity>>(emptyList())
-
-    override fun getContacts(): Flow<List<DialerContactEntity>> = contacts
-
-    override suspend fun toggleFavorite(contactId: Int, isFavorite: Boolean) = Unit
-
-    fun emit(contacts: List<DialerContactEntity>) {
-        this.contacts.value = contacts
-    }
-}
-
-private class FakeCacheRepository : CacheRepository {
-    var updateRequests = 0
-    var invalidations = 0
-
-    override fun start() = Unit
-
-    override fun stop() = Unit
-
-    override fun requestUpdateContactInfo(
-        number: String?,
-        countryIso: String?,
-        callLogInfo: ContactInfo,
-    ): Either<Failure, Unit> {
-        updateRequests++
-        return Either.Right(Unit)
-    }
-
-    override fun invalidate() {
-        invalidations++
-    }
 }

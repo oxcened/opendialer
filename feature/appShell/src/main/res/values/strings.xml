@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="contacts">Contacts</string>
-    <string name="recents">Recents</string>
-    <string name="search_contacts">Search contacts</string>
-    <string name="clear_search">Clear search</string>
-    <string name="call_voicemail">Call voicemail</string>
-    <string name="voicemail">Voicemail</string>
-    <string name="default_phone_title">Set OpenDialer as default</string>
-    <string name="default_phone_description">OpenDialer can only make and receive calls when it’s your default phone app.</string>
-    <string name="default_phone_button">Set as default</string>
+    <string name="contacts" comment="Label for the contacts navigation destination.">Contacts</string>
+    <string name="recents" comment="Label for the recent-calls navigation destination.">Recents</string>
+    <string name="search_contacts" comment="Search field hint or action for finding contacts.">Search contacts</string>
+    <string name="clear_search" comment="Accessibility label for clearing the current search query.">Clear search</string>
+    <string name="call_voicemail" comment="Action that calls the user's voicemail service.">Call voicemail</string>
+    <string name="voicemail" comment="Label for voicemail in navigation or call information.">Voicemail</string>
+    <string name="default_phone_title" comment="Title of the prompt asking the user to make OpenDialer the default phone app.">Set OpenDialer as default</string>
+    <string name="default_phone_description" comment="Explanation that calling requires OpenDialer to be the default phone app.">OpenDialer can only make and receive calls when it’s your default phone app.</string>
+    <string name="default_phone_button" comment="Button that opens the system flow for choosing the default phone app.">Set as default</string>
 </resources>

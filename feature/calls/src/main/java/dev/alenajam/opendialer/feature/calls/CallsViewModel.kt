@@ -7,11 +7,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.ContactsHelper
 import dev.alenajam.opendialer.core.common.PermissionUtils
+import dev.alenajam.opendialer.core.common.telecom.CallAccount
+import dev.alenajam.opendialer.core.common.telecom.CallPlacementRepository
+import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
 import dev.alenajam.opendialer.data.calls.CallsRepository
 import dev.alenajam.opendialer.data.calls.DialerCall
 import dev.alenajam.opendialer.data.callsCache.CacheRepository
 import dev.alenajam.opendialer.data.contacts.ContactsRepository
 import dev.alenajam.opendialer.data.contacts.DialerContact
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,6 +29,7 @@ class CallsViewModel
     private val contactsRepository: ContactsRepository,
     private val app: Application,
     private val cacheRepository: CacheRepository,
+    private val callPlacementRepository: CallPlacementRepository,
 ) : ViewModel() {
     private val _calls = MutableStateFlow<List<DialerCall>>(emptyList())
     val calls: StateFlow<List<DialerCall>> = _calls
@@ -34,6 +39,8 @@ class CallsViewModel
     val hasRuntimePermission: StateFlow<Boolean> = _hasRuntimePermission
     private var hasContactsRuntimePermission = false
     private var isCacheRunning = false
+    private var callsJob: Job? = null
+    private var contactsJob: Job? = null
 
     init {
         _hasRuntimePermission.value = PermissionUtils.hasRecentsPermission(app)
@@ -45,7 +52,8 @@ class CallsViewModel
     fun getCalls() {
         if (!hasRuntimePermission.value) return
 
-        viewModelScope.launch {
+        callsJob?.cancel()
+        callsJob = viewModelScope.launch {
             callsRepository.getCalls().collect { calls ->
                 val dialerCalls = DialerCall.mapList(calls)
                 _calls.value = dialerCalls
@@ -57,7 +65,8 @@ class CallsViewModel
     fun getContacts() {
         if (!hasContactsRuntimePermission) return
 
-        viewModelScope.launch {
+        contactsJob?.cancel()
+        contactsJob = viewModelScope.launch {
             contactsRepository.getContacts().collect { contacts ->
                 _favorites.value = DialerContact.mapList(contacts).filter { it.starred }
                 cacheRepository.invalidate()
@@ -74,7 +83,10 @@ class CallsViewModel
     fun sendMessage(number: String) =
         CommonUtils.makeSms(app, number)
 
-    fun makeCall(number: String) = CommonUtils.makeCall(app, number)
+    fun makeCall(number: String): CallPlacementResult = callPlacementRepository.placeCall(number)
+
+    fun makeCall(number: String, account: CallAccount): CallPlacementResult =
+        callPlacementRepository.placeCall(number, account)
     fun copyNumber(number: String) = CommonUtils.copyToClipobard(app, number)
 
     fun blockNumber(number: String) {

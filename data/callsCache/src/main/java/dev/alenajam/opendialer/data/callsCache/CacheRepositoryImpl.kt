@@ -71,7 +71,6 @@ class CacheRepositoryImpl
         )
     }
 
-    @Synchronized
     override fun requestUpdateContactInfo(
         number: String?,
         countryIso: String?,
@@ -97,7 +96,6 @@ class CacheRepositoryImpl
         }
     }
 
-    @Synchronized
     override fun invalidate() {
         requestDeduplicator.clear()
     }
@@ -131,7 +129,7 @@ fun getContactInfoByNumber(
         null,
         null,
         null
-    )?.let {
+    )?.use {
         if (it.moveToFirst()) {
             val lookupKey =
                 it.getString(it.getColumnIndexOrThrow(ContactsContract.PhoneLookup.LOOKUP_KEY))
@@ -154,7 +152,6 @@ fun getContactInfoByNumber(
                 photoId = it.getLong(it.getColumnIndexOrThrow(ContactsContract.PhoneLookup.PHOTO_ID))
             )
         }
-        it.close()
     }
 
     return createEmptyContactInfoForNumber(context, number, countryIso)

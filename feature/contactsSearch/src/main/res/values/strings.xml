@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="copy_number">Copy number</string>
-    <string name="create_new_contact">Create new contact</string>
-    <string name="add_to_a_contact">Add to a contact</string>
-    <string name="send_message">Send message</string>
-    <string name="edit_number_before_call">Edit number before call</string>
-    <string name="turn_on">Turn on</string>
-    <string name="placeholder_search_permissions">To see suggestions, turn on the phone permissions</string>
-    <string name="dialpad_button_call_label">Call</string>
-    <string name="dialpad_more_options">More dialpad options</string>
-    <string name="add_2_second_pause">Add 2-sec pause</string>
-    <string name="add_wait">Add wait</string>
-    <string name="call_contact">Call contact</string>
-    <string name="open_contact">Open contact</string>
-    <string name="suggested">Suggested</string>
-    <string name="contact_history">History</string>
-    <string name="backspace">Backspace</string>
+    <string name="copy_number" comment="Menu action that copies a phone number to the clipboard.">Copy number</string>
+    <string name="create_new_contact" comment="Menu action that creates a contact from the selected phone number.">Create new contact</string>
+    <string name="add_to_a_contact" comment="Menu action that adds the selected phone number to an existing contact.">Add to a contact</string>
+    <string name="send_message" comment="Menu action that starts a text message to the selected phone number.">Send message</string>
+    <string name="edit_number_before_call" comment="Menu action that lets the user edit a phone number before calling it.">Edit number before call</string>
+    <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">Turn on</string>
+    <string name="placeholder_search_permissions" comment="Empty-state message shown when phone permission is required for dialpad suggestions.">To see suggestions, turn on the phone permissions</string>
+    <string name="dialpad_button_call_label" comment="Accessibility label for the dialpad button that calls the entered number.">Call</string>
+    <string name="dialpad_more_options" comment="Accessibility label for the dialpad overflow menu.">More dialpad options</string>
+    <string name="add_2_second_pause" comment="Dialpad menu action that inserts a two-second pause into the phone number.">Add 2-sec pause</string>
+    <string name="add_wait" comment="Dialpad menu action that inserts a wait-for-confirmation marker into the phone number.">Add wait</string>
+    <string name="call_contact" comment="Action that calls the selected contact.">Call contact</string>
+    <string name="open_contact" comment="Menu action that opens the selected person's contact details.">Open contact</string>
+    <string name="suggested" comment="Heading above contacts suggested for the entered phone number.">Suggested</string>
+    <string name="contact_history" comment="Action that opens the selected contact's call history.">History</string>
+    <string name="backspace" comment="Accessibility label for deleting the last dialpad character.">Backspace</string>
 </resources>

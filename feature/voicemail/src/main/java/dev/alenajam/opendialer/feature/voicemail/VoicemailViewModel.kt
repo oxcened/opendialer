@@ -5,8 +5,10 @@ import android.media.MediaPlayer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.PermissionUtils
+import dev.alenajam.opendialer.core.common.telecom.CallAccount
+import dev.alenajam.opendialer.core.common.telecom.CallPlacementRepository
+import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
 import dev.alenajam.opendialer.data.voicemail.Voicemail
 import dev.alenajam.opendialer.data.voicemail.VoicemailRepository
 import dev.alenajam.opendialer.data.voicemail.VoicemailRepositoryState
@@ -22,6 +24,7 @@ import javax.inject.Inject
 class VoicemailViewModel @Inject constructor(
     private val repository: VoicemailRepository,
     private val app: Application,
+    private val callPlacementRepository: CallPlacementRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<VoicemailUiState>(VoicemailUiState.Loading)
     val uiState: StateFlow<VoicemailUiState> = _uiState.asStateFlow()
@@ -58,9 +61,10 @@ class VoicemailViewModel @Inject constructor(
         if (_hasRuntimePermission.value) refresh()
     }
 
-    fun callVoicemail() {
-        CommonUtils.makeVoicemailCall(app)
-    }
+    fun callVoicemail(): CallPlacementResult = callPlacementRepository.placeVoicemailCall()
+
+    fun callVoicemail(account: CallAccount): CallPlacementResult =
+        callPlacementRepository.placeVoicemailCall(account)
 
     fun play(voicemail: Voicemail) {
         if (!voicemail.hasContent) {

@@ -1,2 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"></resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="channel_incoming_calls">المكالمات الواردة</string>
+    <string name="channel_ongoing_calls">المكالمات الجارية</string>
+    <string name="channel_outgoing_calls">المكالمات الصادرة</string>
+    <string name="contacts">جهات الاتصال</string>
+    <string name="copy_number">نسخ الرقم</string>
+    <string name="edit_number_before_call">تعديل الرقم قبل الاتصال</string>
+    <string name="recents">الأخيرة</string>
+    <string name="write_your_own">اكتب رسالتك…</string>
+    <string name="placeholder_call_log">لعرض سجل المكالمات، فعّل أذونات الهاتف</string>
+    <string name="turn_on">تفعيل</string>
+</resources>

@@ -50,10 +50,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import dev.alenajam.opendialer.core.common.CommonUtils
+import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.core.common.functional.EventObserver
+import dev.alenajam.opendialer.core.common.telecom.CallAccount
+import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
+import dev.alenajam.opendialer.core.common.ui.CallAccountPicker
 import dev.alenajam.opendialer.core.common.ui.ContactAvatar
 import dev.alenajam.opendialer.data.calls.CallType
 import dev.alenajam.opendialer.data.calls.CallOption
@@ -73,6 +79,36 @@ fun CallDetailScreen(
     val isAnon = call.value?.isAnonymous() == true
     val isVoicemailNumber = call.value?.isVoicemailNumber == true
     val childCalls = call.value?.childCalls ?: emptyList()
+    var pendingCallNumber by remember { mutableStateOf<String?>(null) }
+    var callAccounts by remember { mutableStateOf<List<CallAccount>?>(null) }
+    val requestCallPermissions = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { result ->
+        if (PermissionUtils.makeCallPermissions.all { result[it] == true }) {
+            pendingCallNumber?.let { number ->
+                when (val placementResult = viewModel.makeCall(number)) {
+                    is CallPlacementResult.AccountSelectionRequired -> callAccounts = placementResult.accounts
+                    else -> pendingCallNumber = null
+                }
+            }
+        } else {
+            pendingCallNumber = null
+        }
+    }
+
+    fun placeCall(number: String) {
+        when (val result = viewModel.makeCall(number)) {
+            CallPlacementResult.PermissionRequired -> {
+                pendingCallNumber = number
+                requestCallPermissions.launch(PermissionUtils.makeCallPermissions)
+            }
+            is CallPlacementResult.AccountSelectionRequired -> {
+                pendingCallNumber = number
+                callAccounts = result.accounts
+            }
+            else -> Unit
+        }
+    }
 
     LaunchedEffect(call.value) {
         call.value?.let(viewModel::getDetailOptions)
@@ -88,6 +124,24 @@ fun CallDetailScreen(
         LocalLifecycleOwner.current,
         EventObserver { call.value?.let(viewModel::getDetailOptions) })
 
+    callAccounts?.let { accounts ->
+        CallAccountPicker(
+            accounts = accounts,
+            onAccountSelected = { account ->
+                val number = pendingCallNumber ?: return@CallAccountPicker
+                callAccounts = null
+                when (val result = viewModel.makeCall(number, account)) {
+                    is CallPlacementResult.AccountSelectionRequired -> callAccounts = result.accounts
+                    else -> Unit
+                }
+            },
+            onDismiss = {
+                callAccounts = null
+                pendingCallNumber = null
+            },
+        )
+    }
+
     Scaffold(
         topBar = {
             TopBar(
@@ -101,7 +155,7 @@ fun CallDetailScreen(
         bottomBar = {
             BottomBar(
                 isAnon = isAnon,
-                makeCall = { viewModel.makeCall(call.value!!.number!!) },
+                makeCall = { placeCall(call.value!!.number!!) },
                 sendMessage = viewModel::sendMessage,
                 copyNumber = { viewModel.copyNumber(call.value!!) },
                 dialNumber = { viewModel.editNumberBeforeCall(call.value!!) },

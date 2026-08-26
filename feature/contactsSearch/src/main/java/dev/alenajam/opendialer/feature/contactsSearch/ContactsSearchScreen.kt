@@ -64,6 +64,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.alenajam.opendialer.core.common.ui.ContactAvatar
 import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.core.common.getActivity
+import dev.alenajam.opendialer.core.common.telecom.CallAccount
+import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
+import dev.alenajam.opendialer.core.common.ui.CallAccountPicker
 import dev.alenajam.opendialer.core.common.ui.Dialpad
 import dev.alenajam.opendialer.data.contactsSearch.DialerSearchContact
 
@@ -77,21 +80,58 @@ fun ContactsSearchScreen(
     val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
     var query by remember { mutableStateOf(viewModel.prefilledNumber) }
     var openRowKey by remember { mutableStateOf<String?>(null) }
+    var pendingCallNumber by remember { mutableStateOf<String?>(null) }
+    var callAccounts by remember { mutableStateOf<List<CallAccount>?>(null) }
     val context = LocalContext.current
     val requestCallPermissions =
-        rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-            viewModel.handleCallRuntimePermissionGranted()
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
+            if (PermissionUtils.makeCallPermissions.all { result[it] == true }) {
+                viewModel.handleCallRuntimePermissionGranted()
+                pendingCallNumber?.let { number ->
+                    when (val placementResult = viewModel.makeCall(number)) {
+                        is CallPlacementResult.AccountSelectionRequired -> callAccounts = placementResult.accounts
+                        else -> pendingCallNumber = null
+                    }
+                }
+            } else {
+                pendingCallNumber = null
+            }
         }
 
     fun makeCall(number: String): Boolean {
-        val callStarted = viewModel.makeCall(
-            activity = context.getActivity() as Activity,
-            number = number
-        )
-        if (!callStarted) {
-            requestCallPermissions.launch(PermissionUtils.makeCallPermissions)
+        return when (val result = viewModel.makeCall(number)) {
+            CallPlacementResult.Placed -> true
+            CallPlacementResult.PermissionRequired -> {
+                pendingCallNumber = number
+                requestCallPermissions.launch(PermissionUtils.makeCallPermissions)
+                false
+            }
+            is CallPlacementResult.AccountSelectionRequired -> {
+                pendingCallNumber = number
+                callAccounts = result.accounts
+                false
+            }
+            CallPlacementResult.Unavailable -> false
         }
-        return callStarted
+    }
+
+    callAccounts?.let { accounts ->
+        CallAccountPicker(
+            accounts = accounts,
+            onAccountSelected = { account ->
+                val number = pendingCallNumber ?: return@CallAccountPicker
+                callAccounts = null
+                when (viewModel.makeCall(number, account)) {
+                    CallPlacementResult.Placed -> onDialpadCallStarted()
+                    is CallPlacementResult.AccountSelectionRequired -> Unit
+                    else -> Unit
+                }
+            },
+            onDismiss = {
+                callAccounts = null
+                pendingCallNumber = null
+            },
+        )
     }
 
     Scaffold(

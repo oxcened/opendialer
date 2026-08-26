@@ -41,7 +41,7 @@ data class DialerCall(
         }
 
         fun map(call: DialerCallEntity): DialerCall? {
-            val type = CallType.values().find { t -> t.value == call.type }
+            val type = CallType.entries.find { t -> t.value == call.type }
 
             type?.let { t ->
                 val options = mutableListOf<CallOption>()

@@ -1,18 +1,24 @@
 package dev.alenajam.opendialer.feature.inCall.service
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import android.provider.ContactsContract
 import android.telecom.Call
 import android.telecom.VideoProfile
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.Contact
 import dev.alenajam.opendialer.feature.inCall.R
+import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 data class OngoingCallState(
     val callerNumber: String = "",
@@ -36,6 +42,7 @@ class OngoingCall(
     private val onRemoved: (Call) -> Unit,
     val sequence: Long
 ) {
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val _state = MutableStateFlow(OngoingCallState())
     val stateFlow: StateFlow<OngoingCallState> = _state.asStateFlow()
 
@@ -45,8 +52,7 @@ class OngoingCall(
 
     private var lastState = Call.STATE_NEW
     private val missedCallTracker = MissedCallTracker()
-    private val mainHandler = Handler(Looper.getMainLooper())
-    private val stopDtmfTone = Runnable { call.stopDtmfTone() }
+    private var dtmfJob: Job? = null
 
     private val callback = object : Call.Callback() {
         override fun onStateChanged(call: Call, newState: Int) {
@@ -73,7 +79,7 @@ class OngoingCall(
     init {
         call.registerCallback(callback)
         refreshIdentity()
-        updateCallState(call.state)
+        updateCallState(call.safeState)
     }
 
     fun refreshIdentity() {
@@ -120,17 +126,18 @@ class OngoingCall(
             it.copy(
                 isConferenced = call.parent != null,
                 canMerge = call.details.can(Call.Details.CAPABILITY_MERGE_CONFERENCE) || call.conferenceableCalls.isNotEmpty(),
-                canHold = call.state == Call.STATE_HOLDING || call.details.can(Call.Details.CAPABILITY_HOLD),
+                canHold = call.safeState == Call.STATE_HOLDING || call.details.can(Call.Details.CAPABILITY_HOLD),
                 canSplit = call.details.can(Call.Details.CAPABILITY_SEPARATE_FROM_CONFERENCE),
-                state = call.state
+                state = call.safeState
             )
         }
     }
 
     fun tearDown() {
-        mainHandler.removeCallbacks(stopDtmfTone)
+        dtmfJob?.cancel()
         call.stopDtmfTone()
         call.unregisterCallback(callback)
+        scope.cancel()
     }
 
     private fun updateCallState(state: Int) {
@@ -210,10 +217,13 @@ class OngoingCall(
 
     fun playDtmf(digit: Char) {
         if (!CallActionPolicy.canPlayDtmf(state)) return
-        mainHandler.removeCallbacks(stopDtmfTone)
+        dtmfJob?.cancel()
         call.stopDtmfTone()
         call.playDtmfTone(digit)
-        mainHandler.postDelayed(stopDtmfTone, DTMF_DURATION_MS)
+        dtmfJob = scope.launch {
+            delay(DTMF_DURATION_MS.milliseconds)
+            call.stopDtmfTone()
+        }
     }
 
     fun split() {

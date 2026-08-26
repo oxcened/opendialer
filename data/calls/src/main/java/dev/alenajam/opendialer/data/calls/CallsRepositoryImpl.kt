@@ -7,7 +7,7 @@ import android.database.ContentObserver
 import android.net.Uri
 import android.provider.BlockedNumberContract
 import android.provider.CallLog
-import dev.alenajam.opendialer.core.common.DefaultPhoneUtils
+import dev.alenajam.opendialer.core.common.DefaultPhoneManager
 import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.core.common.exception.Failure
 import dev.alenajam.opendialer.core.common.functional.Either
@@ -21,24 +21,23 @@ import javax.inject.Singleton
 class CallsRepositoryImpl @Inject constructor(
     private val app: Application,
     private val voicemailNumberProvider: VoicemailNumberProvider,
+    private val defaultPhoneManager: DefaultPhoneManager,
 ) : CallsRepository {
     override fun getCalls(): Flow<List<DialerCallEntity>> =
         callbackFlow {
             val callsUri = CallsData.getUri(app)
             val observer = object : ContentObserver(null) {
                 override fun onChange(selfChange: Boolean) {
-                    CallsData.getCursor(app.contentResolver, callsUri)?.let {
+                    CallsData.getCursor(app.contentResolver, callsUri)?.use {
                         trySend(CallsData.getData(it, voicemailNumberProvider.getNumbers()))
-                        it.close()
                     }
                 }
             }
 
             app.contentResolver.registerContentObserver(callsUri, true, observer)
 
-            CallsData.getCursor(app.contentResolver, callsUri)?.let {
+            CallsData.getCursor(app.contentResolver, callsUri)?.use {
                 trySend(CallsData.getData(it, voicemailNumberProvider.getNumbers()))
-                it.close()
             }
 
             awaitClose {
@@ -50,9 +49,9 @@ class CallsRepositoryImpl @Inject constructor(
         contentResolver: ContentResolver,
         ids: List<Int>
     ): Either<Failure, List<DialerCallEntity>> {
-        val cursor =
-            CallDetailData.getCursor(contentResolver, ids) ?: return Either.Left(Failure.NoData)
-        val data = CallDetailData.getData(cursor, voicemailNumberProvider.getNumbers())
+        val data = CallDetailData.getCursor(contentResolver, ids)?.use { cursor ->
+            CallDetailData.getData(cursor, voicemailNumberProvider.getNumbers())
+        } ?: return Either.Left(Failure.NoData)
 
         return if (data.isEmpty()) {
             Either.Left(Failure.NoData)
@@ -85,7 +84,7 @@ class CallsRepositoryImpl @Inject constructor(
             )
 
             if (!call.isAnonymous()) {
-                val hasDefault = DefaultPhoneUtils.hasDefault(this)
+                val hasDefault = defaultPhoneManager.isDefaultDialer()
                 val canUserBlockNumbers = BlockedNumberContract.canCurrentUserBlockNumbers(this)
                 if (hasDefault && canUserBlockNumbers) {
                     val isBlocked =

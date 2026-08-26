@@ -2,6 +2,8 @@ package dev.alenajam.opendialer.feature.appShell
 
 import android.content.Intent
 import android.telecom.PhoneAccount
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -18,7 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import dev.alenajam.opendialer.core.common.DefaultPhoneUtils
+import dev.alenajam.opendialer.core.common.DefaultPhoneManager
 import dev.alenajam.opendialer.core.common.MAIN_ACTIVITY_INTENT_DIAL_EXTRA_ADD_CALL
 import dev.alenajam.opendialer.core.common.getActivity
 import dev.alenajam.opendialer.core.common.ui.AppIcons
@@ -52,6 +54,7 @@ data object AddFavoriteRoute
 
 @Composable
 fun DialerApp(
+    defaultPhoneManager: DefaultPhoneManager,
     icons: AppIcons = DefaultAppIcons,
     themeExtension: AppThemeExtension = AppThemeExtension(),
     settingsSubpages: List<SettingsSubpage> = emptyList(),
@@ -61,14 +64,21 @@ fun DialerApp(
     AppProviders(icons = icons, themeExtension = themeExtension) {
         val activity = LocalContext.current.getActivity()
         var isDefaultPhoneApp by remember(activity) {
-            mutableStateOf(activity?.let(DefaultPhoneUtils::hasDefault) == true)
+            mutableStateOf(defaultPhoneManager.isDefaultDialer())
         }
         val lifecycleOwner = LocalLifecycleOwner.current
+
+        val launcher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.StartActivityForResult(),
+            onResult = {
+                isDefaultPhoneApp = defaultPhoneManager.isDefaultDialer()
+            }
+        )
 
         DisposableEffect(activity, lifecycleOwner) {
             val observer = LifecycleEventObserver { _, event ->
                 if (event == Lifecycle.Event.ON_RESUME) {
-                    isDefaultPhoneApp = activity?.let(DefaultPhoneUtils::hasDefault) == true
+                    isDefaultPhoneApp = defaultPhoneManager.isDefaultDialer()
                 }
             }
             lifecycleOwner.lifecycle.addObserver(observer)
@@ -78,7 +88,9 @@ fun DialerApp(
         if (!isDefaultPhoneApp) {
             DefaultPhoneScreen(
                 onSetAsDefault = {
-                    activity?.let { DefaultPhoneUtils.requestDefault(it, DEFAULT_PHONE_REQUEST_CODE) }
+                    defaultPhoneManager.createRequestDefaultDialerIntent()?.let { intent ->
+                        launcher.launch(intent)
+                    }
                 },
             )
         } else {
@@ -148,8 +160,6 @@ fun DialerApp(
         }
     }
 }
-
-private const val DEFAULT_PHONE_REQUEST_CODE = 1001
 
 @Composable
 private fun HandleDialIntent(onOpenContactsSearch: (prefilledNumber: String) -> Unit) {

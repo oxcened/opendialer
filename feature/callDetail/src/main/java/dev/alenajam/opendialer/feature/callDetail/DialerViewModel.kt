@@ -13,6 +13,9 @@ import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.functional.Event
+import dev.alenajam.opendialer.core.common.telecom.CallAccount
+import dev.alenajam.opendialer.core.common.telecom.CallPlacementRepository
+import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
 import dev.alenajam.opendialer.data.calls.CallOption
 import dev.alenajam.opendialer.data.calls.CallsRepositoryImpl
 import dev.alenajam.opendialer.data.calls.DialerCall
@@ -28,7 +31,8 @@ class DialerViewModel
     private val deleteCallsUseCase: DeleteCalls,
     private val blockCallerUseCase: BlockCaller,
     private val unblockCallerUseCase: UnblockCaller,
-    private val callsRepositoryImpl: CallsRepositoryImpl
+    private val callsRepositoryImpl: CallsRepositoryImpl,
+    private val callPlacementRepository: CallPlacementRepository,
 ) : ViewModel() {
     private val _call: MutableLiveData<DialerCall> = MutableLiveData()
     val call: LiveData<DialerCall> = _call
@@ -55,7 +59,10 @@ class DialerViewModel
     fun getDetailOptions(call: DialerCall) =
         getDetailOptions(viewModelScope, call) { it.fold({}, ::handleDetailOptions) }
 
-    fun makeCall(number: String) = CommonUtils.makeCall(app, number)
+    fun makeCall(number: String): CallPlacementResult = callPlacementRepository.placeCall(number)
+
+    fun makeCall(number: String, account: CallAccount): CallPlacementResult =
+        callPlacementRepository.placeCall(number, account)
 
     fun copyNumber(call: DialerCall) = CommonUtils.copyToClipobard(app, call.contactInfo.number)
 

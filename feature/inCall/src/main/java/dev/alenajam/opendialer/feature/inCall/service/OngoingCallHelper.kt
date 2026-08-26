@@ -1,9 +1,18 @@
 package dev.alenajam.opendialer.feature.inCall.service
 
 import android.content.Context
+import android.os.Build
 import android.telecom.Call
 import android.telecom.DisconnectCause
 import android.widget.Toast
+
+val Call.safeState: Int
+    get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        details.state
+    } else {
+        @Suppress("DEPRECATION")
+        state
+    }
 
 object OngoingCallHelper {
     @JvmStatic

@@ -11,21 +11,14 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.media.AudioManager
 import android.net.Uri
-import android.os.Bundle
 import android.os.SystemClock
 import android.provider.ContactsContract
 import android.provider.Settings
-import android.telecom.TelecomManager
-import android.telephony.SubscriptionManager
 import android.util.DisplayMetrics
 import android.util.TypedValue
-import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
@@ -104,77 +97,6 @@ object CommonUtils {
         } else {
             editText.text.subSequence(start, end).toString()
         }
-    }
-
-    @JvmStatic
-    @Deprecated("Use proper Intent instantiation")
-    @Throws(ClassNotFoundException::class)
-    fun startInCallUI(context: Context) {
-        val intent = Intent(context, Class.forName("dev.alenajam.opendialer.features.inCall.ui.InCallActivity"))
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        context.startActivity(intent)
-    }
-
-    @JvmStatic
-    @SuppressLint("MissingPermission")
-    fun makeCall(context: Context, number: String?) {
-        if (number.isNullOrEmpty()) return
-        if (PermissionUtils.hasMakeCallPermission(context)) {
-            val intent = Intent(Intent.ACTION_CALL, Uri.fromParts("tel", number, null))
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-            val telecomManager = context.getSystemService(Context.TELECOM_SERVICE) as? TelecomManager ?: return
-            val defaultPhoneAccount = telecomManager.getDefaultOutgoingPhoneAccount("tel")
-
-            if (defaultPhoneAccount == null) {
-                val phoneAccounts = telecomManager.callCapablePhoneAccounts
-                if (phoneAccounts.size < 2) {
-                    context.startActivity(intent)
-                    return
-                }
-
-                // Dual SIM
-                val subscriptionManager = context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager? ?: return
-
-                val dialog = MyDialog(context)
-                dialog.setTitle(context.getString(R.string.choose_sim_card))
-                val linearLayout = LinearLayout(context)
-                linearLayout.orientation = LinearLayout.VERTICAL
-
-                for (i in phoneAccounts.indices) {
-                    val subscriptionInfo = subscriptionManager.getActiveSubscriptionInfoForSimSlotIndex(i) ?: continue
-
-                    val item = LayoutInflater.from(context).inflate(R.layout.item_sim, null)
-                    val carrier = item.findViewById<TextView>(R.id.carrier)
-                    carrier.text = subscriptionInfo.carrierName
-                    val numberTv = item.findViewById<TextView>(R.id.number)
-                    numberTv.text = subscriptionInfo.number
-                    val icon = item.findViewById<ImageView>(R.id.icon)
-                    icon.setColorFilter(subscriptionInfo.iconTint)
-
-                    item.setOnClickListener {
-                        dialog.hide()
-                        intent.putExtra(TelecomManager.EXTRA_PHONE_ACCOUNT_HANDLE, phoneAccounts[i])
-                        context.startActivity(intent)
-                    }
-                    linearLayout.addView(item)
-                }
-                dialog.setContent(linearLayout)
-                dialog.show()
-            } else {
-                context.startActivity(intent)
-            }
-        }
-    }
-
-    @JvmStatic
-    @SuppressLint("MissingPermission")
-    fun makeVoicemailCall(context: Context) {
-        if (!PermissionUtils.hasMakeCallPermission(context)) return
-
-        val telecomManager = context.getSystemService(Context.TELECOM_SERVICE) as? TelecomManager
-            ?: return
-        telecomManager.placeCall(Uri.fromParts("voicemail", "", null), Bundle.EMPTY)
     }
 
     @JvmStatic
