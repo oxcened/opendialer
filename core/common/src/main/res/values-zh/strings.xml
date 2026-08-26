@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="choose_sim_card" comment="Title of the dialog for selecting which SIM to use for an outgoing call.">选择用于此次通话的 SIM 卡</string>
+    <string name="text_copied" comment="Toast confirming that text was copied to the clipboard.">文本已复制</string>
     <string-array name="array_quick_responses" comment="Default text-message replies offered when declining an incoming call.">
-        <item name="array_quick_responses0">现在不能讲话。有什么事？</item>
-        <item name="array_quick_responses1">我会尽快联系你。</item>
-        <item name="array_quick_responses2">我晚点会联系你。</item>
-        <item name="array_quick_responses3">现在无法讲话。能晚点再联系我吗？</item>
+        <item name="array_quick_responses0">现在不方便说话。有什么事？</item>
+        <item name="array_quick_responses1">我马上回电。</item>
+        <item name="array_quick_responses2">我稍后给你打电话。</item>
+        <item name="array_quick_responses3">现在不方便说话。可以稍后再打来吗？</item>
     </string-array>
+    <string name="write_your_own" comment="Option for composing a custom reply instead of using a preset response.">编写自己的回复…</string>
 </resources>

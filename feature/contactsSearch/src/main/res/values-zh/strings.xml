@@ -1,2 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="copy_number" comment="Menu action that copies a phone number to the clipboard.">复制号码</string>
+    <string name="create_new_contact" comment="Menu action that creates a contact from the selected phone number.">新建联系人</string>
+    <string name="add_to_a_contact" comment="Menu action that adds the selected phone number to an existing contact.">添加到联系人</string>
+    <string name="send_message" comment="Menu action that starts a text message to the selected phone number.">发送短信</string>
+    <string name="edit_number_before_call" comment="Menu action that lets the user edit a phone number before calling it.">拨号前编辑号码</string>
+    <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">开启</string>
+    <string name="placeholder_search_permissions" comment="Empty-state message shown when phone permission is required for dialpad suggestions.">要查看建议，请开启电话权限</string>
+    <string name="dialpad_button_call_label" comment="Accessibility label for the dialpad button that calls the entered number.">拨打</string>
+    <string name="dialpad_more_options" comment="Accessibility label for the dialpad overflow menu.">更多拨号盘选项</string>
+    <string name="add_2_second_pause" comment="Dialpad menu action that inserts a two-second pause into the phone number.">添加 2 秒暂停</string>
+    <string name="add_wait" comment="Dialpad menu action that inserts a wait-for-confirmation marker into the phone number.">添加等待</string>
+    <string name="call_contact" comment="Action that calls the selected contact.">呼叫联系人</string>
+    <string name="open_contact" comment="Menu action that opens the selected person's contact details.">打开联系人</string>
+    <string name="suggested" comment="Heading above contacts suggested for the entered phone number.">建议</string>
+    <string name="contact_history" comment="Action that opens the selected contact's call history.">历史记录</string>
+    <string name="backspace" comment="Accessibility label for deleting the last dialpad character.">退格</string>
+</resources>

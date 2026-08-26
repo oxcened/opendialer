@@ -1,2 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="contacts" comment="Label for the contacts navigation destination.">联系人</string>
+    <string name="recents" comment="Label for the recent-calls navigation destination.">最近通话</string>
+    <string name="search_contacts" comment="Search field hint or action for finding contacts.">搜索联系人</string>
+    <string name="clear_search" comment="Accessibility label for clearing the current search query.">清除搜索</string>
+    <string name="call_voicemail" comment="Action that calls the user's voicemail service.">呼叫语音信箱</string>
+    <string name="voicemail" comment="Label for voicemail in navigation or call information.">语音信箱</string>
+    <string name="default_phone_title" comment="Title of the prompt asking the user to make OpenDialer the default phone app.">将 OpenDialer 设为默认电话应用</string>
+    <string name="default_phone_description" comment="Explanation that calling requires OpenDialer to be the default phone app.">只有将 OpenDialer 设为默认电话应用后，才能拨打和接听电话。</string>
+    <string name="default_phone_button" comment="Button that opens the system flow for choosing the default phone app.">设为默认</string>
+</resources>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="channel_incoming_calls" comment="Android notification channel for incoming calls.">来电</string>
-    <string name="channel_ongoing_calls" comment="Android notification channel for active calls.">来电</string>
-    <string name="channel_outgoing_calls" comment="Android notification channel for outgoing calls.">呼出电话</string>
-    <string name="contacts" comment="Bottom navigation tab for the contact list.">通讯录</string>
-    <string name="copy_number" comment="Action to copy a phone number to the clipboard.">拷贝号码</string>
-    <string name="edit_number_before_call" comment="Action that opens a dialpad to edit a phone number before calling.">通话前编辑号码</string>
-    <string name="recents" comment="Bottom navigation tab for the recent-call list.">最近的</string>
-    <string name="write_your_own" comment="Option to type a custom reply when declining an incoming call.">编辑自定义信息</string>
-    <string name="placeholder_call_log" comment="Empty-state message asking the user to grant phone permissions.">查看通话记录请开启电话访问权限</string>
+    <string name="channel_ongoing_calls" comment="Android notification channel for active calls.">通话中</string>
+    <string name="channel_outgoing_calls" comment="Android notification channel for outgoing calls.">去电</string>
+    <string name="contacts" comment="Bottom navigation tab for the contact list.">联系人</string>
+    <string name="copy_number" comment="Action to copy a phone number to the clipboard.">复制号码</string>
+    <string name="edit_number_before_call" comment="Action that opens a dialpad to edit a phone number before calling.">拨号前编辑号码</string>
+    <string name="recents" comment="Bottom navigation tab for the recent-call list.">最近通话</string>
+    <string name="write_your_own" comment="Option to type a custom reply when declining an incoming call.">编写自己的回复…</string>
+    <string name="placeholder_call_log" comment="Empty-state message asking the user to grant phone permissions.">要查看通话记录，请开启电话权限</string>
     <string name="turn_on" comment="Button that opens settings to enable the required permission.">开启</string>
 </resources>

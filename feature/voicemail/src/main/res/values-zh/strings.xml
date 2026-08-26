@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="call_voicemail" comment="Action that calls the user's voicemail service.">呼叫语音信箱</string>
+    <string name="placeholder_voicemail" comment="Empty-state message shown when phone permission is required to use voicemail.">要使用语音信箱，请开启电话权限</string>
+    <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">开启</string>
+    <string name="retry" comment="Button that retries loading or activating visual voicemail.">重试</string>
+    <string name="visual_voicemail_unavailable" comment="Title shown when visual voicemail cannot be activated.">无法启用可视语音信箱</string>
+    <string name="visual_voicemail_unavailable_description" comment="Explanation shown when the carrier or device does not support visual voicemail.">你的运营商或设备目前不支持可视语音信箱。你仍可拨打语音信箱收听留言。</string>
+    <string name="visual_voicemail_no_messages" comment="Empty-state title shown when visual voicemail contains no messages.">没有语音留言</string>
+    <string name="visual_voicemail_no_messages_description" comment="Empty-state explanation shown when visual voicemail is active but contains no messages.">可视语音信箱已就绪。新留言会显示在这里。</string>
+    <string name="unknown_caller" comment="Fallback sender name for voicemail from an unidentified caller.">未知来电者</string>
+    <string name="play_voicemail" comment="Accessibility label for playing a voicemail message.">播放语音留言</string>
+    <string name="playing" comment="Accessibility state indicating that a voicemail message is playing.">正在播放语音留言</string>
+</resources>
