@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="array_quick_responses">
+    <string-array name="array_quick_responses" comment="Default text-message replies offered when declining an incoming call.">
         <item name="array_quick_responses0">Kann gerade nicht sprechen. Was gibt\'s?</item>
         <item name="array_quick_responses1">Ich rufe gleich zurück.</item>
         <item name="array_quick_responses2">Ich rufe später zurück.</item>
