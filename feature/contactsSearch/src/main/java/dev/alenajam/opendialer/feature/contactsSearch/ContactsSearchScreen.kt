@@ -253,8 +253,8 @@ private fun SearchList(
                     )
                 }
             }
-            itemsIndexed(contacts) { index, contact ->
-                val rowKey = "${contact.contactId}-${contact.number}"
+            itemsIndexed(contacts, key = { _, contact -> contact.dataId }) { index, contact ->
+                val rowKey = contact.dataId.toString()
                 val isOpen = openRowKey == rowKey
                 ResultRow(
                     contact = contact,

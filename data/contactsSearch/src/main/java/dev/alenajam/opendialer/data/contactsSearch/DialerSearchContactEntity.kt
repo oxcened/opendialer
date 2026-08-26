@@ -1,6 +1,7 @@
 package dev.alenajam.opendialer.data.contactsSearch
 
 class DialerSearchContactEntity(
+    val dataId: Long,
     val id: Int,
     val name: String,
     val label: String?,

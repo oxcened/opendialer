@@ -1,6 +1,7 @@
 package dev.alenajam.opendialer.data.contactsSearch
 
 class DialerSearchContact(
+    val dataId: Long,
     val id: Int,
     val name: String,
     val label: String?,
@@ -15,6 +16,7 @@ class DialerSearchContact(
 
         fun map(contact: DialerSearchContactEntity): DialerSearchContact {
             return DialerSearchContact(
+                dataId = contact.dataId,
                 id = contact.id,
                 name = contact.name,
                 image = contact.photoUri,

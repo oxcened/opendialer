@@ -73,6 +73,7 @@ abstract class SearchContactsDialpadData {
                         duplicates.add(contactMatch)
                         list.add(
                             DialerSearchContactEntity(
+                                dataId = cursor.getLong(cursor.getColumnIndexOrThrow(Phone._ID)),
                                 id = cursor.getInt(cursor.getColumnIndexOrThrow(Phone.CONTACT_ID)),
                                 name = name,
                                 photoUri = cursor.getString(cursor.getColumnIndexOrThrow(Phone.PHOTO_THUMBNAIL_URI))

@@ -36,6 +36,9 @@ abstract class SearchContactsData {
                 do {
                     list.add(
                         DialerSearchContactEntity(
+                            dataId = cursor.getLong(
+                                cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone._ID)
+                            ),
                             id = cursor.getInt(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)),
                             name = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)),
                             photoUri = cursor.getString(
