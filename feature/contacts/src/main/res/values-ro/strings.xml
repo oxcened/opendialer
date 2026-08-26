@@ -2,6 +2,7 @@
 <resources>
     <string name="placeholder_contacts" comment="Empty-state message shown when contacts permission is required to display contacts.">Activează permisiunea pentru contacte pentru a vedea contactele</string>
     <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">Activează</string>
+    <string name="contact_phone_subtitle" comment="Contact-list subtitle. %1$s is the phone-number label and %2$s is the phone number.">%1$s · %2$s</string>
     <string name="call_contact" comment="Action that calls the selected contact.">Apelează contactul</string>
     <string name="message_contact" comment="Action that starts a text message to the selected contact.">Mesaj</string>
     <string name="contact_history" comment="Action that opens the selected contact's call history.">Istoric</string>
