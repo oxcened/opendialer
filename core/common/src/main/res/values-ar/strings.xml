@@ -1,2 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="choose_sim_card" comment="Title of the dialog for selecting which SIM to use for an outgoing call.">اختر شريحة SIM لهذه المكالمة</string>
+    <string name="text_copied" comment="Toast confirming that text was copied to the clipboard.">تم نسخ النص</string>
+    <string-array name="array_quick_responses" comment="Default text-message replies offered when declining an incoming call.">
+        <item name="array_quick_responses0">لا أستطيع التحدث الآن. ما الأمر؟</item>
+        <item name="array_quick_responses1">سأتصل بك حالًا.</item>
+        <item name="array_quick_responses2">سأتصل بك لاحقًا.</item>
+        <item name="array_quick_responses3">لا أستطيع التحدث الآن. هل يمكنك الاتصال بي لاحقًا؟</item>
+    </string-array>
+    <string name="write_your_own" comment="Option for composing a custom reply instead of using a preset response.">اكتب ردًا…</string>
+</resources>
