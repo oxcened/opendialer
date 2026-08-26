@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="channel_incoming_calls">Indgående Opkald</string>
-    <string name="channel_ongoing_calls">Igangværende Opkald</string>
-    <string name="channel_outgoing_calls">Udgående opkald</string>
-    <string name="contacts">Kontakter</string>
-    <string name="copy_number">Kopiér nummer</string>
-    <string name="edit_number_before_call">Redigér nummer før opkald</string>
-    <string name="recents">Seneste</string>
-    <string name="write_your_own">Skriv dit eget…</string>
-    <string name="placeholder_call_log">Slå telefontilladelserne til for at se din opkaldslog</string>
-    <string name="turn_on">Slå til</string>
+    <string name="channel_incoming_calls" comment="Android notification channel for incoming calls.">Indgående Opkald</string>
+    <string name="channel_ongoing_calls" comment="Android notification channel for active calls.">Igangværende Opkald</string>
+    <string name="channel_outgoing_calls" comment="Android notification channel for outgoing calls.">Udgående opkald</string>
+    <string name="contacts" comment="Bottom navigation tab for the contact list.">Kontakter</string>
+    <string name="copy_number" comment="Action to copy a phone number to the clipboard.">Kopiér nummer</string>
+    <string name="edit_number_before_call" comment="Action that opens a dialpad to edit a phone number before calling.">Redigér nummer før opkald</string>
+    <string name="recents" comment="Bottom navigation tab for the recent-call list.">Seneste</string>
+    <string name="write_your_own" comment="Option to type a custom reply when declining an incoming call.">Skriv dit eget…</string>
+    <string name="placeholder_call_log" comment="Empty-state message asking the user to grant phone permissions.">Slå telefontilladelserne til for at se din opkaldslog</string>
+    <string name="turn_on" comment="Button that opens settings to enable the required permission.">Slå til</string>
 </resources>
