@@ -21,13 +21,13 @@
     <string name="manage_blocked_numbers_unavailable">Blocked number settings are not available on this device</string>
     <string name="screen_settings_title">Settings</string>
     <string name="screen_about_title">About</string>
-    <string name="about_section_developer">Team</string>
+    <string name="about_section_developer">Developer</string>
     <string name="about_section_community">Community</string>
     <string name="about_section_open_source">Open source and support</string>
     <string name="about_section_credits">Credits</string>
     <string name="typography_credit_title">Typography</string>
-    <string name="developer_credit">Alen Ajam</string>
-    <string name="developer_role">Developer • alenajam.dev</string>
+    <string name="developer_credit" translatable="false">Alen Ajam</string>
+    <string name="developer_role" translatable="false">alenajam.dev</string>
     <string name="url_developer" translatable="false">https://alenajam.dev</string>
     <string name="join_discord">Join the Discord</string>
     <string name="discord_description">Chat with the community and follow development</string>
