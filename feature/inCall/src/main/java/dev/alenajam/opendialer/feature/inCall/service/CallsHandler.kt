@@ -125,7 +125,7 @@ class CallsHandler @Inject constructor(
     // Lifecycle and Event Methods
     @MainThread
     fun addCall(call: Call, context: Context) {
-        if (call.state == Call.STATE_DISCONNECTED) {
+        if (call.safeState == Call.STATE_DISCONNECTED) {
             OngoingCallHelper.handleDisconnectCause(context, call)
             return
         }
@@ -185,7 +185,7 @@ class CallsHandler @Inject constructor(
             var mapChanged = false
 
             fun addIfNeeded(call: Call) {
-                if (call.state != Call.STATE_DISCONNECTED && !reconciledMap.containsKey(call)) {
+                if (call.safeState != Call.STATE_DISCONNECTED && !reconciledMap.containsKey(call)) {
                     val ongoingCall = OngoingCall(
                         context!!,
                         call,

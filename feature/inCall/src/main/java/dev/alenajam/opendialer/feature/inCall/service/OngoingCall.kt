@@ -79,7 +79,7 @@ class OngoingCall(
     init {
         call.registerCallback(callback)
         refreshIdentity()
-        updateCallState(call.state)
+        updateCallState(call.safeState)
     }
 
     fun refreshIdentity() {
@@ -126,9 +126,9 @@ class OngoingCall(
             it.copy(
                 isConferenced = call.parent != null,
                 canMerge = call.details.can(Call.Details.CAPABILITY_MERGE_CONFERENCE) || call.conferenceableCalls.isNotEmpty(),
-                canHold = call.state == Call.STATE_HOLDING || call.details.can(Call.Details.CAPABILITY_HOLD),
+                canHold = call.safeState == Call.STATE_HOLDING || call.details.can(Call.Details.CAPABILITY_HOLD),
                 canSplit = call.details.can(Call.Details.CAPABILITY_SEPARATE_FROM_CONFERENCE),
-                state = call.state
+                state = call.safeState
             )
         }
     }
