@@ -1,2 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="copy_number" comment="Menu action that copies a phone number to the clipboard.">Copier le numéro</string>
+    <string name="create_new_contact" comment="Menu action that creates a contact from the selected phone number.">Créer un contact</string>
+    <string name="add_to_a_contact" comment="Menu action that adds the selected phone number to an existing contact.">Ajouter à un contact</string>
+    <string name="send_message" comment="Menu action that starts a text message to the selected phone number.">Envoyer un message</string>
+    <string name="edit_number_before_call" comment="Menu action that lets the user edit a phone number before calling it.">Modifier le numéro avant l’appel</string>
+    <string name="blockThisCaller" comment="Menu action that blocks calls and messages from the selected caller.">Bloquer cet appelant</string>
+    <string name="unblockThisCaller" comment="Menu action that removes the block from the selected caller.">Débloquer cet appelant</string>
+    <string name="delete" comment="Menu action that deletes the selected call-log entry.">Supprimer</string>
+    <string name="anonymous" comment="Fallback caller name when the phone number is withheld.">Anonyme</string>
+    <string name="placeholder_call_log" comment="Empty-state message shown when phone permission is required to display call history.">Activez les autorisations Téléphone pour afficher votre historique des appels</string>
+    <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">Activer</string>
+    <string name="outgoing_call" comment="Call-detail label identifying an outgoing call.">Appel sortant</string>
+    <string name="incoming_call" comment="Call-detail label identifying an answered incoming call.">Appel entrant</string>
+    <string name="missed_call" comment="Call-detail label identifying a missed incoming call.">Appel manqué</string>
+    <string name="rejected_call" comment="Call-detail label identifying an incoming call that was declined.">Appel refusé</string>
+    <string name="blocked_call" comment="Call-detail label identifying a call that was blocked.">Appel bloqué</string>
+    <string name="voicemail_call" comment="Call-detail label identifying a voicemail entry.">Message vocal</string>
+    <string name="voicemail" comment="Label for voicemail in navigation or call information.">Messagerie vocale</string>
+    <string name="block_confirmation_title" comment="Title of the block-caller confirmation dialog. %1$s is the caller name or phone number.">Bloquer %1$s ?</string>
+    <string name="block_confirmation_message" comment="Explanation in the block-caller confirmation dialog.">Vous ne recevrez plus d’appels ni de messages de ce numéro.</string>
+    <string name="more_options" comment="Accessibility label for a button that opens additional actions.">Plus d’options</string>
+    <string name="action_call" comment="Button that starts a phone call.">Appeler</string>
+    <string name="cancel" comment="Button that dismisses the current dialog without applying changes.">Annuler</string>
+</resources>
