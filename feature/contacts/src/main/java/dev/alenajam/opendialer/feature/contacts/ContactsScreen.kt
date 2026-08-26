@@ -194,7 +194,9 @@ fun ContactsScreen(
                 when (item) {
                     is ContactsListEntry.Header -> ContactSectionHeader(item.label)
                     is ContactsListEntry.Contact -> {
-                        val rowKey = "${item.contact.id}-${item.contact.number}"
+                        // A favorite is intentionally shown both here and in its alphabetical section.
+                        // Include the section so each rendered copy owns its expansion state.
+                        val rowKey = "${item.sectionLabel}-${item.contact.id}-${item.contact.number}"
                         val isOpen = openRowKey == rowKey
                         ContactRow(
                             contact = item.contact,
