@@ -1,2 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="contacts" comment="Label for the contacts navigation destination.">Kontakter</string>
+    <string name="recents" comment="Label for the recent-calls navigation destination.">Seneste</string>
+    <string name="search_contacts" comment="Search field hint or action for finding contacts.">Søg i kontakter</string>
+    <string name="clear_search" comment="Accessibility label for clearing the current search query.">Ryd søgning</string>
+    <string name="call_voicemail" comment="Action that calls the user's voicemail service.">Ring til telefonsvarer</string>
+    <string name="voicemail" comment="Label for voicemail in navigation or call information.">Telefonsvarer</string>
+    <string name="default_phone_title" comment="Title of the prompt asking the user to make OpenDialer the default phone app.">Gør OpenDialer til standardtelefonapp</string>
+    <string name="default_phone_description" comment="Explanation that calling requires OpenDialer to be the default phone app.">OpenDialer kan kun foretage og modtage opkald, når appen er din standardtelefonapp.</string>
+    <string name="default_phone_button" comment="Button that opens the system flow for choosing the default phone app.">Angiv som standard</string>
+</resources>
