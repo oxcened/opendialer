@@ -27,7 +27,6 @@
     <string name="conference_call" comment="Caller-name label used when multiple participants are in one call.">Telefonkonferenz</string>
     <string name="voicemail" comment="Label for voicemail in navigation or call information.">Mailbox</string>
     <string name="anonymous" comment="Fallback caller name when the phone number is withheld.">Anonym</string>
-    <string name="caller_number_subtitle" comment="Caller subtitle. %1$s is the phone-number label and %2$s is the phone number.">%1$s · %2$s</string>
     <string name="conference_merge" comment="In-call action that combines separate calls into a conference.">Zusammenführen</string>
     <string name="conference_swap" comment="In-call action that switches between the active and held calls.">Wechseln</string>
     <string name="conference_manage" comment="In-call action that opens conference-participant controls.">Verwalten</string>
