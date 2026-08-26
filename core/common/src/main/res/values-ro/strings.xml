@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="array_quick_responses">
+    <string-array name="array_quick_responses" comment="Default text-message replies offered when declining an incoming call.">
         <item name="array_quick_responses0">Nu pot vorbi acum. Ce este?</item>
         <item name="array_quick_responses1">Te sun înapoi imediat.</item>
         <item name="array_quick_responses2">Te sun mai târziu.</item>
