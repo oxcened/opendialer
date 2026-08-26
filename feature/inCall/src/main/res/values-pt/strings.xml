@@ -27,6 +27,7 @@
     <string name="conference_call" comment="Caller-name label used when multiple participants are in one call.">Conferência</string>
     <string name="voicemail" comment="Label for voicemail in navigation or call information.">Correio de voz</string>
     <string name="anonymous" comment="Fallback caller name when the phone number is withheld.">Anônimo</string>
+    <string name="caller_number_subtitle" comment="Caller subtitle. %1$s is the phone-number label and %2$s is the phone number.">%1$s · %2$s</string>
     <string name="conference_merge" comment="In-call action that combines separate calls into a conference.">Mesclar</string>
     <string name="conference_swap" comment="In-call action that switches between the active and held calls.">Alternar</string>
     <string name="conference_manage" comment="In-call action that opens conference-participant controls.">Gerenciar</string>
