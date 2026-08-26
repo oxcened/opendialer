@@ -129,7 +129,7 @@ class CallsHandler @Inject constructor(
             return
         }
 
-        val map = HashMap(_calls.value)
+        val map = _calls.value.toMutableMap()
         var ongoingCall = map[call]
 
         if (ongoingCall == null) {
@@ -151,7 +151,7 @@ class CallsHandler @Inject constructor(
 
     @MainThread
     fun removeCall(call: Call) {
-        val map = HashMap(_calls.value)
+        val map = _calls.value.toMutableMap()
         val ongoingCall = map.remove(call) ?: return
         if (ongoingCall.shouldNotifyMissedCall) {
             _events.tryEmit(
@@ -169,7 +169,7 @@ class CallsHandler @Inject constructor(
 
     private fun reconcileCallsFromTelecom(): Boolean {
         val service = callService ?: return false
-        val reconciledCalls = HashMap(_calls.value)
+        val reconciledCalls = _calls.value.toMutableMap()
         var changed = false
         for (call in service.calls) {
             changed = changed or addReconciledCall(reconciledCalls, call)

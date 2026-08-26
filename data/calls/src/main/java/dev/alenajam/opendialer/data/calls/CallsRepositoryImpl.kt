@@ -51,9 +51,9 @@ class CallsRepositoryImpl @Inject constructor(
         contentResolver: ContentResolver,
         ids: List<Int>
     ): Either<Failure, List<DialerCallEntity>> {
-        val cursor =
-            CallDetailData.getCursor(contentResolver, ids) ?: return Either.Left(Failure.NoData)
-        val data = CallDetailData.getData(cursor, voicemailNumberProvider.getNumbers())
+        val data = CallDetailData.getCursor(contentResolver, ids)?.use { cursor ->
+            CallDetailData.getData(cursor, voicemailNumberProvider.getNumbers())
+        } ?: return Either.Left(Failure.NoData)
 
         return if (data.isEmpty()) {
             Either.Left(Failure.NoData)

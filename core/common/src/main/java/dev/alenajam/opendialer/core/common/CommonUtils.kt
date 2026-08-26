@@ -100,15 +100,6 @@ object CommonUtils {
     }
 
     @JvmStatic
-    @Deprecated("Use proper Intent instantiation")
-    @Throws(ClassNotFoundException::class)
-    fun startInCallUI(context: Context) {
-        val intent = Intent(context, Class.forName("dev.alenajam.opendialer.features.inCall.ui.InCallActivity"))
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        context.startActivity(intent)
-    }
-
-    @JvmStatic
     fun makeSms(context: Context, number: String?) {
         if (number.isNullOrEmpty()) return
         val intent = Intent(Intent.ACTION_SENDTO, Uri.fromParts("smsto", number, null))
