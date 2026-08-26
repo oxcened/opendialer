@@ -41,14 +41,22 @@ Android accepts as upgrades.
 
 ## Make a release
 
-After the version-change pull request is merged and CI is green:
+Use the helper script to prepare the version-change commit:
 
 ```bash
-git checkout main
-git pull --ff-only
-git tag v0.4.0
-git push origin v0.4.0
+scripts/prepare-release.sh 0.4.0
 ```
+
+After its CI run is green, publish the tag. The prompt defaults to **No**;
+pass `--yes` only for deliberate non-interactive use.
+
+```bash
+scripts/prepare-release.sh 0.4.0 --publish
+```
+
+The script requires a clean, up-to-date `main` branch, validates the semantic
+version, and rejects existing tags. Its preparation mode updates only
+`appVersionName`, commits `chore(release): prepare v0.4.0`, and pushes `main`.
 
 The `Android Release` workflow validates the tag against `appVersionName`,
 builds the signed release APK, writes its SHA-256 checksum, attests the assets,
