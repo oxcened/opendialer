@@ -19,7 +19,7 @@ An open, clean and modern dialer for Android.
 - [Tech Stack](#tech-stack)
 - [Modularization](#modularization)
 - [Roadmap](#roadmap)
-- [Changelog](#changelog)
+- [Releases](#releases)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -71,9 +71,11 @@ description of the modularization strategy used in
 
 Development progress is tracked in the [roadmap](https://github.com/users/oxcened/projects/3).
 
-## Changelog
+## Releases
 
-Released changes are documented in the [changelog](./CHANGELOG.md).
+Maintainers should follow the [release guide](./docs/releases.md) to publish a
+signed APK and its checksum. GitHub-generated notes on each release page are
+the project's changelog.
 
 ## Contributing
 
