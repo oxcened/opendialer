@@ -19,9 +19,11 @@ jobs:
       - name: Build Discord payload
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
           RELEASE_TAG: ${{ inputs.release_tag }}
           PAYLOAD_PATH: ${{ runner.temp }}/discord-release-payload.json
         run: |
+          set -o pipefail
           gh release view "$RELEASE_TAG" --json name,tagName,url,body | jq '
             .tagName as $tag
             | ($tag | test("^v?[0-9]+\\.[0-9]+\\.0$")) as $is_major_or_minor
