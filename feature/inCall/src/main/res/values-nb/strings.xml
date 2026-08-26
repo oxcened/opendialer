@@ -33,7 +33,7 @@
     <string name="conference_manage" comment="In-call action that opens conference-participant controls.">Administrer</string>
     <string name="action_add_call" comment="In-call action that starts another call while keeping the current call.">Legg til samtale</string>
     <string name="action_hold" comment="In-call action that places the current call on hold.">Sett på vent</string>
-    <string name="control_dialpad" comment="In-call control that opens the numeric dialpad.">Talltastatur</string>
+    <string name="control_dialpad" comment="In-call control that opens the numeric dialpad.">Tastatur</string>
     <string name="control_mute" comment="In-call control that mutes or unmutes the microphone.">Demp</string>
     <string name="control_speaker" comment="In-call control that enables or disables speakerphone.">Høyttaler</string>
     <string name="control_more" comment="In-call control that opens additional call actions.">Mer</string>

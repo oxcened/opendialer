@@ -34,7 +34,7 @@
     <string name="action_add_call" comment="In-call action that starts another call while keeping the current call.">Adaugă un apel</string>
     <string name="action_hold" comment="In-call action that places the current call on hold.">Pune în așteptare</string>
     <string name="control_dialpad" comment="In-call control that opens the numeric dialpad.">Tastatură</string>
-    <string name="control_mute" comment="In-call control that mutes or unmutes the microphone.">Dezactivează microfonul</string>
+    <string name="control_mute" comment="In-call control that mutes or unmutes the microphone.">Mut</string>
     <string name="control_speaker" comment="In-call control that enables or disables speakerphone.">Difuzor</string>
     <string name="control_more" comment="In-call control that opens additional call actions.">Mai multe</string>
     <string name="reply_with_message" comment="Title of the panel for declining an incoming call with a text response.">Răspunde cu un mesaj</string>

@@ -34,7 +34,7 @@
     <string name="action_add_call" comment="In-call action that starts another call while keeping the current call.">Ajouter un appel</string>
     <string name="action_hold" comment="In-call action that places the current call on hold.">Mettre en attente</string>
     <string name="control_dialpad" comment="In-call control that opens the numeric dialpad.">Clavier</string>
-    <string name="control_mute" comment="In-call control that mutes or unmutes the microphone.">Couper le micro</string>
+    <string name="control_mute" comment="In-call control that mutes or unmutes the microphone.">Muet</string>
     <string name="control_speaker" comment="In-call control that enables or disables speakerphone.">Haut-parleur</string>
     <string name="control_more" comment="In-call control that opens additional call actions.">Plus</string>
     <string name="reply_with_message" comment="Title of the panel for declining an incoming call with a text response.">Répondre par un message</string>

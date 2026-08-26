@@ -33,8 +33,8 @@
     <string name="conference_manage" comment="In-call action that opens conference-participant controls.">Verwalten</string>
     <string name="action_add_call" comment="In-call action that starts another call while keeping the current call.">Anruf hinzufügen</string>
     <string name="action_hold" comment="In-call action that places the current call on hold.">Halten</string>
-    <string name="control_dialpad" comment="In-call control that opens the numeric dialpad.">Wähltasten</string>
-    <string name="control_mute" comment="In-call control that mutes or unmutes the microphone.">Stummschalten</string>
+    <string name="control_dialpad" comment="In-call control that opens the numeric dialpad.">Tasten</string>
+    <string name="control_mute" comment="In-call control that mutes or unmutes the microphone.">Stumm</string>
     <string name="control_speaker" comment="In-call control that enables or disables speakerphone.">Lautsprecher</string>
     <string name="control_more" comment="In-call control that opens additional call actions.">Mehr</string>
     <string name="reply_with_message" comment="Title of the panel for declining an incoming call with a text response.">Mit Nachricht antworten</string>

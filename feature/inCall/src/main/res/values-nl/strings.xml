@@ -33,9 +33,9 @@
     <string name="conference_manage" comment="In-call action that opens conference-participant controls.">Beheren</string>
     <string name="action_add_call" comment="In-call action that starts another call while keeping the current call.">Gesprek toevoegen</string>
     <string name="action_hold" comment="In-call action that places the current call on hold.">In de wacht zetten</string>
-    <string name="control_dialpad" comment="In-call control that opens the numeric dialpad.">Toetsenblok</string>
+    <string name="control_dialpad" comment="In-call control that opens the numeric dialpad.">Toetsen</string>
     <string name="control_mute" comment="In-call control that mutes or unmutes the microphone.">Dempen</string>
-    <string name="control_speaker" comment="In-call control that enables or disables speakerphone.">Luidspreker</string>
+    <string name="control_speaker" comment="In-call control that enables or disables speakerphone.">Speaker</string>
     <string name="control_more" comment="In-call control that opens additional call actions.">Meer</string>
     <string name="reply_with_message" comment="Title of the panel for declining an incoming call with a text response.">Beantwoorden met een bericht</string>
     <string name="action_send" comment="Button that sends the typed quick-response message.">Versturen</string>
