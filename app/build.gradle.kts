@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.google.services)
 }
 
 val appVersionName = providers.gradleProperty("appVersionName").orNull
@@ -100,6 +102,10 @@ tasks.register("validateReleaseVersion") {
 }
 
 dependencies {
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.analytics)
+
     implementation(project(":feature:appShell"))
     implementation(project(":feature:calls"))
     implementation(project(":feature:callDetail"))
