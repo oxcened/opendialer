@@ -1,2 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="contacts" comment="Label for the contacts navigation destination.">Kontakter</string>
+    <string name="recents" comment="Label for the recent-calls navigation destination.">Nylige</string>
+    <string name="search_contacts" comment="Search field hint or action for finding contacts.">Søk i kontakter</string>
+    <string name="clear_search" comment="Accessibility label for clearing the current search query.">Tøm søket</string>
+    <string name="call_voicemail" comment="Action that calls the user's voicemail service.">Ring talepost</string>
+    <string name="voicemail" comment="Label for voicemail in navigation or call information.">Talepost</string>
+    <string name="default_phone_title" comment="Title of the prompt asking the user to make OpenDialer the default phone app.">Angi OpenDialer som standard telefonapp</string>
+    <string name="default_phone_description" comment="Explanation that calling requires OpenDialer to be the default phone app.">OpenDialer kan bare ringe og motta samtaler når appen er standard telefonapp.</string>
+    <string name="default_phone_button" comment="Button that opens the system flow for choosing the default phone app.">Angi som standard</string>
+</resources>
