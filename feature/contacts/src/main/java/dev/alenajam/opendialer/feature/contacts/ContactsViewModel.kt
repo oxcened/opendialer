@@ -10,9 +10,9 @@ import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.core.common.telecom.CallAccount
 import dev.alenajam.opendialer.core.common.telecom.CallPlacementRepository
 import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
-import dev.alenajam.opendialer.data.calls.CallsRepositoryImpl
+import dev.alenajam.opendialer.data.calls.CallsRepository
 import dev.alenajam.opendialer.data.calls.DialerCallEntity
-import dev.alenajam.opendialer.data.contacts.ContactsRepositoryImpl
+import dev.alenajam.opendialer.data.contacts.ContactsRepository
 import dev.alenajam.opendialer.data.contacts.DialerContact
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,8 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ContactsViewModel
 @Inject constructor(
-    private val contactsRepository: ContactsRepositoryImpl,
-    private val callsRepository: CallsRepositoryImpl,
+    private val contactsRepository: ContactsRepository,
+    private val callsRepository: CallsRepository,
     private val app: Application,
     private val callPlacementRepository: CallPlacementRepository,
 ) : ViewModel() {

@@ -5,10 +5,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import dagger.hilt.android.AndroidEntryPoint
+import dev.alenajam.opendialer.core.common.DefaultPhoneManager
 import dev.alenajam.opendialer.feature.appShell.DialerApp
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var defaultPhoneManager: DefaultPhoneManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -16,7 +21,7 @@ class MainActivity : ComponentActivity() {
             window.isNavigationBarContrastEnforced = false
         }
         setContent {
-            DialerApp()
+            DialerApp(defaultPhoneManager = defaultPhoneManager)
         }
     }
 }

@@ -18,7 +18,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import dev.alenajam.opendialer.core.common.DefaultPhoneUtils
+import dev.alenajam.opendialer.core.common.DefaultPhoneManager
 import dev.alenajam.opendialer.core.common.MAIN_ACTIVITY_INTENT_DIAL_EXTRA_ADD_CALL
 import dev.alenajam.opendialer.core.common.getActivity
 import dev.alenajam.opendialer.core.common.ui.AppIcons
@@ -52,6 +52,7 @@ data object AddFavoriteRoute
 
 @Composable
 fun DialerApp(
+    defaultPhoneManager: DefaultPhoneManager,
     icons: AppIcons = DefaultAppIcons,
     themeExtension: AppThemeExtension = AppThemeExtension(),
     settingsSubpages: List<SettingsSubpage> = emptyList(),
@@ -61,14 +62,14 @@ fun DialerApp(
     AppProviders(icons = icons, themeExtension = themeExtension) {
         val activity = LocalContext.current.getActivity()
         var isDefaultPhoneApp by remember(activity) {
-            mutableStateOf(activity?.let(DefaultPhoneUtils::hasDefault) == true)
+            mutableStateOf(defaultPhoneManager.isDefaultDialer())
         }
         val lifecycleOwner = LocalLifecycleOwner.current
 
         DisposableEffect(activity, lifecycleOwner) {
             val observer = LifecycleEventObserver { _, event ->
                 if (event == Lifecycle.Event.ON_RESUME) {
-                    isDefaultPhoneApp = activity?.let(DefaultPhoneUtils::hasDefault) == true
+                    isDefaultPhoneApp = defaultPhoneManager.isDefaultDialer()
                 }
             }
             lifecycleOwner.lifecycle.addObserver(observer)
@@ -78,7 +79,11 @@ fun DialerApp(
         if (!isDefaultPhoneApp) {
             DefaultPhoneScreen(
                 onSetAsDefault = {
-                    activity?.let { DefaultPhoneUtils.requestDefault(it, DEFAULT_PHONE_REQUEST_CODE) }
+                    activity?.let {
+                        defaultPhoneManager.createRequestDefaultDialerIntent()?.let { intent ->
+                            it.startActivityForResult(intent, DEFAULT_PHONE_REQUEST_CODE)
+                        }
+                    }
                 },
             )
         } else {

@@ -7,7 +7,7 @@ import android.database.ContentObserver
 import android.net.Uri
 import android.provider.BlockedNumberContract
 import android.provider.CallLog
-import dev.alenajam.opendialer.core.common.DefaultPhoneUtils
+import dev.alenajam.opendialer.core.common.DefaultPhoneManager
 import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.core.common.exception.Failure
 import dev.alenajam.opendialer.core.common.functional.Either
@@ -21,6 +21,7 @@ import javax.inject.Singleton
 class CallsRepositoryImpl @Inject constructor(
     private val app: Application,
     private val voicemailNumberProvider: VoicemailNumberProvider,
+    private val defaultPhoneManager: DefaultPhoneManager,
 ) : CallsRepository {
     override fun getCalls(): Flow<List<DialerCallEntity>> =
         callbackFlow {
@@ -85,7 +86,7 @@ class CallsRepositoryImpl @Inject constructor(
             )
 
             if (!call.isAnonymous()) {
-                val hasDefault = DefaultPhoneUtils.hasDefault(this)
+                val hasDefault = defaultPhoneManager.isDefaultDialer()
                 val canUserBlockNumbers = BlockedNumberContract.canCurrentUserBlockNumbers(this)
                 if (hasDefault && canUserBlockNumbers) {
                     val isBlocked =
