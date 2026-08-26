@@ -48,6 +48,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.alenajam.opendialer.core.common.ui.ContactAvatar
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.PermissionUtils
+import dev.alenajam.opendialer.core.common.telecom.CallAccount
+import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
+import dev.alenajam.opendialer.core.common.ui.CallAccountPicker
 import dev.alenajam.opendialer.data.contacts.DialerContact
 
 @Composable
@@ -68,14 +71,37 @@ fun ContactsScreen(
     val context = LocalContext.current
     var openRowKey by remember { mutableStateOf<String?>(null) }
     var pendingCallNumber by remember { mutableStateOf<String?>(null) }
+    var callAccounts by remember { mutableStateOf<List<CallAccount>?>(null) }
     val requestCallPermissions = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { result ->
         if (PermissionUtils.makeCallPermissions.all { result[it] == true }) {
             viewModel.handleCallRuntimePermissionGranted()
-            pendingCallNumber?.let(viewModel::makeCall)
+            pendingCallNumber?.let { number ->
+                when (val placementResult = viewModel.makeCall(number)) {
+                    is CallPlacementResult.AccountSelectionRequired -> {
+                        callAccounts = placementResult.accounts
+                    }
+                    else -> pendingCallNumber = null
+                }
+            }
+        } else {
+            pendingCallNumber = null
         }
-        pendingCallNumber = null
+    }
+
+    fun placeCall(number: String) {
+        when (val result = viewModel.makeCall(number)) {
+            CallPlacementResult.PermissionRequired -> {
+                pendingCallNumber = number
+                requestCallPermissions.launch(PermissionUtils.makeCallPermissions)
+            }
+            is CallPlacementResult.AccountSelectionRequired -> {
+                pendingCallNumber = number
+                callAccounts = result.accounts
+            }
+            else -> Unit
+        }
     }
     val filteredContacts = if (searchQuery.isBlank()) {
         contacts.value
@@ -100,6 +126,23 @@ fun ContactsScreen(
     }
 
     Surface(modifier = Modifier.fillMaxSize()) {
+        callAccounts?.let { accounts ->
+            CallAccountPicker(
+                accounts = accounts,
+                onAccountSelected = { account ->
+                    val number = pendingCallNumber ?: return@CallAccountPicker
+                    callAccounts = null
+                    when (val result = viewModel.makeCall(number, account)) {
+                        is CallPlacementResult.AccountSelectionRequired -> callAccounts = result.accounts
+                        else -> Unit
+                    }
+                },
+                onDismiss = {
+                    callAccounts = null
+                    pendingCallNumber = null
+                },
+            )
+        }
         if (!hasPermission.value) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -160,12 +203,7 @@ fun ContactsScreen(
                             roundBottom = item.isLastInSection,
                             onClick = { openRowKey = if (isOpen) null else rowKey },
                             onOpenContact = { viewModel.openContact(item.contact.id) },
-                            onCall = {
-                                if (!viewModel.makeCall(item.contact.number)) {
-                                    pendingCallNumber = item.contact.number
-                                    requestCallPermissions.launch(PermissionUtils.makeCallPermissions)
-                                }
-                            },
+                            onCall = { placeCall(item.contact.number) },
                             onMessage = { viewModel.sendMessage(item.contact.number) },
                             onHistory = {
                                 viewModel.getHistoryIds(item.contact.number)

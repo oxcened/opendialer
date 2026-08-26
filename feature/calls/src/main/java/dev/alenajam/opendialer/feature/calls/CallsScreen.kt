@@ -75,6 +75,9 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.alenajam.opendialer.core.common.ui.ContactAvatar
 import dev.alenajam.opendialer.core.common.PermissionUtils
+import dev.alenajam.opendialer.core.common.telecom.CallAccount
+import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
+import dev.alenajam.opendialer.core.common.ui.CallAccountPicker
 import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.data.calls.CallType
 import dev.alenajam.opendialer.data.calls.ContactInfo
@@ -108,6 +111,39 @@ fun CallsScreen(
             }
         }
 
+    var pendingCallNumber by remember { mutableStateOf<String?>(null) }
+    var callAccounts by remember { mutableStateOf<List<CallAccount>?>(null) }
+    val requestCallPermissions = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { result ->
+        if (PermissionUtils.makeCallPermissions.all { result[it] == true }) {
+            pendingCallNumber?.let { number ->
+                when (val placementResult = viewModel.makeCall(number)) {
+                    is CallPlacementResult.AccountSelectionRequired -> {
+                        callAccounts = placementResult.accounts
+                    }
+                    else -> pendingCallNumber = null
+                }
+            }
+        } else {
+            pendingCallNumber = null
+        }
+    }
+
+    fun placeCall(number: String) {
+        when (val result = viewModel.makeCall(number)) {
+            CallPlacementResult.PermissionRequired -> {
+                pendingCallNumber = number
+                requestCallPermissions.launch(PermissionUtils.makeCallPermissions)
+            }
+            is CallPlacementResult.AccountSelectionRequired -> {
+                pendingCallNumber = number
+                callAccounts = result.accounts
+            }
+            else -> Unit
+        }
+    }
+
     val calls = viewModel.calls.collectAsStateWithLifecycle()
     val favorites = viewModel.favorites.collectAsStateWithLifecycle()
     val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
@@ -122,6 +158,24 @@ fun CallsScreen(
             CallFilter.CONTACTS -> calls.value.filter { it.isContactSaved() }
             else -> calls.value
         }
+    }
+
+    callAccounts?.let { accounts ->
+        CallAccountPicker(
+            accounts = accounts,
+            onAccountSelected = { account ->
+                val number = pendingCallNumber ?: return@CallAccountPicker
+                callAccounts = null
+                when (val result = viewModel.makeCall(number, account)) {
+                    is CallPlacementResult.AccountSelectionRequired -> callAccounts = result.accounts
+                    else -> Unit
+                }
+            },
+            onDismiss = {
+                callAccounts = null
+                pendingCallNumber = null
+            },
+        )
     }
 
     val callsByDate = remember(filteredCalls) {
@@ -183,7 +237,7 @@ fun CallsScreen(
                         onToggleExpand = { favoritesExpanded = !favoritesExpanded },
                         onAddClick = onAddFavorite,
                         onViewContactsClick = onOpenContacts,
-                        onFavoriteClick = { viewModel.makeCall(it.number) },
+                        onFavoriteClick = { placeCall(it.number) },
                         onRemoveFavorite = { viewModel.unstarContact(it.id) }
                     )
                 }
@@ -201,7 +255,7 @@ fun CallsScreen(
                             roundBottom = index == callsForDate.lastIndex,
                             icons = icons,
                             onClick = { openRowId = if (isOpen) null else call.id },
-                            makeCall = { viewModel.makeCall(call.contactInfo.number!!) },
+                            makeCall = { placeCall(call.contactInfo.number!!) },
                             sendMessage = { viewModel.sendMessage(call.contactInfo.number!!) },
                             addContact = { viewModel.addToContact(call.contactInfo.number!!) },
                             openContact = { viewModel.openContact(call) },

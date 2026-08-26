@@ -7,6 +7,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.ContactsHelper
 import dev.alenajam.opendialer.core.common.PermissionUtils
+import dev.alenajam.opendialer.core.common.telecom.CallAccount
+import dev.alenajam.opendialer.core.common.telecom.CallPlacementRepository
+import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
 import dev.alenajam.opendialer.data.calls.CallsRepository
 import dev.alenajam.opendialer.data.calls.DialerCall
 import dev.alenajam.opendialer.data.callsCache.CacheRepository
@@ -25,6 +28,7 @@ class CallsViewModel
     private val contactsRepository: ContactsRepository,
     private val app: Application,
     private val cacheRepository: CacheRepository,
+    private val callPlacementRepository: CallPlacementRepository,
 ) : ViewModel() {
     private val _calls = MutableStateFlow<List<DialerCall>>(emptyList())
     val calls: StateFlow<List<DialerCall>> = _calls
@@ -74,7 +78,10 @@ class CallsViewModel
     fun sendMessage(number: String) =
         CommonUtils.makeSms(app, number)
 
-    fun makeCall(number: String) = CommonUtils.makeCall(app, number)
+    fun makeCall(number: String): CallPlacementResult = callPlacementRepository.placeCall(number)
+
+    fun makeCall(number: String, account: CallAccount): CallPlacementResult =
+        callPlacementRepository.placeCall(number, account)
     fun copyNumber(number: String) = CommonUtils.copyToClipobard(app, number)
 
     fun blockNumber(number: String) {

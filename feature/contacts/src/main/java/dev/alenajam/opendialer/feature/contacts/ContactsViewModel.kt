@@ -7,6 +7,9 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.PermissionUtils
+import dev.alenajam.opendialer.core.common.telecom.CallAccount
+import dev.alenajam.opendialer.core.common.telecom.CallPlacementRepository
+import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
 import dev.alenajam.opendialer.data.calls.CallsRepositoryImpl
 import dev.alenajam.opendialer.data.calls.DialerCallEntity
 import dev.alenajam.opendialer.data.contacts.ContactsRepositoryImpl
@@ -22,6 +25,7 @@ class ContactsViewModel
     private val contactsRepository: ContactsRepositoryImpl,
     private val callsRepository: CallsRepositoryImpl,
     private val app: Application,
+    private val callPlacementRepository: CallPlacementRepository,
 ) : ViewModel() {
     private val _contacts = MutableStateFlow<List<DialerContact>>(emptyList())
     val contacts: StateFlow<List<DialerContact>> = _contacts
@@ -59,11 +63,10 @@ class ContactsViewModel
         }
     }
 
-    fun makeCall(number: String): Boolean {
-        if (!hasCallRuntimePermission) return false
-        CommonUtils.makeCall(app, number)
-        return true
-    }
+    fun makeCall(number: String): CallPlacementResult = callPlacementRepository.placeCall(number)
+
+    fun makeCall(number: String, account: CallAccount): CallPlacementResult =
+        callPlacementRepository.placeCall(number, account)
 
     fun handleCallRuntimePermissionGranted() {
         hasCallRuntimePermission = true

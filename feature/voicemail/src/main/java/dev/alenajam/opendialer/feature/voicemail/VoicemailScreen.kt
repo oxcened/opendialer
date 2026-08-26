@@ -25,6 +25,9 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -34,6 +37,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.alenajam.opendialer.core.common.PermissionUtils
+import dev.alenajam.opendialer.core.common.telecom.CallAccount
+import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
+import dev.alenajam.opendialer.core.common.ui.CallAccountPicker
 import dev.alenajam.opendialer.data.voicemail.Voicemail
 import java.text.DateFormat
 import java.util.Date
@@ -52,6 +58,28 @@ fun VoicemailScreen(
     val hasPermission by viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val playingId by viewModel.playingId.collectAsStateWithLifecycle()
+    var callAccounts by remember { mutableStateOf<List<CallAccount>?>(null) }
+
+    fun callVoicemail() {
+        when (val result = viewModel.callVoicemail()) {
+            is CallPlacementResult.AccountSelectionRequired -> callAccounts = result.accounts
+            else -> Unit
+        }
+    }
+
+    callAccounts?.let { accounts ->
+        CallAccountPicker(
+            accounts = accounts,
+            onAccountSelected = { account ->
+                callAccounts = null
+                when (val result = viewModel.callVoicemail(account)) {
+                    is CallPlacementResult.AccountSelectionRequired -> callAccounts = result.accounts
+                    else -> Unit
+                }
+            },
+            onDismiss = { callAccounts = null },
+        )
+    }
 
     if (!hasPermission) {
         PermissionPlaceholder(
@@ -65,7 +93,7 @@ fun VoicemailScreen(
         VoicemailUiState.Unavailable -> VoicemailState(
             title = stringResource(R.string.visual_voicemail_unavailable),
             description = stringResource(R.string.visual_voicemail_unavailable_description),
-            onCallVoicemail = viewModel::callVoicemail,
+            onCallVoicemail = ::callVoicemail,
             onRetry = viewModel::refresh,
         )
         is VoicemailUiState.Available -> {
@@ -73,7 +101,7 @@ fun VoicemailScreen(
                 VoicemailState(
                     title = stringResource(R.string.visual_voicemail_no_messages),
                     description = stringResource(R.string.visual_voicemail_no_messages_description),
-                    onCallVoicemail = viewModel::callVoicemail,
+                    onCallVoicemail = ::callVoicemail,
                     onRetry = viewModel::refresh,
                 )
             } else {

@@ -4,6 +4,9 @@ import android.app.Application
 import android.content.pm.PackageManager
 import dev.alenajam.opendialer.core.common.exception.Failure
 import dev.alenajam.opendialer.core.common.functional.Either
+import dev.alenajam.opendialer.core.common.telecom.CallAccount
+import dev.alenajam.opendialer.core.common.telecom.CallPlacementRepository
+import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
 import dev.alenajam.opendialer.data.calls.CallOption
 import dev.alenajam.opendialer.data.calls.CallsRepository
 import dev.alenajam.opendialer.data.calls.DetailCall
@@ -51,6 +54,7 @@ class CallsViewModelTest {
             contactsRepository = contactsRepository,
             app = PermissionGrantedApplication(),
             cacheRepository = cacheRepository,
+            callPlacementRepository = FakeCallPlacementRepository(),
         )
         advanceUntilIdle()
         val invalidationsBeforeContactChange = cacheRepository.invalidations
@@ -115,6 +119,14 @@ private class FakeCallsRepository(calls: List<DialerCallEntity>) : CallsReposito
     override suspend fun blockCaller(number: String): Either<Failure, Unit> = Either.Right(Unit)
 
     override suspend fun unblockCaller(number: String): Either<Failure, Unit> = Either.Right(Unit)
+}
+
+private class FakeCallPlacementRepository : CallPlacementRepository {
+    override fun placeCall(number: String, account: CallAccount?): CallPlacementResult =
+        CallPlacementResult.Placed
+
+    override fun placeVoicemailCall(account: CallAccount?): CallPlacementResult =
+        CallPlacementResult.Placed
 }
 
 private class FakeContactsRepository : ContactsRepository {

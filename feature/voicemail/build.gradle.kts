@@ -22,6 +22,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":data:calls"))
     implementation(project(":core:common"))
     implementation(project(":data:voicemail"))
 

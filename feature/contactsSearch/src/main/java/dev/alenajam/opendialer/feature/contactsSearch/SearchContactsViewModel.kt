@@ -1,7 +1,7 @@
 package dev.alenajam.opendialer.feature.contactsSearch
 
-import android.app.Activity
 import android.app.Application
+import android.app.Activity
 import android.telephony.PhoneNumberUtils
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -11,6 +11,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.core.aosp.SmartDialNameMatcher
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.PermissionUtils
+import dev.alenajam.opendialer.core.common.telecom.CallAccount
+import dev.alenajam.opendialer.core.common.telecom.CallPlacementRepository
+import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
 import dev.alenajam.opendialer.data.calls.CallsRepository
 import dev.alenajam.opendialer.data.calls.DialerCallEntity
 import dev.alenajam.opendialer.data.contactsSearch.DialerSearchContact
@@ -26,7 +29,8 @@ class SearchContactsViewModel
     savedStateHandle: SavedStateHandle,
     private val app: Application,
     private val searchContactsDialpadUseCase: SearchContactsDialpad,
-    private val callsRepository: CallsRepository
+    private val callsRepository: CallsRepository,
+    private val callPlacementRepository: CallPlacementRepository,
 ) : ViewModel() {
     private val _result = MutableStateFlow<Result?>(null)
     val result: StateFlow<Result?> = _result
@@ -81,11 +85,10 @@ class SearchContactsViewModel
         _result.value = Result(query, DialerSearchContact.mapList(contacts))
     }
 
-    fun makeCall(activity: Activity, number: String): Boolean {
-        if (!hasCallRuntimePermission.value) return false
-        CommonUtils.makeCall(activity, number)
-        return true
-    }
+    fun makeCall(number: String): CallPlacementResult = callPlacementRepository.placeCall(number)
+
+    fun makeCall(number: String, account: CallAccount): CallPlacementResult =
+        callPlacementRepository.placeCall(number, account)
 
     fun sendMessage(activity: Activity, number: String) = CommonUtils.makeSms(activity, number)
     fun createContact(activity: Activity, number: String) =
