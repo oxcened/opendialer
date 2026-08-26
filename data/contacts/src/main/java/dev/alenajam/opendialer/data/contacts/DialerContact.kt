@@ -1,6 +1,7 @@
 package dev.alenajam.opendialer.data.contacts
 
 class DialerContact(
+    val dataId: Long,
     val id: Int,
     val name: String,
     val starred: Boolean,
@@ -16,6 +17,7 @@ class DialerContact(
 
         fun map(contact: DialerContactEntity): DialerContact {
             return DialerContact(
+                dataId = contact.dataId,
                 id = contact.id,
                 name = contact.name,
                 image = contact.photoUri,

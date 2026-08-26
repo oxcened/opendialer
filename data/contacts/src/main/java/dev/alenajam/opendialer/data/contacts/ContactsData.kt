@@ -10,6 +10,7 @@ abstract class ContactsData {
         val URI: Uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
 
         private val projection = arrayOf(
+            ContactsContract.CommonDataKinds.Phone._ID,
             ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
             ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY,
             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
@@ -40,6 +41,9 @@ abstract class ContactsData {
                 do {
                     list.add(
                         DialerContactEntity(
+                            dataId = cursor.getLong(
+                                cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone._ID)
+                            ),
                             id = cursor.getInt(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)),
                             name = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)),
                             photoUri = cursor.getString(

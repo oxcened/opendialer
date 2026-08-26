@@ -78,6 +78,7 @@ class ContactsViewModelTest {
     }
 
     private fun contactEntity(id: Int, name: String) = DialerContactEntity(
+        dataId = id.toLong(),
         id = id,
         name = name,
         starred = 0,

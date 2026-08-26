@@ -187,7 +187,7 @@ fun ContactsScreen(
                     when (item) {
                         is ContactsListEntry.Header -> "header-${item.label}"
                         is ContactsListEntry.Contact ->
-                            "contact-${item.sectionLabel}-${item.contact.id}-${item.contact.number}"
+                            "contact-${item.sectionLabel}-${item.contact.dataId}"
                     }
                 },
             ) { item ->
@@ -196,7 +196,7 @@ fun ContactsScreen(
                     is ContactsListEntry.Contact -> {
                         // A favorite is intentionally shown both here and in its alphabetical section.
                         // Include the section so each rendered copy owns its expansion state.
-                        val rowKey = "${item.sectionLabel}-${item.contact.id}-${item.contact.number}"
+                        val rowKey = "${item.sectionLabel}-${item.contact.dataId}"
                         val isOpen = openRowKey == rowKey
                         ContactRow(
                             contact = item.contact,
@@ -419,6 +419,7 @@ private fun ContactActionRow(
 }
 
 val contactMock = DialerContact(
+    dataId = 1,
     id = 1,
     name = "John Doe",
     starred = false,
