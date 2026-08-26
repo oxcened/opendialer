@@ -29,3 +29,5 @@ render.experimental.xml
 
 # Android Profiling
 *.hprof
+# Google Services (e.g. APIs or Firebase)
+google-services.json
