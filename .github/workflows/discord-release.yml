@@ -41,12 +41,13 @@ jobs:
                     title: ("OpenDialer " + $release_name),
                     url: .url,
                     fields: (
-                      {
-                        name: "Tag",
-                        value: $tag,
-                        inline: true
-                      }
-                    ]
+                      [
+                        {
+                          name: "Tag",
+                          value: $tag,
+                          inline: true
+                        }
+                      ]
                     + (if $apk == null then [] else [
                       {
                         name: "Download APK",
