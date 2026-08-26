@@ -2,6 +2,8 @@ package dev.alenajam.opendialer.feature.appShell
 
 import android.content.Intent
 import android.telecom.PhoneAccount
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -66,6 +68,13 @@ fun DialerApp(
         }
         val lifecycleOwner = LocalLifecycleOwner.current
 
+        val launcher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.StartActivityForResult(),
+            onResult = {
+                isDefaultPhoneApp = defaultPhoneManager.isDefaultDialer()
+            }
+        )
+
         DisposableEffect(activity, lifecycleOwner) {
             val observer = LifecycleEventObserver { _, event ->
                 if (event == Lifecycle.Event.ON_RESUME) {
@@ -79,10 +88,8 @@ fun DialerApp(
         if (!isDefaultPhoneApp) {
             DefaultPhoneScreen(
                 onSetAsDefault = {
-                    activity?.let {
-                        defaultPhoneManager.createRequestDefaultDialerIntent()?.let { intent ->
-                            it.startActivityForResult(intent, DEFAULT_PHONE_REQUEST_CODE)
-                        }
+                    defaultPhoneManager.createRequestDefaultDialerIntent()?.let { intent ->
+                        launcher.launch(intent)
                     }
                 },
             )
@@ -153,8 +160,6 @@ fun DialerApp(
         }
     }
 }
-
-private const val DEFAULT_PHONE_REQUEST_CODE = 1001
 
 @Composable
 private fun HandleDialIntent(onOpenContactsSearch: (prefilledNumber: String) -> Unit) {
