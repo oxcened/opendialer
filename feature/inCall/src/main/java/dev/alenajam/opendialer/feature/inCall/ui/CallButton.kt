@@ -25,6 +25,8 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.alenajam.opendialer.feature.inCall.R
 
@@ -91,7 +93,11 @@ internal fun CallButton(
         }
 
         Text(
-            text = label
+            text = label,
+            modifier = Modifier.width(72.dp),
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }
