@@ -1,2 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="copy_number" comment="Menu action that copies a phone number to the clipboard.">复制号码</string>
+    <string name="create_new_contact" comment="Menu action that creates a contact from the selected phone number.">新建联系人</string>
+    <string name="add_to_a_contact" comment="Menu action that adds the selected phone number to an existing contact.">添加到联系人</string>
+    <string name="send_message" comment="Menu action that starts a text message to the selected phone number.">发送短信</string>
+    <string name="edit_number_before_call" comment="Menu action that lets the user edit a phone number before calling it.">拨号前编辑号码</string>
+    <string name="blockThisCaller" comment="Menu action that blocks calls and messages from the selected caller.">屏蔽此来电者</string>
+    <string name="unblockThisCaller" comment="Menu action that removes the block from the selected caller.">取消屏蔽此来电者</string>
+    <string name="delete" comment="Menu action that deletes the selected call-log entry.">删除</string>
+    <string name="anonymous" comment="Fallback caller name when the phone number is withheld.">匿名</string>
+    <string name="placeholder_call_log" comment="Empty-state message shown when phone permission is required to display call history.">要查看通话记录，请开启电话权限</string>
+    <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">开启</string>
+    <string name="open_contact" comment="Menu action that opens the selected person's contact details.">打开联系人</string>
+    <string name="call_log_date_today" comment="Date-group heading for calls made or received today.">今天</string>
+    <string name="call_log_date_yesterday" comment="Date-group heading for calls made or received yesterday.">昨天</string>
+    <string name="call_log_type_time" comment="Call-log summary. %1$s is the call type and %2$s is the call time.">%1$s • %2$s</string>
+    <string name="filter_all" comment="Call-history filter that includes every call.">全部</string>
+    <string name="filter_missed" comment="Call-history filter that includes only missed calls.">未接来电</string>
+    <string name="filter_voicemail" comment="Call-history filter that includes only voicemail entries.">语音信箱</string>
+    <string name="filter_contacts" comment="Call-history filter that includes only saved contacts.">联系人</string>
+    <string name="favorites" comment="Heading or navigation label for favorite contacts.">收藏</string>
+    <string name="view_contacts" comment="Button that opens the full contact list.">查看联系人</string>
+    <string name="add" comment="Button that adds the selected item.">添加</string>
+    <string name="remove" comment="Button that removes the selected item.">移除</string>
+    <string name="history" comment="Action that opens the selected contact's call history.">历史记录</string>
+    <string name="block_confirmation_title" comment="Title of the block-caller confirmation dialog. %1$s is the caller name or phone number.">屏蔽 %1$s？</string>
+    <string name="block_confirmation_message" comment="Explanation in the block-caller confirmation dialog.">你将不会再收到此号码的来电或短信。</string>
+    <string name="delete_call_title" comment="Title of the dialog confirming removal of a call-log entry.">从历史记录中删除此通话？</string>
+    <string name="delete_call_message" comment="Explanation in the dialog confirming removal of a call-log entry.">这会从通话记录中移除此通话。</string>
+    <string name="cancel" comment="Button that dismisses the current dialog without applying changes.">取消</string>
+</resources>

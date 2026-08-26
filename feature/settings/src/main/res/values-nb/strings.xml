@@ -1,2 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="customize_quick_responses" comment="Settings item title for editing preset decline-with-message replies.">Tilpass hurtigsvar</string>
+    <string name="customize_quick_responses_description" comment="Settings item summary for preset decline-with-message replies.">Rediger meldingene som sendes når du avviser en samtale</string>
+    <string name="edit_quick_response" comment="Title of the dialog for editing a preset decline-with-message reply.">Rediger hurtigsvar</string>
+    <string name="add" comment="Button that adds the selected item.">Legg til</string>
+    <string name="quick_response" comment="Text-field label for a preset decline-with-message reply.">Hurtigsvar</string>
+    <string name="save" comment="Button that saves the edited setting.">Lagre</string>
+    <string name="cancel" comment="Button that dismisses the current dialog without applying changes.">Avbryt</string>
+    <string name="light" comment="Theme option that always uses the light color scheme.">Lyst</string>
+    <string name="dark" comment="Theme option that always uses the dark color scheme.">Mørkt</string>
+    <string name="set_battery_saver" comment="Theme option that follows the device or battery-saver setting.">Bruk systeminnstillingen</string>
+    <string name="theme" comment="Settings item title for choosing the app color theme.">Tema</string>
+    <string name="display_options" comment="Settings section title for appearance preferences.">Visningsalternativer</string>
+    <string name="display_options_description" comment="Settings section summary for appearance preferences.">Velg hvordan OpenDialer skal se ut</string>
+    <string name="dialer" comment="Settings section title for phone-related preferences.">Telefon</string>
+    <string name="manageBlockedNumbers" comment="Settings item title that opens the system blocked-number list.">Administrer blokkerte numre</string>
+    <string name="manage_blocked_numbers_description" comment="Settings item summary for reviewing blocked phone numbers.">Se gjennom og opphev blokkering av telefonnumre</string>
+    <string name="manage_blocked_numbers_unavailable" comment="Message shown when the device has no blocked-number settings screen.">Innstillinger for blokkerte numre er ikke tilgjengelige på denne enheten</string>
+    <string name="screen_settings_title" comment="Title of the Settings screen.">Innstillinger</string>
+    <string name="screen_about_title" comment="Title of the About screen.">Om</string>
+    <string name="about_section_developer" comment="Heading for developer information on the About screen.">Utvikler</string>
+    <string name="about_section_community" comment="Heading for community links on the About screen.">Fellesskap</string>
+    <string name="about_section_open_source" comment="Heading for source-code and support links on the About screen.">Åpen kildekode og støtte</string>
+    <string name="about_section_credits" comment="Heading for third-party credits on the About screen.">Bidragsytere</string>
+    <string name="typography_credit_title" comment="Title of the font credit card on the About screen.">Typografi</string>
+    <string name="developer_website" comment="Description of the developer website link. %1$s is the website domain.">Besøk %1$s</string>
+    <string name="join_discord" comment="Title of the community Discord link on the About screen.">Bli med på Discord</string>
+    <string name="discord_description" comment="Description of the community Discord link on the About screen.">Snakk med fellesskapet og følg utviklingen</string>
+    <string name="contribute_translations" comment="Title of the OpenDialer translation contribution link on the About screen.">Bidra med oversettelser</string>
+    <string name="contribute_translations_description" comment="Description of the OpenDialer translation contribution link on the About screen.">Hjelp med å gjøre OpenDialer tilgjengelig på flere språk.</string>
+    <string name="feature_requests" comment="Title of the feature-request link on the About screen.">Funksjonsforslag</string>
+    <string name="feature_requests_description" comment="Description of the feature-request link on the About screen.">Foreslå og stem på ideer til OpenDialer.</string>
+    <string name="view_source_code" comment="Title of the source-code link on the About screen.">Vis kildekode</string>
+    <string name="open_source_description" comment="Description of the source-code link on the About screen.">OpenDialer har åpen kildekode. Utforsk koden og bidra på GitHub.</string>
+    <string name="report_an_issue" comment="Title of the issue-reporting link on the About screen.">Rapporter et problem</string>
+    <string name="issues_description" comment="Description of the issue-reporting link on the About screen.">Har du funnet en feil eller har en idé? Opprett en sak på GitHub.</string>
+    <string name="contact_developer" comment="Title of the developer email link on the About screen.">Kontakt</string>
+    <string name="font_credit_format" comment="Font credit. %1$s is the font name and %2$s is the font author.">%1$s av %2$s</string>
+</resources>

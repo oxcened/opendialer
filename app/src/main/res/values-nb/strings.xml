@@ -5,9 +5,9 @@
     <string name="channel_outgoing_calls" comment="Android notification channel for outgoing calls.">Utgående samtaler</string>
     <string name="contacts" comment="Bottom navigation tab for the contact list.">Kontakter</string>
     <string name="copy_number" comment="Action to copy a phone number to the clipboard.">Kopier nummer</string>
-    <string name="edit_number_before_call" comment="Action that opens a dialpad to edit a phone number before calling.">Rediger nummer før anrop</string>
+    <string name="edit_number_before_call" comment="Action that opens a dialpad to edit a phone number before calling.">Rediger nummer før du ringer</string>
     <string name="recents" comment="Bottom navigation tab for the recent-call list.">Nylige</string>
-    <string name="write_your_own" comment="Option to type a custom reply when declining an incoming call.">Skriv din egen…</string>
-    <string name="placeholder_call_log" comment="Empty-state message asking the user to grant phone permissions.">For å se samtaleloggen din, slå på telefontillatelser</string>
-    <string name="turn_on" comment="Button that opens settings to enable the required permission.">Skru på</string>
+    <string name="write_your_own" comment="Option to type a custom reply when declining an incoming call.">Skriv ditt eget svar…</string>
+    <string name="placeholder_call_log" comment="Empty-state message asking the user to grant phone permissions.">Slå på telefontillatelser for å se anropsloggen</string>
+    <string name="turn_on" comment="Button that opens settings to enable the required permission.">Slå på</string>
 </resources>

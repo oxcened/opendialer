@@ -1,2 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="copy_number" comment="Menu action that copies a phone number to the clipboard.">Copiar número</string>
+    <string name="create_new_contact" comment="Menu action that creates a contact from the selected phone number.">Criar novo contato</string>
+    <string name="add_to_a_contact" comment="Menu action that adds the selected phone number to an existing contact.">Adicionar a um contato</string>
+    <string name="send_message" comment="Menu action that starts a text message to the selected phone number.">Enviar mensagem</string>
+    <string name="edit_number_before_call" comment="Menu action that lets the user edit a phone number before calling it.">Editar número antes de ligar</string>
+    <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">Ativar</string>
+    <string name="placeholder_search_permissions" comment="Empty-state message shown when phone permission is required for dialpad suggestions.">Ative as permissões do telefone para ver sugestões</string>
+    <string name="dialpad_button_call_label" comment="Accessibility label for the dialpad button that calls the entered number.">Ligar</string>
+    <string name="dialpad_more_options" comment="Accessibility label for the dialpad overflow menu.">Mais opções do teclado</string>
+    <string name="add_2_second_pause" comment="Dialpad menu action that inserts a two-second pause into the phone number.">Adicionar pausa de 2 segundos</string>
+    <string name="add_wait" comment="Dialpad menu action that inserts a wait-for-confirmation marker into the phone number.">Adicionar espera</string>
+    <string name="call_contact" comment="Action that calls the selected contact.">Ligar para o contato</string>
+    <string name="open_contact" comment="Menu action that opens the selected person's contact details.">Abrir contato</string>
+    <string name="suggested" comment="Heading above contacts suggested for the entered phone number.">Sugeridos</string>
+    <string name="contact_history" comment="Action that opens the selected contact's call history.">Histórico</string>
+    <string name="backspace" comment="Accessibility label for deleting the last dialpad character.">Apagar</string>
+</resources>

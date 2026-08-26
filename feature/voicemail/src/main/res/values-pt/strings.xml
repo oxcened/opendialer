@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="call_voicemail" comment="Action that calls the user's voicemail service.">Ligar para o correio de voz</string>
+    <string name="placeholder_voicemail" comment="Empty-state message shown when phone permission is required to use voicemail.">Ative as permissões do telefone para usar o correio de voz</string>
+    <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">Ativar</string>
+    <string name="retry" comment="Button that retries loading or activating visual voicemail.">Tentar novamente</string>
+    <string name="visual_voicemail_unavailable" comment="Title shown when visual voicemail cannot be activated.">Não foi possível ativar o correio de voz visual</string>
+    <string name="visual_voicemail_unavailable_description" comment="Explanation shown when the carrier or device does not support visual voicemail.">Sua operadora ou dispositivo não oferece correio de voz visual no momento. Você ainda pode ligar para o correio de voz.</string>
+    <string name="visual_voicemail_no_messages" comment="Empty-state title shown when visual voicemail contains no messages.">Nenhuma mensagem de voz</string>
+    <string name="visual_voicemail_no_messages_description" comment="Empty-state explanation shown when visual voicemail is active but contains no messages.">O correio de voz visual está pronto. Novas mensagens aparecerão aqui.</string>
+    <string name="unknown_caller" comment="Fallback sender name for voicemail from an unidentified caller.">Número desconhecido</string>
+    <string name="play_voicemail" comment="Accessibility label for playing a voicemail message.">Reproduzir mensagem de voz</string>
+    <string name="playing" comment="Accessibility state indicating that a voicemail message is playing.">Reproduzindo mensagem de voz</string>
+</resources>

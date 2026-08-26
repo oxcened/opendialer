@@ -1,2 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="customize_quick_responses" comment="Settings item title for editing preset decline-with-message replies.">تخصيص الردود السريعة</string>
+    <string name="customize_quick_responses_description" comment="Settings item summary for preset decline-with-message replies.">عدّل الرسائل المرسلة عند رفض مكالمة</string>
+    <string name="edit_quick_response" comment="Title of the dialog for editing a preset decline-with-message reply.">تعديل الرد السريع</string>
+    <string name="add" comment="Button that adds the selected item.">إضافة</string>
+    <string name="quick_response" comment="Text-field label for a preset decline-with-message reply.">رد سريع</string>
+    <string name="save" comment="Button that saves the edited setting.">حفظ</string>
+    <string name="cancel" comment="Button that dismisses the current dialog without applying changes.">إلغاء</string>
+    <string name="light" comment="Theme option that always uses the light color scheme.">فاتح</string>
+    <string name="dark" comment="Theme option that always uses the dark color scheme.">داكن</string>
+    <string name="set_battery_saver" comment="Theme option that follows the device or battery-saver setting.">استخدام إعداد النظام</string>
+    <string name="theme" comment="Settings item title for choosing the app color theme.">المظهر</string>
+    <string name="display_options" comment="Settings section title for appearance preferences.">خيارات العرض</string>
+    <string name="display_options_description" comment="Settings section summary for appearance preferences.">اختر مظهر OpenDialer</string>
+    <string name="dialer" comment="Settings section title for phone-related preferences.">الهاتف</string>
+    <string name="manageBlockedNumbers" comment="Settings item title that opens the system blocked-number list.">إدارة الأرقام المحظورة</string>
+    <string name="manage_blocked_numbers_description" comment="Settings item summary for reviewing blocked phone numbers.">مراجعة أرقام الهاتف المحظورة وإلغاء حظرها</string>
+    <string name="manage_blocked_numbers_unavailable" comment="Message shown when the device has no blocked-number settings screen.">إعدادات الأرقام المحظورة غير متاحة على هذا الجهاز</string>
+    <string name="screen_settings_title" comment="Title of the Settings screen.">الإعدادات</string>
+    <string name="screen_about_title" comment="Title of the About screen.">حول التطبيق</string>
+    <string name="about_section_developer" comment="Heading for developer information on the About screen.">المطوّر</string>
+    <string name="about_section_community" comment="Heading for community links on the About screen.">المجتمع</string>
+    <string name="about_section_open_source" comment="Heading for source-code and support links on the About screen.">المصدر المفتوح والدعم</string>
+    <string name="about_section_credits" comment="Heading for third-party credits on the About screen.">شكر وتقدير</string>
+    <string name="typography_credit_title" comment="Title of the font credit card on the About screen.">الخط</string>
+    <string name="developer_website" comment="Description of the developer website link. %1$s is the website domain.">زيارة %1$s</string>
+    <string name="join_discord" comment="Title of the community Discord link on the About screen.">الانضمام إلى Discord</string>
+    <string name="discord_description" comment="Description of the community Discord link on the About screen.">تحدث مع المجتمع وتابع التطوير</string>
+    <string name="contribute_translations" comment="Title of the OpenDialer translation contribution link on the About screen.">المساهمة في الترجمة</string>
+    <string name="contribute_translations_description" comment="Description of the OpenDialer translation contribution link on the About screen.">ساعد في إتاحة OpenDialer بلغات أكثر.</string>
+    <string name="feature_requests" comment="Title of the feature-request link on the About screen.">طلبات الميزات</string>
+    <string name="feature_requests_description" comment="Description of the feature-request link on the About screen.">اقترح أفكارًا لـ OpenDialer وصوّت عليها.</string>
+    <string name="view_source_code" comment="Title of the source-code link on the About screen.">عرض الشفرة المصدرية</string>
+    <string name="open_source_description" comment="Description of the source-code link on the About screen.">OpenDialer مفتوح المصدر. استكشف الشفرة وساهم على GitHub.</string>
+    <string name="report_an_issue" comment="Title of the issue-reporting link on the About screen.">الإبلاغ عن مشكلة</string>
+    <string name="issues_description" comment="Description of the issue-reporting link on the About screen.">هل وجدت خطأ أو لديك فكرة؟ افتح بلاغًا على GitHub.</string>
+    <string name="contact_developer" comment="Title of the developer email link on the About screen.">تواصل</string>
+    <string name="font_credit_format" comment="Font credit. %1$s is the font name and %2$s is the font author.">%1$s من تصميم %2$s</string>
+</resources>

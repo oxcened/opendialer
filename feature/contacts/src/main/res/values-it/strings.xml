@@ -1,2 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="placeholder_contacts" comment="Empty-state message shown when contacts permission is required to display contacts.">Per visualizzare i contatti, consenti l’accesso ai contatti</string>
+    <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">Attiva</string>
+    <string name="contact_phone_subtitle" comment="Contact-list subtitle. %1$s is the phone-number label and %2$s is the phone number.">%1$s · %2$s</string>
+    <string name="call_contact" comment="Action that calls the selected contact.">Chiama il contatto</string>
+    <string name="message_contact" comment="Action that starts a text message to the selected contact.">Messaggio</string>
+    <string name="contact_history" comment="Action that opens the selected contact's call history.">Cronologia</string>
+    <string name="new_contact" comment="Button that opens the system form for creating a contact.">Nuovo contatto</string>
+    <string name="all_contacts" comment="Heading for the complete contact list.">Tutti i contatti</string>
+    <string name="search_contacts" comment="Search field hint or action for finding contacts.">Cerca contatti</string>
+    <string name="close_search" comment="Accessibility label for closing contact search.">Chiudi ricerca</string>
+    <string name="choose_contact" comment="Title of a screen or dialog where the user selects a contact.">Scegli un contatto</string>
+    <string name="navigate_back" comment="Accessibility label for navigating to the previous screen.">Indietro</string>
+    <string name="search" comment="Accessibility label for starting a search.">Cerca</string>
+    <string name="favorites" comment="Heading or navigation label for favorite contacts.">Preferiti</string>
+    <string name="favorites_permission_prompt" comment="Message shown when contacts permission is required to manage favorites.">Per gestire i preferiti, consenti l’accesso ai contatti</string>
+</resources>

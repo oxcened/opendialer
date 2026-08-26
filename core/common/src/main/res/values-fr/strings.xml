@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="choose_sim_card" comment="Title of the dialog for selecting which SIM to use for an outgoing call.">Choisir la carte SIM pour cet appel</string>
+    <string name="text_copied" comment="Toast confirming that text was copied to the clipboard.">Texte copié</string>
     <string-array name="array_quick_responses" comment="Default text-message replies offered when declining an incoming call.">
-        <item name="array_quick_responses0">Je ne peux pas parler maintenant. Qu\'y a-t-il ?</item>
-        <item name="array_quick_responses1">Je vous rappelle au plus vite.</item>
-        <item name="array_quick_responses2">Je vous rappelle plus tard.</item>
-        <item name="array_quick_responses3">Je ne peux pas parler pour le moment. Pouvez-vous me rappeler plus tard ?</item>
+        <item name="array_quick_responses0">Je ne peux pas parler maintenant. Que se passe-t-il ?</item>
+        <item name="array_quick_responses1">Je te rappelle tout de suite.</item>
+        <item name="array_quick_responses2">Je te rappelle plus tard.</item>
+        <item name="array_quick_responses3">Je ne peux pas parler maintenant. Tu peux me rappeler plus tard ?</item>
     </string-array>
+    <string name="write_your_own" comment="Option for composing a custom reply instead of using a preset response.">Rédiger votre propre réponse…</string>
 </resources>

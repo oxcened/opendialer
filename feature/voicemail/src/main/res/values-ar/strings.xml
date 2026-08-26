@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="call_voicemail" comment="Action that calls the user's voicemail service.">الاتصال بالبريد الصوتي</string>
+    <string name="placeholder_voicemail" comment="Empty-state message shown when phone permission is required to use voicemail.">لاستخدام البريد الصوتي، فعّل أذونات الهاتف</string>
+    <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">تفعيل</string>
+    <string name="retry" comment="Button that retries loading or activating visual voicemail.">إعادة المحاولة</string>
+    <string name="visual_voicemail_unavailable" comment="Title shown when visual voicemail cannot be activated.">تعذّر تفعيل البريد الصوتي المرئي</string>
+    <string name="visual_voicemail_unavailable_description" comment="Explanation shown when the carrier or device does not support visual voicemail.">لا يوفّر مشغّل شبكة الهاتف أو جهازك البريد الصوتي المرئي حاليًا. لا يزال بإمكانك الاتصال للاستماع إلى بريدك الصوتي.</string>
+    <string name="visual_voicemail_no_messages" comment="Empty-state title shown when visual voicemail contains no messages.">لا توجد رسائل بريد صوتي</string>
+    <string name="visual_voicemail_no_messages_description" comment="Empty-state explanation shown when visual voicemail is active but contains no messages.">البريد الصوتي المرئي جاهز. ستظهر الرسائل الجديدة هنا.</string>
+    <string name="unknown_caller" comment="Fallback sender name for voicemail from an unidentified caller.">متصل غير معروف</string>
+    <string name="play_voicemail" comment="Accessibility label for playing a voicemail message.">تشغيل رسالة البريد الصوتي</string>
+    <string name="playing" comment="Accessibility state indicating that a voicemail message is playing.">جارٍ تشغيل رسالة البريد الصوتي</string>
+</resources>

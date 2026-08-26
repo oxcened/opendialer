@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="call_voicemail" comment="Action that calls the user's voicemail service.">Apelează mesageria vocală</string>
+    <string name="placeholder_voicemail" comment="Empty-state message shown when phone permission is required to use voicemail.">Activează permisiunile pentru telefon pentru a folosi mesageria vocală</string>
+    <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">Activează</string>
+    <string name="retry" comment="Button that retries loading or activating visual voicemail.">Încearcă din nou</string>
+    <string name="visual_voicemail_unavailable" comment="Title shown when visual voicemail cannot be activated.">Mesageria vocală vizuală nu poate fi activată</string>
+    <string name="visual_voicemail_unavailable_description" comment="Explanation shown when the carrier or device does not support visual voicemail.">Operatorul sau dispozitivul tău nu oferă momentan mesagerie vocală vizuală. Poți apela în continuare mesageria vocală.</string>
+    <string name="visual_voicemail_no_messages" comment="Empty-state title shown when visual voicemail contains no messages.">Niciun mesaj vocal</string>
+    <string name="visual_voicemail_no_messages_description" comment="Empty-state explanation shown when visual voicemail is active but contains no messages.">Mesageria vocală vizuală este pregătită. Mesajele noi vor apărea aici.</string>
+    <string name="unknown_caller" comment="Fallback sender name for voicemail from an unidentified caller.">Apelant necunoscut</string>
+    <string name="play_voicemail" comment="Accessibility label for playing a voicemail message.">Redă mesajul vocal</string>
+    <string name="playing" comment="Accessibility state indicating that a voicemail message is playing.">Se redă mesajul vocal</string>
+</resources>

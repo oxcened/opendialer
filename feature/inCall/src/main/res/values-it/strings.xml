@@ -1,2 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="call_connecting_title" comment="Call-state label shown while a call is connecting.">Connessione…</string>
+    <string name="call_dialing_title" comment="Call-state label shown while dialing an outgoing call.">Chiamata…</string>
+    <string name="call_disconnecting_title" comment="Call-state label shown while ending a call.">Chiusura chiamata…</string>
+    <string name="call_holding_title" comment="Call-state label shown when the current call is on hold.">In attesa</string>
+    <string name="call_ringing_title" comment="Call-state label shown for a ringing incoming call.">Chiamata in arrivo</string>
+    <string name="call_disconnected_title" comment="Call-state label shown after a call has ended.">Chiamata terminata</string>
+    <string name="channel_incoming_calls" comment="Android notification-channel name for incoming-call notifications.">Chiamate in arrivo</string>
+    <string name="channel_ongoing_calls" comment="Android notification-channel name for active-call notifications.">Chiamate in corso</string>
+    <string name="channel_outgoing_calls" comment="Android notification-channel name for outgoing-call notifications.">Chiamate in uscita</string>
+    <string name="channel_missed_calls" comment="Android notification-channel name for missed-call notifications.">Chiamate perse</string>
+    <string name="notification_incoming_call_title" comment="Incoming-call notification title. %1$s is the caller name or phone number.">Chiamata in arrivo: %1$s</string>
+    <string name="notification_ongoing_call_title" comment="Active-call notification title. %1$s is the caller name or phone number.">Chiamata in corso: %1$s</string>
+    <string name="notification_outgoing_call_title" comment="Outgoing-call notification title. %1$s is the contact name or phone number.">Chiamata a: %1$s</string>
+    <string name="notification_missed_call_title" comment="Missed-call notification title. %1$s is the caller name or phone number.">Chiamata persa da %1$s</string>
+    <string name="notification_call_back" comment="Notification action that calls back a missed caller.">Richiama</string>
+    <string name="notification_message" comment="Notification action that starts a text message to the caller.">Messaggio</string>
+    <string name="action_answer" comment="Incoming-call button that answers the call.">Rispondi</string>
+    <string name="action_decline" comment="Incoming-call button that declines the call.">Rifiuta</string>
+    <string name="action_end_call" comment="In-call button that ends the current call.">Termina chiamata</string>
+    <string name="action_message" comment="Incoming-call button that declines the call with a text response.">Messaggio</string>
+    <string name="action_close" comment="Button that closes the finished-call screen.">Chiudi</string>
+    <string name="action_split" comment="Conference-call action that separates a participant into a private call.">Separa</string>
+    <string name="control_state_on" comment="Accessibility state indicating that an in-call control is enabled.">Attivo</string>
+    <string name="control_state_off" comment="Accessibility state indicating that an in-call control is disabled.">Disattivato</string>
+    <string name="conference_call" comment="Caller-name label used when multiple participants are in one call.">Chiamata in conferenza</string>
+    <string name="voicemail" comment="Label for voicemail in navigation or call information.">Segreteria</string>
+    <string name="anonymous" comment="Fallback caller name when the phone number is withheld.">Anonimo</string>
+    <string name="caller_number_subtitle" comment="Caller subtitle. %1$s is the phone-number label and %2$s is the phone number.">%1$s · %2$s</string>
+    <string name="conference_merge" comment="In-call action that combines separate calls into a conference.">Unisci</string>
+    <string name="conference_swap" comment="In-call action that switches between the active and held calls.">Scambia</string>
+    <string name="conference_manage" comment="In-call action that opens conference-participant controls.">Gestisci</string>
+    <string name="action_add_call" comment="In-call action that starts another call while keeping the current call.">Aggiungi chiamata</string>
+    <string name="action_hold" comment="In-call action that places the current call on hold.">Metti in attesa</string>
+    <string name="control_dialpad" comment="In-call control that opens the numeric dialpad.">Tastierino</string>
+    <string name="control_mute" comment="In-call control that mutes or unmutes the microphone.">Disattiva microfono</string>
+    <string name="control_speaker" comment="In-call control that enables or disables speakerphone.">Vivavoce</string>
+    <string name="control_more" comment="In-call control that opens additional call actions.">Altro</string>
+    <string name="reply_with_message" comment="Title of the panel for declining an incoming call with a text response.">Rispondi con un messaggio</string>
+    <string name="action_send" comment="Button that sends the typed quick-response message.">Invia</string>
+    <string name="action_cancel" comment="Button that closes the quick-response panel without sending a message.">Annulla</string>
+    <string name="write_your_own" comment="Option for composing a custom reply instead of using a preset response.">Scrivi una risposta…</string>
+</resources>

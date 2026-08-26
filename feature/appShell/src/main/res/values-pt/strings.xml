@@ -1,2 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="contacts" comment="Label for the contacts navigation destination.">Contatos</string>
+    <string name="recents" comment="Label for the recent-calls navigation destination.">Recentes</string>
+    <string name="search_contacts" comment="Search field hint or action for finding contacts.">Pesquisar contatos</string>
+    <string name="clear_search" comment="Accessibility label for clearing the current search query.">Limpar pesquisa</string>
+    <string name="call_voicemail" comment="Action that calls the user's voicemail service.">Ligar para o correio de voz</string>
+    <string name="voicemail" comment="Label for voicemail in navigation or call information.">Correio de voz</string>
+    <string name="default_phone_title" comment="Title of the prompt asking the user to make OpenDialer the default phone app.">Defina o OpenDialer como app de telefone padrão</string>
+    <string name="default_phone_description" comment="Explanation that calling requires OpenDialer to be the default phone app.">O OpenDialer só pode fazer e receber chamadas quando é o app de telefone padrão.</string>
+    <string name="default_phone_button" comment="Button that opens the system flow for choosing the default phone app.">Definir como padrão</string>
+</resources>

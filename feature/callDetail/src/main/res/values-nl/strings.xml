@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="copy_number" comment="Menu action that copies a phone number to the clipboard.">Nummer kopiëren</string>
+    <string name="create_new_contact" comment="Menu action that creates a contact from the selected phone number.">Nieuw contact maken</string>
+    <string name="add_to_a_contact" comment="Menu action that adds the selected phone number to an existing contact.">Toevoegen aan een contact</string>
+    <string name="send_message" comment="Menu action that starts a text message to the selected phone number.">Bericht sturen</string>
+    <string name="edit_number_before_call" comment="Menu action that lets the user edit a phone number before calling it.">Nummer bewerken vóór bellen</string>
+    <string name="blockThisCaller" comment="Menu action that blocks calls and messages from the selected caller.">Deze beller blokkeren</string>
+    <string name="unblockThisCaller" comment="Menu action that removes the block from the selected caller.">Deze beller deblokkeren</string>
+    <string name="delete" comment="Menu action that deletes the selected call-log entry.">Verwijderen</string>
+    <string name="anonymous" comment="Fallback caller name when the phone number is withheld.">Anoniem</string>
+    <string name="placeholder_call_log" comment="Empty-state message shown when phone permission is required to display call history.">Schakel de telefoonmachtigingen in om je oproepgeschiedenis te bekijken</string>
+    <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">Inschakelen</string>
+    <string name="outgoing_call" comment="Call-detail label identifying an outgoing call.">Uitgaand gesprek</string>
+    <string name="incoming_call" comment="Call-detail label identifying an answered incoming call.">Inkomend gesprek</string>
+    <string name="missed_call" comment="Call-detail label identifying a missed incoming call.">Gemiste oproep</string>
+    <string name="rejected_call" comment="Call-detail label identifying an incoming call that was declined.">Geweigerde oproep</string>
+    <string name="blocked_call" comment="Call-detail label identifying a call that was blocked.">Geblokkeerde oproep</string>
+    <string name="voicemail_call" comment="Call-detail label identifying a voicemail entry.">Voicemailbericht</string>
+    <string name="voicemail" comment="Label for voicemail in navigation or call information.">Voicemail</string>
+    <string name="block_confirmation_title" comment="Title of the block-caller confirmation dialog. %1$s is the caller name or phone number.">%1$s blokkeren?</string>
+    <string name="block_confirmation_message" comment="Explanation in the block-caller confirmation dialog.">Je ontvangt geen oproepen of berichten meer van dit nummer.</string>
+    <string name="more_options" comment="Accessibility label for a button that opens additional actions.">Meer opties</string>
+    <string name="action_call" comment="Button that starts a phone call.">Bellen</string>
+    <string name="cancel" comment="Button that dismisses the current dialog without applying changes.">Annuleren</string>
+</resources>

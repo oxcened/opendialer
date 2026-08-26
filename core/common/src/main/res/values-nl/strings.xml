@@ -1,3 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="array_quick_responses"><item>Can\'t talk now. What\'s up?</item><item>I\'ll call you right back.</item><item>I\'ll call you later.</item><item>Can\'t talk now. Call me later?</item></string-array>
+    <string name="choose_sim_card" comment="Title of the dialog for selecting which SIM to use for an outgoing call.">Kies een simkaart voor dit gesprek</string>
+    <string name="text_copied" comment="Toast confirming that text was copied to the clipboard.">Tekst gekopieerd</string>
+    <string-array name="array_quick_responses" comment="Default text-message replies offered when declining an incoming call.">
+        <item name="array_quick_responses0">Ik kan nu niet praten. Wat is er?</item>
+        <item name="array_quick_responses1">Ik bel je meteen terug.</item>
+        <item name="array_quick_responses2">Ik bel je later.</item>
+        <item name="array_quick_responses3">Ik kan nu niet praten. Kun je later bellen?</item>
+    </string-array>
+    <string name="write_your_own" comment="Option for composing a custom reply instead of using a preset response.">Schrijf je eigen antwoord…</string>
 </resources>

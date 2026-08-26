@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="call_voicemail" comment="Action that calls the user's voicemail service.">Appeler la messagerie vocale</string>
+    <string name="placeholder_voicemail" comment="Empty-state message shown when phone permission is required to use voicemail.">Activez les autorisations Téléphone pour utiliser la messagerie vocale</string>
+    <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">Activer</string>
+    <string name="retry" comment="Button that retries loading or activating visual voicemail.">Réessayer</string>
+    <string name="visual_voicemail_unavailable" comment="Title shown when visual voicemail cannot be activated.">Impossible d’activer la messagerie vocale visuelle</string>
+    <string name="visual_voicemail_unavailable_description" comment="Explanation shown when the carrier or device does not support visual voicemail.">Votre opérateur ou votre appareil ne propose pas actuellement la messagerie vocale visuelle. Vous pouvez toujours appeler votre messagerie vocale.</string>
+    <string name="visual_voicemail_no_messages" comment="Empty-state title shown when visual voicemail contains no messages.">Aucun message vocal</string>
+    <string name="visual_voicemail_no_messages_description" comment="Empty-state explanation shown when visual voicemail is active but contains no messages.">La messagerie vocale visuelle est prête. Les nouveaux messages apparaîtront ici.</string>
+    <string name="unknown_caller" comment="Fallback sender name for voicemail from an unidentified caller.">Appelant inconnu</string>
+    <string name="play_voicemail" comment="Accessibility label for playing a voicemail message.">Lire le message vocal</string>
+    <string name="playing" comment="Accessibility state indicating that a voicemail message is playing.">Lecture du message vocal</string>
+</resources>

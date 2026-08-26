@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="call_voicemail" comment="Action that calls the user's voicemail service.">Ring til telefonsvarer</string>
+    <string name="placeholder_voicemail" comment="Empty-state message shown when phone permission is required to use voicemail.">Slå telefontilladelser til for at bruge telefonsvareren</string>
+    <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">Slå til</string>
+    <string name="retry" comment="Button that retries loading or activating visual voicemail.">Prøv igen</string>
+    <string name="visual_voicemail_unavailable" comment="Title shown when visual voicemail cannot be activated.">Visuel telefonsvarer kan ikke aktiveres</string>
+    <string name="visual_voicemail_unavailable_description" comment="Explanation shown when the carrier or device does not support visual voicemail.">Din operatør eller enhed understøtter ikke visuel telefonsvarer i øjeblikket. Du kan stadig ringe til telefonsvareren.</string>
+    <string name="visual_voicemail_no_messages" comment="Empty-state title shown when visual voicemail contains no messages.">Ingen beskeder på telefonsvareren</string>
+    <string name="visual_voicemail_no_messages_description" comment="Empty-state explanation shown when visual voicemail is active but contains no messages.">Visuel telefonsvarer er klar. Nye beskeder vises her.</string>
+    <string name="unknown_caller" comment="Fallback sender name for voicemail from an unidentified caller.">Ukendt opkalder</string>
+    <string name="play_voicemail" comment="Accessibility label for playing a voicemail message.">Afspil besked på telefonsvareren</string>
+    <string name="playing" comment="Accessibility state indicating that a voicemail message is playing.">Afspiller besked på telefonsvareren</string>
+</resources>

@@ -1,2 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="copy_number" comment="Menu action that copies a phone number to the clipboard.">Copiar número</string>
+    <string name="create_new_contact" comment="Menu action that creates a contact from the selected phone number.">Criar novo contato</string>
+    <string name="add_to_a_contact" comment="Menu action that adds the selected phone number to an existing contact.">Adicionar a um contato</string>
+    <string name="send_message" comment="Menu action that starts a text message to the selected phone number.">Enviar mensagem</string>
+    <string name="edit_number_before_call" comment="Menu action that lets the user edit a phone number before calling it.">Editar número antes de ligar</string>
+    <string name="blockThisCaller" comment="Menu action that blocks calls and messages from the selected caller.">Bloquear este número</string>
+    <string name="unblockThisCaller" comment="Menu action that removes the block from the selected caller.">Desbloquear este número</string>
+    <string name="delete" comment="Menu action that deletes the selected call-log entry.">Excluir</string>
+    <string name="anonymous" comment="Fallback caller name when the phone number is withheld.">Anônimo</string>
+    <string name="placeholder_call_log" comment="Empty-state message shown when phone permission is required to display call history.">Ative as permissões do telefone para ver o histórico de chamadas</string>
+    <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">Ativar</string>
+    <string name="outgoing_call" comment="Call-detail label identifying an outgoing call.">Chamada realizada</string>
+    <string name="incoming_call" comment="Call-detail label identifying an answered incoming call.">Chamada recebida</string>
+    <string name="missed_call" comment="Call-detail label identifying a missed incoming call.">Chamada perdida</string>
+    <string name="rejected_call" comment="Call-detail label identifying an incoming call that was declined.">Chamada recusada</string>
+    <string name="blocked_call" comment="Call-detail label identifying a call that was blocked.">Chamada bloqueada</string>
+    <string name="voicemail_call" comment="Call-detail label identifying a voicemail entry.">Mensagem de voz</string>
+    <string name="voicemail" comment="Label for voicemail in navigation or call information.">Correio de voz</string>
+    <string name="block_confirmation_title" comment="Title of the block-caller confirmation dialog. %1$s is the caller name or phone number.">Bloquear %1$s?</string>
+    <string name="block_confirmation_message" comment="Explanation in the block-caller confirmation dialog.">Você não receberá chamadas nem mensagens deste número.</string>
+    <string name="more_options" comment="Accessibility label for a button that opens additional actions.">Mais opções</string>
+    <string name="action_call" comment="Button that starts a phone call.">Ligar</string>
+    <string name="cancel" comment="Button that dismisses the current dialog without applying changes.">Cancelar</string>
+</resources>

@@ -1,2 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="copy_number" comment="Menu action that copies a phone number to the clipboard.">Kopier nummer</string>
+    <string name="create_new_contact" comment="Menu action that creates a contact from the selected phone number.">Opprett ny kontakt</string>
+    <string name="add_to_a_contact" comment="Menu action that adds the selected phone number to an existing contact.">Legg til i en kontakt</string>
+    <string name="send_message" comment="Menu action that starts a text message to the selected phone number.">Send melding</string>
+    <string name="edit_number_before_call" comment="Menu action that lets the user edit a phone number before calling it.">Rediger nummer før du ringer</string>
+    <string name="blockThisCaller" comment="Menu action that blocks calls and messages from the selected caller.">Blokker denne innringeren</string>
+    <string name="unblockThisCaller" comment="Menu action that removes the block from the selected caller.">Opphev blokkering av denne innringeren</string>
+    <string name="delete" comment="Menu action that deletes the selected call-log entry.">Slett</string>
+    <string name="anonymous" comment="Fallback caller name when the phone number is withheld.">Anonym</string>
+    <string name="placeholder_call_log" comment="Empty-state message shown when phone permission is required to display call history.">Slå på telefontillatelser for å se anropsloggen</string>
+    <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">Slå på</string>
+    <string name="outgoing_call" comment="Call-detail label identifying an outgoing call.">Utgående samtale</string>
+    <string name="incoming_call" comment="Call-detail label identifying an answered incoming call.">Innkommende samtale</string>
+    <string name="missed_call" comment="Call-detail label identifying a missed incoming call.">Tapt anrop</string>
+    <string name="rejected_call" comment="Call-detail label identifying an incoming call that was declined.">Avvist samtale</string>
+    <string name="blocked_call" comment="Call-detail label identifying a call that was blocked.">Blokkert samtale</string>
+    <string name="voicemail_call" comment="Call-detail label identifying a voicemail entry.">Talepostmelding</string>
+    <string name="voicemail" comment="Label for voicemail in navigation or call information.">Talepost</string>
+    <string name="block_confirmation_title" comment="Title of the block-caller confirmation dialog. %1$s is the caller name or phone number.">Blokkere %1$s?</string>
+    <string name="block_confirmation_message" comment="Explanation in the block-caller confirmation dialog.">Du vil ikke motta anrop eller meldinger fra dette nummeret.</string>
+    <string name="more_options" comment="Accessibility label for a button that opens additional actions.">Flere alternativer</string>
+    <string name="action_call" comment="Button that starts a phone call.">Ring</string>
+    <string name="cancel" comment="Button that dismisses the current dialog without applying changes.">Avbryt</string>
+</resources>
