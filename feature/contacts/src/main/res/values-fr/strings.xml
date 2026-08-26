@@ -2,6 +2,7 @@
 <resources>
     <string name="placeholder_contacts" comment="Empty-state message shown when contacts permission is required to display contacts.">Activez l’autorisation Contacts pour afficher vos contacts</string>
     <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">Activer</string>
+    <string name="contact_phone_subtitle" comment="Contact-list subtitle. %1$s is the phone-number label and %2$s is the phone number.">%1$s · %2$s</string>
     <string name="call_contact" comment="Action that calls the selected contact.">Appeler le contact</string>
     <string name="message_contact" comment="Action that starts a text message to the selected contact.">Envoyer un message</string>
     <string name="contact_history" comment="Action that opens the selected contact's call history.">Historique</string>
