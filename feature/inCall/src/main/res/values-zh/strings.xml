@@ -27,6 +27,7 @@
     <string name="conference_call" comment="Caller-name label used when multiple participants are in one call.">电话会议</string>
     <string name="voicemail" comment="Label for voicemail in navigation or call information.">语音信箱</string>
     <string name="anonymous" comment="Fallback caller name when the phone number is withheld.">匿名</string>
+    <string name="caller_number_subtitle" comment="Caller subtitle. %1$s is the phone-number label and %2$s is the phone number.">%1$s · %2$s</string>
     <string name="conference_merge" comment="In-call action that combines separate calls into a conference.">合并</string>
     <string name="conference_swap" comment="In-call action that switches between the active and held calls.">切换</string>
     <string name="conference_manage" comment="In-call action that opens conference-participant controls.">管理</string>
