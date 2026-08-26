@@ -20,7 +20,6 @@
     <string name="screen_settings_title" comment="Title of the Settings screen.">Impostazioni</string>
     <string name="screen_about_title" comment="Title of the About screen.">Informazioni</string>
     <string name="about_section_developer" comment="Heading for developer information on the About screen.">Sviluppatore</string>
-    <string name="about_section_community" comment="Heading for community links on the About screen.">Community</string>
     <string name="about_section_open_source" comment="Heading for source-code and support links on the About screen.">Open source e assistenza</string>
     <string name="about_section_credits" comment="Heading for third-party credits on the About screen.">Riconoscimenti</string>
     <string name="typography_credit_title" comment="Title of the font credit card on the About screen.">Tipografia</string>
