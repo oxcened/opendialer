@@ -14,6 +14,7 @@ import dev.alenajam.opendialer.data.calls.CallsRepository
 import dev.alenajam.opendialer.data.calls.DialerCallEntity
 import dev.alenajam.opendialer.data.contacts.ContactsRepository
 import dev.alenajam.opendialer.data.contacts.DialerContact
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -33,6 +34,8 @@ class ContactsViewModel
     val hasRuntimePermission: StateFlow<Boolean> = _hasRuntimePermission
     private val _calls = MutableStateFlow<List<DialerCallEntity>>(emptyList())
     private var hasCallRuntimePermission = false
+    private var contactsJob: Job? = null
+    private var callsJob: Job? = null
 
     init {
         _hasRuntimePermission.value = PermissionUtils.hasContactsPermission(app)
@@ -44,7 +47,8 @@ class ContactsViewModel
     fun getContacts() {
         if (!hasRuntimePermission.value) return
 
-        viewModelScope.launch {
+        contactsJob?.cancel()
+        contactsJob = viewModelScope.launch {
             contactsRepository.getContacts().collect { contacts ->
                 _contacts.value = DialerContact.mapList(contacts)
             }
@@ -58,7 +62,8 @@ class ContactsViewModel
 
     private fun getCalls() {
         if (!PermissionUtils.hasRecentsPermission(app)) return
-        viewModelScope.launch {
+        callsJob?.cancel()
+        callsJob = viewModelScope.launch {
             callsRepository.getCalls().collect { _calls.value = it }
         }
     }

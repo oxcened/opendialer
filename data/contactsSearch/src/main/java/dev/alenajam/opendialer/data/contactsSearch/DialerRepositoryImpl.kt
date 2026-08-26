@@ -12,9 +12,8 @@ class DialerRepositoryImpl
         contentResolver: ContentResolver,
         query: String
     ): Either<Failure, List<DialerSearchContactEntity>> {
-        SearchContactsData.getCursor(contentResolver, query)?.let {
+        SearchContactsData.getCursor(contentResolver, query)?.use {
             val data = SearchContactsData.getData(it)
-            it.close()
             return Either.Right(data)
         }
 
@@ -25,9 +24,8 @@ class DialerRepositoryImpl
         contentResolver: ContentResolver,
         query: String
     ): Either<Failure, List<DialerSearchContactEntity>> {
-        SearchContactsDialpadData.getCursor(contentResolver)?.let {
+        SearchContactsDialpadData.getCursor(contentResolver)?.use {
             val data = SearchContactsDialpadData.getData(app, it, query)
-            it.close()
             return Either.Right(data)
         }
 

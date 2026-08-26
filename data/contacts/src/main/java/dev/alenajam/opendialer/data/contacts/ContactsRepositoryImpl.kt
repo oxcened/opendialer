@@ -15,9 +15,8 @@ class ContactsRepositoryImpl
         callbackFlow {
             val observer = object : ContentObserver(null) {
                 override fun onChange(selfChange: Boolean) {
-                    ContactsData.getCursor(app.contentResolver)?.let {
+                    ContactsData.getCursor(app.contentResolver)?.use {
                         trySend(ContactsData.getData(it))
-                        it.close()
                     }
                 }
             }
@@ -25,9 +24,8 @@ class ContactsRepositoryImpl
             app.contentResolver.registerContentObserver(ContactsData.URI, true, observer)
             app.contentResolver.registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true, observer)
 
-            ContactsData.getCursor(app.contentResolver)?.let {
+            ContactsData.getCursor(app.contentResolver)?.use {
                 trySend(ContactsData.getData(it))
-                it.close()
             }
 
             awaitClose {

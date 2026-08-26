@@ -18,6 +18,7 @@ import dev.alenajam.opendialer.data.calls.CallsRepository
 import dev.alenajam.opendialer.data.calls.DialerCallEntity
 import dev.alenajam.opendialer.data.contactsSearch.DialerSearchContact
 import dev.alenajam.opendialer.data.contactsSearch.DialerSearchContactEntity
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -41,6 +42,7 @@ class SearchContactsViewModel
     private val _calls = MutableStateFlow<List<DialerCallEntity>>(emptyList())
     private val contactsSearch = savedStateHandle.toRoute<ContactsSearchRoute>()
     val prefilledNumber = contactsSearch.prefilledNumber
+    private var callsJob: Job? = null
 
     init {
         _hasRuntimePermission.value = PermissionUtils.hasSearchPermission(app)
@@ -51,7 +53,8 @@ class SearchContactsViewModel
 
     private fun getCalls() {
         if (!PermissionUtils.hasRecentsPermission(app)) return
-        viewModelScope.launch {
+        callsJob?.cancel()
+        callsJob = viewModelScope.launch {
             callsRepository.getCalls().collect { _calls.value = it }
         }
     }

@@ -28,18 +28,16 @@ class CallsRepositoryImpl @Inject constructor(
             val callsUri = CallsData.getUri(app)
             val observer = object : ContentObserver(null) {
                 override fun onChange(selfChange: Boolean) {
-                    CallsData.getCursor(app.contentResolver, callsUri)?.let {
+                    CallsData.getCursor(app.contentResolver, callsUri)?.use {
                         trySend(CallsData.getData(it, voicemailNumberProvider.getNumbers()))
-                        it.close()
                     }
                 }
             }
 
             app.contentResolver.registerContentObserver(callsUri, true, observer)
 
-            CallsData.getCursor(app.contentResolver, callsUri)?.let {
+            CallsData.getCursor(app.contentResolver, callsUri)?.use {
                 trySend(CallsData.getData(it, voicemailNumberProvider.getNumbers()))
-                it.close()
             }
 
             awaitClose {
