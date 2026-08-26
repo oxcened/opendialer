@@ -24,14 +24,15 @@ jobs:
           PAYLOAD_PATH: ${{ runner.temp }}/discord-release-payload.json
         run: |
           set -o pipefail
-          gh release view "$RELEASE_TAG" --json name,tagName,url,body | jq '
+          gh release view "$RELEASE_TAG" --json name,tagName,url,body,assets | jq '
             .tagName as $tag
             | ($tag | test("^v?[0-9]+\\.[0-9]+\\.0$")) as $is_major_or_minor
             | (if $is_major_or_minor then "@everyone\n" else "" end) as $mention
             | (.name // $tag) as $release_name
             | (.body // "") as $notes
+            | (.assets | map(select(.name | endswith(".apk"))) | first) as $apk
             | {
-                content: ($mention + "A new release of OpenDialer is available!"),
+                content: ($mention + "A new release of OpenDialer is available! Use the **Download APK** link below to install it."),
                 allowed_mentions: {
                   parse: (if $is_major_or_minor then ["everyone"] else [] end)
                 },
@@ -39,13 +40,20 @@ jobs:
                   ({
                     title: ("OpenDialer " + $release_name),
                     url: .url,
-                    fields: [
+                    fields: (
                       {
                         name: "Tag",
                         value: $tag,
                         inline: true
                       }
                     ]
+                    + (if $apk == null then [] else [
+                      {
+                        name: "Download APK",
+                        value: ("[Download OpenDialer APK](" + $apk.url + ")"),
+                        inline: false
+                      }
+                    ] end))
                   }
                   + (if $notes == "" then {} else {description: $notes[0:4096]} end))
                 ]
