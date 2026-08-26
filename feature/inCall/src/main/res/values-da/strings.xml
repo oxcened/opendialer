@@ -27,7 +27,6 @@
     <string name="conference_call" comment="Caller-name label used when multiple participants are in one call.">Telefonmøde</string>
     <string name="voicemail" comment="Label for voicemail in navigation or call information.">Telefonsvarer</string>
     <string name="anonymous" comment="Fallback caller name when the phone number is withheld.">Anonym</string>
-    <string name="caller_number_subtitle" comment="Caller subtitle. %1$s is the phone-number label and %2$s is the phone number.">%1$s · %2$s</string>
     <string name="conference_merge" comment="In-call action that combines separate calls into a conference.">Flet</string>
     <string name="conference_swap" comment="In-call action that switches between the active and held calls.">Skift</string>
     <string name="conference_manage" comment="In-call action that opens conference-participant controls.">Administrer</string>
@@ -38,7 +37,6 @@
     <string name="control_speaker" comment="In-call control that enables or disables speakerphone.">Højttaler</string>
     <string name="control_more" comment="In-call control that opens additional call actions.">Flere</string>
     <string name="reply_with_message" comment="Title of the panel for declining an incoming call with a text response.">Svar med en besked</string>
-    <string name="action_send" comment="Button that sends the typed quick-response message.">Send</string>
     <string name="action_cancel" comment="Button that closes the quick-response panel without sending a message.">Annuller</string>
     <string name="write_your_own" comment="Option for composing a custom reply instead of using a preset response.">Skriv dit eget svar…</string>
 </resources>
