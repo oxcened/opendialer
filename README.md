@@ -1,10 +1,13 @@
 # OpenDialer
 
-An open, clean and modern dialer for Android.
+OpenDialer is an open-source Android phone app that provides a clean, modern calling experience. Manage contacts and recent calls, place and receive calls, and use an in-call interface built for everyday use.
+
+OpenDialer must be selected as the device's default phone app to make and receive calls.
+
+[Join our community on Discord](https://discord.gg/hKXzFFMTFN)
 
 ![Static Badge](https://img.shields.io/badge/24%2B-brightgreen?logo=android&label=API)
 [![Latest Version](https://img.shields.io/github/v/release/oxcened/opendialer)](https://github.com/oxcened/opendialer/releases)
-[![Discord Server](https://dcbadge.vercel.app/api/server/hKXzFFMTFN?style=flat)](https://discord.gg/hKXzFFMTFN)
 
 [![Repository License](https://img.shields.io/github/license/oxcened/opendialer)](./LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](./CONTRIBUTING.md)
