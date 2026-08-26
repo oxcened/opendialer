@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="call_voicemail" comment="Action that calls the user's voicemail service.">Mailbox anrufen</string>
+    <string name="placeholder_voicemail" comment="Empty-state message shown when phone permission is required to use voicemail.">Aktiviere die Telefonberechtigungen, um die Mailbox zu verwenden</string>
+    <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">Aktivieren</string>
+    <string name="retry" comment="Button that retries loading or activating visual voicemail.">Erneut versuchen</string>
+    <string name="visual_voicemail_unavailable" comment="Title shown when visual voicemail cannot be activated.">Visuelle Mailbox kann nicht aktiviert werden</string>
+    <string name="visual_voicemail_unavailable_description" comment="Explanation shown when the carrier or device does not support visual voicemail.">Dein Mobilfunkanbieter oder Gerät unterstützt derzeit keine visuelle Mailbox. Du kannst deine Mailbox weiterhin anrufen.</string>
+    <string name="visual_voicemail_no_messages" comment="Empty-state title shown when visual voicemail contains no messages.">Keine Mailboxnachrichten</string>
+    <string name="visual_voicemail_no_messages_description" comment="Empty-state explanation shown when visual voicemail is active but contains no messages.">Die visuelle Mailbox ist bereit. Neue Nachrichten werden hier angezeigt.</string>
+    <string name="unknown_caller" comment="Fallback sender name for voicemail from an unidentified caller.">Unbekannter Anrufer</string>
+    <string name="play_voicemail" comment="Accessibility label for playing a voicemail message.">Mailboxnachricht abspielen</string>
+    <string name="playing" comment="Accessibility state indicating that a voicemail message is playing.">Mailboxnachricht wird abgespielt</string>
+</resources>
