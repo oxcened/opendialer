@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="contacts" comment="Label for the contacts navigation destination.">Contacts</string>
     <string name="recents" comment="Label for the recent-calls navigation destination.">Récents</string>
     <string name="search_contacts" comment="Search field hint or action for finding contacts.">Rechercher des contacts</string>
     <string name="clear_search" comment="Accessibility label for clearing the current search query.">Effacer la recherche</string>
