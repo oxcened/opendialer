@@ -139,6 +139,13 @@ class CallNotificationManager @Inject constructor(
             .setVisibility(Notification.VISIBILITY_PUBLIC)
             .setOngoing(true)
 
+        // A CallStyle notification does not make the activity full-screen by itself.
+        // This is needed on Android 12+ as well as on older releases so the ringing
+        // call can be presented when the device is locked.
+        if (type == CallType.INCOMING && canUseFullScreenIntent()) {
+            builder.setFullScreenIntent(pendingIntent, true)
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val person = Person.Builder()
                 .setName(caller)
@@ -161,7 +168,6 @@ class CallNotificationManager @Inject constructor(
             if (type == CallType.INCOMING) {
                 builder.addAction(Notification.Action.Builder(null, context.getString(android.R.string.cancel), getDeclineIntent()).build())
                 builder.addAction(Notification.Action.Builder(null, context.getString(android.R.string.ok), getAcceptIntent()).build())
-                builder.setFullScreenIntent(pendingIntent, true)
             }
         }
 
@@ -190,6 +196,12 @@ class CallNotificationManager @Inject constructor(
     private fun notifyOngoingCall(call: OngoingCall) = notifyCall(CHANNEL_ID_ONGOING_CALLS, call, CallType.ONGOING)
     private fun notifyOnHoldCall(call: OngoingCall) = notifyCall(CHANNEL_ID_ONGOING_CALLS, call, CallType.ONGOING)
     private fun notifyDisconnectingCall(call: OngoingCall) = notifyCall(CHANNEL_ID_ONGOING_CALLS, call, CallType.ONGOING)
+
+    private fun canUseFullScreenIntent(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) return true
+        return context.getSystemService(NotificationManager::class.java)
+            ?.canUseFullScreenIntent() == true
+    }
 
     private fun notifyMissedCall(call: CallEvent.MissedCall) {
         val caller = callerLabel(call.callerName, call.callerNumber)
