@@ -35,5 +35,6 @@
     <string name="open_source_description" comment="Description of the source-code link on the About screen.">OpenDialer est un logiciel libre. Explorez le code et contribuez sur GitHub.</string>
     <string name="report_an_issue" comment="Title of the issue-reporting link on the About screen.">Signaler un problème</string>
     <string name="issues_description" comment="Description of the issue-reporting link on the About screen.">Vous avez trouvé un bug ou vous avez une idée ? Ouvrez un ticket sur GitHub.</string>
+    <string name="contact_developer" comment="Title of the developer email link on the About screen.">Contact</string>
     <string name="font_credit_format" comment="Font credit. %1$s is the font name and %2$s is the font author.">%1$s par %2$s</string>
 </resources>
