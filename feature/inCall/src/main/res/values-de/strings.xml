@@ -27,13 +27,14 @@
     <string name="conference_call" comment="Caller-name label used when multiple participants are in one call.">Telefonkonferenz</string>
     <string name="voicemail" comment="Label for voicemail in navigation or call information.">Mailbox</string>
     <string name="anonymous" comment="Fallback caller name when the phone number is withheld.">Anonym</string>
+    <string name="caller_number_subtitle" comment="Caller subtitle. %1$s is the phone-number label and %2$s is the phone number.">%1$s · %2$s</string>
     <string name="conference_merge" comment="In-call action that combines separate calls into a conference.">Zusammenführen</string>
     <string name="conference_swap" comment="In-call action that switches between the active and held calls.">Wechseln</string>
     <string name="conference_manage" comment="In-call action that opens conference-participant controls.">Verwalten</string>
     <string name="action_add_call" comment="In-call action that starts another call while keeping the current call.">Anruf hinzufügen</string>
     <string name="action_hold" comment="In-call action that places the current call on hold.">Halten</string>
-    <string name="control_dialpad" comment="In-call control that opens the numeric dialpad.">Wähltasten</string>
-    <string name="control_mute" comment="In-call control that mutes or unmutes the microphone.">Stummschalten</string>
+    <string name="control_dialpad" comment="In-call control that opens the numeric dialpad.">Tasten</string>
+    <string name="control_mute" comment="In-call control that mutes or unmutes the microphone.">Stumm</string>
     <string name="control_speaker" comment="In-call control that enables or disables speakerphone.">Lautsprecher</string>
     <string name="control_more" comment="In-call control that opens additional call actions.">Mehr</string>
     <string name="reply_with_message" comment="Title of the panel for declining an incoming call with a text response.">Mit Nachricht antworten</string>
