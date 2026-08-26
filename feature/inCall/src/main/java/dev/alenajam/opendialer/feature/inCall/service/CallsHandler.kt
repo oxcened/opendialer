@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -129,80 +130,101 @@ class CallsHandler @Inject constructor(
             return
         }
 
-        val map = _calls.value.toMutableMap()
-        var ongoingCall = map[call]
-
-        if (ongoingCall == null) {
-            ongoingCall = OngoingCall(
-                context,
-                call,
-                onRemoved = { removeCall(it) },
-                sequence = nextCallSequence++
-            )
-            map[call] = ongoingCall
-            resolveContact(ongoingCall)
-        } else {
-            ongoingCall.refreshIdentity()
+        var newOngoingCall: OngoingCall? = null
+        _calls.update { currentMap ->
+            if (currentMap.containsKey(call)) {
+                currentMap[call]?.refreshIdentity()
+                currentMap
+            } else {
+                val ongoingCall = OngoingCall(
+                    context,
+                    call,
+                    onRemoved = { removeCall(it) },
+                    sequence = nextCallSequence++
+                )
+                newOngoingCall = ongoingCall
+                currentMap + (call to ongoingCall)
+            }
         }
 
-        _calls.value = map
+        newOngoingCall?.let { resolveContact(it) }
         reconcileCallsFromTelecom()
     }
 
     @MainThread
     fun removeCall(call: Call) {
-        val map = _calls.value.toMutableMap()
-        val ongoingCall = map.remove(call) ?: return
-        if (ongoingCall.shouldNotifyMissedCall) {
-            _events.tryEmit(
-                CallEvent.MissedCall(
-                    callerName = ongoingCall.callerName,
-                    callerNumber = ongoingCall.callerNumber,
-                    notificationId = ((System.currentTimeMillis() + ongoingCall.sequence) and Int.MAX_VALUE.toLong()).toInt()
-                )
-            )
+        var removedCall: OngoingCall? = null
+        _calls.update { currentMap ->
+            removedCall = currentMap[call]
+            currentMap - call
         }
-        ongoingCall.tearDown()
-        _calls.value = map
+
+        removedCall?.let { ongoingCall ->
+            if (ongoingCall.shouldNotifyMissedCall) {
+                _events.tryEmit(
+                    CallEvent.MissedCall(
+                        callerName = ongoingCall.callerName,
+                        callerNumber = ongoingCall.callerNumber,
+                        notificationId = ((System.currentTimeMillis() + ongoingCall.sequence) and Int.MAX_VALUE.toLong()).toInt()
+                    )
+                )
+            }
+            ongoingCall.tearDown()
+        }
         reconcileCallsFromTelecom()
     }
 
     private fun reconcileCallsFromTelecom(): Boolean {
         val service = callService ?: return false
-        val reconciledCalls = _calls.value.toMutableMap()
         var changed = false
-        for (call in service.calls) {
-            changed = changed or addReconciledCall(reconciledCalls, call)
-            for (child in call.children) {
-                changed = changed or addReconciledCall(reconciledCalls, child)
+
+        val callsToResolve = mutableListOf<OngoingCall>()
+
+        _calls.update { currentMap ->
+            val reconciledMap = currentMap.toMutableMap()
+            var mapChanged = false
+
+            fun addIfNeeded(call: Call) {
+                if (call.state != Call.STATE_DISCONNECTED && !reconciledMap.containsKey(call)) {
+                    val ongoingCall = OngoingCall(
+                        context!!,
+                        call,
+                        onRemoved = { removeCall(it) },
+                        sequence = nextCallSequence++
+                    )
+                    reconciledMap[call] = ongoingCall
+                    callsToResolve.add(ongoingCall)
+                    mapChanged = true
+                }
+            }
+
+            for (call in service.calls) {
+                addIfNeeded(call)
+                for (child in call.children) {
+                    addIfNeeded(child)
+                }
+            }
+
+            if (mapChanged) {
+                changed = true
+                reconciledMap
+            } else {
+                currentMap
             }
         }
-        if (!changed) return false
-        _calls.value = reconciledCalls
-        return true
-    }
 
-    private fun addReconciledCall(reconciledCalls: MutableMap<Call, OngoingCall>, call: Call): Boolean {
-        if (call.state == Call.STATE_DISCONNECTED || reconciledCalls.containsKey(call)) return false
-        val ongoingCall = OngoingCall(
-            context!!,
-            call,
-            onRemoved = { removeCall(it) },
-            sequence = nextCallSequence++
-        )
-        reconciledCalls[call] = ongoingCall
-        resolveContact(ongoingCall)
-        return true
+        callsToResolve.forEach { resolveContact(it) }
+        return changed
     }
 
     private fun resolveContact(ongoingCall: OngoingCall) {
         val number = ongoingCall.callerNumber
         if (number.isEmpty() || ongoingCall.isConference) return
-        contactResolver.resolve(number) { contact ->
-            if (_calls.value[ongoingCall.call] !== ongoingCall) return@resolve
-            if (number != ongoingCall.callerNumber) return@resolve
+        scope.launch {
+            val contact = contactResolver.resolve(number)
+            if (_calls.value[ongoingCall.call] !== ongoingCall) return@launch
+            if (number != ongoingCall.callerNumber) return@launch
             ongoingCall.applyContact(contact)
-            // No need to manually trigger update, stateFlow emission in OngoingCall handles it
         }
     }
 

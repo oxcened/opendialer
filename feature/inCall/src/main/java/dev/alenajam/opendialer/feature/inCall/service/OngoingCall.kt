@@ -137,6 +137,7 @@ class OngoingCall(
         dtmfJob?.cancel()
         call.stopDtmfTone()
         call.unregisterCallback(callback)
+        scope.cancel()
     }
 
     private fun updateCallState(state: Int) {
