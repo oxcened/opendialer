@@ -15,4 +15,6 @@
     <string name="search" comment="Accessibility label for starting a search.">Zoeken</string>
     <string name="favorites" comment="Heading or navigation label for favorite contacts.">Favorieten</string>
     <string name="favorites_permission_prompt" comment="Message shown when contacts permission is required to manage favorites.">Schakel de machtiging voor contacten in om favorieten te beheren</string>
+    <string name="your_info" comment="Label for the device owner's contact profile.">Jouw gegevens</string>
+    <string name="share_contact" comment="Accessibility label for sharing a contact.">Contact delen</string>
 </resources>

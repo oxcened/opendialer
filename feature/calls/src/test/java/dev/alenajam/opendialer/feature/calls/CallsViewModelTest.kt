@@ -136,6 +136,8 @@ private class FakeContactsRepository : ContactsRepository {
 
     override fun getContacts(): Flow<List<DialerContactSummaryEntity>> = MutableStateFlow(emptyList())
 
+    override fun getProfileContact(): Flow<DialerContactSummaryEntity?> = MutableStateFlow(null)
+
     override fun getFavoriteContacts(): Flow<List<DialerContactEntity>> = favoriteContacts
 
     override suspend fun toggleFavorite(contactId: Int, isFavorite: Boolean) = Unit

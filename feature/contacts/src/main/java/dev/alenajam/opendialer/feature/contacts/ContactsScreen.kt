@@ -16,8 +16,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.PersonAddAlt1
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -53,6 +55,7 @@ fun ContactsScreen(
         }
 
     val contacts = viewModel.contacts.collectAsStateWithLifecycle()
+    val profileContact = viewModel.profileContact.collectAsStateWithLifecycle()
     val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val filteredContacts = if (searchQuery.isBlank()) {
@@ -113,6 +116,15 @@ fun ContactsScreen(
                         )
                     }
                 }
+                profileContact.value?.let { profile ->
+                    item(key = "profile-contact") {
+                        ProfileContactCard(
+                            contact = profile,
+                            onOpenProfile = viewModel::openProfileContact,
+                            onShareProfile = { viewModel.shareProfileContact(profile.id) },
+                        )
+                    }
+                }
             }
             items(
                 items = contactListItems,
@@ -134,6 +146,57 @@ fun ContactsScreen(
                         )
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ProfileContactCard(
+    contact: DialerContactSummary,
+    onOpenProfile: () -> Unit,
+    onShareProfile: () -> Unit,
+) {
+    Surface(
+        onClick = onOpenProfile,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        shadowElevation = 0.5.dp,
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
+        ) {
+            ContactAvatar(
+                name = contact.name,
+                photoUri = contact.image,
+                colorKey = contact.id.toString(),
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape),
+            )
+            Column {
+                Text(
+                    text = stringResource(R.string.your_info),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    text = contact.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+            androidx.compose.foundation.layout.Spacer(modifier = Modifier.weight(1f))
+            IconButton(onClick = onShareProfile) {
+                Icon(
+                    imageVector = Icons.Outlined.Share,
+                    contentDescription = stringResource(R.string.share_contact),
+                )
             }
         }
     }

@@ -128,6 +128,33 @@ object CommonUtils {
     }
 
     @JvmStatic
+    fun showProfileDetail(context: Context) {
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            data = ContactsContract.Profile.CONTENT_URI
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        context.startActivity(intent)
+    }
+
+    @JvmStatic
+    fun shareContact(context: Context, contactId: Int) {
+        val contactUri = Uri.withAppendedPath(
+            ContactsContract.Contacts.CONTENT_VCARD_URI,
+            contactId.toString(),
+        )
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = ContactsContract.Contacts.CONTENT_VCARD_TYPE
+            putExtra(Intent.EXTRA_STREAM, contactUri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        context.startActivity(
+            Intent.createChooser(intent, null).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+        )
+    }
+
+    @JvmStatic
     fun setTheme(mode: Int) {
         AppCompatDelegate.setDefaultNightMode(mode)
     }
