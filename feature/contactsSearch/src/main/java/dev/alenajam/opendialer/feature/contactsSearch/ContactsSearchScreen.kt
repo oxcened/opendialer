@@ -1,6 +1,7 @@
 package dev.alenajam.opendialer.feature.contactsSearch
 
 import android.app.Activity
+import android.content.Context
 import android.provider.ContactsContract
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -57,9 +58,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -70,6 +75,8 @@ import dev.alenajam.opendialer.core.common.telecom.CallAccount
 import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
 import dev.alenajam.opendialer.core.common.ui.CallAccountPicker
 import dev.alenajam.opendialer.core.common.ui.Dialpad
+import dev.alenajam.opendialer.core.aosp.SmartDialNameMatcher
+import dev.alenajam.opendialer.core.aosp.SmartDialMatchPosition
 import dev.alenajam.opendialer.data.contactsSearch.DialerSearchContact
 
 @Composable
@@ -344,6 +351,8 @@ internal fun SearchList(
                 val isOpen = openRowKey == rowKey
                 ResultRow(
                     contact = contact,
+                    query = result.query,
+                    isDialpadSearch = result.isDialpadSearch,
                     isOpen = isOpen,
                     isFirst = index == 0,
                     isLast = index == contacts.lastIndex,
@@ -362,6 +371,8 @@ internal fun SearchList(
 @Composable
 private fun ResultRow(
     contact: DialerSearchContact,
+    query: String,
+    isDialpadSearch: Boolean,
     isOpen: Boolean,
     isFirst: Boolean,
     isLast: Boolean,
@@ -372,6 +383,7 @@ private fun ResultRow(
     onOpenContact: () -> Unit,
     onHistory: () -> Unit
 ) {
+    val context = LocalContext.current
     val phoneType = if (
         contact.phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_CUSTOM &&
         !contact.label.isNullOrBlank()
@@ -380,6 +392,21 @@ private fun ResultRow(
     } else {
         stringResource(ContactsContract.CommonDataKinds.Phone.getTypeLabelResource(contact.phoneType))
     }
+    val title = if (contact.name.isNotBlank()) contact.name else contact.number
+    val highlightedTitle = highlightedMatch(
+        context = context,
+        text = title,
+        query = query,
+        isDialpadSearch = isDialpadSearch,
+        isPhoneNumber = contact.name.isBlank(),
+    )
+    val highlightedNumber = highlightedMatch(
+        context = context,
+        text = contact.number,
+        query = query,
+        isDialpadSearch = isDialpadSearch,
+        isPhoneNumber = true,
+    )
     Card(
         onClick = onClick,
         modifier = Modifier
@@ -414,7 +441,7 @@ private fun ResultRow(
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = if (contact.name.isNotBlank()) contact.name else contact.number,
+                        text = highlightedTitle,
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -425,7 +452,7 @@ private fun ResultRow(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         Text(
-                            text = contact.number,
+                            text = highlightedNumber,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -477,6 +504,66 @@ private fun ResultRow(
             }
         }
     }
+}
+
+private fun highlightedMatch(
+    context: Context,
+    text: String,
+    query: String,
+    isDialpadSearch: Boolean,
+    isPhoneNumber: Boolean,
+): AnnotatedString {
+    if (text.isBlank() || query.isBlank()) return AnnotatedString(text)
+
+    val matchRanges = if (isDialpadSearch) {
+        val matcher = SmartDialNameMatcher(query)
+        if (isPhoneNumber) {
+            listOfNotNull(matcher.matchesNumber(context, text, query))
+        } else if (matcher.matches(context, text)) {
+            matcher.matchPositions
+        } else {
+            emptyList()
+        }
+    } else if (isPhoneNumber) {
+        textPhoneMatchPositions(text, query)
+    } else {
+        textMatchPositions(text, query)
+    }
+
+    return buildAnnotatedString {
+        append(text)
+        matchRanges.forEach { match ->
+            val start = match.start.coerceIn(0, text.length)
+            val end = match.end.coerceIn(start, text.length)
+            if (start < end) {
+                addStyle(SpanStyle(fontWeight = FontWeight.Bold), start, end)
+            }
+        }
+    }
+}
+
+private fun textMatchPositions(text: String, query: String): List<SmartDialMatchPosition> = buildList {
+    var startIndex = 0
+    while (startIndex < text.length) {
+        val matchStart = text.indexOf(query, startIndex, ignoreCase = true)
+        if (matchStart < 0) break
+        add(SmartDialMatchPosition(matchStart, matchStart + query.length))
+        startIndex = matchStart + query.length
+    }
+}
+
+private fun textPhoneMatchPositions(text: String, query: String): List<SmartDialMatchPosition> {
+    val queryDigits = query.filter(Char::isDigit)
+    if (queryDigits.isEmpty()) return emptyList()
+
+    val digitIndices = text.indices.filter { text[it].isDigit() }
+    val digits = digitIndices.joinToString(separator = "") { text[it].toString() }
+    val matchStart = digits.indexOf(queryDigits)
+    if (matchStart < 0) return emptyList()
+
+    val start = digitIndices[matchStart]
+    val end = digitIndices[matchStart + queryDigits.lastIndex] + 1
+    return listOf(SmartDialMatchPosition(start, end))
 }
 
 @Composable
