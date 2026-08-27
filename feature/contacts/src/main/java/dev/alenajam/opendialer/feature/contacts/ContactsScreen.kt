@@ -117,11 +117,13 @@ fun ContactsScreen(
     }
     val groupBySection = searchQuery.isBlank()
     val allContactsLabel = stringResource(R.string.all_contacts)
-    val contactListItems = remember(filteredContacts, groupBySection, allContactsLabel) {
+    val favoritesLabel = stringResource(R.string.favorites)
+    val contactListItems = remember(filteredContacts, groupBySection, allContactsLabel, favoritesLabel) {
         buildContactListItems(
             contacts = filteredContacts,
             groupBySection = groupBySection,
             allContactsLabel = allContactsLabel,
+            favoritesLabel = favoritesLabel,
         )
     }
 
@@ -192,7 +194,7 @@ fun ContactsScreen(
                 },
             ) { item ->
                 when (item) {
-                    is ContactsListEntry.Header -> ContactSectionHeader(item.label)
+                    is ContactsListEntry.Header -> ContactSectionHeader(item.label, item.isFavorites)
                     is ContactsListEntry.Contact -> {
                         // A favorite is intentionally shown both here and in its alphabetical section.
                         // Include the section so each rendered copy owns its expansion state.
@@ -221,7 +223,7 @@ fun ContactsScreen(
 }
 
 private sealed class ContactsListEntry {
-    data class Header(val label: String) : ContactsListEntry()
+    data class Header(val label: String, val isFavorites: Boolean = false) : ContactsListEntry()
 
     data class Contact(
         val contact: DialerContact,
@@ -235,10 +237,15 @@ private fun buildContactListItems(
     contacts: List<DialerContact>,
     groupBySection: Boolean,
     allContactsLabel: String,
+    favoritesLabel: String,
 ): List<ContactsListEntry> = buildList {
-    fun addSection(label: String, sectionContacts: List<DialerContact>) {
+    fun addSection(
+        label: String,
+        sectionContacts: List<DialerContact>,
+        isFavorites: Boolean = false,
+    ) {
         if (sectionContacts.isEmpty()) return
-        add(ContactsListEntry.Header(label))
+        add(ContactsListEntry.Header(label, isFavorites))
         sectionContacts.forEachIndexed { index, contact ->
             add(
                 ContactsListEntry.Contact(
@@ -257,7 +264,7 @@ private fun buildContactListItems(
         return@buildList
     }
 
-    addSection("Favorites", sortedContacts.filter { it.starred })
+    addSection(favoritesLabel, sortedContacts.filter { it.starred }, isFavorites = true)
     sortedContacts
         .groupBy { it.name.firstOrNull()?.uppercaseChar()?.toString() ?: "#" }
         .toSortedMap()
@@ -265,14 +272,14 @@ private fun buildContactListItems(
 }
 
 @Composable
-private fun ContactSectionHeader(label: String) {
+private fun ContactSectionHeader(label: String, isFavorites: Boolean) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
-        if (label == "Favorites") {
+        if (isFavorites) {
             Icon(
                 imageVector = Icons.Default.Star,
                 contentDescription = null,
