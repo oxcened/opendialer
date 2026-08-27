@@ -9,4 +9,13 @@
     <string name="default_phone_title" comment="Title of the prompt asking the user to make OpenDialer the default phone app.">Imposta OpenDialer come app Telefono predefinita</string>
     <string name="default_phone_description" comment="Explanation that calling requires OpenDialer to be the default phone app.">OpenDialer può effettuare e ricevere chiamate solo se è l’app Telefono predefinita.</string>
     <string name="default_phone_button" comment="Button that opens the system flow for choosing the default phone app.">Imposta come predefinita</string>
+    <string name="setup_title" comment="Title of the guided phone-app setup.">Configura OpenDialer</string>
+    <string name="setup_description" comment="Explanation for the guided setup steps.">Completa questi passaggi per assicurare il corretto funzionamento delle chiamate.</string>
+    <string name="setup_default_phone_title" comment="First setup step title.">Imposta OpenDialer come app Telefono</string>
+    <string name="setup_default_phone_description" comment="First setup step explanation.">Permette a OpenDialer di effettuare e ricevere chiamate.</string>
+    <string name="setup_default_phone_action" comment="First setup step button.">Scegli l’app Telefono</string>
+    <string name="setup_full_screen_title" comment="Second setup step title.">Mostra le chiamate in arrivo a schermo intero</string>
+    <string name="setup_full_screen_description" comment="Second setup step explanation.">Permette alle chiamate in arrivo di aprirsi sopra la schermata di blocco, per rispondere subito.</string>
+    <string name="setup_full_screen_action" comment="Second setup step button.">Consenti schermo intero</string>
+    <string name="setup_step_complete" comment="Accessibility label for a completed setup step.">Completato</string>
 </resources>

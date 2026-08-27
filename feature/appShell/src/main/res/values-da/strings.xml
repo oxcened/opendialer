@@ -9,4 +9,13 @@
     <string name="default_phone_title" comment="Title of the prompt asking the user to make OpenDialer the default phone app.">Gør OpenDialer til standardtelefonapp</string>
     <string name="default_phone_description" comment="Explanation that calling requires OpenDialer to be the default phone app.">OpenDialer kan kun foretage og modtage opkald, når appen er din standardtelefonapp.</string>
     <string name="default_phone_button" comment="Button that opens the system flow for choosing the default phone app.">Angiv som standard</string>
+    <string name="setup_title" comment="Title of the guided phone-app setup.">Opsæt OpenDialer</string>
+    <string name="setup_description" comment="Explanation for the guided setup steps.">Gennemfør disse trin, så opkald fungerer pålideligt.</string>
+    <string name="setup_default_phone_title" comment="First setup step title.">Gør OpenDialer til din telefonapp</string>
+    <string name="setup_default_phone_description" comment="First setup step explanation.">Det giver OpenDialer mulighed for at foretage og modtage opkald.</string>
+    <string name="setup_default_phone_action" comment="First setup step button.">Vælg telefonapp</string>
+    <string name="setup_full_screen_title" comment="Second setup step title.">Vis indgående opkald på fuld skærm</string>
+    <string name="setup_full_screen_description" comment="Second setup step explanation.">Indgående opkald åbnes over låseskærmen, så du kan svare med det samme.</string>
+    <string name="setup_full_screen_action" comment="Second setup step button.">Tillad fuld skærm</string>
+    <string name="setup_step_complete" comment="Accessibility label for a completed setup step.">Fuldført</string>
 </resources>

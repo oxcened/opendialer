@@ -9,4 +9,13 @@
     <string name="default_phone_title" comment="Title of the prompt asking the user to make OpenDialer the default phone app.">اجعل OpenDialer تطبيق الهاتف الافتراضي</string>
     <string name="default_phone_description" comment="Explanation that calling requires OpenDialer to be the default phone app.">لا يمكن لـ OpenDialer إجراء المكالمات واستقبالها إلا عند تعيينه تطبيق الهاتف الافتراضي.</string>
     <string name="default_phone_button" comment="Button that opens the system flow for choosing the default phone app.">تعيين كتطبيق افتراضي</string>
+    <string name="setup_title" comment="Title of the guided phone-app setup.">إعداد OpenDialer</string>
+    <string name="setup_description" comment="Explanation for the guided setup steps.">أكمل هذه الخطوات لضمان عمل المكالمات بشكل موثوق.</string>
+    <string name="setup_default_phone_title" comment="First setup step title.">اجعل OpenDialer تطبيق الهاتف لديك</string>
+    <string name="setup_default_phone_description" comment="First setup step explanation.">يتيح ذلك لـ OpenDialer إجراء المكالمات واستقبالها.</string>
+    <string name="setup_default_phone_action" comment="First setup step button.">اختر تطبيق الهاتف</string>
+    <string name="setup_full_screen_title" comment="Second setup step title.">عرض المكالمات الواردة بملء الشاشة</string>
+    <string name="setup_full_screen_description" comment="Second setup step explanation.">تُفتح المكالمات الواردة فوق شاشة القفل لتتمكن من الرد فورًا.</string>
+    <string name="setup_full_screen_action" comment="Second setup step button.">السماح بملء الشاشة</string>
+    <string name="setup_step_complete" comment="Accessibility label for a completed setup step.">مكتمل</string>
 </resources>

@@ -9,4 +9,13 @@
     <string name="default_phone_title" comment="Title of the prompt asking the user to make OpenDialer the default phone app.">Setează OpenDialer ca aplicație de telefon implicită</string>
     <string name="default_phone_description" comment="Explanation that calling requires OpenDialer to be the default phone app.">OpenDialer poate efectua și primi apeluri numai când este aplicația de telefon implicită.</string>
     <string name="default_phone_button" comment="Button that opens the system flow for choosing the default phone app.">Setează ca implicită</string>
+    <string name="setup_title" comment="Title of the guided phone-app setup.">Configurează OpenDialer</string>
+    <string name="setup_description" comment="Explanation for the guided setup steps.">Parcurge acești pași pentru ca apelurile să funcționeze corect.</string>
+    <string name="setup_default_phone_title" comment="First setup step title.">Setează OpenDialer ca aplicație de telefon</string>
+    <string name="setup_default_phone_description" comment="First setup step explanation.">Permite OpenDialer să efectueze și să primească apeluri.</string>
+    <string name="setup_default_phone_action" comment="First setup step button.">Alege aplicația de telefon</string>
+    <string name="setup_full_screen_title" comment="Second setup step title.">Afișează apelurile primite pe tot ecranul</string>
+    <string name="setup_full_screen_description" comment="Second setup step explanation.">Apelurile primite se deschid peste ecranul de blocare, ca să poți răspunde imediat.</string>
+    <string name="setup_full_screen_action" comment="Second setup step button.">Permite ecran complet</string>
+    <string name="setup_step_complete" comment="Accessibility label for a completed setup step.">Finalizat</string>
 </resources>

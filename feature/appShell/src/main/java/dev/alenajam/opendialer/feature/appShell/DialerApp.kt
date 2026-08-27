@@ -1,6 +1,10 @@
 package dev.alenajam.opendialer.feature.appShell
 
+import android.app.NotificationManager
 import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
 import android.telecom.PhoneAccount
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -66,30 +70,51 @@ fun DialerApp(
         var isDefaultPhoneApp by remember(activity) {
             mutableStateOf(defaultPhoneManager.isDefaultDialer())
         }
+        var hasFullScreenIntentAccess by remember(activity) {
+            mutableStateOf(activity.canUseFullScreenIntent())
+        }
         val lifecycleOwner = LocalLifecycleOwner.current
 
-        val launcher = rememberLauncherForActivityResult(
+        fun refreshSetupState() {
+            isDefaultPhoneApp = defaultPhoneManager.isDefaultDialer()
+            hasFullScreenIntentAccess = activity.canUseFullScreenIntent()
+        }
+
+        val defaultPhoneLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.StartActivityForResult(),
-            onResult = {
-                isDefaultPhoneApp = defaultPhoneManager.isDefaultDialer()
-            }
+            onResult = { refreshSetupState() }
+        )
+        val fullScreenIntentLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.StartActivityForResult(),
+            onResult = { refreshSetupState() }
         )
 
         DisposableEffect(activity, lifecycleOwner) {
             val observer = LifecycleEventObserver { _, event ->
                 if (event == Lifecycle.Event.ON_RESUME) {
-                    isDefaultPhoneApp = defaultPhoneManager.isDefaultDialer()
+                    refreshSetupState()
                 }
             }
             lifecycleOwner.lifecycle.addObserver(observer)
             onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
         }
 
-        if (!isDefaultPhoneApp) {
-            DefaultPhoneScreen(
+        if (!isDefaultPhoneApp || !hasFullScreenIntentAccess) {
+            SetupScreen(
+                isDefaultPhoneApp = isDefaultPhoneApp,
+                hasFullScreenIntentAccess = hasFullScreenIntentAccess,
                 onSetAsDefault = {
                     defaultPhoneManager.createRequestDefaultDialerIntent()?.let { intent ->
-                        launcher.launch(intent)
+                        defaultPhoneLauncher.launch(intent)
+                    }
+                },
+                onEnableFullScreenIntent = {
+                    activity?.let {
+                        fullScreenIntentLauncher.launch(
+                            Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT).apply {
+                                data = Uri.parse("package:${it.packageName}")
+                            }
+                        )
                     }
                 },
             )
@@ -160,6 +185,10 @@ fun DialerApp(
         }
     }
 }
+
+private fun android.app.Activity?.canUseFullScreenIntent(): Boolean =
+    Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE ||
+            this?.getSystemService(NotificationManager::class.java)?.canUseFullScreenIntent() == true
 
 @Composable
 private fun HandleDialIntent(onOpenContactsSearch: (prefilledNumber: String) -> Unit) {
