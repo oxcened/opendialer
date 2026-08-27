@@ -11,21 +11,39 @@ import javax.inject.Inject
 
 class ContactsRepositoryImpl
 @Inject constructor(private val app: Application) : ContactsRepository {
-    override fun getContacts(): Flow<List<DialerContactEntity>> =
+    override fun getContacts(): Flow<List<DialerContactSummaryEntity>> =
+        observeContacts(
+            uri = ContactsData.URI,
+            getCursor = ContactsData::getCursor,
+            getData = ContactsData::getData,
+        )
+
+    override fun getFavoriteContacts(): Flow<List<DialerContactEntity>> =
+        observeContacts(
+            uri = FavoriteContactsData.URI,
+            getCursor = FavoriteContactsData::getCursor,
+            getData = FavoriteContactsData::getData,
+        )
+
+    private fun <T> observeContacts(
+        uri: android.net.Uri,
+        getCursor: (android.content.ContentResolver) -> android.database.Cursor?,
+        getData: (android.database.Cursor) -> List<T>,
+    ): Flow<List<T>> =
         callbackFlow {
             val observer = object : ContentObserver(null) {
                 override fun onChange(selfChange: Boolean) {
-                    ContactsData.getCursor(app.contentResolver)?.use {
-                        trySend(ContactsData.getData(it))
+                    getCursor(app.contentResolver)?.use {
+                        trySend(getData(it))
                     }
                 }
             }
 
-            app.contentResolver.registerContentObserver(ContactsData.URI, true, observer)
+            app.contentResolver.registerContentObserver(uri, true, observer)
             app.contentResolver.registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true, observer)
 
-            ContactsData.getCursor(app.contentResolver)?.use {
-                trySend(ContactsData.getData(it))
+            getCursor(app.contentResolver)?.use {
+                trySend(getData(it))
             }
 
             awaitClose {

@@ -16,6 +16,7 @@ import dev.alenajam.opendialer.data.callsCache.CacheRepository
 import dev.alenajam.opendialer.data.callsCache.ContactInfo
 import dev.alenajam.opendialer.data.contacts.ContactsRepository
 import dev.alenajam.opendialer.data.contacts.DialerContactEntity
+import dev.alenajam.opendialer.data.contacts.DialerContactSummaryEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -131,14 +132,16 @@ private class FakeCallPlacementRepository : CallPlacementRepository {
 }
 
 private class FakeContactsRepository : ContactsRepository {
-    private val contacts = MutableStateFlow<List<DialerContactEntity>>(emptyList())
+    private val favoriteContacts = MutableStateFlow<List<DialerContactEntity>>(emptyList())
 
-    override fun getContacts(): Flow<List<DialerContactEntity>> = contacts
+    override fun getContacts(): Flow<List<DialerContactSummaryEntity>> = MutableStateFlow(emptyList())
+
+    override fun getFavoriteContacts(): Flow<List<DialerContactEntity>> = favoriteContacts
 
     override suspend fun toggleFavorite(contactId: Int, isFavorite: Boolean) = Unit
 
     fun emit(contacts: List<DialerContactEntity>) {
-        this.contacts.value = contacts
+        favoriteContacts.value = contacts
     }
 }
 

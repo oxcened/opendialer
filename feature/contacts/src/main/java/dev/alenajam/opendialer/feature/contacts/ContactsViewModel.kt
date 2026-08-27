@@ -13,7 +13,7 @@ import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
 import dev.alenajam.opendialer.data.calls.CallsRepository
 import dev.alenajam.opendialer.data.calls.DialerCallEntity
 import dev.alenajam.opendialer.data.contacts.ContactsRepository
-import dev.alenajam.opendialer.data.contacts.DialerContact
+import dev.alenajam.opendialer.data.contacts.DialerContactSummary
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,8 +28,8 @@ class ContactsViewModel
     private val app: Application,
     private val callPlacementRepository: CallPlacementRepository,
 ) : ViewModel() {
-    private val _contacts = MutableStateFlow<List<DialerContact>>(emptyList())
-    val contacts: StateFlow<List<DialerContact>> = _contacts
+    private val _contacts = MutableStateFlow<List<DialerContactSummary>>(emptyList())
+    val contacts: StateFlow<List<DialerContactSummary>> = _contacts
     private val _hasRuntimePermission = MutableStateFlow(false)
     val hasRuntimePermission: StateFlow<Boolean> = _hasRuntimePermission
     private val _calls = MutableStateFlow<List<DialerCallEntity>>(emptyList())
@@ -50,7 +50,7 @@ class ContactsViewModel
         contactsJob?.cancel()
         contactsJob = viewModelScope.launch {
             contactsRepository.getContacts().collect { contacts ->
-                _contacts.value = DialerContact.mapList(contacts)
+                _contacts.value = DialerContactSummary.mapList(contacts)
             }
         }
     }
