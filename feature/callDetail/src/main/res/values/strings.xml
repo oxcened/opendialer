@@ -23,4 +23,5 @@
     <string name="more_options" comment="Accessibility label for a button that opens additional actions.">More options</string>
     <string name="action_call" comment="Button that starts a phone call.">Call</string>
     <string name="cancel" comment="Button that dismisses the current dialog without applying changes.">Cancel</string>
+    <string name="call_detail_contact_subtitle" comment="Contact phone type and number in the call-detail header. %1$s is the phone type and %2$s is the phone number.">%1$s • %2$s</string>
 </resources>
