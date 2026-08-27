@@ -14,6 +14,8 @@
     <string name="setup_default_phone_title" comment="First setup step title.">اجعل OpenDialer تطبيق الهاتف لديك</string>
     <string name="setup_default_phone_description" comment="First setup step explanation.">يتيح ذلك لـ OpenDialer إجراء المكالمات واستقبالها.</string>
     <string name="setup_default_phone_action" comment="First setup step button.">اختر تطبيق الهاتف</string>
+    <string name="setup_default_phone_restricted_description" comment="Help shown when Android blocks the default-phone request.">إذا لم يسمح لك Android باختيار OpenDialer، افتح معلومات التطبيق. من القائمة، اسمح بالإعدادات المقيّدة ثم حاول مرة أخرى.</string>
+    <string name="setup_default_phone_restricted_action" comment="Button that opens the system App info page.">فتح معلومات التطبيق</string>
     <string name="setup_full_screen_title" comment="Second setup step title.">عرض المكالمات الواردة بملء الشاشة</string>
     <string name="setup_full_screen_description" comment="Second setup step explanation.">تُفتح المكالمات الواردة فوق شاشة القفل لتتمكن من الرد فورًا.</string>
     <string name="setup_full_screen_action" comment="Second setup step button.">السماح بملء الشاشة</string>

@@ -14,6 +14,8 @@
     <string name="setup_default_phone_title" comment="First setup step title.">Haz de OpenDialer tu aplicación de teléfono</string>
     <string name="setup_default_phone_description" comment="First setup step explanation.">Permite a OpenDialer hacer y recibir llamadas.</string>
     <string name="setup_default_phone_action" comment="First setup step button.">Elegir aplicación</string>
+    <string name="setup_default_phone_restricted_description" comment="Help shown when Android blocks the default-phone request.">Si Android no te permitió elegir OpenDialer, abre Información de la aplicación. En el menú, permite los ajustes restringidos y vuelve a intentarlo.</string>
+    <string name="setup_default_phone_restricted_action" comment="Button that opens the system App info page.">Abrir información</string>
     <string name="setup_full_screen_title" comment="Second setup step title.">Mostrar llamadas entrantes a pantalla completa</string>
     <string name="setup_full_screen_description" comment="Second setup step explanation.">Permite que las llamadas entrantes se abran sobre la pantalla de bloqueo para responder de inmediato.</string>
     <string name="setup_full_screen_action" comment="Second setup step button.">Permitir pantalla completa</string>

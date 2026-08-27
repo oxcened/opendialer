@@ -14,6 +14,8 @@
     <string name="setup_default_phone_title" comment="First setup step title.">将 OpenDialer 设为电话应用</string>
     <string name="setup_default_phone_description" comment="First setup step explanation.">这样 OpenDialer 才能拨打和接听电话。</string>
     <string name="setup_default_phone_action" comment="First setup step button.">选择电话应用</string>
+    <string name="setup_default_phone_restricted_description" comment="Help shown when Android blocks the default-phone request.">如果 Android 不允许您选择 OpenDialer，请打开应用信息。在菜单中允许受限设置，然后重试。</string>
+    <string name="setup_default_phone_restricted_action" comment="Button that opens the system App info page.">打开应用信息</string>
     <string name="setup_full_screen_title" comment="Second setup step title.">全屏显示来电</string>
     <string name="setup_full_screen_description" comment="Second setup step explanation.">来电会显示在锁定屏幕上方，让您可以立即接听。</string>
     <string name="setup_full_screen_action" comment="Second setup step button.">允许全屏显示</string>

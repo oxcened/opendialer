@@ -14,6 +14,8 @@
     <string name="setup_default_phone_title" comment="First setup step title.">Maak OpenDialer je telefoon-app</string>
     <string name="setup_default_phone_description" comment="First setup step explanation.">Hiermee kan OpenDialer bellen en oproepen ontvangen.</string>
     <string name="setup_default_phone_action" comment="First setup step button.">Telefoon-app kiezen</string>
+    <string name="setup_default_phone_restricted_description" comment="Help shown when Android blocks the default-phone request.">Als Android je OpenDialer niet liet kiezen, open je App-info. Sta in het menu beperkte instellingen toe en probeer het opnieuw.</string>
+    <string name="setup_default_phone_restricted_action" comment="Button that opens the system App info page.">App-info openen</string>
     <string name="setup_full_screen_title" comment="Second setup step title.">Inkomende oproepen schermvullend tonen</string>
     <string name="setup_full_screen_description" comment="Second setup step explanation.">Inkomende oproepen openen boven het vergrendelscherm, zodat je direct kunt opnemen.</string>
     <string name="setup_full_screen_action" comment="Second setup step button.">Schermvullend toestaan</string>

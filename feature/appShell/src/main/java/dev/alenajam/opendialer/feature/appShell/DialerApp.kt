@@ -73,6 +73,7 @@ fun DialerApp(
         var hasFullScreenIntentAccess by remember(activity) {
             mutableStateOf(activity.canUseFullScreenIntent())
         }
+        var defaultPhoneRequestWasDenied by remember { mutableStateOf(false) }
         val lifecycleOwner = LocalLifecycleOwner.current
 
         fun refreshSetupState() {
@@ -82,7 +83,10 @@ fun DialerApp(
 
         val defaultPhoneLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.StartActivityForResult(),
-            onResult = { refreshSetupState() }
+            onResult = {
+                refreshSetupState()
+                defaultPhoneRequestWasDenied = !isDefaultPhoneApp
+            }
         )
         val fullScreenIntentLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.StartActivityForResult(),
@@ -103,10 +107,19 @@ fun DialerApp(
             SetupScreen(
                 isDefaultPhoneApp = isDefaultPhoneApp,
                 hasFullScreenIntentAccess = hasFullScreenIntentAccess,
+                showDefaultPhoneRecovery = defaultPhoneRequestWasDenied && !isDefaultPhoneApp,
                 onSetAsDefault = {
+                    defaultPhoneRequestWasDenied = false
                     defaultPhoneManager.createRequestDefaultDialerIntent()?.let { intent ->
                         defaultPhoneLauncher.launch(intent)
                     }
+                },
+                onOpenAppInfo = {
+                    activity?.startActivity(
+                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                            data = Uri.fromParts("package", activity.packageName, null)
+                        }
+                    )
                 },
                 onEnableFullScreenIntent = {
                     activity?.let {

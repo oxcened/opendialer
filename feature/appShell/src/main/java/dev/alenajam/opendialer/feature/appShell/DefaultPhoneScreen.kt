@@ -18,6 +18,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -36,7 +37,9 @@ import androidx.compose.ui.unit.dp
 internal fun SetupScreen(
     isDefaultPhoneApp: Boolean,
     hasFullScreenIntentAccess: Boolean,
+    showDefaultPhoneRecovery: Boolean,
     onSetAsDefault: () -> Unit,
+    onOpenAppInfo: () -> Unit,
     onEnableFullScreenIntent: () -> Unit,
 ) {
     Scaffold(
@@ -68,6 +71,17 @@ internal fun SetupScreen(
                 description = stringResource(R.string.setup_default_phone_description),
                 actionLabel = stringResource(R.string.setup_default_phone_action),
                 onAction = onSetAsDefault,
+                assistanceDescription = if (showDefaultPhoneRecovery) {
+                    stringResource(R.string.setup_default_phone_restricted_description)
+                } else {
+                    null
+                },
+                assistanceActionLabel = if (showDefaultPhoneRecovery) {
+                    stringResource(R.string.setup_default_phone_restricted_action)
+                } else {
+                    null
+                },
+                onAssistanceAction = onOpenAppInfo,
             )
             Spacer(Modifier.height(12.dp))
             SetupStep(
@@ -94,6 +108,9 @@ private fun SetupStep(
     description: String,
     actionLabel: String,
     onAction: () -> Unit,
+    assistanceDescription: String? = null,
+    assistanceActionLabel: String? = null,
+    onAssistanceAction: () -> Unit = {},
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -132,6 +149,22 @@ private fun SetupStep(
                     shape = RoundedCornerShape(24.dp),
                 ) {
                     Text(text = actionLabel)
+                }
+                if (assistanceDescription != null && assistanceActionLabel != null) {
+                    Spacer(Modifier.height(16.dp))
+                    Text(
+                        text = assistanceDescription,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    OutlinedButton(
+                        onClick = onAssistanceAction,
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(24.dp),
+                    ) {
+                        Text(text = assistanceActionLabel)
+                    }
                 }
             }
         }

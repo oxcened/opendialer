@@ -14,6 +14,8 @@
     <string name="setup_default_phone_title" comment="First setup step title.">Gjør OpenDialer til telefonappen din</string>
     <string name="setup_default_phone_description" comment="First setup step explanation.">Dette lar OpenDialer ringe og motta samtaler.</string>
     <string name="setup_default_phone_action" comment="First setup step button.">Velg telefonapp</string>
+    <string name="setup_default_phone_restricted_description" comment="Help shown when Android blocks the default-phone request.">Hvis Android ikke lot deg velge OpenDialer, åpner du Appinfo. Tillat begrensede innstillinger i menyen, og prøv deretter på nytt.</string>
+    <string name="setup_default_phone_restricted_action" comment="Button that opens the system App info page.">Åpne appinfo</string>
     <string name="setup_full_screen_title" comment="Second setup step title.">Vis innkommende samtaler på full skjerm</string>
     <string name="setup_full_screen_description" comment="Second setup step explanation.">Innkommende samtaler åpnes over låseskjermen, slik at du kan svare med en gang.</string>
     <string name="setup_full_screen_action" comment="Second setup step button.">Tillat full skjerm</string>
