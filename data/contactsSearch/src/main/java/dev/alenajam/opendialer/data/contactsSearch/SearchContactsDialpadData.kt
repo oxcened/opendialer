@@ -4,9 +4,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
-import android.provider.ContactsContract
 import android.provider.ContactsContract.CommonDataKinds.Phone
-import dev.alenajam.opendialer.core.aosp.ContactMatch
 import dev.alenajam.opendialer.core.aosp.SmartDialNameMatcher
 
 abstract class SearchContactsDialpadData {
@@ -22,7 +20,6 @@ abstract class SearchContactsDialpadData {
             Phone.CONTACT_ID,
             Phone.DISPLAY_NAME,
             Phone.PHOTO_THUMBNAIL_URI,
-            Phone.LOOKUP_KEY,
             Phone.IS_PRIMARY
         )
 
@@ -36,10 +33,7 @@ abstract class SearchContactsDialpadData {
         """
 
         fun getCursor(contentResolver: ContentResolver): Cursor? = contentResolver.query(
-            URI
-                .buildUpon()
-                .appendQueryParameter(ContactsContract.REMOVE_DUPLICATE_ENTRIES, "true")
-                .build(),
+            URI,
             projection,
             where,
             null,
@@ -52,26 +46,18 @@ abstract class SearchContactsDialpadData {
             query: String
         ): List<DialerSearchContactEntity> {
             val nameMatcher = SmartDialNameMatcher(query)
-            val duplicates = HashSet<ContactMatch>()
             val list = mutableListOf<DialerSearchContactEntity>()
             if (cursor.moveToFirst()) {
                 do {
                     val name = cursor.getString(cursor.getColumnIndexOrThrow(Phone.DISPLAY_NAME))
                     val number = cursor.getString(cursor.getColumnIndexOrThrow(Phone.NUMBER))
-                    val lookupKey = cursor.getString(cursor.getColumnIndexOrThrow(Phone.LOOKUP_KEY))
                     val contactId = cursor.getLong(cursor.getColumnIndexOrThrow(Phone.CONTACT_ID))
-
-                    val contactMatch = ContactMatch(lookupKey, contactId)
-                    if (duplicates.contains(contactMatch)) {
-                        continue
-                    }
 
                     val nameMatches = query.isBlank() || nameMatcher.matches(context, name)
                     val numberMatches = query.isNotBlank() &&
                             nameMatcher.matchesNumber(context, number, query) != null
 
                     if (nameMatches || numberMatches) {
-                        duplicates.add(contactMatch)
                         list.add(
                             DialerSearchContactEntity(
                                 dataId = cursor.getLong(cursor.getColumnIndexOrThrow(Phone._ID)),
