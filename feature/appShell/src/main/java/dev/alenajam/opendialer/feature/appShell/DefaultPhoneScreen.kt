@@ -1,85 +1,170 @@
 package dev.alenajam.opendialer.feature.appShell
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Button
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun SetupScreen(
+    isDefaultPhoneApp: Boolean,
+    hasFullScreenIntentAccess: Boolean,
+    showDefaultPhoneRecovery: Boolean,
+    onSetAsDefault: () -> Unit,
+    onOpenAppInfo: () -> Unit,
+    onEnableFullScreenIntent: () -> Unit,
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(title = { Text(stringResource(R.string.setup_title)) })
+        },
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = stringResource(R.string.setup_description),
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.Normal,
+                ),
+            )
+            Spacer(Modifier.height(16.dp))
+            SetupStep(
+                stepNumber = 1,
+                state = if (isDefaultPhoneApp) SetupStepState.COMPLETE else SetupStepState.CURRENT,
+                title = stringResource(R.string.setup_default_phone_title),
+                description = stringResource(R.string.setup_default_phone_description),
+                actionLabel = stringResource(R.string.setup_default_phone_action),
+                onAction = onSetAsDefault,
+                assistanceDescription = if (showDefaultPhoneRecovery) {
+                    stringResource(R.string.setup_default_phone_restricted_description)
+                } else {
+                    null
+                },
+                assistanceActionLabel = if (showDefaultPhoneRecovery) {
+                    stringResource(R.string.setup_default_phone_restricted_action)
+                } else {
+                    null
+                },
+                onAssistanceAction = onOpenAppInfo,
+            )
+            Spacer(Modifier.height(12.dp))
+            SetupStep(
+                stepNumber = 2,
+                state = when {
+                    hasFullScreenIntentAccess -> SetupStepState.COMPLETE
+                    isDefaultPhoneApp -> SetupStepState.CURRENT
+                    else -> SetupStepState.NEXT
+                },
+                title = stringResource(R.string.setup_full_screen_title),
+                description = stringResource(R.string.setup_full_screen_description),
+                actionLabel = stringResource(R.string.setup_full_screen_action),
+                onAction = onEnableFullScreenIntent,
+            )
+        }
+    }
+}
 
 @Composable
-internal fun DefaultPhoneScreen(onSetAsDefault: () -> Unit) {
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background,
+private fun SetupStep(
+    stepNumber: Int,
+    state: SetupStepState,
+    title: String,
+    description: String,
+    actionLabel: String,
+    onAction: () -> Unit,
+    assistanceDescription: String? = null,
+    assistanceActionLabel: String? = null,
+    onAssistanceAction: () -> Unit = {},
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = when (state) {
+                SetupStepState.COMPLETE -> MaterialTheme.colorScheme.surfaceContainerLow
+                SetupStepState.CURRENT -> MaterialTheme.colorScheme.surfaceContainerHigh
+                SetupStepState.NEXT -> MaterialTheme.colorScheme.surfaceContainerLow
+            },
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.5.dp),
     ) {
-        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-            val isCompactHeight = maxHeight < 720.dp
-            val verticalPadding = if (isCompactHeight) 24.dp else 48.dp
-            val illustrationSize = if (isCompactHeight) 180.dp else 280.dp
-            val illustrationSpacing = if (isCompactHeight) 24.dp else 64.dp
-            val titleSpacing = if (isCompactHeight) 12.dp else 20.dp
-            val buttonSpacing = if (isCompactHeight) 20.dp else 28.dp
-
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 32.dp, vertical = verticalPadding),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-            ) {
-                DefaultPhoneIllustration(illustrationSize = illustrationSize)
-                Spacer(Modifier.height(illustrationSpacing))
+        Column(modifier = Modifier.padding(20.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                StepMarker(stepNumber = stepNumber, state = state)
+                Spacer(Modifier.size(16.dp))
                 Text(
-                    text = stringResource(R.string.default_phone_title),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.headlineMedium,
-                    textAlign = TextAlign.Center,
+                    text = title,
+                    modifier = Modifier.weight(1f),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.titleMedium,
                 )
-                Spacer(Modifier.height(titleSpacing))
-                Text(
-                    text = stringResource(R.string.default_phone_description),
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Normal,
-                    ),
-                    textAlign = TextAlign.Center,
-                )
-                Spacer(Modifier.height(buttonSpacing))
+            }
+            Spacer(Modifier.height(16.dp))
+            Text(
+                text = description,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            if (state == SetupStepState.CURRENT) {
+                Spacer(Modifier.height(12.dp))
                 Button(
-                    onClick = onSetAsDefault,
+                    onClick = onAction,
+                    modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(24.dp),
                 ) {
+                    Text(text = actionLabel)
+                }
+                if (assistanceDescription != null && assistanceActionLabel != null) {
+                    Spacer(Modifier.height(16.dp))
                     Text(
-                        text = stringResource(R.string.default_phone_button),
-                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp),
+                        text = assistanceDescription,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodySmall,
                     )
+                    Spacer(Modifier.height(8.dp))
+                    OutlinedButton(
+                        onClick = onAssistanceAction,
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(24.dp),
+                    ) {
+                        Text(text = assistanceActionLabel)
+                    }
                 }
             }
         }
@@ -87,56 +172,38 @@ internal fun DefaultPhoneScreen(onSetAsDefault: () -> Unit) {
 }
 
 @Composable
-private fun DefaultPhoneIllustration(illustrationSize: androidx.compose.ui.unit.Dp) {
-    val outline = MaterialTheme.colorScheme.outline
-    val primaryContainer = MaterialTheme.colorScheme.primaryContainer
-    val primary = MaterialTheme.colorScheme.primary
-    val success = MaterialTheme.colorScheme.tertiary
-    val error = MaterialTheme.colorScheme.error
-    val accent = MaterialTheme.colorScheme.secondary
-    val shadow = MaterialTheme.colorScheme.surfaceContainerHighest
-
-    androidx.compose.foundation.layout.Box(
-        modifier = Modifier.size(illustrationSize),
-        contentAlignment = Alignment.Center,
+private fun StepMarker(stepNumber: Int, state: SetupStepState) {
+    val isComplete = state == SetupStepState.COMPLETE
+    Surface(
+        modifier = Modifier.size(40.dp),
+        shape = RoundedCornerShape(20.dp),
+        color = when (state) {
+            SetupStepState.COMPLETE -> MaterialTheme.colorScheme.tertiary
+            SetupStepState.CURRENT -> MaterialTheme.colorScheme.primary
+            SetupStepState.NEXT -> MaterialTheme.colorScheme.surfaceVariant
+        },
     ) {
-        Canvas(Modifier.fillMaxSize()) {
-            drawOval(
-                color = outline,
-                topLeft = Offset(size.width * .08f, size.height * .18f),
-                size = Size(size.width * .30f, size.height * .48f),
-                style = Stroke(width = 4.dp.toPx()),
-            )
-            drawCircle(success, radius = 22.dp.toPx(), center = Offset(size.width * .10f, size.height * .47f))
-            drawRect(error, topLeft = Offset(size.width * .53f, size.height * .12f), size = Size(34.dp.toPx(), 34.dp.toPx()))
-            drawArc(accent, 72f, 180f, true, Offset(-8.dp.toPx(), size.height * .62f), Size(88.dp.toPx(), 88.dp.toPx()))
-            drawOval(shadow, Offset(size.width * .35f, size.height * .82f), Size(size.width * .34f, 20.dp.toPx()))
-
-            val triangle = Path().apply {
-                moveTo(size.width * .82f, size.height * .42f)
-                lineTo(size.width * .98f, size.height * .42f)
-                lineTo(size.width * .82f, size.height * .58f)
-                close()
-            }
-            drawPath(triangle, color = outline, style = Stroke(width = 4.dp.toPx()))
-            drawRect(
-                color = outline,
-                topLeft = Offset(size.width * .79f, size.height * .69f),
-                size = Size(size.width * .18f, size.height * .08f),
-                style = Stroke(width = 4.dp.toPx()),
-            )
-        }
-        Surface(
-            modifier = Modifier.size(132.dp),
-            shape = androidx.compose.foundation.shape.CircleShape,
-            color = primaryContainer,
-        ) {
+        if (isComplete) {
             Icon(
-                imageVector = Icons.Filled.Phone,
-                contentDescription = null,
-                modifier = Modifier.padding(34.dp),
-                tint = primary,
+                imageVector = Icons.Filled.CheckCircle,
+                contentDescription = stringResource(R.string.setup_step_complete),
+                modifier = Modifier.padding(9.dp),
+                tint = MaterialTheme.colorScheme.onTertiary,
+            )
+        } else {
+            Text(
+                text = stepNumber.toString(),
+                modifier = Modifier.padding(top = 8.dp),
+                color = if (state == SetupStepState.CURRENT) {
+                    MaterialTheme.colorScheme.onPrimary
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
             )
         }
     }
 }
+
+private enum class SetupStepState { COMPLETE, CURRENT, NEXT }

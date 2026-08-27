@@ -9,4 +9,15 @@
     <string name="default_phone_title" comment="Title of the prompt asking the user to make OpenDialer the default phone app.">Définir OpenDialer comme application Téléphone par défaut</string>
     <string name="default_phone_description" comment="Explanation that calling requires OpenDialer to be the default phone app.">OpenDialer ne peut passer et recevoir des appels que lorsqu’elle est votre application Téléphone par défaut.</string>
     <string name="default_phone_button" comment="Button that opens the system flow for choosing the default phone app.">Définir par défaut</string>
+    <string name="setup_title" comment="Title of the guided phone-app setup.">Configurer OpenDialer</string>
+    <string name="setup_description" comment="Explanation for the guided setup steps.">Terminez ces étapes pour assurer le bon fonctionnement des appels.</string>
+    <string name="setup_default_phone_title" comment="First setup step title.">Faire d’OpenDialer votre application Téléphone</string>
+    <string name="setup_default_phone_description" comment="First setup step explanation.">Cela permet à OpenDialer de passer et recevoir des appels.</string>
+    <string name="setup_default_phone_action" comment="First setup step button.">Choisir l’application</string>
+    <string name="setup_default_phone_restricted_description" comment="Help shown when Android blocks the default-phone request.">Si Android ne vous a pas laissé choisir OpenDialer, ouvrez les informations de l’application. Dans le menu, autorisez les paramètres restreints, puis réessayez.</string>
+    <string name="setup_default_phone_restricted_action" comment="Button that opens the system App info page.">Ouvrir les infos</string>
+    <string name="setup_full_screen_title" comment="Second setup step title.">Afficher les appels entrants en plein écran</string>
+    <string name="setup_full_screen_description" comment="Second setup step explanation.">Les appels entrants s’ouvrent sur l’écran verrouillé afin de répondre immédiatement.</string>
+    <string name="setup_full_screen_action" comment="Second setup step button.">Autoriser le plein écran</string>
+    <string name="setup_step_complete" comment="Accessibility label for a completed setup step.">Terminé</string>
 </resources>
