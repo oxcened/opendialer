@@ -398,7 +398,7 @@ private fun ResultRow(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp),
             ) {
                 ContactAvatar(
                     name = contact.name.takeIf { it.isNotBlank() },
@@ -501,7 +501,7 @@ private fun ResultActionRow(
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
         ) {
             Icon(
                 imageVector = icon,
