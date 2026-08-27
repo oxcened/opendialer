@@ -24,7 +24,10 @@ abstract class FavoriteContactsData {
             "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} IS NOT NULL AND " +
                 "${ContactsContract.CommonDataKinds.Phone.NUMBER} IS NOT NULL AND " +
                 "${ContactsContract.CommonDataKinds.Phone.STARRED} = 1"
-        private const val sort = ContactsContract.CommonDataKinds.Phone.SORT_KEY_PRIMARY
+        private const val sort =
+            "${ContactsContract.CommonDataKinds.Phone.SORT_KEY_PRIMARY}, " +
+                "${ContactsContract.CommonDataKinds.Phone.IS_SUPER_PRIMARY} DESC, " +
+                "${ContactsContract.CommonDataKinds.Phone.IS_PRIMARY} DESC"
 
         fun getCursor(contentResolver: ContentResolver): Cursor? = contentResolver.query(
             URI,
