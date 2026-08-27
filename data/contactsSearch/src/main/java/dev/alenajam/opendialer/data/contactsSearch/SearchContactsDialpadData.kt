@@ -16,6 +16,7 @@ abstract class SearchContactsDialpadData {
 
         private val projection = arrayOf(
             Phone._ID,
+            Phone.TYPE,
             Phone.LABEL,
             Phone.NUMBER,
             Phone.CONTACT_ID,
@@ -78,6 +79,7 @@ abstract class SearchContactsDialpadData {
                                 name = name,
                                 photoUri = cursor.getString(cursor.getColumnIndexOrThrow(Phone.PHOTO_THUMBNAIL_URI))
                                     ?.takeIf { it.isNotBlank() },
+                                phoneType = cursor.getInt(cursor.getColumnIndexOrThrow(Phone.TYPE)),
                                 label = cursor.getString(cursor.getColumnIndexOrThrow(Phone.LABEL)),
                                 contactId = contactId.toInt(),
                                 number = number

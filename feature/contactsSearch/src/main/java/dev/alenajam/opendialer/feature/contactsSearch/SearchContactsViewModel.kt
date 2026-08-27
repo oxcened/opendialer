@@ -29,6 +29,7 @@ class SearchContactsViewModel
 @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val app: Application,
+    private val searchContactsUseCase: SearchContacts,
     private val searchContactsDialpadUseCase: SearchContactsDialpad,
     private val callsRepository: CallsRepository,
     private val callPlacementRepository: CallPlacementRepository,
@@ -65,6 +66,12 @@ class SearchContactsViewModel
         getCalls()
     }
 
+    fun handleTextSearchPermissionGranted(query: String) {
+        _hasRuntimePermission.value = true
+        searchContacts(query)
+        getCalls()
+    }
+
     fun handleCallRuntimePermissionGranted() {
         _hasCallRuntimePermission.value = true
     }
@@ -81,6 +88,16 @@ class SearchContactsViewModel
                     res
                 )
             }
+        }
+    }
+
+    fun searchContacts(query: String) {
+        if (!hasRuntimePermission.value) return
+        searchContactsUseCase(
+            viewModelScope,
+            SearchContactsParams(app.contentResolver, query)
+        ) {
+            it.fold({}) { contacts -> handleResult(query, contacts) }
         }
     }
 

@@ -1,6 +1,7 @@
 package dev.alenajam.opendialer.feature.contactsSearch
 
 import android.app.Activity
+import android.provider.ContactsContract
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -43,6 +44,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -203,6 +205,90 @@ fun ContactsSearchScreen(
 }
 
 @Composable
+fun ContactsTextSearchResults(
+    query: String,
+    viewModel: SearchContactsViewModel = hiltViewModel(),
+    onOpenHistory: (callIds: List<Int>) -> Unit = {},
+) {
+    val result = viewModel.result.collectAsStateWithLifecycle()
+    val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
+    var openRowKey by remember { mutableStateOf<String?>(null) }
+    var pendingCallNumber by remember { mutableStateOf<String?>(null) }
+    var callAccounts by remember { mutableStateOf<List<CallAccount>?>(null) }
+    val context = LocalContext.current
+    val requestCallPermissions =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            if (PermissionUtils.makeCallPermissions.all { permissions[it] == true }) {
+                viewModel.handleCallRuntimePermissionGranted()
+                pendingCallNumber?.let { number ->
+                    when (val placementResult = viewModel.makeCall(number)) {
+                        CallPlacementResult.Placed -> pendingCallNumber = null
+                        is CallPlacementResult.AccountSelectionRequired -> callAccounts = placementResult.accounts
+                        else -> pendingCallNumber = null
+                    }
+                }
+            } else {
+                pendingCallNumber = null
+            }
+        }
+
+    fun makeCall(number: String) {
+        when (val placementResult = viewModel.makeCall(number)) {
+            CallPlacementResult.PermissionRequired -> {
+                pendingCallNumber = number
+                requestCallPermissions.launch(PermissionUtils.makeCallPermissions)
+            }
+            is CallPlacementResult.AccountSelectionRequired -> {
+                pendingCallNumber = number
+                callAccounts = placementResult.accounts
+            }
+            else -> Unit
+        }
+    }
+
+    LaunchedEffect(query, hasPermission.value) {
+        if (hasPermission.value) viewModel.searchContacts(query)
+    }
+
+    callAccounts?.let { accounts ->
+        CallAccountPicker(
+            accounts = accounts,
+            onAccountSelected = { account ->
+                pendingCallNumber?.let { number -> viewModel.makeCall(number, account) }
+                callAccounts = null
+                pendingCallNumber = null
+            },
+            onDismiss = {
+                callAccounts = null
+                pendingCallNumber = null
+            },
+        )
+    }
+
+    if (!hasPermission.value) {
+        PermissionPrompt(
+            onPermissionGranted = { viewModel.handleTextSearchPermissionGranted(query) }
+        )
+        return
+    }
+
+    SearchList(
+        result = result.value,
+        openRowKey = openRowKey,
+        onRowClick = { key -> openRowKey = if (openRowKey == key) null else key },
+        onCall = { makeCall(it.number) },
+        onMessage = { viewModel.sendMessage(context.getActivity() as Activity, it.number) },
+        onAddContact = { viewModel.addToContact(context.getActivity() as Activity, it.number) },
+        onOpenContact = { viewModel.openContact(context.getActivity() as Activity, it.contactId) },
+        onHistory = {
+            viewModel.getHistoryIds(it.number)
+                .takeIf { ids -> ids.isNotEmpty() }
+                ?.let(onOpenHistory)
+        },
+    )
+}
+
+@Composable
 private fun PermissionPrompt(
     onPermissionGranted: () -> Unit
 ) {
@@ -231,7 +317,7 @@ private fun PermissionPrompt(
 }
 
 @Composable
-private fun SearchList(
+internal fun SearchList(
     result: SearchContactsViewModel.Result?,
     openRowKey: String?,
     onRowClick: (key: String) -> Unit,
@@ -286,6 +372,14 @@ private fun ResultRow(
     onOpenContact: () -> Unit,
     onHistory: () -> Unit
 ) {
+    val phoneType = if (
+        contact.phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_CUSTOM &&
+        !contact.label.isNullOrBlank()
+    ) {
+        contact.label.orEmpty()
+    } else {
+        stringResource(ContactsContract.CommonDataKinds.Phone.getTypeLabelResource(contact.phoneType))
+    }
     Card(
         onClick = onClick,
         modifier = Modifier
@@ -324,11 +418,18 @@ private fun ResultRow(
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    Text(
-                        text = contact.number,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(
+                            text = phoneType,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Text(
+                            text = contact.number,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
 
                 IconButton(onClick = onCall) {

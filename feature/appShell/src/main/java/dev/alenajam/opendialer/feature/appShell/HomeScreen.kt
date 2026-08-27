@@ -38,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.alenajam.opendialer.feature.calls.CallsScreen
 import dev.alenajam.opendialer.feature.contacts.ContactsScreen
+import dev.alenajam.opendialer.feature.contactsSearch.ContactsTextSearchResults
 import dev.alenajam.opendialer.feature.voicemail.VoicemailScreen
 
 private enum class HomeTab {
@@ -158,7 +159,7 @@ internal fun HomeScreen(
     ) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) {
             if (searchQuery.isNotBlank()) {
-                ContactsScreen(searchQuery = searchQuery, onOpenHistory = onOpenHistory)
+                ContactsTextSearchResults(query = searchQuery, onOpenHistory = onOpenHistory)
             } else {
                 when (currentTab) {
                     HomeTab.CALLS -> CallsScreen(
