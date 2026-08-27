@@ -14,6 +14,7 @@ import dev.alenajam.opendialer.data.calls.DialerCall
 import dev.alenajam.opendialer.data.calls.DialerCallEntity
 import dev.alenajam.opendialer.data.contacts.ContactsRepository
 import dev.alenajam.opendialer.data.contacts.DialerContactEntity
+import dev.alenajam.opendialer.data.contacts.DialerContactSummaryEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -77,15 +78,11 @@ class ContactsViewModelTest {
         assertEquals(true, contactsRepository.toggledIsFavorite)
     }
 
-    private fun contactEntity(id: Int, name: String) = DialerContactEntity(
-        dataId = id.toLong(),
+    private fun contactEntity(id: Int, name: String) = DialerContactSummaryEntity(
         id = id,
         name = name,
         starred = 0,
         photoUri = null,
-        number = "123456789",
-        phoneType = 2,
-        phoneLabel = null,
     )
 }
 
@@ -93,12 +90,14 @@ private class PermissionGrantedApplication : Application() {
     override fun checkSelfPermission(permission: String): Int = PackageManager.PERMISSION_GRANTED
 }
 
-private class FakeContactsRepository(contacts: List<DialerContactEntity>) : ContactsRepository {
+private class FakeContactsRepository(contacts: List<DialerContactSummaryEntity>) : ContactsRepository {
     private val contactsFlow = MutableStateFlow(contacts)
     var toggledContactId: Int? = null
     var toggledIsFavorite: Boolean? = null
 
-    override fun getContacts(): Flow<List<DialerContactEntity>> = contactsFlow
+    override fun getContacts(): Flow<List<DialerContactSummaryEntity>> = contactsFlow
+
+    override fun getFavoriteContacts(): Flow<List<DialerContactEntity>> = MutableStateFlow(emptyList())
 
     override suspend fun toggleFavorite(contactId: Int, isFavorite: Boolean) {
         toggledContactId = contactId

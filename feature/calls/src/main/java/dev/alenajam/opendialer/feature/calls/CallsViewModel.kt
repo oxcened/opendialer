@@ -67,7 +67,7 @@ class CallsViewModel
 
         contactsJob?.cancel()
         contactsJob = viewModelScope.launch {
-            contactsRepository.getContacts().collect { contacts ->
+            contactsRepository.getFavoriteContacts().collect { contacts ->
                 _favorites.value = DialerContact.mapList(contacts).filter { it.starred }
                 cacheRepository.invalidate()
                 if (isCacheRunning) refreshContactInfo()

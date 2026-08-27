@@ -12,7 +12,9 @@ class DialerContact(
 ) {
     companion object {
         fun mapList(list: List<DialerContactEntity>): List<DialerContact> {
-            return list.map { map(it) }
+            return list
+                .distinctBy(DialerContactEntity::id)
+                .map { map(it) }
         }
 
         fun map(contact: DialerContactEntity): DialerContact {

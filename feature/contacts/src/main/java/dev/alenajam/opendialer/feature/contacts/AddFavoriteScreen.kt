@@ -1,6 +1,5 @@
 package dev.alenajam.opendialer.feature.contacts
 
-import android.telephony.PhoneNumberUtils
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -48,7 +47,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.alenajam.opendialer.core.common.ui.ContactAvatar
 import dev.alenajam.opendialer.core.common.PermissionUtils
-import dev.alenajam.opendialer.data.contacts.DialerContact
+import dev.alenajam.opendialer.data.contacts.DialerContactSummary
 import dev.alenajam.opendialer.feature.contacts.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,7 +70,7 @@ fun AddFavoriteScreen(
 @Composable
 fun ContactPickerScreen(
     onNavigateBack: () -> Unit,
-    onContactSelected: (DialerContact) -> Unit,
+    onContactSelected: (DialerContactSummary) -> Unit,
     viewModel: ContactsViewModel = hiltViewModel()
 ) {
     val contacts by viewModel.contacts.collectAsStateWithLifecycle()
@@ -91,13 +90,9 @@ fun ContactPickerScreen(
     val items: List<ContactListItem> = remember(contacts, isSearching, searchQuery) {
         val query = searchQuery.trim()
         if (isSearching && query.isNotEmpty()) {
-            val normalizedQuery = PhoneNumberUtils.normalizeNumber(query)
             return@remember contacts
                 .filter { contact ->
-                    contact.name.contains(query, ignoreCase = true) ||
-                        contact.number.contains(query, ignoreCase = true) ||
-                        normalizedQuery.isNotEmpty() && PhoneNumberUtils.normalizeNumber(contact.number)
-                            .contains(normalizedQuery)
+                    contact.name.contains(query, ignoreCase = true)
                 }
                 .sortedBy { it.name }
                 .map { ContactListItem.ContactItem(it) }
@@ -210,7 +205,7 @@ fun ContactPickerScreen(
 
 private sealed class ContactListItem {
     data class Header(val label: String, val isFavorites: Boolean = false) : ContactListItem()
-    data class ContactItem(val contact: DialerContact) : ContactListItem()
+    data class ContactItem(val contact: DialerContactSummary) : ContactListItem()
 }
 
 @Composable
@@ -262,7 +257,7 @@ private fun PermissionPrompt(
 
 @Composable
 private fun FavoritePickerRow(
-    contact: DialerContact,
+    contact: DialerContactSummary,
     onClick: () -> Unit
 ) {
     Surface(
@@ -276,7 +271,7 @@ private fun FavoritePickerRow(
             ContactAvatar(
                 name = contact.name,
                 photoUri = contact.image,
-                colorKey = contact.number,
+                colorKey = contact.id.toString(),
                 modifier = Modifier.size(40.dp)
             )
 
@@ -288,11 +283,6 @@ private fun FavoritePickerRow(
                 Text(
                     text = contact.name,
                     style = MaterialTheme.typography.bodyLarge
-                )
-                Text(
-                    text = contact.number,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }

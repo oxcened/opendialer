@@ -7,25 +7,19 @@ import android.provider.ContactsContract
 
 abstract class ContactsData {
     companion object {
-        val URI: Uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
+        val URI: Uri = ContactsContract.Contacts.CONTENT_URI
 
         private val projection = arrayOf(
-            ContactsContract.CommonDataKinds.Phone._ID,
-            ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
-            ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY,
-            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-            ContactsContract.CommonDataKinds.Phone.STARRED,
-            ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI,
-            ContactsContract.CommonDataKinds.Phone.NUMBER,
-            ContactsContract.CommonDataKinds.Phone.TYPE,
-            ContactsContract.CommonDataKinds.Phone.LABEL,
+            ContactsContract.Contacts._ID,
+            ContactsContract.Contacts.DISPLAY_NAME,
+            ContactsContract.Contacts.STARRED,
+            ContactsContract.Contacts.PHOTO_THUMBNAIL_URI,
         )
 
         private const val where =
-            "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} IS NOT NULL AND " +
-                "${ContactsContract.CommonDataKinds.Phone.NUMBER} IS NOT NULL"
+            "${ContactsContract.Contacts.DISPLAY_NAME} IS NOT NULL"
         private const val sort =
-            "${ContactsContract.CommonDataKinds.Phone.STARRED} DESC, ${ContactsContract.CommonDataKinds.Phone.SORT_KEY_PRIMARY}"
+            "${ContactsContract.Contacts.STARRED} DESC, ${ContactsContract.Contacts.SORT_KEY_PRIMARY}"
 
         fun getCursor(contentResolver: ContentResolver): Cursor? = contentResolver.query(
             URI,
@@ -35,27 +29,21 @@ abstract class ContactsData {
             sort
         )
 
-        fun getData(cursor: Cursor): List<DialerContactEntity> {
-            val list = mutableListOf<DialerContactEntity>()
+        fun getData(cursor: Cursor): List<DialerContactSummaryEntity> {
+            val list = mutableListOf<DialerContactSummaryEntity>()
             if (cursor.moveToFirst()) {
                 do {
                     list.add(
-                        DialerContactEntity(
-                            dataId = cursor.getLong(
-                                cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone._ID)
-                            ),
-                            id = cursor.getInt(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)),
-                            name = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)),
+                        DialerContactSummaryEntity(
+                            id = cursor.getInt(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID)),
+                            name = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME)),
                             photoUri = cursor.getString(
                                 cursor.getColumnIndexOrThrow(
-                                    ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI
+                                    ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
                                 )
                             )
                                 ?.takeIf { it.isNotBlank() },
-                            starred = cursor.getInt(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.STARRED)),
-                            number = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER)),
-                            phoneType = cursor.getInt(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.TYPE)),
-                            phoneLabel = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.LABEL)),
+                            starred = cursor.getInt(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.STARRED)),
                         )
                     )
                 } while (cursor.moveToNext())
