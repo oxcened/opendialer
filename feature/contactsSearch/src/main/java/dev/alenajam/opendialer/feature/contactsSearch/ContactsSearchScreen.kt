@@ -344,6 +344,8 @@ internal fun SearchList(
                 val isOpen = openRowKey == rowKey
                 ResultRow(
                     contact = contact,
+                    query = result.query,
+                    isDialpadSearch = result.isDialpadSearch,
                     isOpen = isOpen,
                     isFirst = index == 0,
                     isLast = index == contacts.lastIndex,
@@ -362,6 +364,8 @@ internal fun SearchList(
 @Composable
 private fun ResultRow(
     contact: DialerSearchContact,
+    query: String,
+    isDialpadSearch: Boolean,
     isOpen: Boolean,
     isFirst: Boolean,
     isLast: Boolean,
@@ -372,6 +376,7 @@ private fun ResultRow(
     onOpenContact: () -> Unit,
     onHistory: () -> Unit
 ) {
+    val context = LocalContext.current
     val phoneType = if (
         contact.phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_CUSTOM &&
         !contact.label.isNullOrBlank()
@@ -380,6 +385,21 @@ private fun ResultRow(
     } else {
         stringResource(ContactsContract.CommonDataKinds.Phone.getTypeLabelResource(contact.phoneType))
     }
+    val title = if (contact.name.isNotBlank()) contact.name else contact.number
+    val highlightedTitle = highlightSearchMatch(
+        context = context,
+        text = title,
+        query = query,
+        isDialpadSearch = isDialpadSearch,
+        isPhoneNumber = contact.name.isBlank(),
+    )
+    val highlightedNumber = highlightSearchMatch(
+        context = context,
+        text = contact.number,
+        query = query,
+        isDialpadSearch = isDialpadSearch,
+        isPhoneNumber = true,
+    )
     Card(
         onClick = onClick,
         modifier = Modifier
@@ -414,7 +434,7 @@ private fun ResultRow(
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = if (contact.name.isNotBlank()) contact.name else contact.number,
+                        text = highlightedTitle,
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -425,7 +445,7 @@ private fun ResultRow(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         Text(
-                            text = contact.number,
+                            text = highlightedNumber,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )

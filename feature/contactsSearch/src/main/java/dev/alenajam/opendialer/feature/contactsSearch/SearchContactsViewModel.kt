@@ -85,7 +85,8 @@ class SearchContactsViewModel
             it.fold({}) { res ->
                 handleResult(
                     SmartDialNameMatcher.normalizeNumber(app, query),
-                    res
+                    res,
+                    isDialpadSearch = true,
                 )
             }
         }
@@ -97,12 +98,16 @@ class SearchContactsViewModel
             viewModelScope,
             SearchContactsParams(app.contentResolver, query)
         ) {
-            it.fold({}) { contacts -> handleResult(query, contacts) }
+            it.fold({}) { contacts -> handleResult(query, contacts, isDialpadSearch = false) }
         }
     }
 
-    private fun handleResult(query: String, contacts: List<DialerSearchContactEntity>) {
-        _result.value = Result(query, DialerSearchContact.mapList(contacts))
+    private fun handleResult(
+        query: String,
+        contacts: List<DialerSearchContactEntity>,
+        isDialpadSearch: Boolean,
+    ) {
+        _result.value = Result(query, DialerSearchContact.mapList(contacts), isDialpadSearch)
     }
 
     fun makeCall(number: String): CallPlacementResult = callPlacementRepository.placeCall(number)
@@ -127,6 +132,7 @@ class SearchContactsViewModel
 
     class Result(
         val query: String,
-        val contacts: List<DialerSearchContact>
+        val contacts: List<DialerSearchContact>,
+        val isDialpadSearch: Boolean,
     )
 }
