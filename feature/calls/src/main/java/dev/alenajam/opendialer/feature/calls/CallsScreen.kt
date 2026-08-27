@@ -518,7 +518,7 @@ private fun CallRow(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp),
+                modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp),
             ) {
                 ContactAvatar(
                     name = call.contactInfo.name.takeUnless { call.isVoicemailNumber },
@@ -700,7 +700,7 @@ private fun CallRowButton(
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
         ) {
             Icon(
                 imageVector = icon,
