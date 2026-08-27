@@ -48,6 +48,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -80,7 +81,7 @@ fun ContactsSearchScreen(
 ) {
     val result = viewModel.result.collectAsStateWithLifecycle()
     val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
-    var query by remember { mutableStateOf(viewModel.prefilledNumber) }
+    var query by rememberSaveable { mutableStateOf(viewModel.prefilledNumber) }
     var openRowKey by remember { mutableStateOf<String?>(null) }
     var pendingCallNumber by remember { mutableStateOf<String?>(null) }
     var callAccounts by remember { mutableStateOf<List<CallAccount>?>(null) }
