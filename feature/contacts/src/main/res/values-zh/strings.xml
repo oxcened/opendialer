@@ -15,4 +15,6 @@
     <string name="search" comment="Accessibility label for starting a search.">搜索</string>
     <string name="favorites" comment="Heading or navigation label for favorite contacts.">收藏</string>
     <string name="favorites_permission_prompt" comment="Message shown when contacts permission is required to manage favorites.">要管理收藏，请开启联系人权限</string>
+    <string name="your_info" comment="Label for the device owner's contact profile.">你的信息</string>
+    <string name="share_contact" comment="Accessibility label for sharing a contact.">分享联系人</string>
 </resources>

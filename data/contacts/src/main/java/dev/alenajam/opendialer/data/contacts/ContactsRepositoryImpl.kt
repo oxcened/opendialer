@@ -7,6 +7,7 @@ import android.provider.ContactsContract
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class ContactsRepositoryImpl
@@ -24,6 +25,13 @@ class ContactsRepositoryImpl
             getCursor = FavoriteContactsData::getCursor,
             getData = FavoriteContactsData::getData,
         )
+
+    override fun getProfileContact(): Flow<DialerContactSummaryEntity?> =
+        observeContacts(
+            uri = ProfileContactData.URI,
+            getCursor = ProfileContactData::getCursor,
+            getData = ProfileContactData::getData,
+        ).map { it.firstOrNull() }
 
     private fun <T> observeContacts(
         uri: android.net.Uri,

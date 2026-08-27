@@ -30,11 +30,14 @@ class ContactsViewModel
 ) : ViewModel() {
     private val _contacts = MutableStateFlow<List<DialerContactSummary>>(emptyList())
     val contacts: StateFlow<List<DialerContactSummary>> = _contacts
+    private val _profileContact = MutableStateFlow<DialerContactSummary?>(null)
+    val profileContact: StateFlow<DialerContactSummary?> = _profileContact
     private val _hasRuntimePermission = MutableStateFlow(false)
     val hasRuntimePermission: StateFlow<Boolean> = _hasRuntimePermission
     private val _calls = MutableStateFlow<List<DialerCallEntity>>(emptyList())
     private var hasCallRuntimePermission = false
     private var contactsJob: Job? = null
+    private var profileContactJob: Job? = null
     private var callsJob: Job? = null
 
     init {
@@ -51,6 +54,13 @@ class ContactsViewModel
         contactsJob = viewModelScope.launch {
             contactsRepository.getContacts().collect { contacts ->
                 _contacts.value = DialerContactSummary.mapList(contacts)
+            }
+        }
+
+        profileContactJob?.cancel()
+        profileContactJob = viewModelScope.launch {
+            contactsRepository.getProfileContact().collect { profile ->
+                _profileContact.value = profile?.let { DialerContactSummary.mapList(listOf(it)).first() }
             }
         }
     }
@@ -85,6 +95,14 @@ class ContactsViewModel
 
     fun openContact(contactId: Int) {
         CommonUtils.showContactDetail(app, contactId)
+    }
+
+    fun openProfileContact() {
+        CommonUtils.showProfileDetail(app)
+    }
+
+    fun shareProfileContact(contactId: Int) {
+        CommonUtils.shareContact(app, contactId)
     }
 
     fun toggleFavorite(contactId: Int, isFavorite: Boolean) {

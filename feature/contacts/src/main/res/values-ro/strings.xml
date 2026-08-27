@@ -15,4 +15,6 @@
     <string name="search" comment="Accessibility label for starting a search.">Caută</string>
     <string name="favorites" comment="Heading or navigation label for favorite contacts.">Favorite</string>
     <string name="favorites_permission_prompt" comment="Message shown when contacts permission is required to manage favorites.">Activează permisiunea pentru contacte pentru a gestiona favoritele</string>
+    <string name="your_info" comment="Label for the device owner's contact profile.">Informațiile tale</string>
+    <string name="share_contact" comment="Accessibility label for sharing a contact.">Partajează contactul</string>
 </resources>
