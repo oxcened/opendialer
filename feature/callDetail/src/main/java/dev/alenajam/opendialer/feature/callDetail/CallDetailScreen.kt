@@ -1,5 +1,6 @@
 package dev.alenajam.opendialer.feature.callDetail
 
+import android.provider.ContactsContract
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -243,12 +244,7 @@ private fun TopBar(
                         modifier = Modifier.size(50.dp)
                     )
                     Spacer(modifier = Modifier.size(8.dp))
-                    Text(
-                        text = if (call.isVoicemailNumber) stringResource(R.string.voicemail)
-                        else if (call.isAnonymous()) stringResource(id = R.string.anonymous)
-                        else if (!call.contactInfo.name.isNullOrBlank()) call.contactInfo.name!!
-                        else call.contactInfo.number!!,
-                    )
+                    CallDetailTitle(call)
                 }
             }
         },
@@ -290,6 +286,41 @@ private fun TopBar(
             }
         }
     )
+}
+
+@Composable
+private fun CallDetailTitle(call: DialerCall) {
+    when {
+        call.isVoicemailNumber -> Text(stringResource(R.string.voicemail))
+        call.isAnonymous() -> Text(stringResource(R.string.anonymous))
+        !call.contactInfo.name.isNullOrBlank() -> {
+            val contact = call.contactInfo
+            val phoneType = if (
+                contact.type == ContactsContract.CommonDataKinds.Phone.TYPE_CUSTOM &&
+                !contact.label.isNullOrBlank()
+            ) {
+                contact.label.orEmpty()
+            } else {
+                stringResource(
+                    ContactsContract.CommonDataKinds.Phone.getTypeLabelResource(contact.type ?: 0)
+                )
+            }
+
+            Column {
+                Text(contact.name!!.trim().substringBefore(' '))
+                Text(
+                    text = stringResource(
+                        R.string.call_detail_contact_subtitle,
+                        phoneType,
+                        contact.number.orEmpty(),
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+        else -> Text(call.contactInfo.number.orEmpty())
+    }
 }
 
 @Composable
