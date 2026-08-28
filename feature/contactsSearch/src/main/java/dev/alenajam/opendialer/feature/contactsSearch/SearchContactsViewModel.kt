@@ -14,6 +14,7 @@ import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.core.common.telecom.CallAccount
 import dev.alenajam.opendialer.core.common.telecom.CallPlacementRepository
 import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
+import dev.alenajam.opendialer.data.calls.CallType
 import dev.alenajam.opendialer.data.calls.CallsRepository
 import dev.alenajam.opendialer.data.calls.DialerCallEntity
 import dev.alenajam.opendialer.data.contactsSearch.DialerSearchContact
@@ -129,6 +130,11 @@ class SearchContactsViewModel
     fun getHistoryIds(number: String): List<Int> = _calls.value
         .filter { PhoneNumberUtils.compare(it.number, number) }
         .map { it.id }
+
+    fun getLastOutgoingNumber(): String? = _calls.value
+        .filter { it.type == CallType.OUTGOING.value }
+        .maxByOrNull { it.date }
+        ?.number?.takeIf { it.isNotBlank() }
 
     class Result(
         val query: String,

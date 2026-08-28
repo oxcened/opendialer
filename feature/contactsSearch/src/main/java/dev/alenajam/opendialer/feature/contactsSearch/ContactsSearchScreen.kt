@@ -86,6 +86,7 @@ fun ContactsSearchScreen(
     val result = viewModel.result.collectAsStateWithLifecycle()
     val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
     var query by rememberSaveable { mutableStateOf(viewModel.prefilledNumber) }
+    var selection by remember { mutableStateOf(TextRange(query.length)) }
     var openRowKey by remember { mutableStateOf<String?>(null) }
     var pendingCallNumber by remember { mutableStateOf<String?>(null) }
     var callAccounts by remember { mutableStateOf<List<CallAccount>?>(null) }
@@ -145,12 +146,22 @@ fun ContactsSearchScreen(
         bottomBar = {
             Footer(
                 query = query,
-                onQueryChange = {
-                    query = it
-                    viewModel.searchContactsByDialpad(it)
+                selection = selection,
+                onQueryChange = { newQuery, newSelection ->
+                    query = newQuery
+                    selection = newSelection
+                    viewModel.searchContactsByDialpad(newQuery)
                 },
                 onCall = {
-                    if (makeCall(query)) onDialpadCallStarted()
+                    if (query.isEmpty()) {
+                        viewModel.getLastOutgoingNumber()?.let { lastNumber ->
+                            query = lastNumber
+                            selection = TextRange(lastNumber.length)
+                            viewModel.searchContactsByDialpad(lastNumber)
+                        }
+                    } else {
+                        if (makeCall(query)) onDialpadCallStarted()
+                    }
                 }
             )
         }
@@ -599,10 +610,10 @@ private fun ActionRow(
 @Composable
 private fun Footer(
     query: String,
-    onQueryChange: (query: String) -> Unit,
+    selection: TextRange,
+    onQueryChange: (query: String, selection: TextRange) -> Unit,
     onCall: () -> Unit
 ) {
-    var selection by remember { mutableStateOf(TextRange.Zero) }
     var overflowExpanded by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val tonePlayer = remember(context) { DialpadTonePlayer(context) }
@@ -612,13 +623,13 @@ private fun Footer(
     }
 
     fun handleButtonClick(digit: Char) {
-        onQueryChange(query.replaceRange(selection.start, selection.end, digit.toString()))
-        selection = TextRange(selection.start + 1)
+        val newQuery = query.replaceRange(selection.start, selection.end, digit.toString())
+        onQueryChange(newQuery, TextRange(selection.start + 1))
     }
 
     fun insertDialModifier(modifier: Char) {
-        onQueryChange(query.replaceRange(selection.start, selection.end, modifier.toString()))
-        selection = TextRange(selection.start + 1)
+        val newQuery = query.replaceRange(selection.start, selection.end, modifier.toString())
+        onQueryChange(newQuery, TextRange(selection.start + 1))
         overflowExpanded = false
     }
 
@@ -662,7 +673,7 @@ private fun Footer(
                 TextField(
                     modifier = Modifier.weight(1f),
                     value = TextFieldValue(text = query, selection = selection),
-                    onValueChange = { selection = it.selection },
+                    onValueChange = { onQueryChange(it.text, it.selection) },
                     textStyle = LocalTextStyle.current.copy(
                         textAlign = TextAlign.Center,
                         fontSize = MaterialTheme.typography.headlineMedium.fontSize
@@ -688,22 +699,23 @@ private fun Footer(
                             enabled = isBackspaceEnabled,
                             onClick = {
                                 if (selection.end > selection.start) {
-                                    onQueryChange(query.replaceRange(selection.start, selection.end, ""))
-                                    selection = TextRange(selection.start)
+                                    onQueryChange(
+                                        query.replaceRange(selection.start, selection.end, ""),
+                                        TextRange(selection.start)
+                                    )
                                 } else if (selection.start > 0) {
                                     onQueryChange(
                                         query.replaceRange(
                                             selection.start - 1,
                                             selection.end,
                                             ""
-                                        )
+                                        ),
+                                        TextRange(selection.start - 1)
                                     )
-                                    selection = TextRange(selection.start - 1)
                                 }
                             },
                             onLongClick = {
-                                onQueryChange("")
-                                selection = TextRange.Zero
+                                onQueryChange("", TextRange.Zero)
                             }
                         )
                 ) {
