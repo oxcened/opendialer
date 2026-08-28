@@ -9,7 +9,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,6 +25,8 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.alenajam.opendialer.core.common.copy
+import dev.alenajam.opendialer.core.common.ui.AppIcon
+import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,10 +47,7 @@ fun AboutScreen(
                     IconButton(
                         onClick = onNavigateBack
                     ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = null
-                        )
+                        AppIcon(LocalAppIcons.current.arrowLeft, contentDescription = null)
                     }
                 }
             )
@@ -194,18 +192,29 @@ fun AboutScreen(
 
             val fontName = stringResource(R.string.font_name)
             val fontAuthor = stringResource(R.string.font_author)
+            val fontUri = stringResource(R.string.url_font)
             if (fontName.isNotBlank() && fontAuthor.isNotBlank()) {
                 Text(
                     modifier = Modifier.padding(top = 4.dp),
                     text = stringResource(R.string.about_section_credits),
                     style = MaterialTheme.typography.titleMedium
                 )
-                AboutInfoCard(
-                    title = stringResource(R.string.typography_credit_title),
-                    description = stringResource(R.string.font_credit_format, fontName, fontAuthor),
-                    roundTop = true,
-                    roundBottom = true
-                )
+                if (fontUri.isBlank()) {
+                    AboutInfoCard(
+                        title = stringResource(R.string.typography_credit_title),
+                        description = stringResource(R.string.font_credit_format, fontName, fontAuthor),
+                        roundTop = true,
+                        roundBottom = true
+                    )
+                } else {
+                    AboutLinkCard(
+                        title = stringResource(R.string.typography_credit_title),
+                        description = stringResource(R.string.font_credit_format, fontName, fontAuthor),
+                        uri = fontUri,
+                        roundTop = true,
+                        roundBottom = true
+                    )
+                }
             }
         }
     }

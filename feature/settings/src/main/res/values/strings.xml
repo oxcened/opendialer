@@ -56,5 +56,6 @@
     <string name="url_contact_email" translatable="false">mailto:hello@alenajam.dev</string>
     <string name="font_name" translatable="false"></string>
     <string name="font_author" translatable="false"></string>
+    <string name="url_font" translatable="false"></string>
     <string name="font_credit_format" comment="Font credit. %1$s is the font name and %2$s is the font author.">%1$s by %2$s</string>
 </resources>
