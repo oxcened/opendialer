@@ -13,9 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PlayArrow
-import androidx.compose.material.icons.outlined.Voicemail
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -39,7 +37,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.core.common.telecom.CallAccount
 import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
+import dev.alenajam.opendialer.core.common.ui.AppIcon
 import dev.alenajam.opendialer.core.common.ui.CallAccountPicker
+import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.data.voicemail.Voicemail
 import java.text.DateFormat
 import java.util.Date
@@ -166,8 +166,8 @@ private fun VoicemailRow(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(16.dp),
         ) {
-            Icon(
-                imageVector = Icons.Outlined.Person,
+            AppIcon(
+                icon = LocalAppIcons.current.accountCircle,
                 contentDescription = null,
                 modifier = Modifier.size(32.dp),
             )
@@ -211,6 +211,7 @@ private fun VoicemailState(
     onCallVoicemail: () -> Unit,
     onRetry: () -> Unit,
 ) {
+    val icons = LocalAppIcons.current
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
@@ -218,8 +219,8 @@ private fun VoicemailState(
             .fillMaxSize()
             .padding(24.dp),
     ) {
-        Icon(
-            imageVector = Icons.Outlined.Voicemail,
+        AppIcon(
+            icon = icons.voicemailLarge,
             contentDescription = null,
             modifier = Modifier.size(96.dp),
             tint = MaterialTheme.colorScheme.primary,

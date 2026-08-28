@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -28,11 +29,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import dev.alenajam.opendialer.core.common.ui.AppIcon
+import dev.alenajam.opendialer.core.common.ui.IconSource
 import dev.alenajam.opendialer.feature.inCall.R
 
 @Composable
 internal fun CallButton(
-    icon: ImageVector,
+    icon: IconSource,
     label: String,
     isActive: Boolean? = false,
     enabled: Boolean = true,
@@ -87,11 +90,11 @@ internal fun CallButton(
             color = containerColor
         ) {
             Box {
-                Icon(
-                    imageVector = icon,
+                AppIcon(
+                    icon = icon,
                     contentDescription = null,
                     tint = contentColor,
-                    modifier = Modifier.align(Alignment.Center)
+                    modifier = Modifier.size(24.dp).align(Alignment.Center)
                 )
             }
         }

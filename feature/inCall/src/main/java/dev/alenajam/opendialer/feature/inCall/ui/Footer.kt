@@ -46,7 +46,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import dev.alenajam.opendialer.core.common.ui.AppIcon
 import dev.alenajam.opendialer.core.common.ui.Dialpad
+import dev.alenajam.opendialer.core.common.ui.IconSource
 import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.feature.inCall.R
 import dev.alenajam.opendialer.feature.inCall.service.CallAudioRouteUiState
@@ -293,8 +295,8 @@ fun InCallControls(
                     }
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = icons.hangup,
+                    AppIcon(
+                        icon = icons.hangup,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onError
                     )
@@ -337,9 +339,10 @@ private fun MoreActionRow(
                 modifier = Modifier.size(48.dp)
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = action.icon,
+                    AppIcon(
+                        icon = action.icon,
                         contentDescription = null,
+                        modifier = Modifier.size(24.dp),
                         tint = if (action.isActive) {
                             MaterialTheme.colorScheme.onPrimary
                         } else if (action.enabled) {
@@ -362,7 +365,7 @@ private fun MoreActionRow(
 }
 
 private data class MoreAction(
-    val icon: ImageVector,
+    val icon: IconSource,
     val label: String,
     val onClick: () -> Unit,
     val isActive: Boolean = false,

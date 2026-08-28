@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import dev.alenajam.opendialer.core.common.ui.AppIcon
 import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.feature.inCall.R
 
@@ -36,8 +37,8 @@ fun SecondaryCallBanner(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
-            Icon(
-                imageVector = icons.phonePaused,
+            AppIcon(
+                icon = icons.phonePaused,
                 contentDescription = null,
                 tint = Color.White,
                 modifier = Modifier.size(20.dp)

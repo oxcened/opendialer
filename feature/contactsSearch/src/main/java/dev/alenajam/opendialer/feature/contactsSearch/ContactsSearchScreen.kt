@@ -23,12 +23,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Backspace
-import androidx.compose.material.icons.automirrored.outlined.Message
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.History
-import androidx.compose.material.icons.outlined.PersonAddAlt
-import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -66,8 +63,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.alenajam.opendialer.core.common.ui.AppIcon
 import dev.alenajam.opendialer.core.common.ui.ContactAvatar
+import dev.alenajam.opendialer.core.common.ui.IconSource
 import dev.alenajam.opendialer.core.common.ui.contactAvatarColorKey
+import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.core.common.getActivity
 import dev.alenajam.opendialer.core.common.telecom.CallAccount
@@ -83,6 +83,7 @@ fun ContactsSearchScreen(
     onOpenHistory: (callIds: List<Int>) -> Unit = {},
     onDialpadCallStarted: () -> Unit = {},
 ) {
+    val icons = LocalAppIcons.current
     val result = viewModel.result.collectAsStateWithLifecycle()
     val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
     var query by rememberSaveable { mutableStateOf(viewModel.prefilledNumber) }
@@ -147,6 +148,7 @@ fun ContactsSearchScreen(
             Footer(
                 query = query,
                 selection = selection,
+                icons = icons,
                 onQueryChange = { newQuery, newSelection ->
                     query = newQuery
                     selection = newSelection
@@ -182,6 +184,7 @@ fun ContactsSearchScreen(
                 SearchList(
                     result = result.value,
                     openRowKey = openRowKey,
+                    icons = icons,
                     onRowClick = { key -> openRowKey = if (openRowKey == key) null else key },
                     onCall = { makeCall(it.number) },
                     onMessage = { viewModel.sendMessage(context.getActivity() as Activity, it.number) },
@@ -196,6 +199,7 @@ fun ContactsSearchScreen(
 
                 ActionsList(
                     query = query,
+                    icons = icons,
                     onCreateNewContact = {
                         viewModel.createContact(
                             activity = context.getActivity() as Activity,
@@ -226,6 +230,7 @@ fun ContactsTextSearchResults(
     viewModel: SearchContactsViewModel = hiltViewModel(),
     onOpenHistory: (callIds: List<Int>) -> Unit = {},
 ) {
+    val icons = LocalAppIcons.current
     val result = viewModel.result.collectAsStateWithLifecycle()
     val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
     var openRowKey by remember { mutableStateOf<String?>(null) }
@@ -291,6 +296,7 @@ fun ContactsTextSearchResults(
     SearchList(
         result = result.value,
         openRowKey = openRowKey,
+        icons = icons,
         onRowClick = { key -> openRowKey = if (openRowKey == key) null else key },
         onCall = { makeCall(it.number) },
         onMessage = { viewModel.sendMessage(context.getActivity() as Activity, it.number) },
@@ -336,6 +342,7 @@ private fun PermissionPrompt(
 internal fun SearchList(
     result: SearchContactsViewModel.Result?,
     openRowKey: String?,
+    icons: dev.alenajam.opendialer.core.common.ui.AppIcons = LocalAppIcons.current,
     onRowClick: (key: String) -> Unit,
     onCall: (contact: DialerSearchContact) -> Unit,
     onMessage: (contact: DialerSearchContact) -> Unit,
@@ -365,6 +372,7 @@ internal fun SearchList(
                     isOpen = isOpen,
                     isFirst = index == 0,
                     isLast = index == contacts.lastIndex,
+                    icons = icons,
                     onClick = { onRowClick(rowKey) },
                     onCall = { onCall(contact) },
                     onMessage = { onMessage(contact) },
@@ -385,6 +393,7 @@ private fun ResultRow(
     isOpen: Boolean,
     isFirst: Boolean,
     isLast: Boolean,
+    icons: dev.alenajam.opendialer.core.common.ui.AppIcons,
     onClick: () -> Unit,
     onCall: () -> Unit,
     onMessage: () -> Unit,
@@ -469,9 +478,10 @@ private fun ResultRow(
                 }
 
                 IconButton(onClick = onCall) {
-                    Icon(
-                        imageVector = Icons.Outlined.Phone,
-                        contentDescription = stringResource(R.string.call_contact)
+                    AppIcon(
+                        icon = icons.phone,
+                        contentDescription = stringResource(R.string.call_contact),
+                        modifier = Modifier.size(24.dp)
                     )
                 }
             }
@@ -483,14 +493,14 @@ private fun ResultRow(
                 ) {
                     if (contact.contactId > 0) {
                         ResultActionRow(
-                            icon = Icons.Default.AccountCircle,
+                            icon = icons.accountCircle,
                             label = stringResource(R.string.open_contact),
                             roundTop = true,
                             onClick = onOpenContact
                         )
                     } else {
                         ResultActionRow(
-                            icon = Icons.Outlined.PersonAddAlt,
+                            icon = icons.personAdd,
                             label = stringResource(R.string.add_to_a_contact),
                             roundTop = true,
                             onClick = onAddContact
@@ -498,13 +508,13 @@ private fun ResultRow(
                     }
 
                     ResultActionRow(
-                        icon = Icons.AutoMirrored.Outlined.Message,
+                        icon = icons.message,
                         label = stringResource(R.string.send_message),
                         onClick = onMessage
                     )
 
                     ResultActionRow(
-                        icon = Icons.Outlined.History,
+                        icon = icons.history,
                         label = stringResource(R.string.contact_history),
                         roundBottom = true,
                         onClick = onHistory
@@ -517,7 +527,7 @@ private fun ResultRow(
 
 @Composable
 private fun ResultActionRow(
-    icon: ImageVector,
+    icon: IconSource,
     label: String,
     roundTop: Boolean = false,
     roundBottom: Boolean = false,
@@ -539,9 +549,10 @@ private fun ResultActionRow(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
         ) {
-            Icon(
-                imageVector = icon,
+            AppIcon(
+                icon = icon,
                 contentDescription = null,
+                modifier = Modifier.size(24.dp),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Text(text = label, style = MaterialTheme.typography.bodyLarge)
@@ -552,6 +563,7 @@ private fun ResultActionRow(
 @Composable
 private fun ActionsList(
     query: String,
+    icons: dev.alenajam.opendialer.core.common.ui.AppIcons,
     onCreateNewContact: () -> Unit,
     onAddToContact: () -> Unit,
     onSendMessage: () -> Unit
@@ -560,19 +572,19 @@ private fun ActionsList(
 
     Column {
         ActionRow(
-            icon = Icons.Outlined.PersonAddAlt,
+            icon = icons.personAdd,
             label = stringResource(R.string.create_new_contact),
             onClick = onCreateNewContact
         )
 
         ActionRow(
-            icon = Icons.Outlined.PersonAddAlt,
+            icon = icons.personAdd,
             label = stringResource(R.string.add_to_a_contact),
             onClick = onAddToContact
         )
 
         ActionRow(
-            icon = Icons.AutoMirrored.Outlined.Message,
+            icon = icons.message,
             label = stringResource(R.string.send_message),
             onClick = onSendMessage
         )
@@ -581,7 +593,7 @@ private fun ActionsList(
 
 @Composable
 private fun ActionRow(
-    icon: ImageVector,
+    icon: IconSource,
     label: String,
     onClick: () -> Unit
 ) {
@@ -595,9 +607,10 @@ private fun ActionRow(
                 .padding(16.dp)
                 .fillMaxWidth()
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null
+            AppIcon(
+                icon = icon,
+                contentDescription = null,
+                modifier = Modifier.size(24.dp)
             )
 
             Text(
@@ -611,6 +624,7 @@ private fun ActionRow(
 private fun Footer(
     query: String,
     selection: TextRange,
+    icons: dev.alenajam.opendialer.core.common.ui.AppIcons,
     onQueryChange: (query: String, selection: TextRange) -> Unit,
     onCall: () -> Unit
 ) {
@@ -747,9 +761,10 @@ private fun Footer(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Phone,
-                        contentDescription = null
+                    AppIcon(
+                        icon = icons.phone,
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
                     )
                     Text(text = stringResource(R.string.dialpad_button_call_label))
                 }

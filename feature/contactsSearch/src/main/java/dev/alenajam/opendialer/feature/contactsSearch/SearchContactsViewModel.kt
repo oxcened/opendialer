@@ -6,7 +6,6 @@ import android.telephony.PhoneNumberUtils
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.core.aosp.SmartDialNameMatcher
 import dev.alenajam.opendialer.core.common.CommonUtils
@@ -42,8 +41,10 @@ class SearchContactsViewModel
     private val _hasCallRuntimePermission = MutableStateFlow(false)
     val hasCallRuntimePermission: StateFlow<Boolean> = _hasCallRuntimePermission
     private val _calls = MutableStateFlow<List<DialerCallEntity>>(emptyList())
-    private val contactsSearch = savedStateHandle.toRoute<ContactsSearchRoute>()
-    val prefilledNumber = contactsSearch.prefilledNumber
+    // This ViewModel is also used by the Home screen's inline text search, which is
+    // not hosted by a ContactsSearchRoute. Read the optional argument directly so
+    // both navigation owners can create the ViewModel safely.
+    val prefilledNumber = savedStateHandle.get<String>("prefilledNumber").orEmpty()
     private var callsJob: Job? = null
 
     init {

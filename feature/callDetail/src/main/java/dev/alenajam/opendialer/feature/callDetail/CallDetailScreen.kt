@@ -13,16 +13,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Block
-import androidx.compose.material.icons.outlined.Call
 import androidx.compose.material.icons.outlined.CallMade
 import androidx.compose.material.icons.outlined.CallMissed
 import androidx.compose.material.icons.outlined.CallReceived
-import androidx.compose.material.icons.outlined.ContentCopy
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Voicemail
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
@@ -61,8 +56,10 @@ import dev.alenajam.opendialer.core.common.functional.EventObserver
 import dev.alenajam.opendialer.core.common.telecom.CallAccount
 import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
 import dev.alenajam.opendialer.core.common.ui.CallAccountPicker
+import dev.alenajam.opendialer.core.common.ui.AppIcon
 import dev.alenajam.opendialer.core.common.ui.ContactAvatar
 import dev.alenajam.opendialer.core.common.ui.contactAvatarColorKey
+import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.data.calls.CallType
 import dev.alenajam.opendialer.data.calls.CallOption
 import dev.alenajam.opendialer.data.calls.ContactInfo
@@ -76,6 +73,7 @@ fun CallDetailScreen(
     viewModel: DialerViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit
 ) {
+    val icons = LocalAppIcons.current
     val call = viewModel.call.observeAsState()
     val detailOptions = viewModel.detailOptions.observeAsState(emptyList())
     val isAnon = call.value?.isAnonymous() == true
@@ -161,7 +159,8 @@ fun CallDetailScreen(
                 sendMessage = viewModel::sendMessage,
                 copyNumber = { viewModel.copyNumber(call.value!!) },
                 dialNumber = { viewModel.editNumberBeforeCall(call.value!!) },
-                deleteCalls = { viewModel.deleteCalls(call.value!!) }
+                deleteCalls = { viewModel.deleteCalls(call.value!!) },
+                icons = icons
             )
         }
     ) { innerPadding ->
@@ -176,6 +175,7 @@ fun CallDetailScreen(
                     CallRow(
                         call = detailCall,
                         isVoicemailNumber = isVoicemailNumber,
+                        icons = icons,
                     )
                 }
             }
@@ -233,9 +233,9 @@ private fun TopBar(
                         photoUri = call.contactInfo.photoUri.takeUnless { call.isVoicemailNumber },
                         colorKey = contactAvatarColorKey(call.contactInfo.name, call.contactInfo.number),
                         fallbackIcon = if (call.isVoicemailNumber) {
-                            Icons.Outlined.Voicemail
+                            LocalAppIcons.current.voicemail
                         } else {
-                            Icons.Outlined.Person
+                            LocalAppIcons.current.accountCircle
                         },
                         contentDescription = if (call.isVoicemailNumber) {
                             stringResource(R.string.voicemail)
@@ -336,22 +336,23 @@ private fun BottomBar(
     copyNumber: () -> Unit,
     dialNumber: () -> Unit,
     deleteCalls: () -> Unit,
+    icons: dev.alenajam.opendialer.core.common.ui.AppIcons = LocalAppIcons.current
 ) {
     BottomAppBar(
         actions = {
             if (!isAnon) {
                 IconButton(onClick = sendMessage) {
-                    Icon(Icons.Outlined.Message, contentDescription = stringResource(R.string.send_message))
+                    AppIcon(icons.message, contentDescription = stringResource(R.string.send_message))
                 }
                 IconButton(onClick = copyNumber) {
-                    Icon(Icons.Outlined.ContentCopy, contentDescription = stringResource(R.string.copy_number))
+                    AppIcon(icons.copy, contentDescription = stringResource(R.string.copy_number))
                 }
                 IconButton(onClick = dialNumber) {
-                    Icon(Icons.Outlined.Edit, contentDescription = stringResource(R.string.edit_number_before_call))
+                    AppIcon(icons.edit, contentDescription = stringResource(R.string.edit_number_before_call))
                 }
             }
             IconButton(onClick = deleteCalls) {
-                Icon(Icons.Outlined.Delete, contentDescription = stringResource(R.string.delete))
+                AppIcon(icons.delete, contentDescription = stringResource(R.string.delete))
             }
         },
         floatingActionButton = {
@@ -361,7 +362,11 @@ private fun BottomBar(
                     containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
                     elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
                 ) {
-                    Icon(Icons.Outlined.Call, stringResource(R.string.action_call))
+                    AppIcon(
+                        icon = LocalAppIcons.current.phone,
+                        contentDescription = stringResource(R.string.action_call),
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
             }
         }
@@ -372,6 +377,7 @@ private fun BottomBar(
 private fun CallRow(
     call: DetailCall,
     isVoicemailNumber: Boolean = false,
+    icons: dev.alenajam.opendialer.core.common.ui.AppIcons = LocalAppIcons.current
 ) {
     val subtitleColor = if (!isVoicemailNumber && call.type == CallType.MISSED) {
         MaterialTheme.colorScheme.error
@@ -384,16 +390,17 @@ private fun CallRow(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp),
     ) {
-        Icon(
-            imageVector = if (isVoicemailNumber) {
-                Icons.Outlined.Voicemail
+        AppIcon(
+            icon = if (isVoicemailNumber) {
+                icons.voicemail
             } else when (call.type) {
-                CallType.INCOMING, CallType.ANSWERED_EXTERNALLY -> Icons.Outlined.CallReceived
-                CallType.OUTGOING -> Icons.Outlined.CallMade
-                CallType.MISSED, CallType.REJECTED -> Icons.Outlined.CallMissed
-                CallType.VOICEMAIL -> Icons.Outlined.Voicemail
-                CallType.BLOCKED -> Icons.Outlined.Block
-            }, contentDescription = null, tint = subtitleColor
+                CallType.INCOMING, CallType.ANSWERED_EXTERNALLY -> icons.callReceived
+                CallType.OUTGOING -> icons.callMade
+                CallType.MISSED, CallType.REJECTED -> icons.callMissed
+                CallType.VOICEMAIL -> icons.voicemail
+                CallType.BLOCKED -> icons.block
+            }, contentDescription = null, tint = subtitleColor,
+            modifier = Modifier.size(24.dp)
         )
 
         Column(modifier = Modifier.weight(1f)) {

@@ -16,8 +16,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -45,9 +43,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.alenajam.opendialer.core.common.ui.AppIcon
 import dev.alenajam.opendialer.core.common.ui.ContactAvatar
 import dev.alenajam.opendialer.core.common.ui.contactAvatarColorKey
 import dev.alenajam.opendialer.core.common.PermissionUtils
+import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.data.contacts.DialerContactSummary
 import dev.alenajam.opendialer.feature.contacts.R
 
@@ -133,7 +133,11 @@ fun ContactPickerScreen(
                             onExpandedChange = {},
                             placeholder = { Text(stringResource(R.string.search_contacts)) },
                             leadingIcon = {
-                                Icon(Icons.Outlined.Search, contentDescription = null)
+                                AppIcon(
+                                    LocalAppIcons.current.search,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp)
+                                )
                             },
                             trailingIcon = {
                                 IconButton(onClick = {
@@ -143,7 +147,11 @@ fun ContactPickerScreen(
                                         isSearching = false
                                     }
                                 }) {
-                                    Icon(Icons.Outlined.Close, contentDescription = stringResource(R.string.close_search))
+                                    AppIcon(
+                                        LocalAppIcons.current.close,
+                                        contentDescription = stringResource(R.string.close_search),
+                                        modifier = Modifier.size(24.dp)
+                                    )
                                 }
                             },
                             modifier = Modifier.focusRequester(searchFocusRequester)
@@ -165,7 +173,11 @@ fun ContactPickerScreen(
                     },
                     actions = {
                         IconButton(onClick = { isSearching = true }) {
-                            Icon(Icons.Outlined.Search, contentDescription = stringResource(R.string.search))
+                            AppIcon(
+                                LocalAppIcons.current.search,
+                                contentDescription = stringResource(R.string.search),
+                                modifier = Modifier.size(24.dp)
+                            )
                         }
                     }
                 )

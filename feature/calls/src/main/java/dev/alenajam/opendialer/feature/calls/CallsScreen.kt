@@ -28,7 +28,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.Message
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.outlined.Block
@@ -36,10 +35,6 @@ import androidx.compose.material.icons.outlined.CallMade
 import androidx.compose.material.icons.outlined.CallMissed
 import androidx.compose.material.icons.outlined.CallReceived
 import androidx.compose.material.icons.outlined.History
-import androidx.compose.material.icons.outlined.Message
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.PersonAddAlt
-import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.Voicemail
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -80,6 +75,8 @@ import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.core.common.telecom.CallAccount
 import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
 import dev.alenajam.opendialer.core.common.ui.CallAccountPicker
+import dev.alenajam.opendialer.core.common.ui.AppIcon
+import dev.alenajam.opendialer.core.common.ui.IconSource
 import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.data.calls.CallType
 import dev.alenajam.opendialer.data.calls.ContactInfo
@@ -378,7 +375,7 @@ private fun FavoritesSection(
                         color = MaterialTheme.colorScheme.surfaceContainerHigh
                     ) {
                         Box(contentAlignment = Alignment.Center) {
-                            Icon(Icons.Outlined.PersonAddAlt, contentDescription = null)
+                            AppIcon(LocalAppIcons.current.personAdd, contentDescription = null)
                         }
                     }
                     Spacer(modifier = Modifier.height(4.dp))
@@ -401,6 +398,7 @@ private fun FavoriteItem(
     onRemove: () -> Unit
 ) {
     var showMenu by remember { mutableStateOf(false) }
+    val icons = LocalAppIcons.current
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -428,8 +426,8 @@ private fun FavoriteItem(
                 shadowElevation = 2.dp
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = Icons.Outlined.Phone,
+                    AppIcon(
+                        icon = icons.phone,
                         contentDescription = null,
                         modifier = Modifier.size(12.dp),
                         tint = MaterialTheme.colorScheme.primary
@@ -549,9 +547,9 @@ private fun CallRow(
                     photoUri = call.contactInfo.photoUri.takeUnless { call.isVoicemailNumber },
                     colorKey = contactAvatarColorKey(call.contactInfo.name, call.contactInfo.number),
                     fallbackIcon = if (call.isVoicemailNumber) {
-                        Icons.Outlined.Voicemail
+                        icons.voicemail
                     } else {
-                        Icons.Outlined.Person
+                        icons.accountCircle
                     },
                     contentDescription = if (call.isVoicemailNumber) {
                         stringResource(R.string.filter_voicemail)
@@ -600,8 +598,8 @@ private fun CallRow(
                             MaterialTheme.colorScheme.onSurfaceVariant
                         }
 
-                        Icon(
-                            imageVector = when (call.type) {
+                        AppIcon(
+                            icon = when (call.type) {
                                 CallType.INCOMING, CallType.ANSWERED_EXTERNALLY -> icons.callReceived
                                 CallType.OUTGOING -> icons.callMade
                                 CallType.MISSED, CallType.REJECTED -> icons.callMissed
@@ -627,9 +625,10 @@ private fun CallRow(
 
                 if (!call.isAnonymous()) {
                     IconButton(onClick = makeCall) {
-                        Icon(
-                            imageVector = icons.phone,
+                        AppIcon(
+                            icon = icons.phone,
                             contentDescription = null,
+                            modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
@@ -723,7 +722,7 @@ private fun CallRow(
 @Composable
 private fun CallRowButton(
     label: String,
-    icon: ImageVector,
+    icon: IconSource,
     roundTop: Boolean = false,
     roundBottom: Boolean = false,
     onClick: () -> Unit,
@@ -744,9 +743,10 @@ private fun CallRowButton(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
         ) {
-            Icon(
-                imageVector = icon,
+            AppIcon(
+                icon = icon,
                 contentDescription = null,
+                modifier = Modifier.size(24.dp),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
