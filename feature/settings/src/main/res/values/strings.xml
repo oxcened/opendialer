@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">OpenDialer</string>
+    <string name="opendialer_name" translatable="false">OpenDialer</string>
     <string name="version" translatable="false">v%1$s</string>
     <string name="customize_quick_responses" comment="Settings item title for editing preset decline-with-message replies.">Customize quick responses</string>
     <string name="customize_quick_responses_description" comment="Settings item summary for preset decline-with-message replies.">Edit the messages sent when declining a call</string>
@@ -14,7 +15,7 @@
     <string name="set_battery_saver" comment="Theme option that follows the device or battery-saver setting.">Use system setting</string>
     <string name="theme" comment="Settings item title for choosing the app color theme.">Theme</string>
     <string name="display_options" comment="Settings section title for appearance preferences.">Display options</string>
-    <string name="display_options_description" comment="Settings section summary for appearance preferences.">Choose how OpenDialer appears</string>
+    <string name="display_options_description" comment="Settings section summary for appearance preferences.">Choose how %1$s appears</string>
     <string name="dialer" comment="Settings section title for phone-related preferences.">Dialer</string>
     <string name="manageBlockedNumbers" comment="Settings item title that opens the system blocked-number list.">Manage blocked numbers</string>
     <string name="manage_blocked_numbers_description" comment="Settings item summary for reviewing blocked phone numbers.">Review and unblock phone numbers</string>
@@ -33,17 +34,16 @@
     <string name="join_discord" comment="Title of the community Discord link on the About screen.">Join the Discord</string>
     <string name="discord_description" comment="Description of the community Discord link on the About screen.">Chat with the community and follow development</string>
     <string name="url_discord" translatable="false">https://discord.gg/jVe5Zyjz3</string>
-    <string name="contribute_translations" comment="Title of the OpenDialer translation contribution link on the About screen.">Contribute translations</string>
-    <string name="contribute_translations_description" comment="Description of the OpenDialer translation contribution link on the About screen.">Help make OpenDialer available in more languages.</string>
+    <string name="contribute_translations" comment="Title of the %1$s translation contribution link on the About screen.">Contribute translations</string>
+    <string name="contribute_translations_description" comment="Description of the %1$s translation contribution link on the About screen.">Help make %1$s available in more languages.</string>
     <string name="url_crowdin_opendialer" translatable="false">https://crowdin.com/project/opendialer</string>
-    <string name="contribute_monsterdialer_translations" translatable="false"></string>
-    <string name="contribute_monsterdialer_translations_description" translatable="false"></string>
-    <string name="url_crowdin_monsterdialer" translatable="false"></string>
+    <string name="additional_translation_project_title" translatable="false"></string>
+    <string name="url_additional_translation_project" translatable="false"></string>
     <string name="feature_requests" comment="Title of the feature-request link on the About screen.">Feature requests</string>
-    <string name="feature_requests_description" comment="Description of the feature-request link on the About screen.">Propose and vote on ideas for OpenDialer.</string>
+    <string name="feature_requests_description" comment="Description of the feature-request link on the About screen.">Propose and vote on ideas for %1$s.</string>
     <string name="url_feature_requests" translatable="false">https://opendialer.fider.io/</string>
     <string name="view_source_code" comment="Title of the source-code link on the About screen.">View source code</string>
-    <string name="open_source_description" comment="Description of the source-code link on the About screen.">OpenDialer is open source. Explore the code and contribute on GitHub.</string>
+    <string name="open_source_description" comment="Description of the source-code link on the About screen.">%1$s is open source. Explore the code and contribute on GitHub.</string>
     <string name="url_github_opendialer" translatable="false">https://github.com/oxcened/opendialer</string>
     <string name="report_an_issue" comment="Title of the issue-reporting link on the About screen.">Report an issue</string>
     <string name="issues_description" comment="Description of the issue-reporting link on the About screen.">Found a bug or have an idea? Open an issue on GitHub.</string>

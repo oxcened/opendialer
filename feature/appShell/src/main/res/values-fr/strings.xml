@@ -6,15 +6,15 @@
     <string name="clear_search" comment="Accessibility label for clearing the current search query.">Effacer la recherche</string>
     <string name="call_voicemail" comment="Action that calls the user's voicemail service.">Appeler la messagerie vocale</string>
     <string name="voicemail" comment="Label for voicemail in navigation or call information.">Messagerie vocale</string>
-    <string name="default_phone_title" comment="Title of the prompt asking the user to make OpenDialer the default phone app.">Définir OpenDialer comme application Téléphone par défaut</string>
-    <string name="default_phone_description" comment="Explanation that calling requires OpenDialer to be the default phone app.">OpenDialer ne peut passer et recevoir des appels que lorsqu’elle est votre application Téléphone par défaut.</string>
+    <string name="default_phone_title" comment="Title of the prompt asking the user to make %1$s the default phone app.">Définir %1$s comme application Téléphone par défaut</string>
+    <string name="default_phone_description" comment="Explanation that calling requires %1$s to be the default phone app.">%1$s ne peut passer et recevoir des appels que lorsqu’elle est votre application Téléphone par défaut.</string>
     <string name="default_phone_button" comment="Button that opens the system flow for choosing the default phone app.">Définir par défaut</string>
-    <string name="setup_title" comment="Title of the guided phone-app setup.">Configurer OpenDialer</string>
+    <string name="setup_title" comment="Title of the guided phone-app setup.">Configurer %1$s</string>
     <string name="setup_description" comment="Explanation for the guided setup steps.">Terminez ces étapes pour assurer le bon fonctionnement des appels.</string>
-    <string name="setup_default_phone_title" comment="First setup step title.">Faire d’OpenDialer votre application Téléphone</string>
-    <string name="setup_default_phone_description" comment="First setup step explanation.">Cela permet à OpenDialer de passer et recevoir des appels.</string>
+    <string name="setup_default_phone_title" comment="First setup step title.">Faire d’%1$s votre application Téléphone</string>
+    <string name="setup_default_phone_description" comment="First setup step explanation.">Cela permet à %1$s de passer et recevoir des appels.</string>
     <string name="setup_default_phone_action" comment="First setup step button.">Choisir l’application</string>
-    <string name="setup_default_phone_restricted_description" comment="Help shown when Android blocks the default-phone request.">Si Android ne vous a pas laissé choisir OpenDialer, ouvrez les informations de l’application. Dans le menu, autorisez les paramètres restreints, puis réessayez.</string>
+    <string name="setup_default_phone_restricted_description" comment="Help shown when Android blocks the default-phone request.">Si Android ne vous a pas laissé choisir %1$s, ouvrez les informations de l’application. Dans le menu, autorisez les paramètres restreints, puis réessayez.</string>
     <string name="setup_default_phone_restricted_action" comment="Button that opens the system App info page.">Ouvrir les infos</string>
     <string name="setup_full_screen_title" comment="Second setup step title.">Afficher les appels entrants en plein écran</string>
     <string name="setup_full_screen_description" comment="Second setup step explanation.">Les appels entrants s’ouvrent sur l’écran verrouillé afin de répondre immédiatement.</string>

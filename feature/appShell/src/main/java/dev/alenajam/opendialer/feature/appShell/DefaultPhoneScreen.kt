@@ -42,9 +42,11 @@ internal fun SetupScreen(
     onOpenAppInfo: () -> Unit,
     onEnableFullScreenIntent: () -> Unit,
 ) {
+    val appName = stringResource(R.string.app_name)
+
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(stringResource(R.string.setup_title)) })
+            TopAppBar(title = { Text(stringResource(R.string.setup_title, appName)) })
         },
     ) { innerPadding ->
         Column(
@@ -67,12 +69,12 @@ internal fun SetupScreen(
             SetupStep(
                 stepNumber = 1,
                 state = if (isDefaultPhoneApp) SetupStepState.COMPLETE else SetupStepState.CURRENT,
-                title = stringResource(R.string.setup_default_phone_title),
-                description = stringResource(R.string.setup_default_phone_description),
+                title = stringResource(R.string.setup_default_phone_title, appName),
+                description = stringResource(R.string.setup_default_phone_description, appName),
                 actionLabel = stringResource(R.string.setup_default_phone_action),
                 onAction = onSetAsDefault,
                 assistanceDescription = if (showDefaultPhoneRecovery) {
-                    stringResource(R.string.setup_default_phone_restricted_description)
+                    stringResource(R.string.setup_default_phone_restricted_description, appName)
                 } else {
                     null
                 },

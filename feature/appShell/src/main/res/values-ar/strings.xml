@@ -6,15 +6,15 @@
     <string name="clear_search" comment="Accessibility label for clearing the current search query.">مسح البحث</string>
     <string name="call_voicemail" comment="Action that calls the user's voicemail service.">الاتصال بالبريد الصوتي</string>
     <string name="voicemail" comment="Label for voicemail in navigation or call information.">البريد الصوتي</string>
-    <string name="default_phone_title" comment="Title of the prompt asking the user to make OpenDialer the default phone app.">اجعل OpenDialer تطبيق الهاتف الافتراضي</string>
-    <string name="default_phone_description" comment="Explanation that calling requires OpenDialer to be the default phone app.">لا يمكن لـ OpenDialer إجراء المكالمات واستقبالها إلا عند تعيينه تطبيق الهاتف الافتراضي.</string>
+    <string name="default_phone_title" comment="Title of the prompt asking the user to make %1$s the default phone app.">اجعل %1$s تطبيق الهاتف الافتراضي</string>
+    <string name="default_phone_description" comment="Explanation that calling requires %1$s to be the default phone app.">لا يمكن لـ %1$s إجراء المكالمات واستقبالها إلا عند تعيينه تطبيق الهاتف الافتراضي.</string>
     <string name="default_phone_button" comment="Button that opens the system flow for choosing the default phone app.">تعيين كتطبيق افتراضي</string>
-    <string name="setup_title" comment="Title of the guided phone-app setup.">إعداد OpenDialer</string>
+    <string name="setup_title" comment="Title of the guided phone-app setup.">إعداد %1$s</string>
     <string name="setup_description" comment="Explanation for the guided setup steps.">أكمل هذه الخطوات لضمان عمل المكالمات بشكل موثوق.</string>
-    <string name="setup_default_phone_title" comment="First setup step title.">اجعل OpenDialer تطبيق الهاتف لديك</string>
-    <string name="setup_default_phone_description" comment="First setup step explanation.">يتيح ذلك لـ OpenDialer إجراء المكالمات واستقبالها.</string>
+    <string name="setup_default_phone_title" comment="First setup step title.">اجعل %1$s تطبيق الهاتف لديك</string>
+    <string name="setup_default_phone_description" comment="First setup step explanation.">يتيح ذلك لـ %1$s إجراء المكالمات واستقبالها.</string>
     <string name="setup_default_phone_action" comment="First setup step button.">اختر تطبيق الهاتف</string>
-    <string name="setup_default_phone_restricted_description" comment="Help shown when Android blocks the default-phone request.">إذا لم يسمح لك Android باختيار OpenDialer، افتح معلومات التطبيق. من القائمة، اسمح بالإعدادات المقيّدة ثم حاول مرة أخرى.</string>
+    <string name="setup_default_phone_restricted_description" comment="Help shown when Android blocks the default-phone request.">إذا لم يسمح لك Android باختيار %1$s، افتح معلومات التطبيق. من القائمة، اسمح بالإعدادات المقيّدة ثم حاول مرة أخرى.</string>
     <string name="setup_default_phone_restricted_action" comment="Button that opens the system App info page.">فتح معلومات التطبيق</string>
     <string name="setup_full_screen_title" comment="Second setup step title.">عرض المكالمات الواردة بملء الشاشة</string>
     <string name="setup_full_screen_description" comment="Second setup step explanation.">تُفتح المكالمات الواردة فوق شاشة القفل لتتمكن من الرد فورًا.</string>

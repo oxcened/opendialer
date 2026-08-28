@@ -33,6 +33,8 @@ fun AboutScreen(
     onNavigateBack: () -> Unit
 ) {
     val context = LocalContext.current
+    val appName = stringResource(R.string.app_name)
+    val openDialerName = stringResource(R.string.opendialer_name)
 
     Scaffold(
         topBar = {
@@ -67,7 +69,7 @@ fun AboutScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = stringResource(R.string.app_name),
+                text = appName,
                 style = MaterialTheme.typography.headlineMedium
             )
 
@@ -110,12 +112,12 @@ fun AboutScreen(
             )
 
             Column {
-                val monsterDialerTranslationTitle =
-                    stringResource(R.string.contribute_monsterdialer_translations)
-                val monsterDialerTranslationDescription =
-                    stringResource(R.string.contribute_monsterdialer_translations_description)
-                val monsterDialerTranslationUri =
-                    stringResource(R.string.url_crowdin_monsterdialer)
+                val additionalTranslationProjectTitle =
+                    stringResource(R.string.additional_translation_project_title)
+                val additionalTranslationProjectDescription =
+                    stringResource(R.string.contribute_translations_description, appName)
+                val additionalTranslationProjectUri =
+                    stringResource(R.string.url_additional_translation_project)
 
                 AboutLinkCard(
                     title = stringResource(R.string.join_discord),
@@ -125,14 +127,14 @@ fun AboutScreen(
                     roundBottom = false
                 )
 
-                if (monsterDialerTranslationTitle.isNotBlank() &&
-                    monsterDialerTranslationDescription.isNotBlank() &&
-                    monsterDialerTranslationUri.isNotBlank()
+                if (additionalTranslationProjectTitle.isNotBlank() &&
+                    additionalTranslationProjectDescription.isNotBlank() &&
+                    additionalTranslationProjectUri.isNotBlank()
                 ) {
                     AboutLinkCard(
-                        title = monsterDialerTranslationTitle,
-                        description = monsterDialerTranslationDescription,
-                        uri = monsterDialerTranslationUri,
+                        title = additionalTranslationProjectTitle,
+                        description = additionalTranslationProjectDescription,
+                        uri = additionalTranslationProjectUri,
                         roundTop = false,
                         roundBottom = false
                     )
@@ -140,7 +142,10 @@ fun AboutScreen(
 
                 AboutLinkCard(
                     title = stringResource(R.string.contribute_translations),
-                    description = stringResource(R.string.contribute_translations_description),
+                    description = stringResource(
+                        R.string.contribute_translations_description,
+                        openDialerName
+                    ),
                     uri = stringResource(R.string.url_crowdin_opendialer),
                     roundTop = false,
                     roundBottom = false
@@ -148,7 +153,7 @@ fun AboutScreen(
 
                 AboutLinkCard(
                     title = stringResource(R.string.feature_requests),
-                    description = stringResource(R.string.feature_requests_description),
+                    description = stringResource(R.string.feature_requests_description, appName),
                     uri = stringResource(R.string.url_feature_requests),
                     roundTop = false,
                     roundBottom = true
@@ -164,7 +169,7 @@ fun AboutScreen(
             Column {
                 AboutLinkCard(
                     title = stringResource(R.string.view_source_code),
-                    description = stringResource(R.string.open_source_description),
+                    description = stringResource(R.string.open_source_description, appName),
                     uri = stringResource(R.string.url_github_opendialer),
                     roundTop = true,
                     roundBottom = false
