@@ -235,7 +235,7 @@ private fun TopBar(
                         fallbackIcon = if (call.isVoicemailNumber) {
                             LocalAppIcons.current.voicemail
                         } else {
-                            LocalAppIcons.current.accountCircle
+                            LocalAppIcons.current.person
                         },
                         avatarIcon = if (isNumberBlocked) LocalAppIcons.current.block else null,
                         contentDescription = if (call.isVoicemailNumber) {

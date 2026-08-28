@@ -31,6 +31,7 @@ import androidx.compose.material.icons.outlined.MicOff
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Pause
 import androidx.compose.material.icons.outlined.People
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PersonAddAlt
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.PhonePaused
@@ -107,6 +108,7 @@ data class AppIcons(
     val pause: IconSource,
     val addCall: IconSource,
     val accountCircle: IconSource,
+    val person: IconSource,
     val callReceived: IconSource,
     val callMade: IconSource,
     val callMissed: IconSource,
@@ -149,6 +151,7 @@ val DefaultAppIcons = AppIcons(
     pause = IconSource.Vector(Icons.Outlined.Pause),
     addCall = IconSource.Vector(Icons.Outlined.AddIcCall),
     accountCircle = IconSource.Vector(Icons.Filled.AccountCircle),
+    person = IconSource.Vector(Icons.Outlined.Person),
     callReceived = IconSource.Vector(Icons.AutoMirrored.Outlined.CallReceived),
     callMade = IconSource.Vector(Icons.AutoMirrored.Outlined.CallMade),
     callMissed = IconSource.Vector(Icons.AutoMirrored.Outlined.CallMissed),
