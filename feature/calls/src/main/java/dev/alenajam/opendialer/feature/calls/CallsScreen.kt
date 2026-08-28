@@ -422,7 +422,7 @@ private fun FavoriteItem(
             )
 
             Surface(
-                color = Color.White,
+                color = MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier.size(20.dp),
                 shadowElevation = 2.dp
