@@ -14,3 +14,4 @@
 
 - GitHub release changelog generation relies on merge commits. Make every change through a pull request and merge it into `main`; never commit directly to `main`.
 - Keep each pull request focused on one topic.
+- Do not use the `codex/` prefix when creating branches.
