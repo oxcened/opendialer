@@ -630,13 +630,13 @@ private fun Footer(
     }
 
     fun handleButtonClick(digit: Char) {
-        val newQuery = query.replaceRange(selection.start, selection.end, digit.toString())
-        onQueryChange(newQuery, TextRange(selection.start + 1))
+        val edit = replaceDialpadSelection(query, selection, digit.toString())
+        onQueryChange(edit.text, edit.selection)
     }
 
     fun insertDialModifier(modifier: Char) {
-        val newQuery = query.replaceRange(selection.start, selection.end, modifier.toString())
-        onQueryChange(newQuery, TextRange(selection.start + 1))
+        val edit = replaceDialpadSelection(query, selection, modifier.toString())
+        onQueryChange(edit.text, edit.selection)
         overflowExpanded = false
     }
 
@@ -705,21 +705,8 @@ private fun Footer(
                         .combinedClickable(
                             enabled = isBackspaceEnabled,
                             onClick = {
-                                if (selection.end > selection.start) {
-                                    onQueryChange(
-                                        query.replaceRange(selection.start, selection.end, ""),
-                                        TextRange(selection.start)
-                                    )
-                                } else if (selection.start > 0) {
-                                    onQueryChange(
-                                        query.replaceRange(
-                                            selection.start - 1,
-                                            selection.end,
-                                            ""
-                                        ),
-                                        TextRange(selection.start - 1)
-                                    )
-                                }
+                                val edit = deleteDialpadSelection(query, selection)
+                                onQueryChange(edit.text, edit.selection)
                             },
                             onLongClick = {
                                 onQueryChange("", TextRange.Zero)
