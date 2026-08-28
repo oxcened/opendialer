@@ -100,7 +100,8 @@ data class AppIcons(
     val recents: IconSource,
     val recentsSelected: IconSource = recents,
     val contacts: IconSource,
-    val contactsSelected: IconSource = contacts
+    val contactsSelected: IconSource = contacts,
+    val voicemailLarge: IconSource = voicemail
 )
 
 val DefaultAppIcons = AppIcons(
@@ -128,7 +129,8 @@ val DefaultAppIcons = AppIcons(
     recents = IconSource.Vector(Icons.Outlined.AccessTime),
     recentsSelected = IconSource.Vector(Icons.Filled.AccessTimeFilled),
     contacts = IconSource.Vector(Icons.Outlined.People),
-    contactsSelected = IconSource.Vector(Icons.Filled.People)
+    contactsSelected = IconSource.Vector(Icons.Filled.People),
+    voicemailLarge = IconSource.Vector(Icons.Outlined.Voicemail)
 )
 
 val LocalAppIcons = staticCompositionLocalOf { DefaultAppIcons }
