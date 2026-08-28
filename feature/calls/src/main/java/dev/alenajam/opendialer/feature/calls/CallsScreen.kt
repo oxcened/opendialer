@@ -592,7 +592,7 @@ private fun CallRow(
                     } else {
                         icons.accountCircle
                     },
-                    badgeIcon = if (isNumberBlocked || call.type == CallType.BLOCKED) icons.block else null,
+                    avatarIcon = if (isNumberBlocked || call.type == CallType.BLOCKED) icons.block else null,
                     contentDescription = if (call.isVoicemailNumber) {
                         stringResource(R.string.filter_voicemail)
                     } else if (call.isContactSaved()) {

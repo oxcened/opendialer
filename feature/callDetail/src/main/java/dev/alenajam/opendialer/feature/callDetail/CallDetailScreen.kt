@@ -237,7 +237,7 @@ private fun TopBar(
                         } else {
                             LocalAppIcons.current.accountCircle
                         },
-                        badgeIcon = if (isNumberBlocked) LocalAppIcons.current.block else null,
+                        avatarIcon = if (isNumberBlocked) LocalAppIcons.current.block else null,
                         contentDescription = if (call.isVoicemailNumber) {
                             stringResource(R.string.voicemail)
                         } else {
