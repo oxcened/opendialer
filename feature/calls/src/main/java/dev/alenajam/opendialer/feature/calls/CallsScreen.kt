@@ -708,21 +708,15 @@ private fun CallRow(
                         onClick = openHistory,
                     )
 
-                    if (!call.isAnonymous()) {
+                    if (!call.isAnonymous() && isNumberBlocked) {
                         CallRowButton(
-                            label = stringResource(
-                                if (isNumberBlocked) R.string.unblockThisCaller else R.string.blockThisCaller,
-                            ),
+                            label = stringResource(R.string.unblockThisCaller),
                             icon = icons.block,
                             roundBottom = true,
                             onClick = {
-                                if (isNumberBlocked) {
-                                    unblockNumber()
-                                    isNumberBlocked = false
-                                    onBlockStatusChanged(false)
-                                } else {
-                                    showBlockConfirmation = true
-                                }
+                                unblockNumber()
+                                isNumberBlocked = false
+                                onBlockStatusChanged(false)
                             },
                         )
                     }
