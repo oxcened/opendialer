@@ -9,19 +9,23 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.ContactsHelper
 import dev.alenajam.opendialer.core.common.PermissionUtils
+import dev.alenajam.opendialer.core.common.functional.getOrElse
 import dev.alenajam.opendialer.core.common.telecom.CallAccount
 import dev.alenajam.opendialer.core.common.telecom.CallPlacementRepository
 import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
+import dev.alenajam.opendialer.data.calls.CallOption
 import dev.alenajam.opendialer.data.calls.CallsRepository
 import dev.alenajam.opendialer.data.calls.DialerCall
 import dev.alenajam.opendialer.data.callsCache.CacheRepository
 import dev.alenajam.opendialer.data.contacts.ContactsRepository
 import dev.alenajam.opendialer.data.contacts.DialerContact
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -108,6 +112,21 @@ class CallsViewModel
 
     fun blockNumber(number: String) {
         viewModelScope.launch { callsRepository.blockCaller(number) }
+    }
+
+    fun unblockNumber(number: String) {
+        viewModelScope.launch { callsRepository.unblockCaller(number) }
+    }
+
+    fun getBlockStatus(call: DialerCall, onResult: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            val isBlocked = withContext(Dispatchers.IO) {
+                callsRepository.getDetailOptions(call)
+                    .getOrElse(emptyList())
+                    .any { it.id == CallOption.ID_UNBLOCK_CALLER }
+            }
+            onResult(isBlocked)
+        }
     }
 
     fun deleteCall(call: DialerCall) {

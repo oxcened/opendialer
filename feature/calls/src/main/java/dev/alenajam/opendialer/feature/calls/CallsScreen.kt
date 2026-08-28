@@ -272,6 +272,8 @@ fun CallsScreen(
                             copyNumber = { viewModel.copyNumber(call.contactInfo.number!!) },
                             editNumberBeforeCall = { onEditNumberBeforeCall(call.contactInfo.number!!) },
                             blockNumber = { viewModel.blockNumber(call.contactInfo.number!!) },
+                            unblockNumber = { viewModel.unblockNumber(call.contactInfo.number!!) },
+                            refreshBlockStatus = { onResult -> viewModel.getBlockStatus(call, onResult) },
                             deleteCall = { viewModel.deleteCall(call) }
                         )
                     }
@@ -491,11 +493,14 @@ private fun CallRow(
     copyNumber: () -> Unit,
     editNumberBeforeCall: () -> Unit,
     blockNumber: () -> Unit,
+    unblockNumber: () -> Unit,
+    refreshBlockStatus: ((Boolean) -> Unit) -> Unit,
     deleteCall: () -> Unit,
 ) {
     var contextMenuExpanded by remember { mutableStateOf(false) }
     var showBlockConfirmation by remember { mutableStateOf(false) }
     var showDeleteConfirmation by remember { mutableStateOf(false) }
+    var isNumberBlocked by remember(call.id) { mutableStateOf(false) }
     val resources = LocalContext.current.resources
     val locale = LocalConfiguration.current.locales[0]
     val callDate = call.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
@@ -529,7 +534,15 @@ private fun CallRow(
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 1.dp)
                 .clip(cardShape)
-                .combinedClickable(onClick = onClick, onLongClick = { contextMenuExpanded = true }),
+                .combinedClickable(
+                    onClick = onClick,
+                    onLongClick = {
+                        refreshBlockStatus { isBlocked ->
+                            isNumberBlocked = isBlocked
+                            contextMenuExpanded = true
+                        }
+                    }
+                ),
             shape = cardShape,
             color = MaterialTheme.colorScheme.surfaceContainerHigh,
             shadowElevation = 0.5.dp,
@@ -681,10 +694,18 @@ private fun CallRow(
                     contextMenuExpanded = false
                     editNumberBeforeCall()
                 })
-                DropdownMenuItem(text = { Text(stringResource(R.string.blockThisCaller)) }, onClick = {
-                    contextMenuExpanded = false
-                    showBlockConfirmation = true
-                })
+                if (isNumberBlocked) {
+                    DropdownMenuItem(text = { Text(stringResource(R.string.unblockThisCaller)) }, onClick = {
+                        contextMenuExpanded = false
+                        unblockNumber()
+                        isNumberBlocked = false
+                    })
+                } else {
+                    DropdownMenuItem(text = { Text(stringResource(R.string.blockThisCaller)) }, onClick = {
+                        contextMenuExpanded = false
+                        showBlockConfirmation = true
+                    })
+                }
             }
             DropdownMenuItem(text = { Text(stringResource(R.string.delete)) }, onClick = {
                 contextMenuExpanded = false
@@ -699,7 +720,11 @@ private fun CallRow(
             title = { Text(stringResource(R.string.block_confirmation_title, call.contactInfo.number.orEmpty())) },
             text = { Text(stringResource(R.string.block_confirmation_message)) },
             confirmButton = {
-                TextButton(onClick = { showBlockConfirmation = false; blockNumber() }) { Text(stringResource(R.string.blockThisCaller)) }
+                TextButton(onClick = {
+                    showBlockConfirmation = false
+                    blockNumber()
+                    isNumberBlocked = true
+                }) { Text(stringResource(R.string.blockThisCaller)) }
             },
             dismissButton = { TextButton(onClick = { showBlockConfirmation = false }) { Text(stringResource(R.string.cancel)) } }
         )
@@ -786,6 +811,8 @@ private fun IncomingCallPreview() {
         copyNumber = {},
         editNumberBeforeCall = {},
         blockNumber = {},
+        unblockNumber = {},
+        refreshBlockStatus = {},
         deleteCall = {})
 }
 
@@ -806,6 +833,8 @@ private fun OutgoingCallPreview() {
         copyNumber = {},
         editNumberBeforeCall = {},
         blockNumber = {},
+        unblockNumber = {},
+        refreshBlockStatus = {},
         deleteCall = {})
 }
 
@@ -826,5 +855,7 @@ private fun AnonymousCallPreview() {
         copyNumber = {},
         editNumberBeforeCall = {},
         blockNumber = {},
+        unblockNumber = {},
+        refreshBlockStatus = {},
         deleteCall = {})
 }
