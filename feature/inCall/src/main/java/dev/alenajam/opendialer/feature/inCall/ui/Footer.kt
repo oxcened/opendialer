@@ -31,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -62,6 +63,8 @@ fun InCallControls(
     canHold: Boolean = true,
     showAddCall: Boolean = true,
     canAddCall: Boolean = true,
+    controlsEnabled: Boolean = true,
+    canHangup: Boolean = true,
     onHangup: () -> Unit,
     onMute: () -> Unit,
     onSpeaker: () -> Unit,
@@ -71,13 +74,18 @@ fun InCallControls(
     onMerge: () -> Unit = {},
     onSwap: () -> Unit = {},
     onManageConference: () -> Unit = {},
-    onDigit: (digit: Char) -> Unit,
+    onDigitPress: (digit: Char) -> Unit,
+    onDigitRelease: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val icons = LocalAppIcons.current
     var openSection = remember { mutableStateOf<OpenSection?>(null) }
     var dialpadInput = remember { mutableStateOf("") }
     var audioRoutesExpanded = remember { mutableStateOf(false) }
+
+    DisposableEffect(onDigitRelease) {
+        onDispose(onDigitRelease)
+    }
     val hasExternalAudioRoute = audioRoutes.any {
         it.type == android.telecom.CallAudioState.ROUTE_BLUETOOTH ||
             it.type == android.telecom.CallAudioState.ROUTE_WIRED_HEADSET
@@ -87,10 +95,10 @@ fun InCallControls(
 
     fun handleDialpadDigit(digit: Char) {
         dialpadInput.value = dialpadInput.value.plus(digit)
-        onDigit(digit)
     }
 
     fun toggleSectionButton(section: OpenSection) {
+        if (openSection.value == OpenSection.DIALPAD) onDigitRelease()
         openSection.value = if (openSection.value == section) null else section
     }
 
@@ -137,13 +145,13 @@ fun InCallControls(
 
                     val moreActions = buildList {
                         if (showAddCall) {
-                            add(MoreAction(icons.addCall, stringResource(R.string.action_add_call), onAddCall, enabled = canAddCall))
+                            add(MoreAction(icons.addCall, stringResource(R.string.action_add_call), onAddCall, enabled = controlsEnabled && canAddCall))
                         }
-                        if (canHold) add(MoreAction(icons.pause, stringResource(R.string.action_hold), onHold, isHolding == true))
-                        if (canMerge) add(MoreAction(icons.merge, stringResource(R.string.conference_merge), onMerge))
-                        if (canSwap) add(MoreAction(icons.swapCalls, stringResource(R.string.conference_swap), onSwap))
+                        if (canHold) add(MoreAction(icons.pause, stringResource(R.string.action_hold), onHold, isHolding == true, enabled = controlsEnabled))
+                        if (canMerge) add(MoreAction(icons.merge, stringResource(R.string.conference_merge), onMerge, enabled = controlsEnabled))
+                        if (canSwap) add(MoreAction(icons.swapCalls, stringResource(R.string.conference_swap), onSwap, enabled = controlsEnabled))
                         if (canManageConference) {
-                            add(MoreAction(icons.more, stringResource(R.string.conference_manage), onManageConference))
+                            add(MoreAction(icons.more, stringResource(R.string.conference_manage), onManageConference, enabled = controlsEnabled))
                         }
                     }
 
@@ -206,7 +214,9 @@ fun InCallControls(
                     )
 
                     Dialpad(
-                        onDigitClick = ::handleDialpadDigit
+                        onDigitClick = ::handleDialpadDigit,
+                        onDigitPress = onDigitPress,
+                        onDigitRelease = onDigitRelease,
                     )
                 }
             }
@@ -221,6 +231,7 @@ fun InCallControls(
                     icon = icons.dialpad,
                     label = stringResource(R.string.control_dialpad),
                     isActive = openSection.value == OpenSection.DIALPAD,
+                    enabled = controlsEnabled,
                     onClick = { toggleSectionButton(OpenSection.DIALPAD) }
                 )
 
@@ -228,6 +239,7 @@ fun InCallControls(
                     icon = icons.mute,
                     label = stringResource(R.string.control_mute),
                     isActive = isMuted,
+                    enabled = controlsEnabled,
                     onClick = onMute
                 )
 
@@ -236,6 +248,7 @@ fun InCallControls(
                         icon = icons.speaker,
                         label = currentAudioRoute?.label ?: stringResource(R.string.control_speaker),
                         isActive = isSpeaker == true || hasExternalAudioRoute,
+                        enabled = controlsEnabled,
                         onClick = {
                             if (hasExternalAudioRoute) audioRoutesExpanded.value = true else onSpeaker()
                         }
@@ -260,12 +273,14 @@ fun InCallControls(
                     icon = icons.more,
                     label = stringResource(R.string.control_more),
                     isActive = openSection.value == OpenSection.ADDITIONAL_ACTIONS,
+                    enabled = controlsEnabled,
                     onClick = { toggleSectionButton(OpenSection.ADDITIONAL_ACTIONS) }
                 )
             }
 
             Surface(
                 onClick = onHangup,
+                enabled = canHangup,
                 color = MaterialTheme.colorScheme.error,
                 shape = RoundedCornerShape(32.dp),
                 modifier = Modifier

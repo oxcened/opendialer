@@ -7,18 +7,10 @@ import android.telecom.VideoProfile
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.Contact
 import dev.alenajam.opendialer.feature.inCall.R
-import kotlin.time.Duration.Companion.milliseconds
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 data class OngoingCallState(
     val callerNumber: String = "",
@@ -42,17 +34,11 @@ class OngoingCall(
     private val onRemoved: (Call) -> Unit,
     val sequence: Long
 ) {
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val _state = MutableStateFlow(OngoingCallState())
     val stateFlow: StateFlow<OngoingCallState> = _state.asStateFlow()
 
-    companion object {
-        private const val DTMF_DURATION_MS = 300L
-    }
-
     private var lastState = Call.STATE_NEW
     private val missedCallTracker = MissedCallTracker()
-    private var dtmfJob: Job? = null
 
     private val callback = object : Call.Callback() {
         override fun onStateChanged(call: Call, newState: Int) {
@@ -134,10 +120,8 @@ class OngoingCall(
     }
 
     fun tearDown() {
-        dtmfJob?.cancel()
         call.stopDtmfTone()
         call.unregisterCallback(callback)
-        scope.cancel()
     }
 
     private fun updateCallState(state: Int) {
@@ -215,15 +199,14 @@ class OngoingCall(
     fun canBeHeld(): Boolean = _state.value.canHold
     fun canBeMerged(): Boolean = _state.value.canMerge
 
-    fun playDtmf(digit: Char) {
+    fun startDtmf(digit: Char) {
         if (!CallActionPolicy.canPlayDtmf(state)) return
-        dtmfJob?.cancel()
         call.stopDtmfTone()
         call.playDtmfTone(digit)
-        dtmfJob = scope.launch {
-            delay(DTMF_DURATION_MS.milliseconds)
-            call.stopDtmfTone()
-        }
+    }
+
+    fun stopDtmf() {
+        call.stopDtmfTone()
     }
 
     fun split() {

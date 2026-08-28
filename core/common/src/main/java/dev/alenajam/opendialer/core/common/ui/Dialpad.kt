@@ -9,11 +9,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,6 +30,8 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun Dialpad(
     onDigitClick: (digit: Char) -> Unit,
+    onDigitPress: (digit: Char) -> Unit = {},
+    onDigitRelease: () -> Unit = {},
     onZeroLongClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
@@ -39,19 +48,25 @@ fun Dialpad(
             DigitButton(
                 digit = '1',
                 subtitle = "",
-                onClick = onDigitClick
+                onClick = onDigitClick,
+                onPress = onDigitPress,
+                onRelease = onDigitRelease,
             )
 
             DigitButton(
                 digit = '2',
                 subtitle = "abc",
-                onClick = onDigitClick
+                onClick = onDigitClick,
+                onPress = onDigitPress,
+                onRelease = onDigitRelease,
             )
 
             DigitButton(
                 digit = '3',
                 subtitle = "def",
-                onClick = onDigitClick
+                onClick = onDigitClick,
+                onPress = onDigitPress,
+                onRelease = onDigitRelease,
             )
         }
 
@@ -64,19 +79,25 @@ fun Dialpad(
             DigitButton(
                 digit = '4',
                 subtitle = "ghi",
-                onClick = onDigitClick
+                onClick = onDigitClick,
+                onPress = onDigitPress,
+                onRelease = onDigitRelease,
             )
 
             DigitButton(
                 digit = '5',
                 subtitle = "jkl",
-                onClick = onDigitClick
+                onClick = onDigitClick,
+                onPress = onDigitPress,
+                onRelease = onDigitRelease,
             )
 
             DigitButton(
                 digit = '6',
                 subtitle = "mno",
-                onClick = onDigitClick
+                onClick = onDigitClick,
+                onPress = onDigitPress,
+                onRelease = onDigitRelease,
             )
         }
 
@@ -89,19 +110,25 @@ fun Dialpad(
             DigitButton(
                 digit = '7',
                 subtitle = "pqrs",
-                onClick = onDigitClick
+                onClick = onDigitClick,
+                onPress = onDigitPress,
+                onRelease = onDigitRelease,
             )
 
             DigitButton(
                 digit = '8',
                 subtitle = "tuv",
-                onClick = onDigitClick
+                onClick = onDigitClick,
+                onPress = onDigitPress,
+                onRelease = onDigitRelease,
             )
 
             DigitButton(
                 digit = '9',
                 subtitle = "wxyz",
-                onClick = onDigitClick
+                onClick = onDigitClick,
+                onPress = onDigitPress,
+                onRelease = onDigitRelease,
             )
         }
 
@@ -113,19 +140,25 @@ fun Dialpad(
         ) {
             DigitButton(
                 digit = '*',
-                onClick = onDigitClick
+                onClick = onDigitClick,
+                onPress = onDigitPress,
+                onRelease = onDigitRelease,
             )
 
             DigitButton(
                 digit = '0',
                 subtitle = "+",
                 onClick = onDigitClick,
+                onPress = onDigitPress,
+                onRelease = onDigitRelease,
                 onLongClick = onZeroLongClick
             )
 
             DigitButton(
                 digit = '#',
-                onClick = onDigitClick
+                onClick = onDigitClick,
+                onPress = onDigitPress,
+                onRelease = onDigitRelease,
             )
         }
     }
@@ -136,16 +169,41 @@ private fun RowScope.DigitButton(
     digit: Char,
     subtitle: String? = null,
     onClick: (digit: Char) -> Unit,
+    onPress: (digit: Char) -> Unit,
+    onRelease: () -> Unit,
     onLongClick: (() -> Unit)? = null
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    var handledOnPress by remember { mutableStateOf(false) }
+
+    LaunchedEffect(isPressed) {
+        if (isPressed) {
+            handledOnPress = true
+            onPress(digit)
+            if (onLongClick == null) onClick(digit)
+        } else {
+            onRelease()
+        }
+    }
+
     Surface(
         modifier = Modifier
             .weight(1f)
             .fillMaxHeight()
             .clip(ButtonDefaults.shape)
             .combinedClickable(
-                onClick = { onClick(digit) },
-                onLongClick = onLongClick
+                interactionSource = interactionSource,
+                onClick = {
+                    if (!handledOnPress || onLongClick != null) onClick(digit)
+                    handledOnPress = false
+                },
+                onLongClick = onLongClick?.let { handleLongClick ->
+                    {
+                        handledOnPress = false
+                        handleLongClick()
+                    }
+                }
             ),
         color = MaterialTheme.colorScheme.surfaceContainerHigh,
         shape = ButtonDefaults.shape
