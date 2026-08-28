@@ -31,8 +31,8 @@
     <string name="delete_call_title" comment="Title of the dialog confirming removal of a call-log entry.">Excluir chamada do histórico?</string>
     <string name="delete_call_message" comment="Explanation in the dialog confirming removal of a call-log entry.">Isso removerá a chamada do histórico de chamadas.</string>
     <string name="cancel" comment="Button that dismisses the current dialog without applying changes.">Cancelar</string>
-    <string name="update_available">Atualização disponível</string>
-    <string name="update_available_description">A versão %1$s está pronta para baixar.</string>
-    <string name="update">Atualizar</string>
-    <string name="dismiss_update_notification">Dispensar notificação de atualização</string>
+    <string name="update_available" comment="Heading for the call-log banner that announces a newer app release.">Atualização disponível</string>
+    <string name="update_available_description" comment="Description for the call-log update banner. %1$s is the available version number.">A versão %1$s está pronta para baixar.</string>
+    <string name="update" comment="Button that opens the available app release in a browser.">Atualizar</string>
+    <string name="dismiss_update_notification" comment="Accessibility label for the button that hides the update banner.">Dispensar notificação de atualização</string>
 </resources>

@@ -14,6 +14,9 @@
     <string name="display_options" comment="Settings section title for appearance preferences.">显示选项</string>
     <string name="display_options_description" comment="Settings section summary for appearance preferences.">选择 %1$s 的显示方式</string>
     <string name="dialer" comment="Settings section title for phone-related preferences.">电话</string>
+    <string name="update_checks" comment="Settings section title for update-check preferences.">更新</string>
+    <string name="check_for_updates" comment="Settings toggle label for enabling automatic update checks.">检查更新</string>
+    <string name="check_for_updates_description" comment="Settings toggle summary for automatic update checks.">在 GitHub 上检查新版本</string>
     <string name="manageBlockedNumbers" comment="Settings item title that opens the system blocked-number list.">管理已屏蔽的号码</string>
     <string name="manage_blocked_numbers_description" comment="Settings item summary for reviewing blocked phone numbers.">查看号码并取消屏蔽</string>
     <string name="manage_blocked_numbers_unavailable" comment="Message shown when the device has no blocked-number settings screen.">此设备不支持已屏蔽号码设置</string>
@@ -37,7 +40,4 @@
     <string name="issues_description" comment="Description of the issue-reporting link on the About screen.">发现错误或有新想法？请在 GitHub 上提交问题。</string>
     <string name="contact_developer" comment="Title of the developer email link on the About screen.">联系方式</string>
     <string name="font_credit_format" comment="Font credit. %1$s is the font name and %2$s is the font author.">%1$s，作者：%2$s</string>
-    <string name="update_checks">更新</string>
-    <string name="check_for_updates">检查更新</string>
-    <string name="check_for_updates_description">在 GitHub 上检查新版本</string>
 </resources>
