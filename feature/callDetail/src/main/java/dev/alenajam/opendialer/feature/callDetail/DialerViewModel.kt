@@ -45,15 +45,17 @@ class DialerViewModel
     private val callDetail = savedStateHandle.toRoute<CallDetailRoute>()
 
     init {
-        getCallByIds(callDetail.callIds)
+        observeCallByIds(callDetail.callIds)
     }
 
-    fun getCallByIds(ids: List<Int>) {
+    private fun observeCallByIds(ids: List<Int>) {
         viewModelScope.launch {
-            callsRepositoryImpl.getCallByIds(ids).fold(
-                { /* TODO handle failure */ },
-                { call -> _call.postValue(DialerCall.mapList(call).first()) }
-            )
+            callsRepositoryImpl.observeCallByIds(ids).collect { result ->
+                result.fold(
+                    { /* TODO handle failure */ },
+                    { call -> _call.postValue(DialerCall.mapList(call).first()) }
+                )
+            }
         }
     }
 
