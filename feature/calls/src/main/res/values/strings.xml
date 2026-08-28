@@ -35,4 +35,6 @@
     <string name="update" comment="Button that opens the available app release in a browser.">Update</string>
     <string name="dismiss_update_notification" comment="Accessibility label for the button that hides the update banner.">Dismiss update notification</string>
     <string name="github_latest_release_api" translatable="false">https://api.github.com/repos/oxcened/opendialer/releases/latest</string>
+    <string name="github_releases_url" translatable="false">https://github.com/oxcened/opendialer/releases</string>
+    <string name="mock_update_version" translatable="false">999.0.0</string>
 </resources>

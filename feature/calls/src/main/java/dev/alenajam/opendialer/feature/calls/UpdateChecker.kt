@@ -1,6 +1,7 @@
 package dev.alenajam.opendialer.feature.calls
 
 import android.content.Context
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -19,6 +20,8 @@ data class AppUpdate(
 )
 
 interface UpdateChecker {
+    val bypassCache: Boolean
+
     suspend fun checkForUpdate(etag: String?): UpdateCheckResult
 }
 
@@ -37,7 +40,24 @@ sealed interface UpdateCheckResult {
 class GitHubUpdateChecker @Inject constructor(
     @param:ApplicationContext private val context: Context,
 ) : UpdateChecker {
-    override suspend fun checkForUpdate(etag: String?): UpdateCheckResult = withContext(Dispatchers.IO) {
+    override val bypassCache: Boolean =
+        context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
+
+    override suspend fun checkForUpdate(etag: String?): UpdateCheckResult {
+        if (bypassCache) {
+            return UpdateCheckResult.Success(
+                update = AppUpdate(
+                    version = context.getString(R.string.mock_update_version),
+                    releaseUrl = context.getString(R.string.github_releases_url),
+                ),
+                etag = null,
+            )
+        }
+
+        return checkGitHubForUpdate(etag)
+    }
+
+    private suspend fun checkGitHubForUpdate(etag: String?): UpdateCheckResult = withContext(Dispatchers.IO) {
         val installedVersion = context.packageManager
             .getPackageInfo(context.packageName, 0)
             .versionName
