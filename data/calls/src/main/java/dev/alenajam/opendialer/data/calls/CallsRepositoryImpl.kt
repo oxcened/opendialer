@@ -49,13 +49,22 @@ class CallsRepositoryImpl @Inject constructor(
     override suspend fun getCallByIds(
         ids: List<Int>
     ): Either<Failure, List<DialerCallEntity>> {
-        val data = CallDetailData.getCursor(app.contentResolver, ids)?.use { cursor ->
+        val selectedCalls = CallDetailData.getCursor(app.contentResolver, ids)?.use { cursor ->
             CallDetailData.getData(
                 cursor = cursor,
                 voicemailNumbers = voicemailNumberProvider.getNumbers(),
                 contactPhoneTypes = getContactPhoneTypes(app.contentResolver),
             )
         } ?: return Either.Left(Failure.NoData)
+
+        val numbers = selectedCalls.mapNotNull { it.number }.distinct()
+        val data = CallDetailData.getCursorForNumbers(app.contentResolver, numbers)?.use { cursor ->
+            CallDetailData.getData(
+                cursor = cursor,
+                voicemailNumbers = voicemailNumberProvider.getNumbers(),
+                contactPhoneTypes = getContactPhoneTypes(app.contentResolver),
+            )
+        } ?: selectedCalls
 
         return if (data.isEmpty()) {
             Either.Left(Failure.NoData)
