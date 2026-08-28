@@ -30,4 +30,8 @@
     <string name="delete_call_title" comment="Title of the dialog confirming removal of a call-log entry.">从历史记录中删除此通话？</string>
     <string name="delete_call_message" comment="Explanation in the dialog confirming removal of a call-log entry.">这会从通话记录中移除此通话。</string>
     <string name="cancel" comment="Button that dismisses the current dialog without applying changes.">取消</string>
+    <string name="update_available">有可用更新</string>
+    <string name="update_available_description">版本 %1$s 已可下载。</string>
+    <string name="update">更新</string>
+    <string name="dismiss_update_notification">关闭更新通知</string>
 </resources>

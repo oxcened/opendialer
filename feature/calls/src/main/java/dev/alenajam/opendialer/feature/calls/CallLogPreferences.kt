@@ -14,6 +14,10 @@ interface CallLogPreferences {
     fun isFavoritesExpanded(): Boolean
 
     fun setFavoritesExpanded(expanded: Boolean)
+
+    fun getDismissedUpdateVersion(): String?
+
+    fun setDismissedUpdateVersion(version: String)
 }
 
 class SharedPreferencesCallLogPreferences @Inject constructor(
@@ -25,6 +29,13 @@ class SharedPreferencesCallLogPreferences @Inject constructor(
     override fun setFavoritesExpanded(expanded: Boolean) {
         SharedPreferenceHelper.setCallLogFavoritesExpanded(context, expanded)
     }
+
+    override fun getDismissedUpdateVersion(): String? =
+        SharedPreferenceHelper.getDismissedUpdateVersion(context)
+
+    override fun setDismissedUpdateVersion(version: String) {
+        SharedPreferenceHelper.setDismissedUpdateVersion(context, version)
+    }
 }
 
 @Module
@@ -35,4 +46,10 @@ abstract class CallLogPreferencesModule {
     abstract fun bindCallLogPreferences(
         preferences: SharedPreferencesCallLogPreferences,
     ): CallLogPreferences
+
+    @Binds
+    @Singleton
+    abstract fun bindUpdateChecker(
+        updateChecker: GitHubUpdateChecker,
+    ): UpdateChecker
 }

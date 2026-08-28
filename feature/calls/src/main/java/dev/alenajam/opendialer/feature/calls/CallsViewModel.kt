@@ -1,6 +1,8 @@
 package dev.alenajam.opendialer.feature.calls
 
 import android.app.Application
+import android.content.Intent
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,6 +33,7 @@ class CallsViewModel
     private val cacheRepository: CacheRepository,
     private val callPlacementRepository: CallPlacementRepository,
     private val callLogPreferences: CallLogPreferences,
+    private val updateChecker: UpdateChecker,
 ) : ViewModel() {
     private val _calls = MutableStateFlow<List<DialerCall>>(emptyList())
     val calls: StateFlow<List<DialerCall>> = _calls
@@ -40,6 +43,8 @@ class CallsViewModel
     val favoritesExpanded: StateFlow<Boolean> = _favoritesExpanded.asStateFlow()
     private val _hasRuntimePermission = MutableStateFlow(false)
     val hasRuntimePermission: StateFlow<Boolean> = _hasRuntimePermission
+    private val _availableUpdate = MutableStateFlow<AppUpdate?>(null)
+    val availableUpdate: StateFlow<AppUpdate?> = _availableUpdate.asStateFlow()
     private var hasContactsRuntimePermission = false
     private var isCacheRunning = false
     private var callsJob: Job? = null
@@ -50,6 +55,7 @@ class CallsViewModel
         hasContactsRuntimePermission = PermissionUtils.hasContactsPermission(app)
         getCalls()
         getContacts()
+        checkForUpdate()
     }
 
     fun getCalls() {
@@ -120,6 +126,23 @@ class CallsViewModel
         callLogPreferences.setFavoritesExpanded(_favoritesExpanded.value)
     }
 
+    fun dismissUpdate() {
+        _availableUpdate.value?.let { update ->
+            callLogPreferences.setDismissedUpdateVersion(update.version)
+        }
+        _availableUpdate.value = null
+    }
+
+    fun openUpdate() {
+        val update = _availableUpdate.value ?: return
+        runCatching {
+            app.startActivity(
+                Intent(Intent.ACTION_VIEW, Uri.parse(update.releaseUrl))
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+            )
+        }
+    }
+
     fun startCache() {
         cacheRepository.start()
         isCacheRunning = true
@@ -152,6 +175,15 @@ class CallsViewModel
                     photoId = callLogInfo.photoId,
                 ),
             )
+        }
+    }
+
+    private fun checkForUpdate() {
+        viewModelScope.launch {
+            val update = updateChecker.getAvailableUpdate() ?: return@launch
+            if (callLogPreferences.getDismissedUpdateVersion() != update.version) {
+                _availableUpdate.value = update
+            }
         }
     }
 }

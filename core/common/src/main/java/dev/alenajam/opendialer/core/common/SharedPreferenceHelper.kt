@@ -17,6 +17,7 @@ object SharedPreferenceHelper {
     const val KEY_SETTING_BLOCKED_NUMBERS = "blockedNumbers"
     const val KEY_SETTING_NOTIFICATION_SETTINGS = "notificationSettings"
     private const val KEY_CALL_LOG_FAVORITES_EXPANDED = "call_log_favorites_expanded"
+    private const val KEY_DISMISSED_UPDATE_VERSION = "dismissed_update_version"
 
     enum class ThemeMode(val nightMode: Int) {
         LIGHT(AppCompatDelegate.MODE_NIGHT_NO),
@@ -96,6 +97,16 @@ object SharedPreferenceHelper {
         getSharedPreferences(context)
             .edit()
             .putBoolean(KEY_CALL_LOG_FAVORITES_EXPANDED, expanded)
+            .apply()
+    }
+
+    fun getDismissedUpdateVersion(context: Context): String? =
+        getSharedPreferences(context).getString(KEY_DISMISSED_UPDATE_VERSION, null)
+
+    fun setDismissedUpdateVersion(context: Context, version: String) {
+        getSharedPreferences(context)
+            .edit()
+            .putString(KEY_DISMISSED_UPDATE_VERSION, version)
             .apply()
     }
 }

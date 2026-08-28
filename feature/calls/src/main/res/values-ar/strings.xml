@@ -30,4 +30,8 @@
     <string name="delete_call_title" comment="Title of the dialog confirming removal of a call-log entry.">هل تريد حذف المكالمة من السجل؟</string>
     <string name="delete_call_message" comment="Explanation in the dialog confirming removal of a call-log entry.">سيؤدي هذا إلى إزالة المكالمة من سجل المكالمات.</string>
     <string name="cancel" comment="Button that dismisses the current dialog without applying changes.">إلغاء</string>
+    <string name="update_available">يتوفر تحديث</string>
+    <string name="update_available_description">الإصدار %1$s جاهز للتنزيل.</string>
+    <string name="update">تحديث</string>
+    <string name="dismiss_update_notification">رفض إشعار التحديث</string>
 </resources>

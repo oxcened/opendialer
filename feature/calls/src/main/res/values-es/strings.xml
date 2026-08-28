@@ -30,4 +30,8 @@
     <string name="delete_call_title" comment="Title of the dialog confirming removal of a call-log entry.">¿Eliminar la llamada del historial?</string>
     <string name="delete_call_message" comment="Explanation in the dialog confirming removal of a call-log entry.">Esta llamada se eliminará del historial de llamadas.</string>
     <string name="cancel" comment="Button that dismisses the current dialog without applying changes.">Cancelar</string>
+    <string name="update_available">Actualización disponible</string>
+    <string name="update_available_description">La versión %1$s está lista para descargar.</string>
+    <string name="update">Actualizar</string>
+    <string name="dismiss_update_notification">Descartar notificación de actualización</string>
 </resources>
