@@ -497,6 +497,9 @@ private fun CallRow(
             ).toString()
         }
         .orEmpty()
+    val displayNumber = call.contactInfo.formattedNumber
+        ?.takeIf { it.isNotBlank() }
+        ?: call.contactInfo.number.orEmpty()
     val cardShape = RoundedCornerShape(
         topStart = if (roundTop) 20.dp else 2.dp,
         topEnd = if (roundTop) 20.dp else 2.dp,
@@ -550,7 +553,7 @@ private fun CallRow(
                         text = if (call.isVoicemailNumber) stringResource(R.string.filter_voicemail)
                         else if (call.isAnonymous()) stringResource(id = R.string.anonymous)
                         else if (!call.contactInfo.name.isNullOrBlank()) call.contactInfo.name!!
-                        else call.contactInfo.number!!,
+                        else displayNumber,
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
