@@ -62,7 +62,6 @@ import dev.alenajam.opendialer.core.common.telecom.CallAccount
 import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
 import dev.alenajam.opendialer.core.common.ui.CallAccountPicker
 import dev.alenajam.opendialer.core.common.ui.ContactAvatar
-import dev.alenajam.opendialer.core.common.ui.contactAvatarColorKey
 import dev.alenajam.opendialer.data.calls.CallType
 import dev.alenajam.opendialer.data.calls.CallOption
 import dev.alenajam.opendialer.data.calls.ContactInfo
@@ -231,7 +230,7 @@ private fun TopBar(
                     ContactAvatar(
                         name = call.contactInfo.name.takeUnless { call.isVoicemailNumber },
                         photoUri = call.contactInfo.photoUri.takeUnless { call.isVoicemailNumber },
-                        colorKey = contactAvatarColorKey(call.contactInfo.name, call.contactInfo.number),
+                        colorKey = call.contactInfo.number.orEmpty(),
                         fallbackIcon = if (call.isVoicemailNumber) {
                             Icons.Outlined.Voicemail
                         } else {

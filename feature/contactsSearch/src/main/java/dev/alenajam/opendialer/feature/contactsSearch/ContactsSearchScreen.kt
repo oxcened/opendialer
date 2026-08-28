@@ -66,7 +66,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.alenajam.opendialer.core.common.ui.ContactAvatar
-import dev.alenajam.opendialer.core.common.ui.contactAvatarColorKey
 import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.core.common.getActivity
 import dev.alenajam.opendialer.core.common.telecom.CallAccount
@@ -426,7 +425,7 @@ private fun ResultRow(
                 ContactAvatar(
                     name = contact.name.takeIf { it.isNotBlank() },
                     photoUri = contact.image,
-                    colorKey = contactAvatarColorKey(contact.name, contact.number),
+                    colorKey = contact.number,
                     modifier = Modifier
                         .size(50.dp)
                         .clickable(

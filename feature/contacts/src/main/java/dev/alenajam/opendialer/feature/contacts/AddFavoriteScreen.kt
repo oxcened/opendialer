@@ -46,7 +46,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.alenajam.opendialer.core.common.ui.ContactAvatar
-import dev.alenajam.opendialer.core.common.ui.contactAvatarColorKey
 import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.data.contacts.DialerContactSummary
 import dev.alenajam.opendialer.feature.contacts.R
@@ -272,7 +271,7 @@ private fun FavoritePickerRow(
             ContactAvatar(
                 name = contact.name,
                 photoUri = contact.image,
-                colorKey = contactAvatarColorKey(contact.name),
+                colorKey = contact.id.toString(),
                 modifier = Modifier.size(40.dp)
             )
 

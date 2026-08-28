@@ -21,7 +21,6 @@ import android.telecom.Call
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.alenajam.opendialer.core.common.ui.contactAvatarColors
-import dev.alenajam.opendialer.core.common.ui.contactAvatarColorKey
 import dev.alenajam.opendialer.feature.inCall.R
 import dev.alenajam.opendialer.feature.inCall.ui.InCallActivity
 import kotlinx.coroutines.CoroutineScope
@@ -274,7 +273,7 @@ class CallNotificationManager @Inject constructor(
         }
 
         val name = call.callerName?.takeIf { it.isNotBlank() && it != call.callerNumber }
-        val colors = contactAvatarColors(contactAvatarColorKey(name, call.callerNumber))
+        val colors = contactAvatarColors(call.callerNumber.ifBlank { name.orEmpty() })
         val bitmap = Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         val paint = Paint(Paint.ANTI_ALIAS_FLAG)

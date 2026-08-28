@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.ui.ContactAvatar
-import dev.alenajam.opendialer.core.common.ui.contactAvatarColorKey
 import dev.alenajam.opendialer.feature.inCall.R
 
 @Composable
@@ -86,7 +85,7 @@ fun InCallDetails(
             ContactAvatar(
                 name = callerName.takeIf { it.isNotBlank() && it != callerNumber },
                 photoUri = callerImageUri,
-                colorKey = contactAvatarColorKey(callerName, callerNumber),
+                colorKey = callerName.ifBlank { callerNumber },
                 fallbackIconModifier = Modifier.size(72.dp),
                 initialTextStyle = MaterialTheme.typography.displayLarge,
                 modifier = Modifier.size(176.dp)

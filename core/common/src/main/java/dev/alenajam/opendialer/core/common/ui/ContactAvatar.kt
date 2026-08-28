@@ -28,7 +28,7 @@ fun ContactAvatar(
     photoUri: String?,
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
-    colorKey: String = contactAvatarColorKey(name),
+    colorKey: String = name.orEmpty(),
     fallbackIcon: ImageVector = Icons.Outlined.Person,
     fallbackIconModifier: Modifier = Modifier.size(24.dp),
     initialTextStyle: TextStyle = MaterialTheme.typography.titleLarge
