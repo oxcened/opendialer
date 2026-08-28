@@ -44,6 +44,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -600,6 +601,12 @@ private fun Footer(
 ) {
     var selection by remember { mutableStateOf(TextRange.Zero) }
     var overflowExpanded by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val tonePlayer = remember(context) { DialpadTonePlayer(context) }
+
+    DisposableEffect(tonePlayer) {
+        onDispose(tonePlayer::release)
+    }
 
     fun handleButtonClick(digit: Char) {
         onQueryChange(query.replaceRange(selection.start, selection.end, digit.toString()))
@@ -706,6 +713,8 @@ private fun Footer(
 
             Dialpad(
                 onDigitClick = ::handleButtonClick,
+                onDigitPress = tonePlayer::start,
+                onDigitRelease = tonePlayer::stop,
                 onZeroLongClick = { handleButtonClick('+') }
             )
 

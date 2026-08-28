@@ -126,7 +126,8 @@ internal fun InCallScreen(
                     onMerge = { viewModel.merge() },
                     onSwap = { viewModel.swap() },
                     onManageConference = { showManageSheet = true },
-                    onDigit = viewModel::playDtmf,
+                    onDigitPress = viewModel::startDtmf,
+                    onDigitRelease = viewModel::stopDtmf,
                     modifier = Modifier.align(Alignment.BottomCenter)
                 )
             }

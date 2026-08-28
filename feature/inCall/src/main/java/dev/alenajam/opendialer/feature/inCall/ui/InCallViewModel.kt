@@ -29,6 +29,8 @@ import javax.inject.Inject
 class InCallViewModel @Inject constructor(
     private val callManager: CallManager
 ) : ViewModel() {
+    private var dtmfCall: OngoingCall? = null
+
     val events: SharedFlow<CallEvent> = callManager.events
     
     val uiState: StateFlow<InCallUiState> = combine(
@@ -114,10 +116,21 @@ class InCallViewModel @Inject constructor(
         }
     }
 
-    fun playDtmf(digit: Char) {
+    fun startDtmf(digit: Char) {
         callManager.displayState.value.primary?.let {
-            callManager.playDtmf(it, digit)
+            dtmfCall?.takeIf { activeCall -> activeCall != it }?.let(callManager::stopDtmf)
+            callManager.startDtmf(it, digit)
+            dtmfCall = it
         }
+    }
+
+    fun stopDtmf() {
+        dtmfCall?.let(callManager::stopDtmf)
+        dtmfCall = null
+    }
+
+    override fun onCleared() {
+        stopDtmf()
     }
 
     fun merge() {

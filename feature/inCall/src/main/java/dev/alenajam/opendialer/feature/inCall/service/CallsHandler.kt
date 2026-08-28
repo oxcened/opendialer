@@ -99,8 +99,12 @@ class CallsHandler @Inject constructor(
         call.hold(hold)
     }
 
-    override fun playDtmf(call: OngoingCall, digit: Char) {
-        call.playDtmf(digit)
+    override fun startDtmf(call: OngoingCall, digit: Char) {
+        call.startDtmf(digit)
+    }
+
+    override fun stopDtmf(call: OngoingCall) {
+        call.stopDtmf()
     }
 
     override fun merge(call: OngoingCall) {
