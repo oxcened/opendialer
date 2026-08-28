@@ -37,4 +37,7 @@
     <string name="issues_description" comment="Description of the issue-reporting link on the About screen.">Har du fundet en fejl eller fået en idé? Opret en sag på GitHub.</string>
     <string name="contact_developer" comment="Title of the developer email link on the About screen.">Kontakt</string>
     <string name="font_credit_format" comment="Font credit. %1$s is the font name and %2$s is the font author.">%1$s af %2$s</string>
+    <string name="update_checks">Opdateringer</string>
+    <string name="check_for_updates">Søg efter opdateringer</string>
+    <string name="check_for_updates_description">Søg på GitHub efter nye versioner</string>
 </resources>

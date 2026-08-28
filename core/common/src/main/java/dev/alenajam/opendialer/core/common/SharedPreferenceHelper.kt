@@ -16,6 +16,7 @@ object SharedPreferenceHelper {
     const val KEY_SETTING_QUICK_RESPONSES = "quick_responses"
     const val KEY_SETTING_BLOCKED_NUMBERS = "blockedNumbers"
     const val KEY_SETTING_NOTIFICATION_SETTINGS = "notificationSettings"
+    const val KEY_SETTING_UPDATE_CHECKS = "update_checks"
     private const val KEY_CALL_LOG_FAVORITES_EXPANDED = "call_log_favorites_expanded"
     private const val KEY_DISMISSED_UPDATE_VERSION = "dismissed_update_version"
     private const val KEY_UPDATE_LAST_CHECK_MILLIS = "update_last_check_millis"
@@ -101,6 +102,16 @@ object SharedPreferenceHelper {
         getSharedPreferences(context)
             .edit()
             .putBoolean(KEY_CALL_LOG_FAVORITES_EXPANDED, expanded)
+            .apply()
+    }
+
+    fun isUpdateCheckEnabled(context: Context): Boolean =
+        getSharedPreferences(context).getBoolean(KEY_SETTING_UPDATE_CHECKS, true)
+
+    fun setUpdateCheckEnabled(context: Context, enabled: Boolean) {
+        getSharedPreferences(context)
+            .edit()
+            .putBoolean(KEY_SETTING_UPDATE_CHECKS, enabled)
             .apply()
     }
 

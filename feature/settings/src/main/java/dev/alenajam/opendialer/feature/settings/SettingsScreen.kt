@@ -7,6 +7,7 @@ import android.telecom.TelecomManager
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,14 +25,21 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.alenajam.opendialer.core.common.copy
+import dev.alenajam.opendialer.core.common.SharedPreferenceHelper
 
 private data class SettingsListItem(
     val title: String,
@@ -49,6 +57,9 @@ fun SettingsScreen(
     onOpenSubpage: (Int) -> Unit = {}
 ) {
     val context = LocalContext.current
+    var updateChecksEnabled by remember {
+        mutableStateOf(SharedPreferenceHelper.isUpdateCheckEnabled(context))
+    }
     val canManageBlockedNumbers = BlockedNumberContract.canCurrentUserBlockNumbers(context)
     val appName = stringResource(R.string.app_name)
     val displayOptionsTitle = stringResource(R.string.display_options)
@@ -123,10 +134,48 @@ fun SettingsScreen(
                 title = stringResource(R.string.dialer),
                 items = dialerItems
             )
+            Spacer(Modifier.height(12.dp))
+            UpdateChecksSection(
+                enabled = updateChecksEnabled,
+                onEnabledChange = { enabled ->
+                    updateChecksEnabled = enabled
+                    SharedPreferenceHelper.setUpdateCheckEnabled(context, enabled)
+                },
+            )
             if (extensionItems.isNotEmpty()) {
                 Spacer(Modifier.height(12.dp))
                 SettingsSection(title = extensionTitle, items = extensionItems)
             }
+        }
+    }
+}
+
+@Composable
+private fun UpdateChecksSection(enabled: Boolean, onEnabledChange: (Boolean) -> Unit) {
+    Text(
+        text = stringResource(R.string.update_checks),
+        style = MaterialTheme.typography.titleMedium,
+        modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp)
+    )
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.5.dp),
+        onClick = { onEnabledChange(!enabled) },
+    ) {
+        Row(
+            modifier = Modifier.padding(start = 16.dp, end = 12.dp, top = 12.dp, bottom = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(stringResource(R.string.check_for_updates), style = MaterialTheme.typography.titleMedium)
+                Text(
+                    stringResource(R.string.check_for_updates_description),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+            Switch(checked = enabled, onCheckedChange = onEnabledChange)
         }
     }
 }

@@ -55,7 +55,15 @@ class CallsViewModel
         hasContactsRuntimePermission = PermissionUtils.hasContactsPermission(app)
         getCalls()
         getContacts()
-        checkForUpdate()
+        viewModelScope.launch {
+            callLogPreferences.observeUpdateCheckEnabled().collect { enabled ->
+                if (enabled) {
+                    checkForUpdate()
+                } else {
+                    _availableUpdate.value = null
+                }
+            }
+        }
     }
 
     fun getCalls() {

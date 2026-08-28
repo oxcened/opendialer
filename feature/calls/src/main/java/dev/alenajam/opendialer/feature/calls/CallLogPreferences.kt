@@ -7,6 +7,10 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dev.alenajam.opendialer.core.common.SharedPreferenceHelper
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -30,6 +34,8 @@ interface CallLogPreferences {
     fun getCachedAvailableUpdate(): AppUpdate?
 
     fun setCachedAvailableUpdate(update: AppUpdate?)
+
+    fun observeUpdateCheckEnabled(): Flow<Boolean>
 }
 
 class SharedPreferencesCallLogPreferences @Inject constructor(
@@ -71,6 +77,18 @@ class SharedPreferencesCallLogPreferences @Inject constructor(
     override fun setCachedAvailableUpdate(update: AppUpdate?) {
         SharedPreferenceHelper.setAvailableUpdate(context, update?.version, update?.releaseUrl)
     }
+
+    override fun observeUpdateCheckEnabled(): Flow<Boolean> = callbackFlow {
+        val preferences = SharedPreferenceHelper.getSharedPreferences(context)
+        val listener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            if (key == SharedPreferenceHelper.KEY_SETTING_UPDATE_CHECKS) {
+                trySend(SharedPreferenceHelper.isUpdateCheckEnabled(context))
+            }
+        }
+        trySend(SharedPreferenceHelper.isUpdateCheckEnabled(context))
+        preferences.registerOnSharedPreferenceChangeListener(listener)
+        awaitClose { preferences.unregisterOnSharedPreferenceChangeListener(listener) }
+    }.distinctUntilChanged()
 }
 
 @Module
