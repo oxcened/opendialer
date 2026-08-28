@@ -8,9 +8,14 @@ import androidx.compose.material.icons.automirrored.outlined.CallMissed
 import androidx.compose.material.icons.automirrored.outlined.CallReceived
 import androidx.compose.material.icons.automirrored.outlined.Message
 import androidx.compose.material.icons.automirrored.outlined.VolumeUp
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.AccessTimeFilled
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Voicemail
 import androidx.compose.material.icons.outlined.AddIcCall
 import androidx.compose.material.icons.outlined.Block
@@ -125,7 +130,12 @@ data class AppIcons(
     val share: IconSource,
     val edit: IconSource,
     val copy: IconSource,
-    val delete: IconSource
+    val delete: IconSource,
+    val arrowLeft: IconSource,
+    val arrowRight: IconSource,
+    val arrowUp: IconSource,
+    val arrowDown: IconSource,
+    val favorite: IconSource
 )
 
 val DefaultAppIcons = AppIcons(
@@ -160,7 +170,12 @@ val DefaultAppIcons = AppIcons(
     share = IconSource.Vector(Icons.Outlined.Share),
     edit = IconSource.Vector(Icons.Outlined.Edit),
     copy = IconSource.Vector(Icons.Outlined.ContentCopy),
-    delete = IconSource.Vector(Icons.Outlined.Delete)
+    delete = IconSource.Vector(Icons.Outlined.Delete),
+    arrowLeft = IconSource.Vector(Icons.AutoMirrored.Filled.ArrowBack),
+    arrowRight = IconSource.Vector(Icons.AutoMirrored.Filled.ArrowForward),
+    arrowUp = IconSource.Vector(Icons.Filled.KeyboardArrowUp),
+    arrowDown = IconSource.Vector(Icons.Filled.KeyboardArrowDown),
+    favorite = IconSource.Vector(Icons.Filled.Star)
 )
 
 val LocalAppIcons = staticCompositionLocalOf { DefaultAppIcons }
