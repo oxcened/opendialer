@@ -27,12 +27,14 @@ import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.PhonePaused
 import androidx.compose.material.icons.outlined.SwapCalls
 import androidx.compose.material.icons.outlined.Voicemail
+import androidx.compose.foundation.Image
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -64,14 +66,22 @@ fun AppIcon(
     icon: IconSource,
     contentDescription: String?,
     modifier: Modifier = Modifier,
-    tint: Color = if (icon.tintable) LocalContentColor.current else Color.Unspecified
+    tint: Color = LocalContentColor.current
 ) {
-    androidx.compose.material3.Icon(
-        painter = icon.rememberPainter(),
-        contentDescription = contentDescription,
-        modifier = modifier,
-        tint = tint
-    )
+    if (icon.tintable) {
+        androidx.compose.material3.Icon(
+            painter = icon.rememberPainter(),
+            contentDescription = contentDescription,
+            modifier = modifier,
+            tint = tint
+        )
+    } else {
+        Image(
+            painter = icon.rememberPainter(),
+            contentDescription = contentDescription,
+            modifier = modifier
+        )
+    }
 }
 
 @Immutable
