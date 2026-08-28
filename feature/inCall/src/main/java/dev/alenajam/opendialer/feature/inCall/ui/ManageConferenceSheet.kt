@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.alenajam.opendialer.core.common.ui.ContactAvatar
+import dev.alenajam.opendialer.core.common.ui.contactAvatarColorKey
 import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.feature.inCall.service.OngoingCall
 import dev.alenajam.opendialer.feature.inCall.R
@@ -94,6 +95,7 @@ private fun ConferenceParticipantRow(
             ContactAvatar(
                 name = participant.callerName,
                 photoUri = participant.callerImageUri,
+                colorKey = contactAvatarColorKey(participant.callerName, participant.call.callerNumber),
                 modifier = Modifier.size(40.dp)
             )
 

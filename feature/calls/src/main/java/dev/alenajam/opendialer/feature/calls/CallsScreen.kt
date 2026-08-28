@@ -75,6 +75,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.alenajam.opendialer.core.common.ui.ContactAvatar
+import dev.alenajam.opendialer.core.common.ui.contactAvatarColorKey
 import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.core.common.telecom.CallAccount
 import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
@@ -398,7 +399,7 @@ private fun FavoriteItem(
             ContactAvatar(
                 name = favorite.name,
                 photoUri = favorite.image,
-                colorKey = favorite.number,
+                colorKey = contactAvatarColorKey(favorite.name, favorite.number),
                 modifier = Modifier
                     .size(56.dp)
                     .clip(CircleShape)
@@ -534,7 +535,7 @@ private fun CallRow(
                 ContactAvatar(
                     name = call.contactInfo.name.takeUnless { call.isVoicemailNumber },
                     photoUri = call.contactInfo.photoUri.takeUnless { call.isVoicemailNumber },
-                    colorKey = call.contactInfo.number.orEmpty(),
+                    colorKey = contactAvatarColorKey(call.contactInfo.name, call.contactInfo.number),
                     fallbackIcon = if (call.isVoicemailNumber) {
                         Icons.Outlined.Voicemail
                     } else {
