@@ -30,8 +30,8 @@
     <string name="delete_call_title" comment="Title of the dialog confirming removal of a call-log entry.">Vil du slette opkaldet fra historikken?</string>
     <string name="delete_call_message" comment="Explanation in the dialog confirming removal of a call-log entry.">Dette fjerner opkaldet fra din opkaldshistorik.</string>
     <string name="cancel" comment="Button that dismisses the current dialog without applying changes.">Annuller</string>
-    <string name="update_available">Opdatering tilgængelig</string>
-    <string name="update_available_description">Version %1$s er klar til download.</string>
-    <string name="update">Opdater</string>
-    <string name="dismiss_update_notification">Skjul opdateringsnotifikation</string>
+    <string name="update_available" comment="Heading for the call-log banner that announces a newer app release.">Opdatering tilgængelig</string>
+    <string name="update_available_description" comment="Description for the call-log update banner. %1$s is the available version number.">Version %1$s er klar til download.</string>
+    <string name="update" comment="Button that opens the available app release in a browser.">Opdater</string>
+    <string name="dismiss_update_notification" comment="Accessibility label for the button that hides the update banner.">Skjul opdateringsnotifikation</string>
 </resources>
