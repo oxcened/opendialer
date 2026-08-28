@@ -14,6 +14,9 @@
     <string name="display_options" comment="Settings section title for appearance preferences.">خيارات العرض</string>
     <string name="display_options_description" comment="Settings section summary for appearance preferences.">اختر مظهر %1$s</string>
     <string name="dialer" comment="Settings section title for phone-related preferences.">الهاتف</string>
+    <string name="update_checks" comment="Settings section title for update-check preferences.">التحديثات</string>
+    <string name="check_for_updates" comment="Settings toggle label for enabling automatic update checks.">التحقق من التحديثات</string>
+    <string name="check_for_updates_description" comment="Settings toggle summary for automatic update checks.">التحقق من GitHub بحثًا عن إصدارات جديدة</string>
     <string name="manageBlockedNumbers" comment="Settings item title that opens the system blocked-number list.">إدارة الأرقام المحظورة</string>
     <string name="manage_blocked_numbers_description" comment="Settings item summary for reviewing blocked phone numbers.">مراجعة أرقام الهاتف المحظورة وإلغاء حظرها</string>
     <string name="manage_blocked_numbers_unavailable" comment="Message shown when the device has no blocked-number settings screen.">إعدادات الأرقام المحظورة غير متاحة على هذا الجهاز</string>
