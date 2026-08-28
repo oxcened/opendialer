@@ -290,6 +290,10 @@ private fun TopBar(
 
 @Composable
 private fun CallDetailTitle(call: DialerCall) {
+    val displayNumber = call.contactInfo.formattedNumber
+        ?.takeIf { it.isNotBlank() }
+        ?: call.contactInfo.number.orEmpty()
+
     when {
         call.isVoicemailNumber -> Text(stringResource(R.string.voicemail))
         call.isAnonymous() -> Text(stringResource(R.string.anonymous))
@@ -312,14 +316,14 @@ private fun CallDetailTitle(call: DialerCall) {
                     text = stringResource(
                         R.string.call_detail_contact_subtitle,
                         phoneType,
-                        contact.number.orEmpty(),
+                        displayNumber,
                     ),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
-        else -> Text(call.contactInfo.number.orEmpty())
+        else -> Text(displayNumber)
     }
 }
 
