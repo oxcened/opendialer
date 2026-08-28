@@ -9,6 +9,7 @@
     <string name="unblockThisCaller" comment="Menu action that removes the block from the selected caller.">Fjern blokering af denne person</string>
     <string name="delete" comment="Menu action that deletes the selected call-log entry.">Slet</string>
     <string name="anonymous" comment="Fallback caller name when the phone number is withheld.">Anonym</string>
+    <string name="blocked" comment="Call-log label identifying a call that was blocked.">Blokeret</string>
     <string name="placeholder_call_log" comment="Empty-state message shown when phone permission is required to display call history.">Slå telefontilladelser til for at se din opkaldshistorik</string>
     <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">Slå til</string>
     <string name="open_contact" comment="Menu action that opens the selected person's contact details.">Åbn kontakt</string>

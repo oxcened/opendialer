@@ -27,6 +27,7 @@ fun ContactAvatar(
     colorKey: String = contactAvatarColorKey(name),
     fallbackIcon: IconSource = LocalAppIcons.current.accountCircle,
     fallbackIconModifier: Modifier = Modifier.size(24.dp),
+    avatarIcon: IconSource? = null,
     initialTextStyle: TextStyle = MaterialTheme.typography.titleLarge
 ) {
     val contactName = name.orEmpty().trim()
@@ -38,7 +39,14 @@ fun ContactAvatar(
             .clip(CircleShape)
             .background(Color(colors.background))
     ) {
-        if (contactName.isBlank()) {
+        if (avatarIcon != null) {
+            AppIcon(
+                icon = avatarIcon,
+                contentDescription = contentDescription,
+                tint = Color(colors.foreground),
+                modifier = fallbackIconModifier,
+            )
+        } else if (contactName.isBlank()) {
             AppIcon(
                 icon = fallbackIcon,
                 contentDescription = contentDescription,
@@ -53,7 +61,7 @@ fun ContactAvatar(
             )
         }
 
-        if (!photoUri.isNullOrBlank()) {
+        if (avatarIcon == null && !photoUri.isNullOrBlank()) {
             AsyncImage(
                 model = photoUri,
                 contentDescription = contentDescription,
@@ -61,5 +69,6 @@ fun ContactAvatar(
                 modifier = Modifier.fillMaxSize()
             )
         }
+
     }
 }

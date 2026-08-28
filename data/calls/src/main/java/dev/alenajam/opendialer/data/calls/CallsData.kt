@@ -49,10 +49,7 @@ object CallsData {
         Calls.CACHED_NUMBER_TYPE
     )
 
-    /** Filter out:
-     *  - Blocked calls
-     *  - Non-video Duo calls
-     */
+    /** Filter out blocked calls and non-video Duo calls. */
     private const val where = """
             ${Calls.TYPE} != ${Calls.BLOCKED_TYPE}
             AND (

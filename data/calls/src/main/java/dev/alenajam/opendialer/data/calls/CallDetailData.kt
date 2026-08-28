@@ -34,14 +34,10 @@ object CallDetailData {
         Calls.CACHED_NUMBER_TYPE
     )
 
-    /** Filter out:
-     *  - Blocked calls
-     *  - Non-video Duo calls
-     */
+    /** Filter out non-video Duo calls. */
     private val where = { ids: List<Int> ->
         """
-            ${Calls.TYPE} != ${Calls.BLOCKED_TYPE}
-            AND (
+            (
                 ${Calls.PHONE_ACCOUNT_COMPONENT_NAME} IS NULL
                 OR ${Calls.PHONE_ACCOUNT_COMPONENT_NAME} NOT LIKE 'com.google.android.apps.tachyon%'
                 OR ${Calls.FEATURES} & ${Calls.FEATURES_VIDEO} == ${Calls.FEATURES_VIDEO}
@@ -61,6 +57,29 @@ object CallDetailData {
             null,
             Calls.DEFAULT_SORT_ORDER
         )
+
+    fun getCursorForNumbers(contentResolver: ContentResolver, numbers: List<String>): Cursor? {
+        if (numbers.isEmpty()) return null
+
+        val placeholders = numbers.joinToString(",") { "?" }
+        return contentResolver.query(
+            URI
+                .buildUpon()
+                .appendQueryParameter(Calls.LIMIT_PARAM_KEY, LIMIT.toString())
+                .build(),
+            projection,
+            """
+                (
+                    ${Calls.PHONE_ACCOUNT_COMPONENT_NAME} IS NULL
+                    OR ${Calls.PHONE_ACCOUNT_COMPONENT_NAME} NOT LIKE 'com.google.android.apps.tachyon%'
+                    OR ${Calls.FEATURES} & ${Calls.FEATURES_VIDEO} == ${Calls.FEATURES_VIDEO}
+                )
+                AND ${Calls.NUMBER} IN ($placeholders)
+            """.trimIndent(),
+            numbers.toTypedArray(),
+            Calls.DEFAULT_SORT_ORDER,
+        )
+    }
 
     fun getData(
         cursor: Cursor,

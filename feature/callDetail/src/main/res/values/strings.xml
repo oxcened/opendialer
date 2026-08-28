@@ -16,6 +16,7 @@
     <string name="missed_call" comment="Call-detail label identifying a missed incoming call.">Missed call</string>
     <string name="rejected_call" comment="Call-detail label identifying an incoming call that was declined.">Rejected call</string>
     <string name="blocked_call" comment="Call-detail label identifying a call that was blocked.">Blocked call</string>
+    <string name="blocked" comment="Call-detail subtitle identifying a blocked number.">Blocked</string>
     <string name="voicemail_call" comment="Call-detail label identifying a voicemail entry.">Voicemail Call</string>
     <string name="voicemail" comment="Label for voicemail in navigation or call information.">Voicemail</string>
     <string name="block_confirmation_title" comment="Title of the block-caller confirmation dialog. %1$s is the caller name or phone number.">Block %1$s?</string>
