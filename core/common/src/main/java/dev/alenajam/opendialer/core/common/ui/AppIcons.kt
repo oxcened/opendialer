@@ -30,6 +30,7 @@ import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.SwapCalls
 import androidx.compose.material.icons.outlined.Voicemail
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -40,6 +41,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 
 @Immutable
 sealed interface IconSource {
@@ -66,7 +68,7 @@ fun IconSource.rememberPainter(): Painter = when (this) {
 fun AppIcon(
     icon: IconSource,
     contentDescription: String?,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.size(24.dp),
     tint: Color = LocalContentColor.current
 ) {
     if (icon.tintable) {
