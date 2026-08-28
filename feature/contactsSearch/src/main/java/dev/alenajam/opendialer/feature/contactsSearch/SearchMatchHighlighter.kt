@@ -29,7 +29,7 @@ internal fun highlightSearchMatch(
     } else if (isPhoneNumber) {
         textPhoneMatchPositions(text, query)
     } else {
-        textPrefixMatchPositions(text, query)
+        textMatchPositions(text, query)
     }
 
     return buildAnnotatedString {
@@ -44,16 +44,13 @@ internal fun highlightSearchMatch(
     }
 }
 
-internal fun textPrefixMatchPositions(text: String, query: String): List<SmartDialMatchPosition> = buildList {
-    var searchStart = 0
-    while (searchStart < text.length) {
-        val matchStart = text.indexOf(query, searchStart, ignoreCase = true)
+private fun textMatchPositions(text: String, query: String): List<SmartDialMatchPosition> = buildList {
+    var startIndex = 0
+    while (startIndex < text.length) {
+        val matchStart = text.indexOf(query, startIndex, ignoreCase = true)
         if (matchStart < 0) break
-        if (matchStart == 0 || text[matchStart - 1].isWhitespace()) {
-            add(SmartDialMatchPosition(matchStart, matchStart + query.length))
-            break
-        }
-        searchStart = matchStart + query.length
+        add(SmartDialMatchPosition(matchStart, matchStart + query.length))
+        startIndex = matchStart + query.length
     }
 }
 
