@@ -18,6 +18,21 @@ fun AppProviders(
     inCallScreen: @Composable () -> Unit = {},
     content: @Composable () -> Unit
 ) {
+    val darkTheme = rememberAppIsDarkTheme()
+
+    CompositionLocalProvider(
+        LocalAppIcons provides icons,
+        LocalAppThemeExtension provides themeExtension,
+        LocalInCallScreen provides inCallScreen
+    ) {
+        AppTheme(darkTheme = darkTheme) {
+            content()
+        }
+    }
+}
+
+@Composable
+fun rememberAppIsDarkTheme(): Boolean {
     val context = LocalContext.current
     var themeMode by remember { mutableStateOf(SharedPreferenceHelper.getThemeMode(context)) }
     val preferences = remember(context) { SharedPreferenceHelper.getSharedPreferences(context) }
@@ -33,19 +48,9 @@ fun AppProviders(
         onDispose { preferences.unregisterOnSharedPreferenceChangeListener(listener) }
     }
 
-    val darkTheme = when (themeMode) {
+    return when (themeMode) {
         SharedPreferenceHelper.ThemeMode.LIGHT -> false
         SharedPreferenceHelper.ThemeMode.DARK -> true
         SharedPreferenceHelper.ThemeMode.SYSTEM -> systemIsDark
-    }
-
-    CompositionLocalProvider(
-        LocalAppIcons provides icons,
-        LocalAppThemeExtension provides themeExtension,
-        LocalInCallScreen provides inCallScreen
-    ) {
-        AppTheme(darkTheme = darkTheme) {
-            content()
-        }
     }
 }
