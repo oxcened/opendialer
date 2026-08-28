@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -148,7 +147,11 @@ fun ContactPickerScreen(
                                         isSearching = false
                                     }
                                 }) {
-                                    Icon(Icons.Outlined.Close, contentDescription = stringResource(R.string.close_search))
+                                    AppIcon(
+                                        LocalAppIcons.current.close,
+                                        contentDescription = stringResource(R.string.close_search),
+                                        modifier = Modifier.size(24.dp)
+                                    )
                                 }
                             },
                             modifier = Modifier.focusRequester(searchFocusRequester)

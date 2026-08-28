@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -77,9 +76,10 @@ internal fun HomeScreen(
                         trailingIcon = {
                             if (searchQuery.isNotEmpty()) {
                                 IconButton(onClick = { searchQuery = "" }) {
-                                    Icon(
-                                        Icons.Outlined.Close,
+                                    AppIcon(
+                                        LocalAppIcons.current.close,
                                         contentDescription = stringResource(R.string.clear_search),
+                                        modifier = Modifier.size(24.dp)
                                     )
                                 }
                             } else {
