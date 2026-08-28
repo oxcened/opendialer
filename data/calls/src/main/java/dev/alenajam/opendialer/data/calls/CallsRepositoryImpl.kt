@@ -26,19 +26,23 @@ class CallsRepositoryImpl @Inject constructor(
     override fun getCalls(): Flow<List<DialerCallEntity>> =
         callbackFlow {
             val callsUri = CallsData.getUri(app)
+            fun getCallsData(): List<DialerCallEntity>? =
+                CallsData.getCursor(app.contentResolver, callsUri)?.use {
+                    CallsData.getData(
+                        cursor = it,
+                        voicemailNumbers = voicemailNumberProvider.getNumbers(),
+                        contactPhoneTypes = getContactPhoneTypes(app.contentResolver),
+                    )
+                }
             val observer = object : ContentObserver(null) {
                 override fun onChange(selfChange: Boolean) {
-                    CallsData.getCursor(app.contentResolver, callsUri)?.use {
-                        trySend(CallsData.getData(it, voicemailNumberProvider.getNumbers()))
-                    }
+                    getCallsData()?.let(::trySend)
                 }
             }
 
             app.contentResolver.registerContentObserver(callsUri, true, observer)
 
-            CallsData.getCursor(app.contentResolver, callsUri)?.use {
-                trySend(CallsData.getData(it, voicemailNumberProvider.getNumbers()))
-            }
+            getCallsData()?.let(::trySend)
 
             awaitClose {
                 app.contentResolver.unregisterContentObserver(observer)
@@ -50,7 +54,11 @@ class CallsRepositoryImpl @Inject constructor(
         ids: List<Int>
     ): Either<Failure, List<DialerCallEntity>> {
         val data = CallDetailData.getCursor(contentResolver, ids)?.use { cursor ->
-            CallDetailData.getData(cursor, voicemailNumberProvider.getNumbers())
+            CallDetailData.getData(
+                cursor = cursor,
+                voicemailNumbers = voicemailNumberProvider.getNumbers(),
+                contactPhoneTypes = getContactPhoneTypes(contentResolver),
+            )
         } ?: return Either.Left(Failure.NoData)
 
         return if (data.isEmpty()) {

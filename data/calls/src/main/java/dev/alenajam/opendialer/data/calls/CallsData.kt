@@ -75,6 +75,7 @@ abstract class CallsData {
         fun getData(
             cursor: Cursor,
             voicemailNumbers: Set<String> = emptySet(),
+            contactPhoneTypes: ContactPhoneTypes = ContactPhoneTypes.Empty,
         ): List<DialerCallEntity> {
             val start = System.currentTimeMillis()
 
@@ -83,6 +84,7 @@ abstract class CallsData {
                 do {
                     val number = cursor.getString(cursor.getColumnIndexOrThrow(Calls.NUMBER))
                     val type = cursor.getInt(cursor.getColumnIndexOrThrow(Calls.TYPE))
+                    val phoneType = contactPhoneTypes.findForNumber(number)
                     list.add(
                         DialerCallEntity(
                             id = cursor.getInt(cursor.getColumnIndexOrThrow(Calls._ID)),
@@ -95,7 +97,8 @@ abstract class CallsData {
                             photoUri = cursor.getString(cursor.getColumnIndexOrThrow(Calls.CACHED_PHOTO_URI))
                                 ?.takeIf { it.isNotBlank() },
                             countryIso = cursor.getString(cursor.getColumnIndexOrThrow(Calls.COUNTRY_ISO)),
-                            label = cursor.getString(cursor.getColumnIndexOrThrow(Calls.CACHED_NUMBER_LABEL)),
+                            label = phoneType?.label
+                                ?: cursor.getString(cursor.getColumnIndexOrThrow(Calls.CACHED_NUMBER_LABEL)),
                             photoId = cursor.getLong(cursor.getColumnIndexOrThrow(Calls.CACHED_PHOTO_ID)),
                             geoDescription = cursor.getString(cursor.getColumnIndexOrThrow(Calls.GEOCODED_LOCATION)),
                             formattedNumber = cursor.getString(cursor.getColumnIndexOrThrow(Calls.CACHED_FORMATTED_NUMBER)),
@@ -103,7 +106,8 @@ abstract class CallsData {
                             lookupUri = cursor.getString(cursor.getColumnIndexOrThrow(Calls.CACHED_LOOKUP_URI)),
                             postDialDigits = cursor.getString(cursor.getColumnIndexOrThrow(Calls.POST_DIAL_DIGITS)),
                             matchedNumber = cursor.getString(cursor.getColumnIndexOrThrow(Calls.CACHED_MATCHED_NUMBER)),
-                            numberType = cursor.getInt(cursor.getColumnIndexOrThrow(Calls.CACHED_NUMBER_TYPE)),
+                            numberType = phoneType?.type
+                                ?: cursor.getInt(cursor.getColumnIndexOrThrow(Calls.CACHED_NUMBER_TYPE)),
                             isVoicemailNumber = type == Calls.OUTGOING_TYPE && voicemailNumbers.any {
                                 PhoneNumberUtils.compare(number, it)
                             },
