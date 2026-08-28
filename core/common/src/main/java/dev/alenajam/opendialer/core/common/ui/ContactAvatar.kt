@@ -25,7 +25,7 @@ fun ContactAvatar(
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
     colorKey: String = contactAvatarColorKey(name),
-    fallbackIcon: IconSource = LocalAppIcons.current.accountCircle,
+    fallbackIcon: IconSource = LocalAppIcons.current.person,
     fallbackIconModifier: Modifier = Modifier.size(24.dp),
     avatarIcon: IconSource? = null,
     initialTextStyle: TextStyle = MaterialTheme.typography.titleLarge

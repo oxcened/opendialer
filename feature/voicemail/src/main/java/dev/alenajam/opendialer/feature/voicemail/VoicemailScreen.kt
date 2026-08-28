@@ -167,7 +167,7 @@ private fun VoicemailRow(
             modifier = Modifier.padding(16.dp),
         ) {
             AppIcon(
-                icon = LocalAppIcons.current.accountCircle,
+                icon = LocalAppIcons.current.person,
                 contentDescription = null,
                 modifier = Modifier.size(32.dp),
             )
