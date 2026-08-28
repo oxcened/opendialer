@@ -2,6 +2,8 @@ package dev.alenajam.opendialer.feature.callDetail
 
 import android.provider.ContactsContract
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -42,6 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -148,6 +151,7 @@ fun CallDetailScreen(
                 options = detailOptions.value,
                 onBlock = { viewModel.blockCaller(call.value!!) },
                 onUnblock = { viewModel.unblockCaller(call.value!!) },
+                onOpenContact = { call.value?.let(viewModel::openContact) },
                 onNavigateBack = onNavigateBack
             )
         },
@@ -189,6 +193,7 @@ private fun TopBar(
     options: List<CallOption>,
     onBlock: () -> Unit,
     onUnblock: () -> Unit,
+    onOpenContact: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
     val canBlock = options.any { it.id == CallOption.ID_BLOCK_CALLER }
@@ -243,7 +248,13 @@ private fun TopBar(
                         } else {
                             null
                         },
-                        modifier = Modifier.size(50.dp)
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clip(CircleShape)
+                            .clickable(
+                                enabled = call.isContactSaved() && !call.isVoicemailNumber,
+                                onClick = onOpenContact,
+                            )
                     )
                     Spacer(modifier = Modifier.size(8.dp))
                     CallDetailTitle(call, isNumberBlocked)
@@ -412,7 +423,7 @@ private fun CallRow(
                 CallType.OUTGOING -> icons.callMade
                 CallType.MISSED, CallType.REJECTED -> icons.callMissed
                 CallType.VOICEMAIL -> icons.voicemail
-                CallType.BLOCKED -> icons.block
+                CallType.BLOCKED -> icons.blockCall
             }, contentDescription = null, tint = subtitleColor,
             modifier = Modifier.size(24.dp)
         )
@@ -480,7 +491,14 @@ private val callMock = DialerCall(
 @Preview(showBackground = true)
 @Composable
 private fun TopBarPreview() {
-    TopBar(call = callMock, options = emptyList(), onBlock = {}, onUnblock = {}) {}
+    TopBar(
+        call = callMock,
+        options = emptyList(),
+        onBlock = {},
+        onUnblock = {},
+        onOpenContact = {},
+        onNavigateBack = {},
+    )
 }
 
 @Preview(showBackground = true)

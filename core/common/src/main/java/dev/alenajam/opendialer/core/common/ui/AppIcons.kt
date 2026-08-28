@@ -101,6 +101,7 @@ fun AppIcon(
 data class AppIcons(
     val hangup: IconSource,
     val dialpad: IconSource,
+    val dialpadActive: IconSource = dialpad,
     val mute: IconSource,
     val speaker: IconSource,
     val more: IconSource,
@@ -114,6 +115,7 @@ data class AppIcons(
     val voicemail: IconSource,
     val voicemailSelected: IconSource = voicemail,
     val block: IconSource,
+    val blockCall: IconSource = block,
     val phone: IconSource,
     val message: IconSource,
     val personAdd: IconSource,
