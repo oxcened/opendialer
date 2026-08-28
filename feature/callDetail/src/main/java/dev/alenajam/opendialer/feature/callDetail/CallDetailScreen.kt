@@ -2,6 +2,7 @@ package dev.alenajam.opendialer.feature.callDetail
 
 import android.provider.ContactsContract
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -148,6 +149,7 @@ fun CallDetailScreen(
                 options = detailOptions.value,
                 onBlock = { viewModel.blockCaller(call.value!!) },
                 onUnblock = { viewModel.unblockCaller(call.value!!) },
+                onOpenContact = { call.value?.let(viewModel::openContact) },
                 onNavigateBack = onNavigateBack
             )
         },
@@ -189,6 +191,7 @@ private fun TopBar(
     options: List<CallOption>,
     onBlock: () -> Unit,
     onUnblock: () -> Unit,
+    onOpenContact: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
     val canBlock = options.any { it.id == CallOption.ID_BLOCK_CALLER }
@@ -243,7 +246,12 @@ private fun TopBar(
                         } else {
                             null
                         },
-                        modifier = Modifier.size(50.dp)
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clickable(
+                                enabled = call.isContactSaved() && !call.isVoicemailNumber,
+                                onClick = onOpenContact,
+                            )
                     )
                     Spacer(modifier = Modifier.size(8.dp))
                     CallDetailTitle(call, isNumberBlocked)
@@ -480,7 +488,14 @@ private val callMock = DialerCall(
 @Preview(showBackground = true)
 @Composable
 private fun TopBarPreview() {
-    TopBar(call = callMock, options = emptyList(), onBlock = {}, onUnblock = {}) {}
+    TopBar(
+        call = callMock,
+        options = emptyList(),
+        onBlock = {},
+        onUnblock = {},
+        onOpenContact = {},
+        onNavigateBack = {},
+    )
 }
 
 @Preview(showBackground = true)
