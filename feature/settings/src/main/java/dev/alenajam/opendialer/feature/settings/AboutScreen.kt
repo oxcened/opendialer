@@ -34,6 +34,7 @@ fun AboutScreen(
 ) {
     val context = LocalContext.current
     val appName = stringResource(R.string.app_name)
+    val openDialerName = stringResource(R.string.opendialer_name)
 
     Scaffold(
         topBar = {
@@ -141,7 +142,10 @@ fun AboutScreen(
 
                 AboutLinkCard(
                     title = stringResource(R.string.contribute_translations),
-                    description = stringResource(R.string.contribute_translations_description, appName),
+                    description = stringResource(
+                        R.string.contribute_translations_description,
+                        openDialerName
+                    ),
                     uri = stringResource(R.string.url_crowdin_opendialer),
                     roundTop = false,
                     roundBottom = false

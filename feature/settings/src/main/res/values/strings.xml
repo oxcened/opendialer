@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">OpenDialer</string>
+    <string name="opendialer_name" translatable="false">OpenDialer</string>
     <string name="version" translatable="false">v%1$s</string>
     <string name="customize_quick_responses" comment="Settings item title for editing preset decline-with-message replies.">Customize quick responses</string>
     <string name="customize_quick_responses_description" comment="Settings item summary for preset decline-with-message replies.">Edit the messages sent when declining a call</string>
