@@ -16,6 +16,7 @@
     <string name="missed_call" comment="Call-detail label identifying a missed incoming call.">مكالمة فائتة</string>
     <string name="rejected_call" comment="Call-detail label identifying an incoming call that was declined.">مكالمة مرفوضة</string>
     <string name="blocked_call" comment="Call-detail label identifying a call that was blocked.">مكالمة محظورة</string>
+    <string name="blocked" comment="Call-detail subtitle identifying a blocked number.">محظور</string>
     <string name="voicemail_call" comment="Call-detail label identifying a voicemail entry.">رسالة بريد صوتي</string>
     <string name="voicemail" comment="Label for voicemail in navigation or call information.">البريد الصوتي</string>
     <string name="block_confirmation_title" comment="Title of the block-caller confirmation dialog. %1$s is the caller name or phone number.">هل تريد حظر %1$s؟</string>

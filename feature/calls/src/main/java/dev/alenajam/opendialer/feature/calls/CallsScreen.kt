@@ -1,6 +1,7 @@
 package dev.alenajam.opendialer.feature.calls
 
 import android.provider.ContactsContract
+import android.telephony.PhoneNumberUtils
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -47,6 +48,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -146,6 +148,7 @@ fun CallsScreen(
     val availableUpdate by viewModel.availableUpdate.collectAsStateWithLifecycle()
     var openRowId by remember { mutableStateOf<Int?>(null) }
     var selectedFilter by remember { mutableStateOf(CallFilter.ALL) }
+    var blockedNumbers by remember { mutableStateOf<Set<String>>(emptySet()) }
 
     val icons = LocalAppIcons.current
     val filteredCalls = remember(calls.value, selectedFilter) {
@@ -256,9 +259,15 @@ fun CallsScreen(
                     }
                     itemsIndexed(callsForDate, key = { _, call -> call.id }) { index, call ->
                         val isOpen = openRowId == call.id
+                        val isNumberBlocked = call.contactInfo.number?.let { number ->
+                            blockedNumbers.any { blockedNumber ->
+                                PhoneNumberUtils.compare(blockedNumber, number)
+                            }
+                        } == true
 
                         CallRow(call = call,
                             isOpen = isOpen,
+                            isBlocked = isNumberBlocked,
                             today = today,
                             roundTop = index == 0,
                             roundBottom = index == callsForDate.lastIndex,
@@ -274,6 +283,11 @@ fun CallsScreen(
                             blockNumber = { viewModel.blockNumber(call.contactInfo.number!!) },
                             unblockNumber = { viewModel.unblockNumber(call.contactInfo.number!!) },
                             refreshBlockStatus = { onResult -> viewModel.getBlockStatus(call, onResult) },
+                            onBlockStatusChanged = { isBlocked ->
+                                call.contactInfo.number?.let { number ->
+                                    blockedNumbers = if (isBlocked) blockedNumbers + number else blockedNumbers - number
+                                }
+                            },
                             deleteCall = { viewModel.deleteCall(call) }
                         )
                     }
@@ -480,6 +494,7 @@ private fun CallDateHeader(date: LocalDate, today: LocalDate) {
 private fun CallRow(
     call: DialerCall,
     isOpen: Boolean,
+    isBlocked: Boolean,
     today: LocalDate = LocalDate.now(),
     roundTop: Boolean,
     roundBottom: Boolean,
@@ -495,18 +510,28 @@ private fun CallRow(
     blockNumber: () -> Unit,
     unblockNumber: () -> Unit,
     refreshBlockStatus: ((Boolean) -> Unit) -> Unit,
+    onBlockStatusChanged: (Boolean) -> Unit,
     deleteCall: () -> Unit,
 ) {
     var contextMenuExpanded by remember { mutableStateOf(false) }
     var showBlockConfirmation by remember { mutableStateOf(false) }
     var showDeleteConfirmation by remember { mutableStateOf(false) }
-    var isNumberBlocked by remember(call.id) { mutableStateOf(false) }
+    var isNumberBlocked by remember(call.id) { mutableStateOf(isBlocked) }
     val resources = LocalResources.current
     val locale = LocalConfiguration.current.locales[0]
     val callDate = call.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
     val relativeTime = if (callDate == today) PrettyTime().format(call.date)
     else formatCallLogTime(call.date, locale)
-    val callLabel = if (call.type == CallType.BLOCKED) {
+    LaunchedEffect(call.id) {
+        refreshBlockStatus { blocked ->
+            isNumberBlocked = blocked
+            onBlockStatusChanged(blocked)
+        }
+    }
+    LaunchedEffect(isBlocked) {
+        isNumberBlocked = isBlocked
+    }
+    val callLabel = if (isNumberBlocked || call.type == CallType.BLOCKED) {
         stringResource(R.string.blocked)
     } else {
         call.contactInfo.type
@@ -543,6 +568,7 @@ private fun CallRow(
                     onLongClick = {
                         refreshBlockStatus { isBlocked ->
                             isNumberBlocked = isBlocked
+                            onBlockStatusChanged(isBlocked)
                             contextMenuExpanded = true
                         }
                     }
@@ -566,6 +592,7 @@ private fun CallRow(
                     } else {
                         icons.accountCircle
                     },
+                    badgeIcon = if (isNumberBlocked || call.type == CallType.BLOCKED) icons.block else null,
                     contentDescription = if (call.isVoicemailNumber) {
                         stringResource(R.string.filter_voicemail)
                     } else if (call.isContactSaved()) {
@@ -677,9 +704,28 @@ private fun CallRow(
                         label = stringResource(R.string.history),
                         icon = icons.history,
                         roundTop = call.isAnonymous(),
-                        roundBottom = true,
+                        roundBottom = call.isAnonymous(),
                         onClick = openHistory,
                     )
+
+                    if (!call.isAnonymous()) {
+                        CallRowButton(
+                            label = stringResource(
+                                if (isNumberBlocked) R.string.unblockThisCaller else R.string.blockThisCaller,
+                            ),
+                            icon = icons.block,
+                            roundBottom = true,
+                            onClick = {
+                                if (isNumberBlocked) {
+                                    unblockNumber()
+                                    isNumberBlocked = false
+                                    onBlockStatusChanged(false)
+                                } else {
+                                    showBlockConfirmation = true
+                                }
+                            },
+                        )
+                    }
                 }
             }
         }
@@ -703,6 +749,7 @@ private fun CallRow(
                         contextMenuExpanded = false
                         unblockNumber()
                         isNumberBlocked = false
+                        onBlockStatusChanged(false)
                     })
                 } else {
                     DropdownMenuItem(text = { Text(stringResource(R.string.blockThisCaller)) }, onClick = {
@@ -728,6 +775,7 @@ private fun CallRow(
                     showBlockConfirmation = false
                     blockNumber()
                     isNumberBlocked = true
+                    onBlockStatusChanged(true)
                 }) { Text(stringResource(R.string.blockThisCaller)) }
             },
             dismissButton = { TextButton(onClick = { showBlockConfirmation = false }) { Text(stringResource(R.string.cancel)) } }
@@ -803,6 +851,7 @@ private val anonymousCallMock = incomingCallMock.copy(
 private fun IncomingCallPreview() {
     CallRow(call = incomingCallMock,
         isOpen = false,
+        isBlocked = false,
         roundTop = true,
         roundBottom = true,
         icons = dev.alenajam.opendialer.core.common.ui.DefaultAppIcons,
@@ -817,6 +866,7 @@ private fun IncomingCallPreview() {
         blockNumber = {},
         unblockNumber = {},
         refreshBlockStatus = {},
+        onBlockStatusChanged = {},
         deleteCall = {})
 }
 
@@ -825,6 +875,7 @@ private fun IncomingCallPreview() {
 private fun OutgoingCallPreview() {
     CallRow(call = outgoingCallMock,
         isOpen = false,
+        isBlocked = false,
         roundTop = true,
         roundBottom = true,
         icons = dev.alenajam.opendialer.core.common.ui.DefaultAppIcons,
@@ -839,6 +890,7 @@ private fun OutgoingCallPreview() {
         blockNumber = {},
         unblockNumber = {},
         refreshBlockStatus = {},
+        onBlockStatusChanged = {},
         deleteCall = {})
 }
 
@@ -847,6 +899,7 @@ private fun OutgoingCallPreview() {
 private fun AnonymousCallPreview() {
     CallRow(call = anonymousCallMock,
         isOpen = false,
+        isBlocked = false,
         roundTop = true,
         roundBottom = true,
         icons = dev.alenajam.opendialer.core.common.ui.DefaultAppIcons,
@@ -861,5 +914,6 @@ private fun AnonymousCallPreview() {
         blockNumber = {},
         unblockNumber = {},
         refreshBlockStatus = {},
+        onBlockStatusChanged = {},
         deleteCall = {})
 }

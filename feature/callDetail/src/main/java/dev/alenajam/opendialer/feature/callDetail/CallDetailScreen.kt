@@ -193,6 +193,7 @@ private fun TopBar(
 ) {
     val canBlock = options.any { it.id == CallOption.ID_BLOCK_CALLER }
     val canUnblock = options.any { it.id == CallOption.ID_UNBLOCK_CALLER }
+    val isNumberBlocked = canUnblock
     var menuExpanded by remember { mutableStateOf(false) }
     var showBlockConfirmation by remember { mutableStateOf(false) }
 
@@ -236,6 +237,7 @@ private fun TopBar(
                         } else {
                             LocalAppIcons.current.accountCircle
                         },
+                        badgeIcon = if (isNumberBlocked) LocalAppIcons.current.block else null,
                         contentDescription = if (call.isVoicemailNumber) {
                             stringResource(R.string.voicemail)
                         } else {
@@ -244,7 +246,7 @@ private fun TopBar(
                         modifier = Modifier.size(50.dp)
                     )
                     Spacer(modifier = Modifier.size(8.dp))
-                    CallDetailTitle(call)
+                    CallDetailTitle(call, isNumberBlocked)
                 }
             }
         },
@@ -289,7 +291,7 @@ private fun TopBar(
 }
 
 @Composable
-private fun CallDetailTitle(call: DialerCall) {
+private fun CallDetailTitle(call: DialerCall, isNumberBlocked: Boolean) {
     val displayNumber = call.contactInfo.formattedNumber
         ?.takeIf { it.isNotBlank() }
         ?: call.contactInfo.number.orEmpty()
@@ -313,7 +315,7 @@ private fun CallDetailTitle(call: DialerCall) {
             Column {
                 Text(contact.name!!.trim().substringBefore(' '))
                 Text(
-                    text = stringResource(
+                    text = if (isNumberBlocked) stringResource(R.string.blocked) else stringResource(
                         R.string.call_detail_contact_subtitle,
                         phoneType,
                         displayNumber,
@@ -323,7 +325,20 @@ private fun CallDetailTitle(call: DialerCall) {
                 )
             }
         }
-        else -> Text(displayNumber)
+        else -> {
+            if (isNumberBlocked) {
+                Column {
+                    Text(displayNumber)
+                    Text(
+                        text = stringResource(R.string.blocked),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            } else {
+                Text(displayNumber)
+            }
+        }
     }
 }
 

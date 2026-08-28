@@ -3,6 +3,7 @@ package dev.alenajam.opendialer.core.common.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +28,7 @@ fun ContactAvatar(
     colorKey: String = contactAvatarColorKey(name),
     fallbackIcon: IconSource = LocalAppIcons.current.accountCircle,
     fallbackIconModifier: Modifier = Modifier.size(24.dp),
+    badgeIcon: IconSource? = null,
     initialTextStyle: TextStyle = MaterialTheme.typography.titleLarge
 ) {
     val contactName = name.orEmpty().trim()
@@ -60,6 +62,23 @@ fun ContactAvatar(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
+        }
+
+        badgeIcon?.let { icon ->
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .background(MaterialTheme.colorScheme.surface, CircleShape)
+                    .padding(2.dp)
+            ) {
+                AppIcon(
+                    icon = icon,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.size(16.dp),
+                )
+            }
         }
     }
 }
