@@ -164,7 +164,8 @@ fun CallDetailScreen(
                 sendMessage = viewModel::sendMessage,
                 copyNumber = { viewModel.copyNumber(call.value!!) },
                 dialNumber = { viewModel.editNumberBeforeCall(call.value!!) },
-                deleteCalls = { viewModel.deleteCalls(call.value!!) }
+                deleteCalls = { viewModel.deleteCalls(call.value!!) },
+                icons = icons
             )
         }
     ) { innerPadding ->
@@ -340,12 +341,13 @@ private fun BottomBar(
     copyNumber: () -> Unit,
     dialNumber: () -> Unit,
     deleteCalls: () -> Unit,
+    icons: dev.alenajam.opendialer.core.common.ui.AppIcons = LocalAppIcons.current
 ) {
     BottomAppBar(
         actions = {
             if (!isAnon) {
                 IconButton(onClick = sendMessage) {
-                    Icon(Icons.Outlined.Message, contentDescription = stringResource(R.string.send_message))
+                    AppIcon(icons.message, contentDescription = stringResource(R.string.send_message))
                 }
                 IconButton(onClick = copyNumber) {
                     Icon(Icons.Outlined.ContentCopy, contentDescription = stringResource(R.string.copy_number))
@@ -365,7 +367,11 @@ private fun BottomBar(
                     containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
                     elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
                 ) {
-                    AppIcon(LocalAppIcons.current.phone, stringResource(R.string.action_call))
+                    AppIcon(
+                        icon = LocalAppIcons.current.phone,
+                        contentDescription = stringResource(R.string.action_call),
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
             }
         }

@@ -28,7 +28,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.Message
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.outlined.Block
@@ -36,7 +35,6 @@ import androidx.compose.material.icons.outlined.CallMade
 import androidx.compose.material.icons.outlined.CallMissed
 import androidx.compose.material.icons.outlined.CallReceived
 import androidx.compose.material.icons.outlined.History
-import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Voicemail
 import androidx.compose.material3.DropdownMenu
