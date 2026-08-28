@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -168,7 +166,7 @@ fun ContactPickerScreen(
                     title = { Text(stringResource(R.string.choose_contact)) },
                     navigationIcon = {
                         IconButton(onClick = onNavigateBack) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.navigate_back))
+                            AppIcon(LocalAppIcons.current.arrowLeft, contentDescription = stringResource(R.string.navigate_back))
                         }
                     },
                     actions = {
@@ -230,8 +228,8 @@ private fun SectionHeader(text: String, isFavorites: Boolean = false) {
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         if (isFavorites) {
-            Icon(
-                imageVector = Icons.Default.Star,
+            AppIcon(
+                icon = LocalAppIcons.current.favorite,
                 contentDescription = null,
                 modifier = Modifier.size(16.dp),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
