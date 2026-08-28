@@ -105,6 +105,10 @@ private class FakeContactsRepository(contacts: List<DialerContactSummaryEntity>)
         toggledContactId = contactId
         toggledIsFavorite = isFavorite
     }
+
+    override suspend fun getContactNumbers(contactId: Int): List<String> = emptyList()
+
+    override suspend fun contactExists(contactId: Int?, contactKeys: List<String>): Boolean = false
 }
 
 private class FakeCallsRepository(calls: List<DialerCallEntity>) : CallsRepository {
@@ -113,7 +117,6 @@ private class FakeCallsRepository(calls: List<DialerCallEntity>) : CallsReposito
     override fun getCalls(): Flow<List<DialerCallEntity>> = callsFlow
 
     override suspend fun getCallByIds(
-        contentResolver: android.content.ContentResolver,
         ids: List<Int>,
     ): Either<Failure, List<DialerCallEntity>> = Either.Left(Failure.NoData)
 
