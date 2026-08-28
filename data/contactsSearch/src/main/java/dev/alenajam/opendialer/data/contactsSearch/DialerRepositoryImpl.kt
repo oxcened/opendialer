@@ -1,7 +1,6 @@
 package dev.alenajam.opendialer.data.contactsSearch
 
 import android.app.Application
-import android.content.ContentResolver
 import dev.alenajam.opendialer.core.common.exception.Failure
 import dev.alenajam.opendialer.core.common.functional.Either
 import javax.inject.Inject
@@ -9,10 +8,9 @@ import javax.inject.Inject
 class DialerRepositoryImpl
 @Inject constructor(private val app: Application) : DialerRepository {
     override suspend fun searchContacts(
-        contentResolver: ContentResolver,
         query: String
     ): Either<Failure, List<DialerSearchContactEntity>> {
-        SearchContactsData.getCursor(contentResolver, query)?.use {
+        SearchContactsData.getCursor(app.contentResolver, query)?.use {
             val data = SearchContactsData.getData(it)
             return Either.Right(data)
         }
@@ -21,10 +19,9 @@ class DialerRepositoryImpl
     }
 
     override suspend fun searchContactsDialpad(
-        contentResolver: ContentResolver,
         query: String
     ): Either<Failure, List<DialerSearchContactEntity>> {
-        SearchContactsDialpadData.getCursor(contentResolver)?.use {
+        SearchContactsDialpadData.getCursor(app.contentResolver)?.use {
             val data = SearchContactsDialpadData.getData(app, it, query)
             return Either.Right(data)
         }

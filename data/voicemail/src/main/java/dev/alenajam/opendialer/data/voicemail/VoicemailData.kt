@@ -2,11 +2,13 @@ package dev.alenajam.opendialer.data.voicemail
 
 import android.content.ContentResolver
 import android.content.ContentUris
+import android.content.ContentValues
 import android.database.Cursor
+import android.net.Uri
 import android.provider.BaseColumns
 import android.provider.VoicemailContract
 
-internal object VoicemailData {
+object VoicemailData {
     val uri = VoicemailContract.Voicemails.CONTENT_URI
 
     private val projection = arrayOf(
@@ -44,5 +46,17 @@ internal object VoicemailData {
                 )
             )
         }
+    }
+
+    fun markRead(contentResolver: ContentResolver, voicemailUri: Uri): Int {
+        val values = ContentValues().apply {
+            put(VoicemailContract.Voicemails.IS_READ, 1)
+        }
+        return contentResolver.update(
+            voicemailUri,
+            values,
+            null,
+            null
+        )
     }
 }
