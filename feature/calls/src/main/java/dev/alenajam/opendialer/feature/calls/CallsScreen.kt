@@ -38,7 +38,6 @@ import androidx.compose.material.icons.outlined.CallReceived
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.PersonAddAlt
 import androidx.compose.material.icons.outlined.Voicemail
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -379,7 +378,7 @@ private fun FavoritesSection(
                         color = MaterialTheme.colorScheme.surfaceContainerHigh
                     ) {
                         Box(contentAlignment = Alignment.Center) {
-                            Icon(Icons.Outlined.PersonAddAlt, contentDescription = null)
+                            AppIcon(LocalAppIcons.current.personAdd, contentDescription = null)
                         }
                     }
                     Spacer(modifier = Modifier.height(4.dp))
@@ -632,6 +631,7 @@ private fun CallRow(
                         AppIcon(
                             icon = icons.phone,
                             contentDescription = null,
+                            modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
@@ -749,6 +749,7 @@ private fun CallRowButton(
             AppIcon(
                 icon = icon,
                 contentDescription = null,
+                modifier = Modifier.size(24.dp),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 

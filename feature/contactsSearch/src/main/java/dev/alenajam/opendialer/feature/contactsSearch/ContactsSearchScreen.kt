@@ -27,7 +27,6 @@ import androidx.compose.material.icons.automirrored.outlined.Message
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.History
-import androidx.compose.material.icons.outlined.PersonAddAlt
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -482,7 +481,8 @@ private fun ResultRow(
                 IconButton(onClick = onCall) {
                     AppIcon(
                         icon = icons.phone,
-                        contentDescription = stringResource(R.string.call_contact)
+                        contentDescription = stringResource(R.string.call_contact),
+                        modifier = Modifier.size(24.dp)
                     )
                 }
             }
@@ -553,6 +553,7 @@ private fun ResultActionRow(
             AppIcon(
                 icon = icon,
                 contentDescription = null,
+                modifier = Modifier.size(24.dp),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Text(text = label, style = MaterialTheme.typography.bodyLarge)
@@ -609,7 +610,8 @@ private fun ActionRow(
         ) {
             AppIcon(
                 icon = icon,
-                contentDescription = null
+                contentDescription = null,
+                modifier = Modifier.size(24.dp)
             )
 
             Text(
@@ -762,7 +764,8 @@ private fun Footer(
                 ) {
                     AppIcon(
                         icon = icons.phone,
-                        contentDescription = null
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
                     )
                     Text(text = stringResource(R.string.dialpad_button_call_label))
                 }
