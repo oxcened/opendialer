@@ -590,7 +590,7 @@ private fun CallRow(
                     fallbackIcon = if (call.isVoicemailNumber) {
                         icons.voicemail
                     } else {
-                        icons.accountCircle
+                        icons.person
                     },
                     avatarIcon = if (isNumberBlocked) icons.block else null,
                     contentDescription = if (call.isVoicemailNumber) {
