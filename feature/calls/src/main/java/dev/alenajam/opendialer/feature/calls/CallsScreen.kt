@@ -531,7 +531,7 @@ private fun CallRow(
     LaunchedEffect(isBlocked) {
         isNumberBlocked = isBlocked
     }
-    val callLabel = if (isNumberBlocked || call.type == CallType.BLOCKED) {
+    val callLabel = if (isNumberBlocked) {
         stringResource(R.string.blocked)
     } else {
         call.contactInfo.type
@@ -592,7 +592,7 @@ private fun CallRow(
                     } else {
                         icons.accountCircle
                     },
-                    avatarIcon = if (isNumberBlocked || call.type == CallType.BLOCKED) icons.block else null,
+                    avatarIcon = if (isNumberBlocked) icons.block else null,
                     contentDescription = if (call.isVoicemailNumber) {
                         stringResource(R.string.filter_voicemail)
                     } else if (call.isContactSaved()) {

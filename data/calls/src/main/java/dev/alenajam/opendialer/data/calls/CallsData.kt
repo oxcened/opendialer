@@ -49,11 +49,14 @@ object CallsData {
         Calls.CACHED_NUMBER_TYPE
     )
 
-    /** Filter out non-video Duo calls. */
+    /** Filter out blocked calls and non-video Duo calls. */
     private const val where = """
-            ${Calls.PHONE_ACCOUNT_COMPONENT_NAME} IS NULL
-            OR ${Calls.PHONE_ACCOUNT_COMPONENT_NAME} NOT LIKE 'com.google.android.apps.tachyon%'
-            OR ${Calls.FEATURES} & ${Calls.FEATURES_VIDEO} == ${Calls.FEATURES_VIDEO}
+            ${Calls.TYPE} != ${Calls.BLOCKED_TYPE}
+            AND (
+                ${Calls.PHONE_ACCOUNT_COMPONENT_NAME} IS NULL
+                OR ${Calls.PHONE_ACCOUNT_COMPONENT_NAME} NOT LIKE 'com.google.android.apps.tachyon%'
+                OR ${Calls.FEATURES} & ${Calls.FEATURES_VIDEO} == ${Calls.FEATURES_VIDEO}
+            )
         """
 
     fun getCursor(contentResolver: ContentResolver, uri: Uri): Cursor? = contentResolver.query(
