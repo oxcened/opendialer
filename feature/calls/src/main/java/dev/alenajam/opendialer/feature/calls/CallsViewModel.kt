@@ -179,11 +179,47 @@ class CallsViewModel
     }
 
     private fun checkForUpdate() {
+        val cachedUpdate = callLogPreferences.getCachedAvailableUpdate()
+        if (cachedUpdate != null && isNewerThanInstalledVersion(cachedUpdate)) {
+            showUpdateUnlessDismissed(cachedUpdate)
+        }
+        if (System.currentTimeMillis() - callLogPreferences.getUpdateLastCheckMillis() < UPDATE_CHECK_INTERVAL_MILLIS) {
+            return
+        }
+
         viewModelScope.launch {
-            val update = updateChecker.getAvailableUpdate() ?: return@launch
-            if (callLogPreferences.getDismissedUpdateVersion() != update.version) {
-                _availableUpdate.value = update
+            when (val result = updateChecker.checkForUpdate(callLogPreferences.getUpdateEtag())) {
+                is UpdateCheckResult.Success -> {
+                    callLogPreferences.setUpdateLastCheckMillis(System.currentTimeMillis())
+                    callLogPreferences.setUpdateEtag(result.etag)
+                    callLogPreferences.setCachedAvailableUpdate(result.update)
+                    result.update?.let(::showUpdateUnlessDismissed)
+                }
+                UpdateCheckResult.NotModified -> {
+                    callLogPreferences.setUpdateLastCheckMillis(System.currentTimeMillis())
+                }
+                UpdateCheckResult.Failed -> Unit
             }
         }
+    }
+
+    private fun isNewerThanInstalledVersion(update: AppUpdate): Boolean {
+        val installedVersion = runCatching {
+            app.packageManager.getPackageInfo(app.packageName, 0).versionName
+        }.getOrNull() ?: return false
+        val updateSemanticVersion = update.version.toSemanticVersionOrNull() ?: return false
+        val installedSemanticVersion = installedVersion.toSemanticVersionOrNull(allowSuffix = true)
+            ?: return false
+        return updateSemanticVersion > installedSemanticVersion
+    }
+
+    private fun showUpdateUnlessDismissed(update: AppUpdate) {
+        if (callLogPreferences.getDismissedUpdateVersion() != update.version) {
+            _availableUpdate.value = update
+        }
+    }
+
+    private companion object {
+        const val UPDATE_CHECK_INTERVAL_MILLIS = 24 * 60 * 60 * 1_000L
     }
 }

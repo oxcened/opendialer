@@ -19,19 +19,30 @@ data class AppUpdate(
 )
 
 interface UpdateChecker {
-    suspend fun getAvailableUpdate(): AppUpdate?
+    suspend fun checkForUpdate(etag: String?): UpdateCheckResult
+}
+
+sealed interface UpdateCheckResult {
+    data class Success(
+        val update: AppUpdate?,
+        val etag: String?,
+    ) : UpdateCheckResult
+
+    data object NotModified : UpdateCheckResult
+
+    data object Failed : UpdateCheckResult
 }
 
 @Singleton
 class GitHubUpdateChecker @Inject constructor(
     @param:ApplicationContext private val context: Context,
 ) : UpdateChecker {
-    override suspend fun getAvailableUpdate(): AppUpdate? = withContext(Dispatchers.IO) {
+    override suspend fun checkForUpdate(etag: String?): UpdateCheckResult = withContext(Dispatchers.IO) {
         val installedVersion = context.packageManager
             .getPackageInfo(context.packageName, 0)
             .versionName
             ?.toSemanticVersionOrNull(allowSuffix = true)
-            ?: return@withContext null
+            ?: return@withContext UpdateCheckResult.Failed
 
         runCatching {
             val connection = (URL(context.getString(R.string.github_latest_release_api)).openConnection()
@@ -41,26 +52,36 @@ class GitHubUpdateChecker @Inject constructor(
                 readTimeout = NETWORK_TIMEOUT_MILLIS
                 setRequestProperty("Accept", "application/vnd.github+json")
                 setRequestProperty("User-Agent", "OpenDialer")
+                etag?.let { setRequestProperty("If-None-Match", it) }
             }
 
             try {
-                if (connection.responseCode !in HTTP_SUCCESS_RANGE) return@runCatching null
+                if (connection.responseCode == HTTP_NOT_MODIFIED) {
+                    return@runCatching UpdateCheckResult.NotModified
+                }
+                if (connection.responseCode !in HTTP_SUCCESS_RANGE) return@runCatching UpdateCheckResult.Failed
 
                 val release = connection.inputStream.bufferedReader().use { reader ->
                     json.decodeFromString<GitHubRelease>(reader.readText())
                 }
-                val releaseVersion = release.tagName.toSemanticVersionOrNull() ?: return@runCatching null
-                if (releaseVersion <= installedVersion) return@runCatching null
+                val releaseVersion = release.tagName.toSemanticVersionOrNull()
+                    ?: return@runCatching UpdateCheckResult.Failed
+                val update = if (releaseVersion > installedVersion) {
+                    AppUpdate(version = releaseVersion.toString(), releaseUrl = release.htmlUrl)
+                } else {
+                    null
+                }
 
-                AppUpdate(version = releaseVersion.toString(), releaseUrl = release.htmlUrl)
+                UpdateCheckResult.Success(update, connection.getHeaderField("ETag"))
             } finally {
                 connection.disconnect()
             }
-        }.getOrNull()
+        }.getOrDefault(UpdateCheckResult.Failed)
     }
 
     private companion object {
         const val NETWORK_TIMEOUT_MILLIS = 10_000
+        const val HTTP_NOT_MODIFIED = 304
         val HTTP_SUCCESS_RANGE = 200..299
         val json = Json { ignoreUnknownKeys = true }
     }

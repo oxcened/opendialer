@@ -18,6 +18,18 @@ interface CallLogPreferences {
     fun getDismissedUpdateVersion(): String?
 
     fun setDismissedUpdateVersion(version: String)
+
+    fun getUpdateLastCheckMillis(): Long
+
+    fun setUpdateLastCheckMillis(timestampMillis: Long)
+
+    fun getUpdateEtag(): String?
+
+    fun setUpdateEtag(etag: String?)
+
+    fun getCachedAvailableUpdate(): AppUpdate?
+
+    fun setCachedAvailableUpdate(update: AppUpdate?)
 }
 
 class SharedPreferencesCallLogPreferences @Inject constructor(
@@ -35,6 +47,29 @@ class SharedPreferencesCallLogPreferences @Inject constructor(
 
     override fun setDismissedUpdateVersion(version: String) {
         SharedPreferenceHelper.setDismissedUpdateVersion(context, version)
+    }
+
+    override fun getUpdateLastCheckMillis(): Long =
+        SharedPreferenceHelper.getUpdateLastCheckMillis(context)
+
+    override fun setUpdateLastCheckMillis(timestampMillis: Long) {
+        SharedPreferenceHelper.setUpdateLastCheckMillis(context, timestampMillis)
+    }
+
+    override fun getUpdateEtag(): String? = SharedPreferenceHelper.getUpdateEtag(context)
+
+    override fun setUpdateEtag(etag: String?) {
+        SharedPreferenceHelper.setUpdateEtag(context, etag)
+    }
+
+    override fun getCachedAvailableUpdate(): AppUpdate? {
+        val version = SharedPreferenceHelper.getAvailableUpdateVersion(context) ?: return null
+        val releaseUrl = SharedPreferenceHelper.getAvailableUpdateUrl(context) ?: return null
+        return AppUpdate(version, releaseUrl)
+    }
+
+    override fun setCachedAvailableUpdate(update: AppUpdate?) {
+        SharedPreferenceHelper.setAvailableUpdate(context, update?.version, update?.releaseUrl)
     }
 }
 
