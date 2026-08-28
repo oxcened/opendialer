@@ -505,6 +505,9 @@ private fun CallRow(
     val displayNumber = call.contactInfo.formattedNumber
         ?.takeIf { it.isNotBlank() }
         ?: call.contactInfo.number.orEmpty()
+    val title = if (call.isVoicemailNumber) stringResource(R.string.filter_voicemail)
+    else if (call.isAnonymous()) stringResource(id = R.string.anonymous)
+    else call.contactInfo.name?.takeIf { it.isNotBlank() } ?: displayNumber
     val cardShape = RoundedCornerShape(
         topStart = if (roundTop) 20.dp else 2.dp,
         topEnd = if (roundTop) 20.dp else 2.dp,
@@ -554,14 +557,25 @@ private fun CallRow(
                 )
 
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = if (call.isVoicemailNumber) stringResource(R.string.filter_voicemail)
-                        else if (call.isAnonymous()) stringResource(id = R.string.anonymous)
-                        else if (!call.contactInfo.name.isNullOrBlank()) call.contactInfo.name!!
-                        else displayNumber,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = title,
+                            modifier = Modifier.weight(1f, fill = false),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+
+                        if (call.childCalls.size > 1) {
+                            Text(
+                                text = stringResource(R.string.call_log_call_count, call.childCalls.size),
+                                modifier = Modifier.padding(start = 4.dp),
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.72f),
+                            )
+                        }
+                    }
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
