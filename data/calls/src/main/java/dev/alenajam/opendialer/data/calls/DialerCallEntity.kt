@@ -1,6 +1,6 @@
 package dev.alenajam.opendialer.data.calls
 
-class DialerCallEntity(
+data class DialerCallEntity(
     val id: Int,
     val number: String?,
     val name: String?,

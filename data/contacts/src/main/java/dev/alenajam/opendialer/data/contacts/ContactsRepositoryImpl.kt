@@ -4,10 +4,12 @@ import android.app.Application
 import android.content.ContentValues
 import android.database.ContentObserver
 import android.provider.ContactsContract
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ContactsRepositoryImpl
@@ -69,5 +71,26 @@ class ContactsRepositoryImpl
             "${ContactsContract.Contacts._ID} = ?",
             arrayOf(contactId.toString())
         )
+    }
+
+    override suspend fun getContactNumbers(contactId: Int): List<String> = withContext(Dispatchers.IO) {
+        ContactsData.getNumbersCursor(app.contentResolver, contactId)?.use {
+            ContactsData.getNumbersData(it)
+        } ?: emptyList()
+    }
+
+    override suspend fun contactExists(
+        contactId: Int?,
+        contactKeys: List<String>
+    ): Boolean = withContext(Dispatchers.IO) {
+        try {
+            contactId?.let { id ->
+                ContactsData.existsByIdCursor(app.contentResolver, id)?.use { it.moveToFirst() } ?: false
+            } ?: contactKeys.any { number ->
+                ContactsData.existsByNumberCursor(app.contentResolver, number)?.use { it.moveToFirst() } == true
+            }
+        } catch (_: SecurityException) {
+            true
+        }
     }
 }
