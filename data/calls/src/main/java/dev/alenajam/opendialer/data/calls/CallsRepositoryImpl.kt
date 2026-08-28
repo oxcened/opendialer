@@ -48,7 +48,29 @@ class CallsRepositoryImpl @Inject constructor(
 
     override suspend fun getCallByIds(
         ids: List<Int>
-    ): Either<Failure, List<DialerCallEntity>> {
+    ): Either<Failure, List<DialerCallEntity>> = getCallDataByIds(ids)
+
+    fun observeCallByIds(ids: List<Int>): Flow<Either<Failure, List<DialerCallEntity>>> =
+        callbackFlow {
+            fun emitCallData() {
+                trySend(getCallDataByIds(ids))
+            }
+
+            val observer = object : ContentObserver(null) {
+                override fun onChange(selfChange: Boolean) {
+                    emitCallData()
+                }
+            }
+
+            app.contentResolver.registerContentObserver(CallsData.getUri(app), true, observer)
+            emitCallData()
+
+            awaitClose {
+                app.contentResolver.unregisterContentObserver(observer)
+            }
+        }
+
+    private fun getCallDataByIds(ids: List<Int>): Either<Failure, List<DialerCallEntity>> {
         val selectedCalls = CallDetailData.getCursor(app.contentResolver, ids)?.use { cursor ->
             CallDetailData.getData(
                 cursor = cursor,
