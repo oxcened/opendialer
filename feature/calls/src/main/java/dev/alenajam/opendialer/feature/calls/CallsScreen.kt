@@ -679,15 +679,28 @@ private fun CallRow(
 
             AnimatedVisibility(visible = isOpen) {
                 Column(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(1.dp),
-                ) {
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(1.dp),
+            ) {
+                    if (!call.isAnonymous() && isNumberBlocked) {
+                        CallRowButton(
+                            label = stringResource(R.string.unblockThisCaller),
+                            icon = icons.block,
+                            roundTop = true,
+                            onClick = {
+                                unblockNumber()
+                                isNumberBlocked = false
+                                onBlockStatusChanged(false)
+                            },
+                        )
+                    }
+
                     if (!call.isAnonymous()) {
                         if (!call.isContactSaved()) {
                             CallRowButton(
                                 label = stringResource(R.string.add_to_a_contact),
                                 icon = icons.personAdd,
-                                roundTop = true,
+                                roundTop = !isNumberBlocked,
                                 onClick = addContact
                             )
                         }
@@ -695,7 +708,7 @@ private fun CallRow(
                         CallRowButton(
                             label = stringResource(R.string.send_message),
                             icon = icons.message,
-                            roundTop = call.isContactSaved(),
+                            roundTop = call.isContactSaved() && !isNumberBlocked,
                             onClick = sendMessage,
                         )
                     }
@@ -704,22 +717,9 @@ private fun CallRow(
                         label = stringResource(R.string.history),
                         icon = icons.history,
                         roundTop = call.isAnonymous(),
-                        roundBottom = call.isAnonymous(),
+                        roundBottom = true,
                         onClick = openHistory,
                     )
-
-                    if (!call.isAnonymous() && isNumberBlocked) {
-                        CallRowButton(
-                            label = stringResource(R.string.unblockThisCaller),
-                            icon = icons.block,
-                            roundBottom = true,
-                            onClick = {
-                                unblockNumber()
-                                isNumberBlocked = false
-                                onBlockStatusChanged(false)
-                            },
-                        )
-                    }
                 }
             }
         }
