@@ -12,7 +12,7 @@
     <string name="set_battery_saver" comment="Theme option that follows the device or battery-saver setting.">跟随系统设置</string>
     <string name="theme" comment="Settings item title for choosing the app color theme.">主题</string>
     <string name="display_options" comment="Settings section title for appearance preferences.">显示选项</string>
-    <string name="display_options_description" comment="Settings section summary for appearance preferences.">选择 OpenDialer 的显示方式</string>
+    <string name="display_options_description" comment="Settings section summary for appearance preferences.">选择 %1$s 的显示方式</string>
     <string name="dialer" comment="Settings section title for phone-related preferences.">电话</string>
     <string name="manageBlockedNumbers" comment="Settings item title that opens the system blocked-number list.">管理已屏蔽的号码</string>
     <string name="manage_blocked_numbers_description" comment="Settings item summary for reviewing blocked phone numbers.">查看号码并取消屏蔽</string>
@@ -27,12 +27,12 @@
     <string name="developer_website" comment="Description of the developer website link. %1$s is the website domain.">访问 %1$s</string>
     <string name="join_discord" comment="Title of the community Discord link on the About screen.">加入 Discord</string>
     <string name="discord_description" comment="Description of the community Discord link on the About screen.">与社区交流并关注开发进展</string>
-    <string name="contribute_translations" comment="Title of the OpenDialer translation contribution link on the About screen.">参与翻译</string>
-    <string name="contribute_translations_description" comment="Description of the OpenDialer translation contribution link on the About screen.">帮助 OpenDialer 支持更多语言。</string>
+    <string name="contribute_translations" comment="Title of the %1$s translation contribution link on the About screen.">参与翻译</string>
+    <string name="contribute_translations_description" comment="Description of the %1$s translation contribution link on the About screen.">帮助 %1$s 支持更多语言。</string>
     <string name="feature_requests" comment="Title of the feature-request link on the About screen.">功能建议</string>
-    <string name="feature_requests_description" comment="Description of the feature-request link on the About screen.">为 OpenDialer 提出建议并投票。</string>
+    <string name="feature_requests_description" comment="Description of the feature-request link on the About screen.">为 %1$s 提出建议并投票。</string>
     <string name="view_source_code" comment="Title of the source-code link on the About screen.">查看源代码</string>
-    <string name="open_source_description" comment="Description of the source-code link on the About screen.">OpenDialer 是开源软件。浏览代码并在 GitHub 上参与贡献。</string>
+    <string name="open_source_description" comment="Description of the source-code link on the About screen.">%1$s 是开源软件。浏览代码并在 GitHub 上参与贡献。</string>
     <string name="report_an_issue" comment="Title of the issue-reporting link on the About screen.">报告问题</string>
     <string name="issues_description" comment="Description of the issue-reporting link on the About screen.">发现错误或有新想法？请在 GitHub 上提交问题。</string>
     <string name="contact_developer" comment="Title of the developer email link on the About screen.">联系方式</string>

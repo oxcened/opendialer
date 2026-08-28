@@ -6,15 +6,15 @@
     <string name="clear_search" comment="Accessibility label for clearing the current search query.">Clear search</string>
     <string name="call_voicemail" comment="Action that calls the user's voicemail service.">Call voicemail</string>
     <string name="voicemail" comment="Label for voicemail in navigation or call information.">Voicemail</string>
-    <string name="default_phone_title" comment="Title of the prompt asking the user to make OpenDialer the default phone app.">Set OpenDialer as default</string>
-    <string name="default_phone_description" comment="Explanation that calling requires OpenDialer to be the default phone app.">OpenDialer can only make and receive calls when it’s your default phone app.</string>
+    <string name="default_phone_title" comment="Title of the prompt asking the user to make %1$s the default phone app.">Set %1$s as default</string>
+    <string name="default_phone_description" comment="Explanation that calling requires %1$s to be the default phone app.">%1$s can only make and receive calls when it’s your default phone app.</string>
     <string name="default_phone_button" comment="Button that opens the system flow for choosing the default phone app.">Set as default</string>
-    <string name="setup_title" comment="Title of the guided phone-app setup.">Set up OpenDialer</string>
+    <string name="setup_title" comment="Title of the guided phone-app setup.">Set up %1$s</string>
     <string name="setup_description" comment="Explanation for the guided setup steps.">Complete these steps so calling works reliably.</string>
-    <string name="setup_default_phone_title" comment="First setup step title.">Make OpenDialer your phone app</string>
-    <string name="setup_default_phone_description" comment="First setup step explanation.">This lets OpenDialer make and receive calls.</string>
+    <string name="setup_default_phone_title" comment="First setup step title.">Make %1$s your phone app</string>
+    <string name="setup_default_phone_description" comment="First setup step explanation.">This lets %1$s make and receive calls.</string>
     <string name="setup_default_phone_action" comment="First setup step button.">Choose phone app</string>
-    <string name="setup_default_phone_restricted_description" comment="Help shown when Android blocks the default-phone request.">If Android did not let you choose OpenDialer, open App info. In the menu, allow restricted settings, then try again.</string>
+    <string name="setup_default_phone_restricted_description" comment="Help shown when Android blocks the default-phone request.">If Android did not let you choose %1$s, open App info. In the menu, allow restricted settings, then try again.</string>
     <string name="setup_default_phone_restricted_action" comment="Button that opens the system App info page.">Open app info</string>
     <string name="setup_full_screen_title" comment="Second setup step title.">Show incoming calls full screen</string>
     <string name="setup_full_screen_description" comment="Second setup step explanation.">This lets incoming calls open over the lock screen, so you can answer immediately.</string>

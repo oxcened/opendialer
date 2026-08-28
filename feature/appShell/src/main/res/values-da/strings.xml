@@ -6,15 +6,15 @@
     <string name="clear_search" comment="Accessibility label for clearing the current search query.">Ryd søgning</string>
     <string name="call_voicemail" comment="Action that calls the user's voicemail service.">Ring til telefonsvarer</string>
     <string name="voicemail" comment="Label for voicemail in navigation or call information.">Telefonsvarer</string>
-    <string name="default_phone_title" comment="Title of the prompt asking the user to make OpenDialer the default phone app.">Gør OpenDialer til standardtelefonapp</string>
-    <string name="default_phone_description" comment="Explanation that calling requires OpenDialer to be the default phone app.">OpenDialer kan kun foretage og modtage opkald, når appen er din standardtelefonapp.</string>
+    <string name="default_phone_title" comment="Title of the prompt asking the user to make %1$s the default phone app.">Gør %1$s til standardtelefonapp</string>
+    <string name="default_phone_description" comment="Explanation that calling requires %1$s to be the default phone app.">%1$s kan kun foretage og modtage opkald, når appen er din standardtelefonapp.</string>
     <string name="default_phone_button" comment="Button that opens the system flow for choosing the default phone app.">Angiv som standard</string>
-    <string name="setup_title" comment="Title of the guided phone-app setup.">Opsæt OpenDialer</string>
+    <string name="setup_title" comment="Title of the guided phone-app setup.">Opsæt %1$s</string>
     <string name="setup_description" comment="Explanation for the guided setup steps.">Gennemfør disse trin, så opkald fungerer pålideligt.</string>
-    <string name="setup_default_phone_title" comment="First setup step title.">Gør OpenDialer til din telefonapp</string>
-    <string name="setup_default_phone_description" comment="First setup step explanation.">Det giver OpenDialer mulighed for at foretage og modtage opkald.</string>
+    <string name="setup_default_phone_title" comment="First setup step title.">Gør %1$s til din telefonapp</string>
+    <string name="setup_default_phone_description" comment="First setup step explanation.">Det giver %1$s mulighed for at foretage og modtage opkald.</string>
     <string name="setup_default_phone_action" comment="First setup step button.">Vælg telefonapp</string>
-    <string name="setup_default_phone_restricted_description" comment="Help shown when Android blocks the default-phone request.">Hvis Android ikke lod dig vælge OpenDialer, skal du åbne Appoplysninger. Tillad begrænsede indstillinger i menuen, og prøv derefter igen.</string>
+    <string name="setup_default_phone_restricted_description" comment="Help shown when Android blocks the default-phone request.">Hvis Android ikke lod dig vælge %1$s, skal du åbne Appoplysninger. Tillad begrænsede indstillinger i menuen, og prøv derefter igen.</string>
     <string name="setup_default_phone_restricted_action" comment="Button that opens the system App info page.">Åbn appoplysninger</string>
     <string name="setup_full_screen_title" comment="Second setup step title.">Vis indgående opkald på fuld skærm</string>
     <string name="setup_full_screen_description" comment="Second setup step explanation.">Indgående opkald åbnes over låseskærmen, så du kan svare med det samme.</string>

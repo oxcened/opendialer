@@ -6,15 +6,15 @@
     <string name="clear_search" comment="Accessibility label for clearing the current search query.">清除搜索</string>
     <string name="call_voicemail" comment="Action that calls the user's voicemail service.">呼叫语音信箱</string>
     <string name="voicemail" comment="Label for voicemail in navigation or call information.">语音信箱</string>
-    <string name="default_phone_title" comment="Title of the prompt asking the user to make OpenDialer the default phone app.">将 OpenDialer 设为默认电话应用</string>
-    <string name="default_phone_description" comment="Explanation that calling requires OpenDialer to be the default phone app.">只有将 OpenDialer 设为默认电话应用后，才能拨打和接听电话。</string>
+    <string name="default_phone_title" comment="Title of the prompt asking the user to make %1$s the default phone app.">将 %1$s 设为默认电话应用</string>
+    <string name="default_phone_description" comment="Explanation that calling requires %1$s to be the default phone app.">只有将 %1$s 设为默认电话应用后，才能拨打和接听电话。</string>
     <string name="default_phone_button" comment="Button that opens the system flow for choosing the default phone app.">设为默认</string>
-    <string name="setup_title" comment="Title of the guided phone-app setup.">设置 OpenDialer</string>
+    <string name="setup_title" comment="Title of the guided phone-app setup.">设置 %1$s</string>
     <string name="setup_description" comment="Explanation for the guided setup steps.">完成这些步骤，确保通话功能可靠运行。</string>
-    <string name="setup_default_phone_title" comment="First setup step title.">将 OpenDialer 设为电话应用</string>
-    <string name="setup_default_phone_description" comment="First setup step explanation.">这样 OpenDialer 才能拨打和接听电话。</string>
+    <string name="setup_default_phone_title" comment="First setup step title.">将 %1$s 设为电话应用</string>
+    <string name="setup_default_phone_description" comment="First setup step explanation.">这样 %1$s 才能拨打和接听电话。</string>
     <string name="setup_default_phone_action" comment="First setup step button.">选择电话应用</string>
-    <string name="setup_default_phone_restricted_description" comment="Help shown when Android blocks the default-phone request.">如果 Android 不允许您选择 OpenDialer，请打开应用信息。在菜单中允许受限设置，然后重试。</string>
+    <string name="setup_default_phone_restricted_description" comment="Help shown when Android blocks the default-phone request.">如果 Android 不允许您选择 %1$s，请打开应用信息。在菜单中允许受限设置，然后重试。</string>
     <string name="setup_default_phone_restricted_action" comment="Button that opens the system App info page.">打开应用信息</string>
     <string name="setup_full_screen_title" comment="Second setup step title.">全屏显示来电</string>
     <string name="setup_full_screen_description" comment="Second setup step explanation.">来电会显示在锁定屏幕上方，让您可以立即接听。</string>

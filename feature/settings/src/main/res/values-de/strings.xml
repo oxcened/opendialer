@@ -12,7 +12,7 @@
     <string name="set_battery_saver" comment="Theme option that follows the device or battery-saver setting.">Systemeinstellung verwenden</string>
     <string name="theme" comment="Settings item title for choosing the app color theme.">Design</string>
     <string name="display_options" comment="Settings section title for appearance preferences.">Anzeigeoptionen</string>
-    <string name="display_options_description" comment="Settings section summary for appearance preferences.">Wähle das Erscheinungsbild von OpenDialer</string>
+    <string name="display_options_description" comment="Settings section summary for appearance preferences.">Wähle das Erscheinungsbild von %1$s</string>
     <string name="dialer" comment="Settings section title for phone-related preferences.">Telefon</string>
     <string name="manageBlockedNumbers" comment="Settings item title that opens the system blocked-number list.">Blockierte Nummern verwalten</string>
     <string name="manage_blocked_numbers_description" comment="Settings item summary for reviewing blocked phone numbers.">Telefonnummern prüfen und Blockierungen aufheben</string>
@@ -27,12 +27,12 @@
     <string name="developer_website" comment="Description of the developer website link. %1$s is the website domain.">%1$s besuchen</string>
     <string name="join_discord" comment="Title of the community Discord link on the About screen.">Discord beitreten</string>
     <string name="discord_description" comment="Description of the community Discord link on the About screen.">Tausche dich mit der Community aus und verfolge die Entwicklung</string>
-    <string name="contribute_translations" comment="Title of the OpenDialer translation contribution link on the About screen.">Übersetzungen beitragen</string>
-    <string name="contribute_translations_description" comment="Description of the OpenDialer translation contribution link on the About screen.">Hilf dabei, OpenDialer in weiteren Sprachen verfügbar zu machen.</string>
+    <string name="contribute_translations" comment="Title of the %1$s translation contribution link on the About screen.">Übersetzungen beitragen</string>
+    <string name="contribute_translations_description" comment="Description of the %1$s translation contribution link on the About screen.">Hilf dabei, %1$s in weiteren Sprachen verfügbar zu machen.</string>
     <string name="feature_requests" comment="Title of the feature-request link on the About screen.">Funktionswünsche</string>
-    <string name="feature_requests_description" comment="Description of the feature-request link on the About screen.">Schlage Ideen für OpenDialer vor und stimme darüber ab.</string>
+    <string name="feature_requests_description" comment="Description of the feature-request link on the About screen.">Schlage Ideen für %1$s vor und stimme darüber ab.</string>
     <string name="view_source_code" comment="Title of the source-code link on the About screen.">Quellcode anzeigen</string>
-    <string name="open_source_description" comment="Description of the source-code link on the About screen.">OpenDialer ist Open Source. Sieh dir den Code an und hilf auf GitHub mit.</string>
+    <string name="open_source_description" comment="Description of the source-code link on the About screen.">%1$s ist Open Source. Sieh dir den Code an und hilf auf GitHub mit.</string>
     <string name="report_an_issue" comment="Title of the issue-reporting link on the About screen.">Problem melden</string>
     <string name="issues_description" comment="Description of the issue-reporting link on the About screen.">Du hast einen Fehler gefunden oder eine Idee? Erstelle ein Issue auf GitHub.</string>
     <string name="contact_developer" comment="Title of the developer email link on the About screen.">Kontakt</string>

@@ -33,6 +33,7 @@ fun AboutScreen(
     onNavigateBack: () -> Unit
 ) {
     val context = LocalContext.current
+    val appName = stringResource(R.string.app_name)
 
     Scaffold(
         topBar = {
@@ -67,7 +68,7 @@ fun AboutScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = stringResource(R.string.app_name),
+                text = appName,
                 style = MaterialTheme.typography.headlineMedium
             )
 
@@ -140,7 +141,7 @@ fun AboutScreen(
 
                 AboutLinkCard(
                     title = stringResource(R.string.contribute_translations),
-                    description = stringResource(R.string.contribute_translations_description),
+                    description = stringResource(R.string.contribute_translations_description, appName),
                     uri = stringResource(R.string.url_crowdin_opendialer),
                     roundTop = false,
                     roundBottom = false
@@ -148,7 +149,7 @@ fun AboutScreen(
 
                 AboutLinkCard(
                     title = stringResource(R.string.feature_requests),
-                    description = stringResource(R.string.feature_requests_description),
+                    description = stringResource(R.string.feature_requests_description, appName),
                     uri = stringResource(R.string.url_feature_requests),
                     roundTop = false,
                     roundBottom = true
@@ -164,7 +165,7 @@ fun AboutScreen(
             Column {
                 AboutLinkCard(
                     title = stringResource(R.string.view_source_code),
-                    description = stringResource(R.string.open_source_description),
+                    description = stringResource(R.string.open_source_description, appName),
                     uri = stringResource(R.string.url_github_opendialer),
                     roundTop = true,
                     roundBottom = false
