@@ -31,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -71,13 +72,18 @@ fun InCallControls(
     onMerge: () -> Unit = {},
     onSwap: () -> Unit = {},
     onManageConference: () -> Unit = {},
-    onDigit: (digit: Char) -> Unit,
+    onDigitPress: (digit: Char) -> Unit,
+    onDigitRelease: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val icons = LocalAppIcons.current
     var openSection = remember { mutableStateOf<OpenSection?>(null) }
     var dialpadInput = remember { mutableStateOf("") }
     var audioRoutesExpanded = remember { mutableStateOf(false) }
+
+    DisposableEffect(onDigitRelease) {
+        onDispose(onDigitRelease)
+    }
     val hasExternalAudioRoute = audioRoutes.any {
         it.type == android.telecom.CallAudioState.ROUTE_BLUETOOTH ||
             it.type == android.telecom.CallAudioState.ROUTE_WIRED_HEADSET
@@ -87,10 +93,10 @@ fun InCallControls(
 
     fun handleDialpadDigit(digit: Char) {
         dialpadInput.value = dialpadInput.value.plus(digit)
-        onDigit(digit)
     }
 
     fun toggleSectionButton(section: OpenSection) {
+        if (openSection.value == OpenSection.DIALPAD) onDigitRelease()
         openSection.value = if (openSection.value == section) null else section
     }
 
@@ -206,7 +212,9 @@ fun InCallControls(
                     )
 
                     Dialpad(
-                        onDigitClick = ::handleDialpadDigit
+                        onDigitClick = ::handleDialpadDigit,
+                        onDigitPress = onDigitPress,
+                        onDigitRelease = onDigitRelease,
                     )
                 }
             }
