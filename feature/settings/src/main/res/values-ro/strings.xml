@@ -14,6 +14,9 @@
     <string name="display_options" comment="Settings section title for appearance preferences.">Opțiuni de afișare</string>
     <string name="display_options_description" comment="Settings section summary for appearance preferences.">Alege aspectul %1$s</string>
     <string name="dialer" comment="Settings section title for phone-related preferences.">Telefon</string>
+    <string name="update_checks" comment="Settings section title for update-check preferences.">Actualizări</string>
+    <string name="check_for_updates" comment="Settings toggle label for enabling automatic update checks.">Verifică actualizările</string>
+    <string name="check_for_updates_description" comment="Settings toggle summary for automatic update checks.">Verifică GitHub pentru versiuni noi</string>
     <string name="manageBlockedNumbers" comment="Settings item title that opens the system blocked-number list.">Gestionează numerele blocate</string>
     <string name="manage_blocked_numbers_description" comment="Settings item summary for reviewing blocked phone numbers.">Examinează și deblochează numere de telefon</string>
     <string name="manage_blocked_numbers_unavailable" comment="Message shown when the device has no blocked-number settings screen.">Setările pentru numere blocate nu sunt disponibile pe acest dispozitiv</string>
