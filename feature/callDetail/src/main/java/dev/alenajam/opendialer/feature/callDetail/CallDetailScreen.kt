@@ -368,6 +368,12 @@ private fun CallRow(
     call: DetailCall,
     isVoicemailNumber: Boolean = false,
 ) {
+    val subtitleColor = if (!isVoicemailNumber && call.type == CallType.MISSED) {
+        MaterialTheme.colorScheme.error
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant
+    }
+
     Row(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -382,7 +388,7 @@ private fun CallRow(
                 CallType.MISSED, CallType.REJECTED -> Icons.Outlined.CallMissed
                 CallType.VOICEMAIL -> Icons.Outlined.Voicemail
                 CallType.BLOCKED -> Icons.Outlined.Block
-            }, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant
+            }, contentDescription = null, tint = subtitleColor
         )
 
         Column(modifier = Modifier.weight(1f)) {
@@ -407,7 +413,7 @@ private fun CallRow(
                 Text(
                     text = PrettyTime().format(call.date),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = subtitleColor,
                 )
             }
         }
