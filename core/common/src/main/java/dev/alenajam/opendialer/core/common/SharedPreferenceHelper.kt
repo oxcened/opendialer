@@ -16,6 +16,7 @@ object SharedPreferenceHelper {
     const val KEY_SETTING_QUICK_RESPONSES = "quick_responses"
     const val KEY_SETTING_BLOCKED_NUMBERS = "blockedNumbers"
     const val KEY_SETTING_NOTIFICATION_SETTINGS = "notificationSettings"
+    private const val KEY_CALL_LOG_FAVORITES_EXPANDED = "call_log_favorites_expanded"
 
     enum class ThemeMode(val nightMode: Int) {
         LIGHT(AppCompatDelegate.MODE_NIGHT_NO),
@@ -86,5 +87,15 @@ object SharedPreferenceHelper {
             .putString(KEY_SETTING_THEME, themeMode.nightMode.toString())
             .apply()
         CommonUtils.setTheme(themeMode.nightMode)
+    }
+
+    fun isCallLogFavoritesExpanded(context: Context): Boolean =
+        getSharedPreferences(context).getBoolean(KEY_CALL_LOG_FAVORITES_EXPANDED, true)
+
+    fun setCallLogFavoritesExpanded(context: Context, expanded: Boolean) {
+        getSharedPreferences(context)
+            .edit()
+            .putBoolean(KEY_CALL_LOG_FAVORITES_EXPANDED, expanded)
+            .apply()
     }
 }

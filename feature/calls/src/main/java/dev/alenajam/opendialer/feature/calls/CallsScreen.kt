@@ -101,7 +101,7 @@ fun CallsScreen(
     onOpenHistory: (callIds: List<Int>) -> Unit,
     onOpenContacts: () -> Unit = {},
     onAddFavorite: () -> Unit = {},
-    onEditNumberBeforeCall: (String) -> Unit = {}
+    onEditNumberBeforeCall: (String) -> Unit = {},
 ) {
     val requestPermissions =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
@@ -145,9 +145,9 @@ fun CallsScreen(
 
     val calls = viewModel.calls.collectAsStateWithLifecycle()
     val favorites = viewModel.favorites.collectAsStateWithLifecycle()
+    val favoritesExpanded by viewModel.favoritesExpanded.collectAsStateWithLifecycle()
     val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
     var openRowId by remember { mutableStateOf<Int?>(null) }
-    var favoritesExpanded by remember { mutableStateOf(true) }
     var selectedFilter by remember { mutableStateOf(CallFilter.ALL) }
 
     val icons = LocalAppIcons.current
@@ -234,7 +234,7 @@ fun CallsScreen(
                     FavoritesSection(
                         favorites = favorites.value,
                         expanded = favoritesExpanded,
-                        onToggleExpand = { favoritesExpanded = !favoritesExpanded },
+                        onToggleExpand = viewModel::toggleFavoritesExpanded,
                         onAddClick = onAddFavorite,
                         onViewContactsClick = onOpenContacts,
                         onFavoriteClick = { placeCall(it.number) },
