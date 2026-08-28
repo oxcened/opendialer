@@ -30,6 +30,7 @@ import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.PersonAddAlt
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -71,6 +72,7 @@ import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.core.common.getActivity
 import dev.alenajam.opendialer.core.common.telecom.CallAccount
 import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
+import dev.alenajam.opendialer.core.common.LocalCustomColorsScheme
 import dev.alenajam.opendialer.core.common.ui.CallAccountPicker
 import dev.alenajam.opendialer.core.common.ui.Dialpad
 import dev.alenajam.opendialer.data.contactsSearch.DialerSearchContact
@@ -721,6 +723,10 @@ private fun Footer(
 
             Button(
                 onClick = onCall,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = LocalCustomColorsScheme.current.success,
+                    contentColor = Color.White
+                ),
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .height(60.dp)
