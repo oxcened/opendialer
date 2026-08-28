@@ -30,4 +30,9 @@
     <string name="delete_call_title" comment="Title of the dialog confirming removal of a call-log entry.">Delete call from history?</string>
     <string name="delete_call_message" comment="Explanation in the dialog confirming removal of a call-log entry.">This removes this call from your call log.</string>
     <string name="cancel" comment="Button that dismisses the current dialog without applying changes.">Cancel</string>
+    <string name="update_available" comment="Heading for the call-log banner that announces a newer app release.">Update available</string>
+    <string name="update_available_description" comment="Description for the call-log update banner. %1$s is the available version number.">Version %1$s is ready to download.</string>
+    <string name="update" comment="Button that opens the available app release in a browser.">Update</string>
+    <string name="dismiss_update_notification" comment="Accessibility label for the button that hides the update banner.">Dismiss update notification</string>
+    <string name="github_latest_release_api" translatable="false">https://api.github.com/repos/oxcened/opendialer/releases/latest</string>
 </resources>

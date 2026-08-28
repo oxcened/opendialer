@@ -17,6 +17,11 @@ object SharedPreferenceHelper {
     const val KEY_SETTING_BLOCKED_NUMBERS = "blockedNumbers"
     const val KEY_SETTING_NOTIFICATION_SETTINGS = "notificationSettings"
     private const val KEY_CALL_LOG_FAVORITES_EXPANDED = "call_log_favorites_expanded"
+    private const val KEY_DISMISSED_UPDATE_VERSION = "dismissed_update_version"
+    private const val KEY_UPDATE_LAST_CHECK_MILLIS = "update_last_check_millis"
+    private const val KEY_UPDATE_ETAG = "update_etag"
+    private const val KEY_AVAILABLE_UPDATE_VERSION = "available_update_version"
+    private const val KEY_AVAILABLE_UPDATE_URL = "available_update_url"
 
     enum class ThemeMode(val nightMode: Int) {
         LIGHT(AppCompatDelegate.MODE_NIGHT_NO),
@@ -96,6 +101,50 @@ object SharedPreferenceHelper {
         getSharedPreferences(context)
             .edit()
             .putBoolean(KEY_CALL_LOG_FAVORITES_EXPANDED, expanded)
+            .apply()
+    }
+
+    fun getDismissedUpdateVersion(context: Context): String? =
+        getSharedPreferences(context).getString(KEY_DISMISSED_UPDATE_VERSION, null)
+
+    fun setDismissedUpdateVersion(context: Context, version: String) {
+        getSharedPreferences(context)
+            .edit()
+            .putString(KEY_DISMISSED_UPDATE_VERSION, version)
+            .apply()
+    }
+
+    fun getUpdateLastCheckMillis(context: Context): Long =
+        getSharedPreferences(context).getLong(KEY_UPDATE_LAST_CHECK_MILLIS, 0L)
+
+    fun setUpdateLastCheckMillis(context: Context, timestampMillis: Long) {
+        getSharedPreferences(context)
+            .edit()
+            .putLong(KEY_UPDATE_LAST_CHECK_MILLIS, timestampMillis)
+            .apply()
+    }
+
+    fun getUpdateEtag(context: Context): String? =
+        getSharedPreferences(context).getString(KEY_UPDATE_ETAG, null)
+
+    fun setUpdateEtag(context: Context, etag: String?) {
+        getSharedPreferences(context)
+            .edit()
+            .putString(KEY_UPDATE_ETAG, etag)
+            .apply()
+    }
+
+    fun getAvailableUpdateVersion(context: Context): String? =
+        getSharedPreferences(context).getString(KEY_AVAILABLE_UPDATE_VERSION, null)
+
+    fun getAvailableUpdateUrl(context: Context): String? =
+        getSharedPreferences(context).getString(KEY_AVAILABLE_UPDATE_URL, null)
+
+    fun setAvailableUpdate(context: Context, version: String?, url: String?) {
+        getSharedPreferences(context)
+            .edit()
+            .putString(KEY_AVAILABLE_UPDATE_VERSION, version)
+            .putString(KEY_AVAILABLE_UPDATE_URL, url)
             .apply()
     }
 }

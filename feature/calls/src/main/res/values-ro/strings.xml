@@ -30,4 +30,8 @@
     <string name="delete_call_title" comment="Title of the dialog confirming removal of a call-log entry.">Ștergi apelul din istoric?</string>
     <string name="delete_call_message" comment="Explanation in the dialog confirming removal of a call-log entry.">Acest apel va fi eliminat din istoricul apelurilor.</string>
     <string name="cancel" comment="Button that dismisses the current dialog without applying changes.">Anulează</string>
+    <string name="update_available">Actualizare disponibilă</string>
+    <string name="update_available_description">Versiunea %1$s este gata de descărcare.</string>
+    <string name="update">Actualizează</string>
+    <string name="dismiss_update_notification">Închide notificarea de actualizare</string>
 </resources>

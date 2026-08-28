@@ -148,6 +148,7 @@ fun CallsScreen(
     val favorites = viewModel.favorites.collectAsStateWithLifecycle()
     val favoritesExpanded by viewModel.favoritesExpanded.collectAsStateWithLifecycle()
     val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
+    val availableUpdate by viewModel.availableUpdate.collectAsStateWithLifecycle()
     var openRowId by remember { mutableStateOf<Int?>(null) }
     var selectedFilter by remember { mutableStateOf(CallFilter.ALL) }
 
@@ -231,6 +232,17 @@ fun CallsScreen(
             LazyColumn(
                 contentPadding = PaddingValues(bottom = 100.dp)
             ) {
+                availableUpdate?.let { update ->
+                    item {
+                        UpdateAvailableBanner(
+                            update = update,
+                            onUpdateClick = viewModel::openUpdate,
+                            onDismiss = viewModel::dismissUpdate,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        )
+                    }
+                }
+
                 item {
                     FavoritesSection(
                         favorites = favorites.value,

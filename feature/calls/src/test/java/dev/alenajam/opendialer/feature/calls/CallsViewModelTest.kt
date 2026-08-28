@@ -57,6 +57,7 @@ class CallsViewModelTest {
             cacheRepository = cacheRepository,
             callPlacementRepository = FakeCallPlacementRepository(),
             callLogPreferences = FakeCallLogPreferences(),
+            updateChecker = FakeUpdateChecker(),
         )
         advanceUntilIdle()
         val invalidationsBeforeContactChange = cacheRepository.invalidations
@@ -139,6 +140,26 @@ private class FakeCallLogPreferences : CallLogPreferences {
     override fun setFavoritesExpanded(expanded: Boolean) {
         favoritesExpanded = expanded
     }
+
+    override fun getDismissedUpdateVersion(): String? = null
+
+    override fun setDismissedUpdateVersion(version: String) = Unit
+
+    override fun getUpdateLastCheckMillis(): Long = 0L
+
+    override fun setUpdateLastCheckMillis(timestampMillis: Long) = Unit
+
+    override fun getUpdateEtag(): String? = null
+
+    override fun setUpdateEtag(etag: String?) = Unit
+
+    override fun getCachedAvailableUpdate(): AppUpdate? = null
+
+    override fun setCachedAvailableUpdate(update: AppUpdate?) = Unit
+}
+
+private class FakeUpdateChecker : UpdateChecker {
+    override suspend fun checkForUpdate(etag: String?): UpdateCheckResult = UpdateCheckResult.Failed
 }
 
 private class FakeContactsRepository : ContactsRepository {

@@ -30,4 +30,8 @@
     <string name="delete_call_title" comment="Title of the dialog confirming removal of a call-log entry.">Slette samtalen fra historikken?</string>
     <string name="delete_call_message" comment="Explanation in the dialog confirming removal of a call-log entry.">Dette fjerner samtalen fra anropsloggen.</string>
     <string name="cancel" comment="Button that dismisses the current dialog without applying changes.">Avbryt</string>
+    <string name="update_available">Oppdatering tilgjengelig</string>
+    <string name="update_available_description">Versjon %1$s er klar til nedlasting.</string>
+    <string name="update">Oppdater</string>
+    <string name="dismiss_update_notification">Skjul oppdateringsvarsel</string>
 </resources>

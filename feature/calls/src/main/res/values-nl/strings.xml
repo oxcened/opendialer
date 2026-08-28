@@ -30,4 +30,8 @@
     <string name="delete_call_title" comment="Title of the dialog confirming removal of a call-log entry.">Oproep uit geschiedenis verwijderen?</string>
     <string name="delete_call_message" comment="Explanation in the dialog confirming removal of a call-log entry.">Hiermee wordt deze oproep uit je oproepgeschiedenis verwijderd.</string>
     <string name="cancel" comment="Button that dismisses the current dialog without applying changes.">Annuleren</string>
+    <string name="update_available">Update beschikbaar</string>
+    <string name="update_available_description">Versie %1$s is klaar om te downloaden.</string>
+    <string name="update">Updaten</string>
+    <string name="dismiss_update_notification">Updatemelding sluiten</string>
 </resources>
