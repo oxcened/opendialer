@@ -159,8 +159,6 @@ private class FakeCallLogPreferences : CallLogPreferences {
 }
 
 private class FakeUpdateChecker : UpdateChecker {
-    override val bypassCache: Boolean = false
-
     override suspend fun checkForUpdate(etag: String?): UpdateCheckResult = UpdateCheckResult.Failed
 }
 

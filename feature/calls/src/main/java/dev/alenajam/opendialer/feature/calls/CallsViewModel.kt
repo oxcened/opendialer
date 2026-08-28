@@ -183,9 +183,7 @@ class CallsViewModel
         if (cachedUpdate != null && isNewerThanInstalledVersion(cachedUpdate)) {
             showUpdateUnlessDismissed(cachedUpdate)
         }
-        if (!updateChecker.bypassCache &&
-            System.currentTimeMillis() - callLogPreferences.getUpdateLastCheckMillis() < UPDATE_CHECK_INTERVAL_MILLIS
-        ) {
+        if (System.currentTimeMillis() - callLogPreferences.getUpdateLastCheckMillis() < UPDATE_CHECK_INTERVAL_MILLIS) {
             return
         }
 
