@@ -36,9 +36,8 @@
     <string name="contribute_translations" comment="Title of the %1$s translation contribution link on the About screen.">Contribute translations</string>
     <string name="contribute_translations_description" comment="Description of the %1$s translation contribution link on the About screen.">Help make %1$s available in more languages.</string>
     <string name="url_crowdin_opendialer" translatable="false">https://crowdin.com/project/opendialer</string>
-    <string name="contribute_monsterdialer_translations" translatable="false"></string>
-    <string name="contribute_monsterdialer_translations_description" translatable="false"></string>
-    <string name="url_crowdin_monsterdialer" translatable="false"></string>
+    <string name="additional_translation_project_title" translatable="false"></string>
+    <string name="url_additional_translation_project" translatable="false"></string>
     <string name="feature_requests" comment="Title of the feature-request link on the About screen.">Feature requests</string>
     <string name="feature_requests_description" comment="Description of the feature-request link on the About screen.">Propose and vote on ideas for %1$s.</string>
     <string name="url_feature_requests" translatable="false">https://opendialer.fider.io/</string>
