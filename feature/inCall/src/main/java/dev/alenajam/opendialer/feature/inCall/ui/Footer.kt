@@ -230,7 +230,11 @@ fun InCallControls(
                     .padding(bottom = 16.dp, top = 16.dp)
             ) {
                 CallButton(
-                    icon = icons.dialpad,
+                    icon = if (openSection.value == OpenSection.DIALPAD) {
+                        icons.dialpadActive
+                    } else {
+                        icons.dialpad
+                    },
                     label = stringResource(R.string.control_dialpad),
                     isActive = openSection.value == OpenSection.DIALPAD,
                     enabled = controlsEnabled,
