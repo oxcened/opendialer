@@ -37,6 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.alenajam.opendialer.core.common.ui.ContactAvatar
+import dev.alenajam.opendialer.core.common.ui.contactAvatarColorKey
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.data.contacts.DialerContactSummary
@@ -174,7 +175,7 @@ private fun ProfileContactCard(
             ContactAvatar(
                 name = contact.name,
                 photoUri = contact.image,
-                colorKey = contact.id.toString(),
+                colorKey = contactAvatarColorKey(contact.name),
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape),
@@ -305,7 +306,7 @@ private fun ContactRow(
             ContactAvatar(
                 name = contact.name,
                 photoUri = contact.image,
-                colorKey = contact.id.toString(),
+                colorKey = contactAvatarColorKey(contact.name),
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape),
