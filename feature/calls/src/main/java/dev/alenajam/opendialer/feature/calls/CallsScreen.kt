@@ -593,6 +593,13 @@ private fun CallRow(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                     ) {
+                        val isMissed = call.type == CallType.MISSED || call.type == CallType.REJECTED
+                        val subtitleColor = if (isMissed) {
+                            MaterialTheme.colorScheme.error
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        }
+
                         Icon(
                             imageVector = when (call.type) {
                                 CallType.INCOMING, CallType.ANSWERED_EXTERNALLY -> icons.callReceived
@@ -602,7 +609,7 @@ private fun CallRow(
                                 CallType.BLOCKED -> icons.block
                             },
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            tint = subtitleColor,
                             modifier = Modifier.size(14.dp)
                         )
 
@@ -613,7 +620,7 @@ private fun CallRow(
                                 stringResource(R.string.call_log_type_time, phoneType, relativeTime)
                             },
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = subtitleColor
                         )
                     }
                 }
