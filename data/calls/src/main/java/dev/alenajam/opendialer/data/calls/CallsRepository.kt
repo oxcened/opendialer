@@ -1,6 +1,5 @@
 package dev.alenajam.opendialer.data.calls
 
-import android.content.ContentResolver
 import dev.alenajam.opendialer.core.common.exception.Failure
 import dev.alenajam.opendialer.core.common.functional.Either
 import kotlinx.coroutines.flow.Flow
@@ -8,7 +7,6 @@ import kotlinx.coroutines.flow.Flow
 interface CallsRepository {
     fun getCalls(): Flow<List<DialerCallEntity>>
     suspend fun getCallByIds(
-        contentResolver: ContentResolver,
         ids: List<Int>
     ): Either<Failure, List<DialerCallEntity>>
 

@@ -2,11 +2,8 @@ package dev.alenajam.opendialer.data.calls
 
 import android.app.Application
 import android.content.ContentResolver
-import android.content.ContentValues
 import android.database.ContentObserver
-import android.net.Uri
 import android.provider.BlockedNumberContract
-import android.provider.CallLog
 import dev.alenajam.opendialer.core.common.DefaultPhoneManager
 import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.core.common.exception.Failure
@@ -50,14 +47,13 @@ class CallsRepositoryImpl @Inject constructor(
         }
 
     override suspend fun getCallByIds(
-        contentResolver: ContentResolver,
         ids: List<Int>
     ): Either<Failure, List<DialerCallEntity>> {
-        val data = CallDetailData.getCursor(contentResolver, ids)?.use { cursor ->
+        val data = CallDetailData.getCursor(app.contentResolver, ids)?.use { cursor ->
             CallDetailData.getData(
                 cursor = cursor,
                 voicemailNumbers = voicemailNumberProvider.getNumbers(),
-                contactPhoneTypes = getContactPhoneTypes(contentResolver),
+                contactPhoneTypes = getContactPhoneTypes(app.contentResolver),
             )
         } ?: return Either.Left(Failure.NoData)
 
@@ -96,7 +92,7 @@ class CallsRepositoryImpl @Inject constructor(
                 val canUserBlockNumbers = BlockedNumberContract.canCurrentUserBlockNumbers(this)
                 if (hasDefault && canUserBlockNumbers) {
                     val isBlocked =
-                        BlockedNumberContract.isBlocked(this, call.contactInfo.number)
+                        BlockedNumbersData.isBlocked(this, call.contactInfo.number)
                     val blockOption = CallOption(
                         if (isBlocked) CallOption.ID_UNBLOCK_CALLER else CallOption.ID_BLOCK_CALLER,
                         0
@@ -116,27 +112,19 @@ class CallsRepositoryImpl @Inject constructor(
 
         var deleted = 0
         calls.forEach {
-            deleted += app.contentResolver.delete(
-                CallLog.Calls.CONTENT_URI,
-                "${CallLog.Calls._ID} = ${it.id}",
-                null
-            )
+            deleted += CallsData.delete(app.contentResolver, it.id)
         }
 
         return if (deleted > 0) Either.Right(Unit) else Either.Left(Failure.LocalFailure)
     }
 
     override suspend fun blockCaller(number: String): Either<Failure, Unit> {
-        val values = ContentValues().apply {
-            put(BlockedNumberContract.BlockedNumbers.COLUMN_ORIGINAL_NUMBER, number)
-        }
-        val uri: Uri? =
-            app.contentResolver.insert(BlockedNumberContract.BlockedNumbers.CONTENT_URI, values)
+        val uri = BlockedNumbersData.insert(app.contentResolver, number)
         return if (uri == null) Either.Left(Failure.LocalFailure) else Either.Right(Unit)
     }
 
     override suspend fun unblockCaller(number: String): Either<Failure, Unit> {
-        val blocked = BlockedNumberContract.unblock(app, number)
+        val blocked = BlockedNumbersData.unblock(app, number)
         return if (blocked < 1) Either.Left(Failure.LocalFailure) else Either.Right(Unit)
     }
 }

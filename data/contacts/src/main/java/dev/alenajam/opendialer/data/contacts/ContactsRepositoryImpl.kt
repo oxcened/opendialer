@@ -1,7 +1,6 @@
 package dev.alenajam.opendialer.data.contacts
 
 import android.app.Application
-import android.content.ContentValues
 import android.database.ContentObserver
 import android.provider.ContactsContract
 import kotlinx.coroutines.Dispatchers
@@ -62,15 +61,7 @@ class ContactsRepositoryImpl
         }
 
     override suspend fun toggleFavorite(contactId: Int, isFavorite: Boolean) {
-        val values = ContentValues().apply {
-            put(ContactsContract.Contacts.STARRED, if (isFavorite) 1 else 0)
-        }
-        app.contentResolver.update(
-            ContactsContract.Contacts.CONTENT_URI,
-            values,
-            "${ContactsContract.Contacts._ID} = ?",
-            arrayOf(contactId.toString())
-        )
+        ContactsData.updateFavorite(app.contentResolver, contactId, isFavorite)
     }
 
     override suspend fun getContactNumbers(contactId: Int): List<String> = withContext(Dispatchers.IO) {

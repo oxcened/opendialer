@@ -49,7 +49,7 @@ class DialerViewModel
 
     fun getCallByIds(ids: List<Int>) {
         viewModelScope.launch {
-            callsRepositoryImpl.getCallByIds(app.contentResolver, ids).fold(
+            callsRepositoryImpl.getCallByIds(ids).fold(
                 { /* TODO handle failure */ },
                 { call -> _call.postValue(DialerCall.mapList(call).first()) }
             )

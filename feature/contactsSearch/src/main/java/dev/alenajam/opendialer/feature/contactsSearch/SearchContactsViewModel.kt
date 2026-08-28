@@ -80,7 +80,7 @@ class SearchContactsViewModel
         if (!hasRuntimePermission.value) return
         searchContactsDialpadUseCase(
             viewModelScope,
-            SearchContactsDialpadParams(app.contentResolver, query)
+            SearchContactsDialpadParams(query)
         ) {
             it.fold({}) { res ->
                 handleResult(
@@ -96,7 +96,7 @@ class SearchContactsViewModel
         if (!hasRuntimePermission.value) return
         searchContactsUseCase(
             viewModelScope,
-            SearchContactsParams(app.contentResolver, query)
+            SearchContactsParams(query)
         ) {
             it.fold({}) { contacts -> handleResult(query, contacts, isDialpadSearch = false) }
         }

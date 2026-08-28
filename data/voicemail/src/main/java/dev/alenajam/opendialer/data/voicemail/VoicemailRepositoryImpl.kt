@@ -2,7 +2,6 @@ package dev.alenajam.opendialer.data.voicemail
 
 import android.Manifest
 import android.app.Application
-import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.ContentObserver
@@ -61,12 +60,7 @@ class VoicemailRepositoryImpl @Inject constructor(
 
     override suspend fun markRead(voicemail: Voicemail) {
         try {
-            app.contentResolver.update(
-                voicemail.uri,
-                ContentValues().apply { put(VoicemailContract.Voicemails.IS_READ, 1) },
-                null,
-                null,
-            )
+            VoicemailData.markRead(app.contentResolver, voicemail.uri)
         } catch (_: SecurityException) {
             // The default-dialer role can be revoked while the screen is open.
         }
