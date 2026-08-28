@@ -16,12 +16,8 @@ import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.CallMade
 import androidx.compose.material.icons.outlined.CallMissed
 import androidx.compose.material.icons.outlined.CallReceived
-import androidx.compose.material.icons.outlined.ContentCopy
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Voicemail
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
@@ -62,7 +58,6 @@ import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
 import dev.alenajam.opendialer.core.common.ui.CallAccountPicker
 import dev.alenajam.opendialer.core.common.ui.AppIcon
 import dev.alenajam.opendialer.core.common.ui.ContactAvatar
-import dev.alenajam.opendialer.core.common.ui.IconSource
 import dev.alenajam.opendialer.core.common.ui.contactAvatarColorKey
 import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.data.calls.CallType
@@ -240,7 +235,7 @@ private fun TopBar(
                         fallbackIcon = if (call.isVoicemailNumber) {
                             LocalAppIcons.current.voicemail
                         } else {
-                            IconSource.Vector(Icons.Outlined.Person)
+                            LocalAppIcons.current.accountCircle
                         },
                         contentDescription = if (call.isVoicemailNumber) {
                             stringResource(R.string.voicemail)
@@ -350,14 +345,14 @@ private fun BottomBar(
                     AppIcon(icons.message, contentDescription = stringResource(R.string.send_message))
                 }
                 IconButton(onClick = copyNumber) {
-                    Icon(Icons.Outlined.ContentCopy, contentDescription = stringResource(R.string.copy_number))
+                    AppIcon(icons.copy, contentDescription = stringResource(R.string.copy_number))
                 }
                 IconButton(onClick = dialNumber) {
-                    Icon(Icons.Outlined.Edit, contentDescription = stringResource(R.string.edit_number_before_call))
+                    AppIcon(icons.edit, contentDescription = stringResource(R.string.edit_number_before_call))
                 }
             }
             IconButton(onClick = deleteCalls) {
-                Icon(Icons.Outlined.Delete, contentDescription = stringResource(R.string.delete))
+                AppIcon(icons.delete, contentDescription = stringResource(R.string.delete))
             }
         },
         floatingActionButton = {

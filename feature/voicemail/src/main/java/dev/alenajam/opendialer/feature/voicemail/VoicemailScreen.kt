@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -167,8 +166,8 @@ private fun VoicemailRow(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(16.dp),
         ) {
-            Icon(
-                imageVector = Icons.Outlined.Person,
+            AppIcon(
+                icon = LocalAppIcons.current.accountCircle,
                 contentDescription = null,
                 modifier = Modifier.size(32.dp),
             )

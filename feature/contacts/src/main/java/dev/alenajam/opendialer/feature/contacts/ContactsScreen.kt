@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -111,7 +110,7 @@ fun ContactsScreen(
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp, vertical = 8.dp),
                     ) {
-                        AppIcon(LocalAppIcons.current.personAdd, contentDescription = null)
+                        AppIcon(LocalAppIcons.current.personAddInContactsList, contentDescription = null)
                         Text(
                             text = stringResource(R.string.new_contact),
                             modifier = Modifier.padding(start = 8.dp),
@@ -195,8 +194,8 @@ private fun ProfileContactCard(
             }
             androidx.compose.foundation.layout.Spacer(modifier = Modifier.weight(1f))
             IconButton(onClick = onShareProfile) {
-                Icon(
-                    imageVector = Icons.Outlined.Share,
+                AppIcon(
+                    icon = LocalAppIcons.current.share,
                     contentDescription = stringResource(R.string.share_contact),
                 )
             }

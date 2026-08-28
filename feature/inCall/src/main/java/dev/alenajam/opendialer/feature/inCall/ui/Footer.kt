@@ -342,6 +342,7 @@ private fun MoreActionRow(
                     AppIcon(
                         icon = action.icon,
                         contentDescription = null,
+                        modifier = Modifier.size(24.dp),
                         tint = if (action.isActive) {
                             MaterialTheme.colorScheme.onPrimary
                         } else if (action.enabled) {

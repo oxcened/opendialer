@@ -10,10 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Call
-import androidx.compose.material.icons.outlined.CallEnd
-import androidx.compose.material.icons.automirrored.outlined.Message
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -42,6 +38,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import dev.alenajam.opendialer.core.common.LocalCustomColorsScheme
 import dev.alenajam.opendialer.core.common.SharedPreferenceHelper
+import dev.alenajam.opendialer.core.common.ui.AppIcon
+import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.feature.inCall.R
 
 @Composable
@@ -60,6 +58,7 @@ fun IncomingCallControls(
     val answerDescription = stringResource(R.string.action_answer)
     val declineDescription = stringResource(R.string.action_decline)
     val messageDescription = stringResource(R.string.action_message)
+    val icons = LocalAppIcons.current
 
     Surface(
         tonalElevation = 8.dp,
@@ -87,7 +86,11 @@ fun IncomingCallControls(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 14.dp)
                 ) {
-                    Icon(Icons.AutoMirrored.Outlined.Message, contentDescription = null)
+                    AppIcon(
+                        icons.message,
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
+                    )
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(stringResource(R.string.action_message), style = MaterialTheme.typography.titleMedium)
                 }
@@ -108,10 +111,11 @@ fun IncomingCallControls(
                         ),
                         modifier = Modifier.size(60.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Outlined.CallEnd,
+                        AppIcon(
+                            icon = icons.hangup,
                             contentDescription = declineDescription,
-                            tint = Color.White
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
                         )
                     }
 
@@ -129,10 +133,11 @@ fun IncomingCallControls(
                         ),
                         modifier = Modifier.size(60.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Call,
+                        AppIcon(
+                            icon = icons.phone,
                             contentDescription = answerDescription,
-                            tint = Color.White
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
                         )
                     }
 

@@ -35,7 +35,6 @@ import androidx.compose.material.icons.outlined.CallMade
 import androidx.compose.material.icons.outlined.CallMissed
 import androidx.compose.material.icons.outlined.CallReceived
 import androidx.compose.material.icons.outlined.History
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Voicemail
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -550,7 +549,7 @@ private fun CallRow(
                     fallbackIcon = if (call.isVoicemailNumber) {
                         icons.voicemail
                     } else {
-                        IconSource.Vector(Icons.Outlined.Person)
+                        icons.accountCircle
                     },
                     contentDescription = if (call.isVoicemailNumber) {
                         stringResource(R.string.filter_voicemail)

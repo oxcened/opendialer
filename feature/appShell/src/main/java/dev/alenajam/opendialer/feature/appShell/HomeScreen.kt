@@ -157,7 +157,11 @@ internal fun HomeScreen(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { onOpenDialpad("") }) {
-                AppIcon(LocalAppIcons.current.dialpad, contentDescription = null)
+                AppIcon(
+                    LocalAppIcons.current.dialpad,
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp)
+                )
             }
         },
     ) { innerPadding ->

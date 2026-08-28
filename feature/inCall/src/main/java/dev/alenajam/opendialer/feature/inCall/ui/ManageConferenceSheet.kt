@@ -128,6 +128,7 @@ private fun ConferenceParticipantRow(
                         AppIcon(
                             icon = icons.merge,
                             contentDescription = stringResource(R.string.action_split),
+                            modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
@@ -143,6 +144,7 @@ private fun ConferenceParticipantRow(
                     AppIcon(
                         icon = icons.hangup,
                         contentDescription = stringResource(R.string.action_end_call),
+                        modifier = Modifier.size(24.dp),
                         tint = MaterialTheme.colorScheme.error
                     )
                 }

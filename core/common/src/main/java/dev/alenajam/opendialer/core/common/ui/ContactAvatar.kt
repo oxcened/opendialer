@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,7 +25,7 @@ fun ContactAvatar(
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
     colorKey: String = contactAvatarColorKey(name),
-    fallbackIcon: IconSource = IconSource.Vector(Icons.Outlined.Person),
+    fallbackIcon: IconSource = LocalAppIcons.current.accountCircle,
     fallbackIconModifier: Modifier = Modifier.size(24.dp),
     initialTextStyle: TextStyle = MaterialTheme.typography.titleLarge
 ) {

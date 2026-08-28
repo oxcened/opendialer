@@ -16,7 +16,10 @@ import androidx.compose.material.icons.outlined.AddIcCall
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.CallEnd
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.ContentCopy
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Dialpad
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Merge
 import androidx.compose.material.icons.outlined.MicOff
@@ -27,6 +30,7 @@ import androidx.compose.material.icons.outlined.PersonAddAlt
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.PhonePaused
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.SwapCalls
 import androidx.compose.material.icons.outlined.Voicemail
 import androidx.compose.foundation.Image
@@ -106,6 +110,7 @@ data class AppIcons(
     val phone: IconSource,
     val message: IconSource,
     val personAdd: IconSource,
+    val personAddInContactsList: IconSource = personAdd,
     val history: IconSource,
     val merge: IconSource,
     val swapCalls: IconSource,
@@ -116,7 +121,11 @@ data class AppIcons(
     val contactsSelected: IconSource = contacts,
     val voicemailLarge: IconSource = voicemail,
     val search: IconSource,
-    val close: IconSource
+    val close: IconSource,
+    val share: IconSource,
+    val edit: IconSource,
+    val copy: IconSource,
+    val delete: IconSource
 )
 
 val DefaultAppIcons = AppIcons(
@@ -147,7 +156,11 @@ val DefaultAppIcons = AppIcons(
     contactsSelected = IconSource.Vector(Icons.Filled.People),
     voicemailLarge = IconSource.Vector(Icons.Outlined.Voicemail),
     search = IconSource.Vector(Icons.Outlined.Search),
-    close = IconSource.Vector(Icons.Outlined.Close)
+    close = IconSource.Vector(Icons.Outlined.Close),
+    share = IconSource.Vector(Icons.Outlined.Share),
+    edit = IconSource.Vector(Icons.Outlined.Edit),
+    copy = IconSource.Vector(Icons.Outlined.ContentCopy),
+    delete = IconSource.Vector(Icons.Outlined.Delete)
 )
 
 val LocalAppIcons = staticCompositionLocalOf { DefaultAppIcons }

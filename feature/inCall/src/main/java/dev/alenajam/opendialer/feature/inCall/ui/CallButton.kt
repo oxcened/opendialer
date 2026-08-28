@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -93,7 +94,7 @@ internal fun CallButton(
                     icon = icon,
                     contentDescription = null,
                     tint = contentColor,
-                    modifier = Modifier.align(Alignment.Center)
+                    modifier = Modifier.size(24.dp).align(Alignment.Center)
                 )
             }
         }
