@@ -491,14 +491,7 @@ private fun ResultRow(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(1.dp)
                 ) {
-                    if (contact.contactId > 0) {
-                        ResultActionRow(
-                            icon = icons.accountCircle,
-                            label = stringResource(R.string.open_contact),
-                            roundTop = true,
-                            onClick = onOpenContact
-                        )
-                    } else {
+                    if (contact.contactId <= 0) {
                         ResultActionRow(
                             icon = icons.personAdd,
                             label = stringResource(R.string.add_to_a_contact),
@@ -510,6 +503,7 @@ private fun ResultRow(
                     ResultActionRow(
                         icon = icons.message,
                         label = stringResource(R.string.send_message),
+                        roundTop = contact.contactId > 0,
                         onClick = onMessage
                     )
 
