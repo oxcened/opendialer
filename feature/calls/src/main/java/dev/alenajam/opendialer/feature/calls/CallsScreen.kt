@@ -39,7 +39,6 @@ import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PersonAddAlt
-import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.Voicemail
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -403,6 +402,7 @@ private fun FavoriteItem(
     onRemove: () -> Unit
 ) {
     var showMenu by remember { mutableStateOf(false) }
+    val icons = LocalAppIcons.current
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -430,8 +430,8 @@ private fun FavoriteItem(
                 shadowElevation = 2.dp
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = Icons.Outlined.Phone,
+                    AppIcon(
+                        icon = icons.phone,
                         contentDescription = null,
                         modifier = Modifier.size(12.dp),
                         tint = MaterialTheme.colorScheme.primary

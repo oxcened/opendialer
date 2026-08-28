@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Block
-import androidx.compose.material.icons.outlined.Call
 import androidx.compose.material.icons.outlined.CallMade
 import androidx.compose.material.icons.outlined.CallMissed
 import androidx.compose.material.icons.outlined.CallReceived
@@ -366,7 +365,7 @@ private fun BottomBar(
                     containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
                     elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
                 ) {
-                    Icon(Icons.Outlined.Call, stringResource(R.string.action_call))
+                    AppIcon(LocalAppIcons.current.phone, stringResource(R.string.action_call))
                 }
             }
         }
