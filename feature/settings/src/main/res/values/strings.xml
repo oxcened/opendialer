@@ -17,6 +17,9 @@
     <string name="display_options" comment="Settings section title for appearance preferences.">Display options</string>
     <string name="display_options_description" comment="Settings section summary for appearance preferences.">Choose how %1$s appears</string>
     <string name="dialer" comment="Settings section title for phone-related preferences.">Dialer</string>
+    <string name="update_checks" comment="Settings section title for update-check preferences.">Updates</string>
+    <string name="check_for_updates" comment="Settings toggle label for enabling automatic update checks.">Check for updates</string>
+    <string name="check_for_updates_description" comment="Settings toggle summary for automatic update checks.">Check GitHub for new versions</string>
     <string name="manageBlockedNumbers" comment="Settings item title that opens the system blocked-number list.">Manage blocked numbers</string>
     <string name="manage_blocked_numbers_description" comment="Settings item summary for reviewing blocked phone numbers.">Review and unblock phone numbers</string>
     <string name="manage_blocked_numbers_unavailable" comment="Message shown when the device has no blocked-number settings screen.">Blocked number settings are not available on this device</string>

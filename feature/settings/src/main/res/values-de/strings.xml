@@ -37,4 +37,7 @@
     <string name="issues_description" comment="Description of the issue-reporting link on the About screen.">Du hast einen Fehler gefunden oder eine Idee? Erstelle ein Issue auf GitHub.</string>
     <string name="contact_developer" comment="Title of the developer email link on the About screen.">Kontakt</string>
     <string name="font_credit_format" comment="Font credit. %1$s is the font name and %2$s is the font author.">%1$s von %2$s</string>
+    <string name="update_checks">Updates</string>
+    <string name="check_for_updates">Nach Updates suchen</string>
+    <string name="check_for_updates_description">GitHub nach neuen Versionen durchsuchen</string>
 </resources>

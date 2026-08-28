@@ -37,4 +37,7 @@
     <string name="issues_description" comment="Description of the issue-reporting link on the About screen.">هل وجدت خطأ أو لديك فكرة؟ افتح بلاغًا على GitHub.</string>
     <string name="contact_developer" comment="Title of the developer email link on the About screen.">تواصل</string>
     <string name="font_credit_format" comment="Font credit. %1$s is the font name and %2$s is the font author.">%1$s من تصميم %2$s</string>
+    <string name="update_checks">التحديثات</string>
+    <string name="check_for_updates">التحقق من التحديثات</string>
+    <string name="check_for_updates_description">التحقق من GitHub بحثًا عن إصدارات جديدة</string>
 </resources>

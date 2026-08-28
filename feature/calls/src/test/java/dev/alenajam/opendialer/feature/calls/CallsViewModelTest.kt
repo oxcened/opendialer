@@ -74,6 +74,24 @@ class CallsViewModelTest {
         assertEquals(updateRequestsBeforeContactChange + 1, cacheRepository.updateRequests)
     }
 
+    @Test
+    fun `updates are not checked when update checks are disabled`() = runTest(dispatcher) {
+        val updateChecker = FakeUpdateChecker()
+
+        CallsViewModel(
+            callsRepository = FakeCallsRepository(emptyList()),
+            contactsRepository = FakeContactsRepository(),
+            app = PermissionGrantedApplication(),
+            cacheRepository = FakeCacheRepository(),
+            callPlacementRepository = FakeCallPlacementRepository(),
+            callLogPreferences = FakeCallLogPreferences(updateChecksEnabled = false),
+            updateChecker = updateChecker,
+        )
+        advanceUntilIdle()
+
+        assertEquals(0, updateChecker.checkCount)
+    }
+
     private fun callEntity() = DialerCallEntity(
         id = 1,
         number = "6505551212",
@@ -132,7 +150,9 @@ private class FakeCallPlacementRepository : CallPlacementRepository {
         CallPlacementResult.Placed
 }
 
-private class FakeCallLogPreferences : CallLogPreferences {
+private class FakeCallLogPreferences(
+    private val updateChecksEnabled: Boolean = true,
+) : CallLogPreferences {
     private var favoritesExpanded = true
 
     override fun isFavoritesExpanded(): Boolean = favoritesExpanded
@@ -156,10 +176,17 @@ private class FakeCallLogPreferences : CallLogPreferences {
     override fun getCachedAvailableUpdate(): AppUpdate? = null
 
     override fun setCachedAvailableUpdate(update: AppUpdate?) = Unit
+
+    override fun observeUpdateCheckEnabled(): Flow<Boolean> = MutableStateFlow(updateChecksEnabled)
 }
 
 private class FakeUpdateChecker : UpdateChecker {
-    override suspend fun checkForUpdate(etag: String?): UpdateCheckResult = UpdateCheckResult.Failed
+    var checkCount = 0
+
+    override suspend fun checkForUpdate(etag: String?): UpdateCheckResult {
+        checkCount++
+        return UpdateCheckResult.Failed
+    }
 }
 
 private class FakeContactsRepository : ContactsRepository {
