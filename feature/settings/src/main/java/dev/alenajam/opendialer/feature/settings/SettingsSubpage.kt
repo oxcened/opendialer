@@ -2,6 +2,8 @@ package dev.alenajam.opendialer.feature.settings
 
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 
 data class SettingsSubpageDestination(
     val title: String,
@@ -19,5 +21,6 @@ data class SettingsSubpage(
     val description: String? = null,
     val content: @Composable ColumnScope.() -> Unit,
     val isScrollable: Boolean = true,
+    val topContentPadding: Dp = 16.dp,
     val destinations: List<SettingsSubpageDestination> = emptyList()
 )
