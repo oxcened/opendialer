@@ -100,6 +100,7 @@ fun AppIcon(
 data class AppIcons(
     val hangup: IconSource,
     val dialpad: IconSource,
+    val dialpadActive: IconSource = dialpad,
     val mute: IconSource,
     val speaker: IconSource,
     val more: IconSource,
