@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -68,7 +67,11 @@ internal fun HomeScreen(
                         placeholder = { Text(stringResource(R.string.search_contacts)) },
                         leadingIcon = {
                             IconButton(onClick = {}) {
-                                Icon(Icons.Outlined.Search, contentDescription = null)
+                                AppIcon(
+                                    LocalAppIcons.current.search,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp)
+                                )
                             }
                         },
                         trailingIcon = {

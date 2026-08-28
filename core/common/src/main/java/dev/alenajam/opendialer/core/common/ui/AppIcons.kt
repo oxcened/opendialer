@@ -25,6 +25,7 @@ import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.PersonAddAlt
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.PhonePaused
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.SwapCalls
 import androidx.compose.material.icons.outlined.Voicemail
 import androidx.compose.foundation.Image
@@ -110,7 +111,8 @@ data class AppIcons(
     val recentsSelected: IconSource = recents,
     val contacts: IconSource,
     val contactsSelected: IconSource = contacts,
-    val voicemailLarge: IconSource = voicemail
+    val voicemailLarge: IconSource = voicemail,
+    val search: IconSource
 )
 
 val DefaultAppIcons = AppIcons(
@@ -139,7 +141,8 @@ val DefaultAppIcons = AppIcons(
     recentsSelected = IconSource.Vector(Icons.Filled.AccessTimeFilled),
     contacts = IconSource.Vector(Icons.Outlined.People),
     contactsSelected = IconSource.Vector(Icons.Filled.People),
-    voicemailLarge = IconSource.Vector(Icons.Outlined.Voicemail)
+    voicemailLarge = IconSource.Vector(Icons.Outlined.Voicemail),
+    search = IconSource.Vector(Icons.Outlined.Search)
 )
 
 val LocalAppIcons = staticCompositionLocalOf { DefaultAppIcons }
