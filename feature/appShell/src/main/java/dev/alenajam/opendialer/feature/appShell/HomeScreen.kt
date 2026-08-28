@@ -3,18 +3,12 @@ package dev.alenajam.opendialer.feature.appShell
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccessTimeFilled
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.People
-import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Dialpad
-import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Voicemail
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,6 +30,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.alenajam.opendialer.core.common.ui.AppIcon
+import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.feature.calls.CallsScreen
 import dev.alenajam.opendialer.feature.contacts.ContactsScreen
 import dev.alenajam.opendialer.feature.contactsSearch.ContactsTextSearchResults
@@ -116,14 +112,15 @@ internal fun HomeScreen(
             ) {}
         },
         bottomBar = {
+            val icons = LocalAppIcons.current
             NavigationBar {
                 NavigationBarItem(
                     selected = currentTab == HomeTab.CALLS,
                     icon = {
-                        Icon(
-                            if (currentTab == HomeTab.CALLS) Icons.Filled.AccessTimeFilled
-                            else Icons.Outlined.AccessTime,
+                        AppIcon(
+                            if (currentTab == HomeTab.CALLS) icons.recentsSelected else icons.recents,
                             contentDescription = null,
+                            modifier = Modifier.size(24.dp)
                         )
                     },
                     label = { Text(stringResource(R.string.recents)) },
@@ -132,10 +129,10 @@ internal fun HomeScreen(
                 NavigationBarItem(
                     selected = currentTab == HomeTab.CONTACTS,
                     icon = {
-                        Icon(
-                            if (currentTab == HomeTab.CONTACTS) Icons.Filled.People
-                            else Icons.Outlined.People,
+                        AppIcon(
+                            if (currentTab == HomeTab.CONTACTS) icons.contactsSelected else icons.contacts,
                             contentDescription = null,
+                            modifier = Modifier.size(24.dp)
                         )
                     },
                     label = { Text(stringResource(R.string.contacts)) },
@@ -144,7 +141,11 @@ internal fun HomeScreen(
                 NavigationBarItem(
                     selected = currentTab == HomeTab.VOICEMAIL,
                     icon = {
-                        Icon(Icons.Outlined.Voicemail, contentDescription = null)
+                        AppIcon(
+                            if (currentTab == HomeTab.VOICEMAIL) icons.voicemailSelected else icons.voicemail,
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
                     },
                     label = { Text(stringResource(R.string.voicemail)) },
                     onClick = { currentTab = HomeTab.VOICEMAIL },
@@ -153,7 +154,7 @@ internal fun HomeScreen(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { onOpenDialpad("") }) {
-                Icon(Icons.Outlined.Dialpad, contentDescription = null)
+                AppIcon(LocalAppIcons.current.dialpad, contentDescription = null)
             }
         },
     ) { innerPadding ->

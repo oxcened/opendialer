@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -23,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import dev.alenajam.opendialer.core.common.ui.AppIcon
 import dev.alenajam.opendialer.core.common.ui.ContactAvatar
 import dev.alenajam.opendialer.core.common.ui.contactAvatarColorKey
 import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
@@ -125,8 +125,8 @@ private fun ConferenceParticipantRow(
                     modifier = Modifier.size(48.dp)
                 ) {
                     Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            imageVector = icons.merge,
+                        AppIcon(
+                            icon = icons.merge,
                             contentDescription = stringResource(R.string.action_split),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -140,8 +140,8 @@ private fun ConferenceParticipantRow(
                 modifier = Modifier.size(48.dp)
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = icons.hangup,
+                    AppIcon(
+                        icon = icons.hangup,
                         contentDescription = stringResource(R.string.action_end_call),
                         tint = MaterialTheme.colorScheme.error
                     )
