@@ -3,6 +3,7 @@ package dev.alenajam.opendialer.feature.callDetail
 import android.provider.ContactsContract
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -43,6 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -248,6 +250,7 @@ private fun TopBar(
                         },
                         modifier = Modifier
                             .size(50.dp)
+                            .clip(CircleShape)
                             .clickable(
                                 enabled = call.isContactSaved() && !call.isVoicemailNumber,
                                 onClick = onOpenContact,
