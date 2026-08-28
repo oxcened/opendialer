@@ -162,7 +162,7 @@ fun ContactsSearchScreen(
                 return@Surface
             }
 
-            Column {
+            Column(modifier = Modifier.padding(top = 8.dp)) {
                 SearchList(
                     result = result.value,
                     openRowKey = openRowKey,
