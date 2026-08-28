@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.alenajam.opendialer.core.common.CommonUtils
+import dev.alenajam.opendialer.core.common.ContactsHelper
 import dev.alenajam.opendialer.core.common.functional.Event
 import dev.alenajam.opendialer.core.common.telecom.CallAccount
 import dev.alenajam.opendialer.core.common.telecom.CallPlacementRepository
@@ -68,6 +69,12 @@ class DialerViewModel
 
     fun sendMessage() {
         call.value?.number?.let { CommonUtils.makeSms(app, it) }
+    }
+
+    fun openContact(call: DialerCall) {
+        ContactsHelper.getContactByPhoneNumber(app, call.contactInfo.number)?.let {
+            CommonUtils.showContactDetail(app, it.id)
+        }
     }
 
     fun editNumberBeforeCall(call: DialerCall) {
