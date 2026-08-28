@@ -418,11 +418,13 @@ private fun CallRow(
             }
         }
 
-        Text(
-            text = CommonUtils.getDurationTimeStringMinimal(call.duration * 1000),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        if (call.duration > 0) {
+            Text(
+                text = CommonUtils.getDurationTimeStringMinimal(call.duration * 1000),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
     }
 }
 
