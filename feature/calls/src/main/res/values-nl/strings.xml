@@ -9,6 +9,7 @@
     <string name="unblockThisCaller" comment="Menu action that removes the block from the selected caller.">Deze beller deblokkeren</string>
     <string name="delete" comment="Menu action that deletes the selected call-log entry.">Verwijderen</string>
     <string name="anonymous" comment="Fallback caller name when the phone number is withheld.">Anoniem</string>
+    <string name="blocked" comment="Call-log label identifying a call that was blocked.">Geblokkeerd</string>
     <string name="placeholder_call_log" comment="Empty-state message shown when phone permission is required to display call history.">Schakel de telefoonmachtigingen in om je oproepgeschiedenis te bekijken</string>
     <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">Inschakelen</string>
     <string name="open_contact" comment="Menu action that opens the selected person's contact details.">Contact openen</string>

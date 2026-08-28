@@ -9,6 +9,7 @@
     <string name="unblockThisCaller" comment="Menu action that removes the block from the selected caller.">Desbloquear este número</string>
     <string name="delete" comment="Menu action that deletes the selected call-log entry.">Excluir</string>
     <string name="anonymous" comment="Fallback caller name when the phone number is withheld.">Anônimo</string>
+    <string name="blocked" comment="Call-log label identifying a call that was blocked.">Bloqueada</string>
     <string name="placeholder_call_log" comment="Empty-state message shown when phone permission is required to display call history.">Ative as permissões do telefone para ver o histórico de chamadas</string>
     <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">Ativar</string>
     <string name="open_contact" comment="Menu action that opens the selected person's contact details.">Abrir contato</string>

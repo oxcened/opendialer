@@ -57,7 +57,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -501,21 +501,25 @@ private fun CallRow(
     var showBlockConfirmation by remember { mutableStateOf(false) }
     var showDeleteConfirmation by remember { mutableStateOf(false) }
     var isNumberBlocked by remember(call.id) { mutableStateOf(false) }
-    val resources = LocalContext.current.resources
+    val resources = LocalResources.current
     val locale = LocalConfiguration.current.locales[0]
     val callDate = call.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
     val relativeTime = if (callDate == today) PrettyTime().format(call.date)
     else formatCallLogTime(call.date, locale)
-    val phoneType = call.contactInfo.type
-        ?.takeIf { call.isContactSaved() }
-        ?.let {
-            ContactsContract.CommonDataKinds.Phone.getTypeLabel(
-                resources,
-                it,
-                call.contactInfo.label,
-            ).toString()
-        }
-        .orEmpty()
+    val callLabel = if (call.type == CallType.BLOCKED) {
+        stringResource(R.string.blocked)
+    } else {
+        call.contactInfo.type
+            ?.takeIf { call.isContactSaved() }
+            ?.let {
+                ContactsContract.CommonDataKinds.Phone.getTypeLabel(
+                    resources,
+                    it,
+                    call.contactInfo.label,
+                ).toString()
+            }
+            .orEmpty()
+    }
     val displayNumber = call.contactInfo.formattedNumber
         ?.takeIf { it.isNotBlank() }
         ?: call.contactInfo.number.orEmpty()
@@ -623,10 +627,10 @@ private fun CallRow(
                         )
 
                         Text(
-                            text = if (phoneType.isBlank()) {
+                            text = if (callLabel.isBlank()) {
                                 relativeTime
                             } else {
-                                stringResource(R.string.call_log_type_time, phoneType, relativeTime)
+                                stringResource(R.string.call_log_type_time, callLabel, relativeTime)
                             },
                             style = MaterialTheme.typography.bodyMedium,
                             color = subtitleColor
