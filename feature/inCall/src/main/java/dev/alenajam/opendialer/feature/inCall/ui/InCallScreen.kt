@@ -117,6 +117,11 @@ internal fun InCallScreen(
                     canHold = canHold,
                     showAddCall = !hasSecondaryCall,
                     canAddCall = canAddCall,
+                    controlsEnabled = uiState.status != CallStatus.CONNECTING &&
+                        uiState.status != CallStatus.DISCONNECTING &&
+                        uiState.status != CallStatus.DISCONNECTED,
+                    canHangup = uiState.status != CallStatus.DISCONNECTING &&
+                        uiState.status != CallStatus.DISCONNECTED,
                     onHangup = viewModel::hangup,
                     onMute = viewModel::turnMute,
                     onSpeaker = viewModel::turnSpeaker,

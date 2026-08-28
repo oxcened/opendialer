@@ -35,10 +35,11 @@ internal fun CallButton(
     icon: ImageVector,
     label: String,
     isActive: Boolean? = false,
+    enabled: Boolean = true,
     onClick: () -> Unit
 ) {
     val containerColor by animateColorAsState(
-        targetValue = if (isActive == true) {
+        targetValue = if (isActive == true && enabled) {
             MaterialTheme.colorScheme.primary
         } else {
             MaterialTheme.colorScheme.surfaceContainerLowest
@@ -47,7 +48,9 @@ internal fun CallButton(
         label = "Call control container"
     )
     val contentColor by animateColorAsState(
-        targetValue = if (isActive == true) {
+        targetValue = if (!enabled) {
+            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+        } else if (isActive == true) {
             MaterialTheme.colorScheme.onPrimary
         } else {
             MaterialTheme.colorScheme.onSurface
@@ -71,6 +74,7 @@ internal fun CallButton(
     ) {
         Surface(
             onClick = onClick,
+            enabled = enabled,
             modifier = Modifier
                 .width(72.dp)
                 .height(64.dp)
@@ -97,7 +101,12 @@ internal fun CallButton(
             modifier = Modifier.width(72.dp),
             textAlign = TextAlign.Center,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+            color = if (enabled) {
+                MaterialTheme.colorScheme.onSurface
+            } else {
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+            },
         )
     }
 }
