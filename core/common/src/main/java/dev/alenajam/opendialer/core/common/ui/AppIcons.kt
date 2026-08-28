@@ -13,7 +13,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.AccessTimeFilled
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Voicemail
@@ -107,7 +106,6 @@ data class AppIcons(
     val more: IconSource,
     val pause: IconSource,
     val addCall: IconSource,
-    val accountCircle: IconSource,
     val person: IconSource,
     val callReceived: IconSource,
     val callMade: IconSource,
@@ -150,7 +148,6 @@ val DefaultAppIcons = AppIcons(
     more = IconSource.Vector(Icons.Outlined.MoreVert),
     pause = IconSource.Vector(Icons.Outlined.Pause),
     addCall = IconSource.Vector(Icons.Outlined.AddIcCall),
-    accountCircle = IconSource.Vector(Icons.Filled.AccountCircle),
     person = IconSource.Vector(Icons.Outlined.Person),
     callReceived = IconSource.Vector(Icons.AutoMirrored.Outlined.CallReceived),
     callMade = IconSource.Vector(Icons.AutoMirrored.Outlined.CallMade),
