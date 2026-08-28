@@ -63,8 +63,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.style.TextAlign
@@ -86,8 +87,6 @@ import dev.alenajam.opendialer.data.contacts.DialerContact
 import org.ocpsoft.prettytime.PrettyTime
 import java.time.LocalDate
 import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.util.Date
 
 private enum class CallFilter(val labelRes: Int) {
@@ -183,6 +182,7 @@ fun CallsScreen(
             call.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
         }
     }
+    val today = LocalDate.now()
 
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         viewModel.startCache()
@@ -244,13 +244,14 @@ fun CallsScreen(
 
                 callsByDate.forEach { (date, callsForDate) ->
                     item(key = "header-$date") {
-                        CallDateHeader(date)
+                        CallDateHeader(date, today)
                     }
                     itemsIndexed(callsForDate, key = { _, call -> call.id }) { index, call ->
                         val isOpen = openRowId == call.id
 
                         CallRow(call = call,
                             isOpen = isOpen,
+                            today = today,
                             roundTop = index == 0,
                             roundBottom = index == callsForDate.lastIndex,
                             icons = icons,
@@ -448,18 +449,18 @@ private fun FavoriteItem(
 }
 
 @Composable
-private fun CallDateHeader(date: LocalDate) {
-    val today = LocalDate.now()
+private fun CallDateHeader(date: LocalDate, today: LocalDate) {
+    val locale = LocalConfiguration.current.locales[0]
     val label = when (date) {
         today -> stringResource(R.string.call_log_date_today)
         today.minusDays(1) -> stringResource(R.string.call_log_date_yesterday)
-        else -> date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
+        else -> formatCallLogDateHeader(date, today, locale)
     }
 
     Text(
         text = label,
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-        style = MaterialTheme.typography.titleMedium,
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
+        style = MaterialTheme.typography.labelLarge,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
 }
@@ -468,6 +469,7 @@ private fun CallDateHeader(date: LocalDate) {
 private fun CallRow(
     call: DialerCall,
     isOpen: Boolean,
+    today: LocalDate = LocalDate.now(),
     roundTop: Boolean,
     roundBottom: Boolean,
     icons: dev.alenajam.opendialer.core.common.ui.AppIcons,
@@ -486,7 +488,10 @@ private fun CallRow(
     var showBlockConfirmation by remember { mutableStateOf(false) }
     var showDeleteConfirmation by remember { mutableStateOf(false) }
     val resources = LocalContext.current.resources
-    val relativeTime = PrettyTime().format(call.date)
+    val locale = LocalConfiguration.current.locales[0]
+    val callDate = call.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+    val relativeTime = if (callDate == today) PrettyTime().format(call.date)
+    else formatCallLogTime(call.date, locale)
     val phoneType = call.contactInfo.type
         ?.takeIf { call.isContactSaved() }
         ?.let {
