@@ -31,3 +31,7 @@ render.experimental.xml
 *.hprof
 # Google Services (e.g. APIs or Firebase)
 google-services.json
+
+.DS_Store
+
+.artifacts

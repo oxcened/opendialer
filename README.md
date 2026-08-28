@@ -18,6 +18,7 @@ OpenDialer must be selected as the device's default phone app to make and receiv
 **Table of Contents**
 
 - [Features](#features)
+- [Screenshots](#screenshots)
 - [Build and Run](#build-and-run)
 - [Tech Stack](#tech-stack)
 - [Modularization](#modularization)
@@ -34,6 +35,14 @@ OpenDialer must be selected as the device's default phone app to make and receiv
 - In-Call interface
 - Call conferences
 - Hang up with customized quick answers
+
+## Screenshots
+
+| Recents | Contacts |
+| :---: | :---: |
+| ![Recents](docs/screenshots/recents.png) | ![Contacts](docs/screenshots/contacts.png) |
+| **Dialpad** | **In-Call** |
+| ![Dialpad](docs/screenshots/dialpad.png) | ![In-Call](docs/screenshots/call.png) |
 
 ## Build and Run
 
