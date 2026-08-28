@@ -166,7 +166,7 @@ internal fun HomeScreen(
                         onOpenHistory = onOpenHistory,
                         onOpenContacts = { currentTab = HomeTab.CONTACTS },
                         onAddFavorite = onAddFavorite,
-                        onEditNumberBeforeCall = onOpenDialpad
+                        onEditNumberBeforeCall = onOpenDialpad,
                     )
                     HomeTab.CONTACTS -> ContactsScreen(onOpenHistory = onOpenHistory)
                     HomeTab.VOICEMAIL -> VoicemailScreen()

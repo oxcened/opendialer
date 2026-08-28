@@ -56,6 +56,7 @@ class CallsViewModelTest {
             app = PermissionGrantedApplication(),
             cacheRepository = cacheRepository,
             callPlacementRepository = FakeCallPlacementRepository(),
+            callLogPreferences = FakeCallLogPreferences(),
         )
         advanceUntilIdle()
         val invalidationsBeforeContactChange = cacheRepository.invalidations
@@ -129,6 +130,16 @@ private class FakeCallPlacementRepository : CallPlacementRepository {
 
     override fun placeVoicemailCall(account: CallAccount?): CallPlacementResult =
         CallPlacementResult.Placed
+}
+
+private class FakeCallLogPreferences : CallLogPreferences {
+    private var favoritesExpanded = true
+
+    override fun isFavoritesExpanded(): Boolean = favoritesExpanded
+
+    override fun setFavoritesExpanded(expanded: Boolean) {
+        favoritesExpanded = expanded
+    }
 }
 
 private class FakeContactsRepository : ContactsRepository {

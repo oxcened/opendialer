@@ -30,11 +30,14 @@ class CallsViewModel
     private val app: Application,
     private val cacheRepository: CacheRepository,
     private val callPlacementRepository: CallPlacementRepository,
+    private val callLogPreferences: CallLogPreferences,
 ) : ViewModel() {
     private val _calls = MutableStateFlow<List<DialerCall>>(emptyList())
     val calls: StateFlow<List<DialerCall>> = _calls
     private val _favorites = MutableStateFlow<List<DialerContact>>(emptyList())
     val favorites: StateFlow<List<DialerContact>> = _favorites.asStateFlow()
+    private val _favoritesExpanded = MutableStateFlow(callLogPreferences.isFavoritesExpanded())
+    val favoritesExpanded: StateFlow<Boolean> = _favoritesExpanded.asStateFlow()
     private val _hasRuntimePermission = MutableStateFlow(false)
     val hasRuntimePermission: StateFlow<Boolean> = _hasRuntimePermission
     private var hasContactsRuntimePermission = false
@@ -110,6 +113,11 @@ class CallsViewModel
         viewModelScope.launch {
             contactsRepository.toggleFavorite(contactId, false)
         }
+    }
+
+    fun toggleFavoritesExpanded() {
+        _favoritesExpanded.value = !_favoritesExpanded.value
+        callLogPreferences.setFavoritesExpanded(_favoritesExpanded.value)
     }
 
     fun startCache() {
