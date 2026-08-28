@@ -36,10 +36,13 @@ fun SettingsSubpageScreen(
             }
         })
     }) { padding ->
-        Column(
-            modifier = Modifier.padding(padding.copy(top = padding.calculateTopPadding() + 16.dp, start = 16.dp, end = 16.dp))
-                .fillMaxSize().verticalScroll(rememberScrollState())
-        ) {
+        val contentModifier = Modifier
+            .padding(padding.copy(top = padding.calculateTopPadding() + 16.dp, start = 16.dp, end = 16.dp))
+            .fillMaxSize()
+            .let { modifier ->
+                if (page.isScrollable) modifier.verticalScroll(rememberScrollState()) else modifier
+            }
+        Column(modifier = contentModifier) {
             CompositionLocalProvider(
                 LocalSettingsSubpageNavigator provides SettingsSubpageNavigator(onNavigateToDestination)
             ) { page.content(this@Column) }

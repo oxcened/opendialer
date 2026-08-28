@@ -18,5 +18,6 @@ data class SettingsSubpage(
     val title: String,
     val description: String? = null,
     val content: @Composable ColumnScope.() -> Unit,
+    val isScrollable: Boolean = true,
     val destinations: List<SettingsSubpageDestination> = emptyList()
 )
