@@ -412,7 +412,7 @@ private fun CallRow(
                 CallType.OUTGOING -> icons.callMade
                 CallType.MISSED, CallType.REJECTED -> icons.callMissed
                 CallType.VOICEMAIL -> icons.voicemail
-                CallType.BLOCKED -> icons.block
+                CallType.BLOCKED -> icons.blockCall
             }, contentDescription = null, tint = subtitleColor,
             modifier = Modifier.size(24.dp)
         )
