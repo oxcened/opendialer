@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.ui.ContactAvatar
+import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.core.common.ui.contactAvatarColorKey
 import dev.alenajam.opendialer.feature.inCall.R
 
@@ -27,10 +28,12 @@ fun InCallDetails(
     status: CallStatus,
     durationMillis: Long,
     callerImageUri: String? = null,
+    isConference: Boolean = false,
     modifier: Modifier = Modifier,
     showCallerImage: Boolean = true,
     useCompactCallerText: Boolean = false,
 ) {
+    val icons = LocalAppIcons.current
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -88,6 +91,7 @@ fun InCallDetails(
                 photoUri = callerImageUri,
                 colorKey = contactAvatarColorKey(callerName, callerNumber),
                 fallbackIconModifier = Modifier.size(72.dp),
+                avatarIcon = if (isConference) icons.conference else null,
                 initialTextStyle = MaterialTheme.typography.displayLarge,
                 modifier = Modifier.size(176.dp)
             )

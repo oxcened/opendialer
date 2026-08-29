@@ -91,6 +91,7 @@ internal fun InCallScreen(
                         status = uiState.status,
                         durationMillis = durationMillis,
                         callerImageUri = uiState.callerImageUri,
+                        isConference = canManageConference,
                         modifier = Modifier
                             .fillMaxWidth()
                             .statusBarsPadding()

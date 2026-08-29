@@ -108,6 +108,7 @@ data class AppIcons(
     val pause: IconSource,
     val addCall: IconSource,
     val person: IconSource,
+    val conference: IconSource = IconSource.Vector(Icons.Outlined.People),
     val callReceived: IconSource,
     val callMade: IconSource,
     val callMissed: IconSource,
