@@ -126,7 +126,7 @@ private fun ConferenceParticipantRow(
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         AppIcon(
-                            icon = icons.merge,
+                            icon = icons.split,
                             contentDescription = stringResource(R.string.action_split),
                             modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
