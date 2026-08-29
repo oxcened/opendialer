@@ -19,6 +19,7 @@ class SettingsSubpageNavigator internal constructor(
 data class SettingsSubpage(
     val title: String,
     val description: String? = null,
+    val subtitle: String? = null,
     val content: @Composable ColumnScope.() -> Unit,
     val isScrollable: Boolean = true,
     val topContentPadding: Dp = 16.dp,
