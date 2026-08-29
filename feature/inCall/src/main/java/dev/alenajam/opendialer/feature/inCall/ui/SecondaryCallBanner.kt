@@ -38,7 +38,7 @@ fun SecondaryCallBanner(
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
             AppIcon(
-                icon = icons.phonePaused,
+                icon = icons.pause,
                 contentDescription = null,
                 tint = Color.White,
                 modifier = Modifier.size(20.dp)

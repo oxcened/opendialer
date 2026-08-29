@@ -153,7 +153,7 @@ fun InCallControls(
                         if (canMerge) add(MoreAction(icons.merge, stringResource(R.string.conference_merge), onMerge, enabled = controlsEnabled))
                         if (canSwap) add(MoreAction(icons.swapCalls, stringResource(R.string.conference_swap), onSwap, enabled = controlsEnabled))
                         if (canManageConference) {
-                            add(MoreAction(icons.more, stringResource(R.string.conference_manage), onManageConference, enabled = controlsEnabled))
+                            add(MoreAction(icons.person, stringResource(R.string.conference_manage), onManageConference, enabled = controlsEnabled))
                         }
                     }
 
