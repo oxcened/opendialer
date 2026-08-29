@@ -681,6 +681,7 @@ private fun Footer(
                     modifier = Modifier.weight(1f),
                     value = TextFieldValue(text = query, selection = selection),
                     onValueChange = { onQueryChange(it.text, it.selection) },
+                    singleLine = true,
                     textStyle = LocalTextStyle.current.copy(
                         textAlign = TextAlign.Center,
                         fontSize = MaterialTheme.typography.headlineMedium.fontSize
