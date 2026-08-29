@@ -83,26 +83,29 @@ internal fun InCallScreen(
             color = MaterialTheme.colorScheme.background
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
-            Column(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    InCallDetails(
+                        callerName = uiState.callerName,
+                        callerNumber = uiState.callerNumber,
+                        callerNumberLabel = uiState.callerNumberLabel,
+                        status = uiState.status,
+                        durationMillis = durationMillis,
+                        callerImageUri = uiState.callerImageUri,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .statusBarsPadding()
+                            .padding(top = 32.dp)
+                    )
+                }
+
                 if (hasSecondaryCall && secondaryCallerName != null && !uiState.isIncoming) {
                     SecondaryCallBanner(
                         callerName = secondaryCallerName,
-                        modifier = Modifier.statusBarsPadding()
+                        modifier = Modifier
+                            .statusBarsPadding()
+                            .align(Alignment.TopCenter)
                     )
                 }
-                InCallDetails(
-                    callerName = uiState.callerName,
-                    callerNumber = uiState.callerNumber,
-                    callerNumberLabel = uiState.callerNumberLabel,
-                    status = uiState.status,
-                    durationMillis = durationMillis,
-                    callerImageUri = uiState.callerImageUri,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .statusBarsPadding()
-                        .padding(top = 32.dp)
-                )
-            }
 
             if (uiState.isIncoming) {
                 IncomingCallControls(
