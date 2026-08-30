@@ -15,6 +15,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBar
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.material3.Text
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.util.Consumer
 import androidx.lifecycle.Lifecycle
@@ -31,6 +39,8 @@ import dev.alenajam.opendialer.core.common.ui.AppIcons
 import dev.alenajam.opendialer.core.common.ui.AppProviders
 import dev.alenajam.opendialer.core.common.ui.AppThemeExtension
 import dev.alenajam.opendialer.core.common.ui.DefaultAppIcons
+import dev.alenajam.opendialer.core.common.ui.AppIcon
+import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.feature.callDetail.CallDetailRoute
 import dev.alenajam.opendialer.feature.callDetail.CallDetailScreen
 import dev.alenajam.opendialer.feature.contacts.AddFavoriteScreen
@@ -48,20 +58,26 @@ import dev.alenajam.opendialer.feature.settings.SettingsSubpage
 import dev.alenajam.opendialer.feature.settings.SettingsSubpageRoute
 import dev.alenajam.opendialer.feature.settings.SettingsSubpageDestinationRoute
 import dev.alenajam.opendialer.feature.settings.SettingsSubpageScreen
+import dev.alenajam.opendialer.feature.voicemail.VoicemailScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
 private data object HomeRoute
 
 @Serializable
+private data object VoicemailRoute
+
+@Serializable
 data object AddFavoriteRoute
 
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 fun DialerApp(
     defaultPhoneManager: DefaultPhoneManager,
     icons: AppIcons = DefaultAppIcons,
     themeExtension: AppThemeExtension = AppThemeExtension(),
     settingsSubpages: List<SettingsSubpage> = emptyList(),
+    homeScreenConfiguration: HomeScreenConfiguration = HomeScreenConfiguration(),
 ) {
     val navController = rememberNavController()
 
@@ -142,11 +158,32 @@ fun DialerApp(
                         onOpenHistory = { navController.navigate(CallDetailRoute(callIds = it)) },
                         onOpenSettings = { navController.navigate(SettingsRoute) },
                         onOpenAbout = { navController.navigate(AboutRoute) },
-                        onAddFavorite = { navController.navigate(AddFavoriteRoute) }
+                        onAddFavorite = { navController.navigate(AddFavoriteRoute) },
+                        onOpenSettingsSubpage = { navController.navigate(SettingsSubpageRoute(it)) },
+                        onOpenVoicemail = { navController.navigate(VoicemailRoute) },
+                        configuration = homeScreenConfiguration,
                     )
                 }
                 composable<AddFavoriteRoute> {
                     AddFavoriteScreen(onNavigateBack = { navController.popBackStack() })
+                }
+                composable<VoicemailRoute> {
+                    Scaffold(
+                        topBar = {
+                            TopAppBar(
+                                title = { Text(stringResource(R.string.voicemail)) },
+                                navigationIcon = {
+                                    IconButton(onClick = { navController.popBackStack() }) {
+                                        AppIcon(LocalAppIcons.current.arrowLeft, contentDescription = null)
+                                    }
+                                }
+                            )
+                        }
+                    ) { innerPadding ->
+                        Box(Modifier.padding(innerPadding)) {
+                            VoicemailScreen()
+                        }
+                    }
                 }
                 composable<ContactsSearchRoute> {
                     ContactsSearchScreen(
