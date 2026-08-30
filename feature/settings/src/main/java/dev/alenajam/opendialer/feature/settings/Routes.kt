@@ -18,4 +18,8 @@ data object DisplayOptionsRoute
 data class SettingsSubpageRoute(val index: Int)
 
 @Serializable
-data class SettingsSubpageDestinationRoute(val subpageIndex: Int, val destinationIndex: Int)
+data class SettingsSubpageDestinationRoute(
+    val subpageIndex: Int,
+    val destinationIndex: Int,
+    val payload: String? = null
+)

@@ -181,8 +181,8 @@ fun DialerApp(
                         SettingsSubpageScreen(
                             page = page,
                             onNavigateBack = { navController.popBackStack() },
-                            onNavigateToDestination = { destinationIndex ->
-                                navController.navigate(SettingsSubpageDestinationRoute(route.index, destinationIndex))
+                            onNavigateToDestination = { destinationIndex, payload ->
+                                navController.navigate(SettingsSubpageDestinationRoute(route.index, destinationIndex, payload))
                             }
                         )
                     }
@@ -192,7 +192,7 @@ fun DialerApp(
                     settingsSubpages.getOrNull(route.subpageIndex)
                         ?.destinations
                         ?.getOrNull(route.destinationIndex)
-                        ?.content { navController.popBackStack() }
+                        ?.content(route.payload) { navController.popBackStack() }
                 }
             }
         }

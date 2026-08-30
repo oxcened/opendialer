@@ -8,13 +8,14 @@ import androidx.compose.ui.unit.dp
 
 data class SettingsSubpageDestination(
     val title: String,
-    val content: @Composable (onNavigateBack: () -> Unit) -> Unit
+    val content: @Composable (payload: String?, onNavigateBack: () -> Unit) -> Unit
 )
 
 class SettingsSubpageNavigator internal constructor(
-    private val navigateToDestination: (Int) -> Unit
+    private val navigateToDestination: (Int, String?) -> Unit
 ) {
-    fun navigateTo(destinationIndex: Int) = navigateToDestination(destinationIndex)
+    fun navigateTo(destinationIndex: Int, payload: String? = null) = 
+        navigateToDestination(destinationIndex, payload)
 }
 
 data class SettingsSubpage(
