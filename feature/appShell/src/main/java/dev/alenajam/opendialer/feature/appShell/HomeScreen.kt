@@ -1,5 +1,6 @@
 package dev.alenajam.opendialer.feature.appShell
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -52,6 +53,11 @@ internal fun HomeScreen(
 ) {
     var currentTab by remember { mutableStateOf(HomeTab.CALLS) }
     var searchQuery by remember { mutableStateOf("") }
+    val isSearchActive = searchQuery.isNotEmpty()
+
+    BackHandler(enabled = isSearchActive) {
+        searchQuery = ""
+    }
 
     Scaffold(
         topBar = {
@@ -65,16 +71,24 @@ internal fun HomeScreen(
                         onExpandedChange = {},
                         placeholder = { Text(stringResource(R.string.search_contacts)) },
                         leadingIcon = {
-                            IconButton(onClick = {}) {
+                            IconButton(onClick = { if (isSearchActive) searchQuery = "" }) {
                                 AppIcon(
-                                    LocalAppIcons.current.search,
-                                    contentDescription = null,
+                                    if (isSearchActive) {
+                                        LocalAppIcons.current.arrowLeft
+                                    } else {
+                                        LocalAppIcons.current.search
+                                    },
+                                    contentDescription = if (isSearchActive) {
+                                        stringResource(R.string.clear_search)
+                                    } else {
+                                        null
+                                    },
                                     modifier = Modifier.size(24.dp)
                                 )
                             }
                         },
                         trailingIcon = {
-                            if (searchQuery.isNotEmpty()) {
+                            if (isSearchActive) {
                                 IconButton(onClick = { searchQuery = "" }) {
                                     AppIcon(
                                         LocalAppIcons.current.close,
