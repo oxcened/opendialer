@@ -109,7 +109,8 @@ fun SettingsScreen(
             )
         }
     }
-    val extensionItems = subpages.mapIndexed { index, page ->
+    val extensionItems = subpages.mapIndexedNotNull { index, page ->
+        if (!page.visibleInSettings) return@mapIndexedNotNull null
         SettingsListItem(page.title, page.description) { onOpenSubpage(index) }
     }
     Scaffold(

@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -35,11 +36,24 @@ import dev.alenajam.opendialer.feature.contacts.ContactsScreen
 import dev.alenajam.opendialer.feature.contactsSearch.ContactsTextSearchResults
 import dev.alenajam.opendialer.feature.voicemail.VoicemailScreen
 
-private enum class HomeTab {
+enum class HomeTab {
     CALLS,
     CONTACTS,
     VOICEMAIL,
+    CUSTOM,
 }
+
+data class HomeNavigationItem(
+    val label: @Composable () -> Unit,
+    val icon: @Composable (selected: Boolean) -> Unit,
+    val content: @Composable (onOpenSettingsSubpage: (Int) -> Unit) -> Unit,
+)
+
+data class HomeScreenConfiguration(
+    val showVoicemailInNavigation: Boolean = true,
+    val showVoicemailInOverflow: Boolean = false,
+    val customNavigationItem: HomeNavigationItem? = null,
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,8 +63,11 @@ internal fun HomeScreen(
     onOpenSettings: () -> Unit,
     onOpenAbout: () -> Unit,
     onAddFavorite: () -> Unit = {},
+    onOpenSettingsSubpage: (Int) -> Unit = {},
+    onOpenVoicemail: () -> Unit = {},
+    configuration: HomeScreenConfiguration = HomeScreenConfiguration(),
 ) {
-    var currentTab by remember { mutableStateOf(HomeTab.CALLS) }
+    var currentTab by rememberSaveable { mutableStateOf(HomeTab.CALLS) }
     var searchQuery by remember { mutableStateOf("") }
 
     Scaffold(
@@ -92,6 +109,15 @@ internal fun HomeScreen(
                                         expanded = expanded,
                                         onDismissRequest = { expanded = false },
                                     ) {
+                                        if (configuration.showVoicemailInOverflow) {
+                                            DropdownMenuItem(
+                                                text = { Text(stringResource(R.string.voicemail)) },
+                                                onClick = {
+                                                    onOpenVoicemail()
+                                                    expanded = false
+                                                },
+                                            )
+                                        }
                                         DropdownMenuItem(
                                             text = { Text(stringResource(R.string.screen_settings_title)) },
                                             onClick = onOpenSettings,
@@ -141,18 +167,28 @@ internal fun HomeScreen(
                     label = { Text(stringResource(R.string.contacts)) },
                     onClick = { currentTab = HomeTab.CONTACTS },
                 )
-                NavigationBarItem(
-                    selected = currentTab == HomeTab.VOICEMAIL,
-                    icon = {
-                        AppIcon(
-                            if (currentTab == HomeTab.VOICEMAIL) icons.voicemailSelected else icons.voicemail,
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    },
-                    label = { Text(stringResource(R.string.voicemail)) },
-                    onClick = { currentTab = HomeTab.VOICEMAIL },
-                )
+                if (configuration.showVoicemailInNavigation) {
+                    NavigationBarItem(
+                        selected = currentTab == HomeTab.VOICEMAIL,
+                        icon = {
+                            AppIcon(
+                                if (currentTab == HomeTab.VOICEMAIL) icons.voicemailSelected else icons.voicemail,
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        },
+                        label = { Text(stringResource(R.string.voicemail)) },
+                        onClick = { currentTab = HomeTab.VOICEMAIL },
+                    )
+                }
+                configuration.customNavigationItem?.let { item ->
+                    NavigationBarItem(
+                        selected = currentTab == HomeTab.CUSTOM,
+                        icon = { item.icon(currentTab == HomeTab.CUSTOM) },
+                        label = item.label,
+                        onClick = { currentTab = HomeTab.CUSTOM },
+                    )
+                }
             }
         },
         floatingActionButton = {
@@ -178,6 +214,7 @@ internal fun HomeScreen(
                     )
                     HomeTab.CONTACTS -> ContactsScreen(onOpenHistory = onOpenHistory)
                     HomeTab.VOICEMAIL -> VoicemailScreen()
+                    HomeTab.CUSTOM -> configuration.customNavigationItem?.content(onOpenSettingsSubpage)
                 }
             }
         }
