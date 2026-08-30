@@ -32,34 +32,36 @@ fun SettingsSubpageScreen(
     onNavigateBack: () -> Unit,
     onNavigateToDestination: (Int) -> Unit
 ) {
-    Scaffold(topBar = {
-        TopAppBar(title = {
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(page.title)
-                page.subtitle?.let { subtitle ->
-                    Text(
-                        subtitle,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+    CompositionLocalProvider(
+        LocalSettingsSubpageNavigator provides SettingsSubpageNavigator(onNavigateToDestination)
+    ) {
+        Scaffold(topBar = {
+            TopAppBar(title = {
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Text(page.title)
+                    page.subtitle?.let { subtitle ->
+                        Text(
+                            subtitle,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
+            }, navigationIcon = {
+                IconButton(onClick = onNavigateBack) {
+                    AppIcon(LocalAppIcons.current.arrowLeft, contentDescription = null)
+                }
+            }, actions = page.actions)
+        }) { padding ->
+            val contentModifier = Modifier
+                .padding(padding.copy(top = padding.calculateTopPadding() + page.topContentPadding, start = 16.dp, end = 16.dp))
+                .fillMaxSize()
+                .let { modifier ->
+                    if (page.isScrollable) modifier.verticalScroll(rememberScrollState()) else modifier
+                }
+            Column(modifier = contentModifier) {
+                page.content(this@Column)
             }
-        }, navigationIcon = {
-            IconButton(onClick = onNavigateBack) {
-                AppIcon(LocalAppIcons.current.arrowLeft, contentDescription = null)
-            }
-        })
-    }) { padding ->
-        val contentModifier = Modifier
-            .padding(padding.copy(top = padding.calculateTopPadding() + page.topContentPadding, start = 16.dp, end = 16.dp))
-            .fillMaxSize()
-            .let { modifier ->
-                if (page.isScrollable) modifier.verticalScroll(rememberScrollState()) else modifier
-            }
-        Column(modifier = contentModifier) {
-            CompositionLocalProvider(
-                LocalSettingsSubpageNavigator provides SettingsSubpageNavigator(onNavigateToDestination)
-            ) { page.content(this@Column) }
         }
     }
 }
