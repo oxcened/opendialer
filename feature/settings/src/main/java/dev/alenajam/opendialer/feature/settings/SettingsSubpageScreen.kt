@@ -30,7 +30,7 @@ val LocalSettingsSubpageNavigator = staticCompositionLocalOf<SettingsSubpageNavi
 fun SettingsSubpageScreen(
     page: SettingsSubpage,
     onNavigateBack: () -> Unit,
-    onNavigateToDestination: (Int) -> Unit
+    onNavigateToDestination: (Int, String?) -> Unit
 ) {
     CompositionLocalProvider(
         LocalSettingsSubpageNavigator provides SettingsSubpageNavigator(onNavigateToDestination)
