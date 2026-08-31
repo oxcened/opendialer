@@ -29,6 +29,7 @@ enum class CallStatus {
 }
 
 data class InCallUiState(
+    val callId: String = "",
     val status: CallStatus = CallStatus.IDLE,
     val isHolding: Boolean = false,
     val isSpeaker: Boolean = false,

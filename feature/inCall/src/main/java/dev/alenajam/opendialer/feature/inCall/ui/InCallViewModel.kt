@@ -2,6 +2,7 @@ package dev.alenajam.opendialer.feature.inCall.ui
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.telecom.Call
 import android.telecom.CallAudioState
 import androidx.lifecycle.ViewModel
@@ -44,6 +45,7 @@ class InCallViewModel @Inject constructor(
         val conferenceChildren = primary?.call?.children.orEmpty().toSet()
 
         InCallUiState(
+            callId = primary?.stableId().orEmpty(),
             status = CallStatus.fromTelecomState(primary?.state),
             isHolding = primary?.state == Call.STATE_HOLDING,
             isSpeaker = audio?.route == CallAudioState.ROUTE_SPEAKER,
@@ -148,6 +150,13 @@ class InCallViewModel @Inject constructor(
     fun turnMute() = callManager.toggleMute()
 
     fun swap() = callManager.swap()
+
+    private fun OngoingCall.stableId(): String =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            call.details.creationTimeMillis.toString()
+        } else {
+            sequence.toString()
+        }
 
     fun addCall(activity: Activity) = activity.startActivity(
         Intent(Intent.ACTION_DIAL).putExtra(
