@@ -18,9 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -141,7 +138,10 @@ fun InCallControls(
                         IconButton(
                             onClick = { toggleSectionButton(OpenSection.ADDITIONAL_ACTIONS) }
                         ) {
-                            Icon(imageVector = Icons.Outlined.Close, contentDescription = stringResource(R.string.action_close))
+                            AppIcon(
+                                icon = icons.close,
+                                contentDescription = stringResource(R.string.action_close),
+                            )
                         }
                     }
 
@@ -191,7 +191,10 @@ fun InCallControls(
                         IconButton(
                             onClick = { toggleSectionButton(OpenSection.DIALPAD) }
                         ) {
-                            Icon(imageVector = Icons.Outlined.Close, contentDescription = stringResource(R.string.action_close))
+                            AppIcon(
+                                icon = icons.close,
+                                contentDescription = stringResource(R.string.action_close),
+                            )
                         }
                     }
 
