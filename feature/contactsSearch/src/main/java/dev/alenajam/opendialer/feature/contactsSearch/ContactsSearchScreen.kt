@@ -21,9 +21,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.Backspace
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -31,7 +28,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
@@ -656,8 +652,8 @@ private fun Footer(
                         onClick = { overflowExpanded = true },
                         enabled = query.isNotBlank()
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
+                        AppIcon(
+                            icon = LocalAppIcons.current.more,
                             contentDescription = stringResource(R.string.dialpad_more_options)
                         )
                     }
@@ -714,8 +710,8 @@ private fun Footer(
                             }
                         )
                 ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Outlined.Backspace,
+                    AppIcon(
+                        icon = LocalAppIcons.current.backspace,
                         contentDescription = stringResource(R.string.backspace)
                     )
                 }

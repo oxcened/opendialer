@@ -7,6 +7,7 @@ import androidx.compose.material.icons.automirrored.outlined.CallMade
 import androidx.compose.material.icons.automirrored.outlined.CallMissed
 import androidx.compose.material.icons.automirrored.outlined.CallReceived
 import androidx.compose.material.icons.automirrored.outlined.CallSplit
+import androidx.compose.material.icons.automirrored.outlined.Backspace
 import androidx.compose.material.icons.automirrored.outlined.Message
 import androidx.compose.material.icons.automirrored.outlined.VolumeUp
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -105,6 +106,7 @@ data class AppIcons(
     val mute: IconSource,
     val speaker: IconSource,
     val more: IconSource,
+    val backspace: IconSource = IconSource.Vector(Icons.AutoMirrored.Outlined.Backspace),
     val pause: IconSource,
     val addCall: IconSource,
     val person: IconSource,
