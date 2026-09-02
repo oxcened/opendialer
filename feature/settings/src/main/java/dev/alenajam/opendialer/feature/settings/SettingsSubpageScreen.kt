@@ -33,18 +33,20 @@ fun SettingsSubpageScreen(
     onNavigateToDestination: (Int, String?) -> Unit
 ) {
     CompositionLocalProvider(
-        LocalSettingsSubpageNavigator provides SettingsSubpageNavigator(onNavigateToDestination)
+        LocalSettingsSubpageNavigator provides SettingsSubpageNavigator(onNavigateToDestination, onNavigateBack)
     ) {
         Scaffold(topBar = {
             TopAppBar(title = {
-                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    Text(page.title)
-                    page.subtitle?.let { subtitle ->
-                        Text(
-                            subtitle,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                page.topBarTitle?.invoke() ?: run {
+                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        Text(page.title)
+                        page.subtitle?.let { subtitle ->
+                            Text(
+                                subtitle,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     }
                 }
             }, navigationIcon = {
