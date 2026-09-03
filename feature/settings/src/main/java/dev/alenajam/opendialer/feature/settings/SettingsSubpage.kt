@@ -12,17 +12,21 @@ data class SettingsSubpageDestination(
 )
 
 class SettingsSubpageNavigator internal constructor(
-    private val navigateToDestination: (Int, String?) -> Unit
+    private val navigateToDestination: (Int, String?) -> Unit,
+    private val onNavigateBack: () -> Unit
 ) {
     fun navigateTo(destinationIndex: Int, payload: String? = null) = 
         navigateToDestination(destinationIndex, payload)
+
+    fun navigateBack() = onNavigateBack()
 }
 
 data class SettingsSubpage(
     val title: String,
     val description: String? = null,
     val subtitle: String? = null,
-    val content: @Composable ColumnScope.() -> Unit,
+    val topBarTitle: (@Composable () -> Unit)? = null,
+    val content: @Composable ColumnScope.(payload: String?) -> Unit,
     val actions: @Composable RowScope.() -> Unit = {},
     val isScrollable: Boolean = true,
     val topContentPadding: Dp = 16.dp,

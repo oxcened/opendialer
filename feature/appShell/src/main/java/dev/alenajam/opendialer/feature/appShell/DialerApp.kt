@@ -159,7 +159,7 @@ fun DialerApp(
                         onOpenSettings = { navController.navigate(SettingsRoute) },
                         onOpenAbout = { navController.navigate(AboutRoute) },
                         onAddFavorite = { navController.navigate(AddFavoriteRoute) },
-                        onOpenSettingsSubpage = { navController.navigate(SettingsSubpageRoute(it)) },
+                        onOpenSettingsSubpage = { index, payload -> navController.navigate(SettingsSubpageRoute(index, payload)) },
                         onOpenVoicemail = { navController.navigate(VoicemailRoute) },
                         configuration = homeScreenConfiguration,
                     )
@@ -200,7 +200,7 @@ fun DialerApp(
                         onOpenQuickResponses = { navController.navigate(QuickResponsesRoute) },
                         onOpenDisplayOptions = { navController.navigate(DisplayOptionsRoute) },
                         subpages = settingsSubpages,
-                        onOpenSubpage = { navController.navigate(SettingsSubpageRoute(it)) }
+                        onOpenSubpage = { index, payload -> navController.navigate(SettingsSubpageRoute(index, payload)) }
                     )
                 }
                 composable<AboutRoute> {
@@ -217,6 +217,7 @@ fun DialerApp(
                     settingsSubpages.getOrNull(route.index)?.let { page ->
                         SettingsSubpageScreen(
                             page = page,
+                            payload = route.payload,
                             onNavigateBack = { navController.popBackStack() },
                             onNavigateToDestination = { destinationIndex, payload ->
                                 navController.navigate(SettingsSubpageDestinationRoute(route.index, destinationIndex, payload))

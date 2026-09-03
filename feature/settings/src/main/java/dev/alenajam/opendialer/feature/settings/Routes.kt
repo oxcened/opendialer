@@ -15,7 +15,7 @@ data object QuickResponsesRoute
 data object DisplayOptionsRoute
 
 @Serializable
-data class SettingsSubpageRoute(val index: Int)
+data class SettingsSubpageRoute(val index: Int, val payload: String? = null)
 
 @Serializable
 data class SettingsSubpageDestinationRoute(
