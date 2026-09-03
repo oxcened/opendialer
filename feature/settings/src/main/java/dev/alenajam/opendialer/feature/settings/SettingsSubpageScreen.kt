@@ -29,6 +29,7 @@ val LocalSettingsSubpageNavigator = staticCompositionLocalOf<SettingsSubpageNavi
 @Composable
 fun SettingsSubpageScreen(
     page: SettingsSubpage,
+    payload: String?,
     onNavigateBack: () -> Unit,
     onNavigateToDestination: (Int, String?) -> Unit
 ) {
@@ -62,7 +63,7 @@ fun SettingsSubpageScreen(
                     if (page.isScrollable) modifier.verticalScroll(rememberScrollState()) else modifier
                 }
             Column(modifier = contentModifier) {
-                page.content(this@Column)
+                page.content(this@Column, payload)
             }
         }
     }

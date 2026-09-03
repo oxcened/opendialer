@@ -31,6 +31,7 @@ import dev.alenajam.opendialer.core.common.ui.AppIcon
 import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.feature.calls.CallsScreen
 import dev.alenajam.opendialer.feature.contacts.ContactsScreen
+import dev.alenajam.opendialer.feature.contacts.ContactRowTrailingAction
 import dev.alenajam.opendialer.feature.contactsSearch.ContactsTextSearchResults
 import dev.alenajam.opendialer.feature.voicemail.VoicemailScreen
 
@@ -44,13 +45,14 @@ enum class HomeTab {
 data class HomeNavigationItem(
     val label: @Composable () -> Unit,
     val icon: @Composable (selected: Boolean) -> Unit,
-    val content: @Composable (onOpenSettingsSubpage: (Int) -> Unit) -> Unit,
+    val content: @Composable (onOpenSettingsSubpage: (Int, String?) -> Unit) -> Unit,
 )
 
 data class HomeScreenConfiguration(
     val showVoicemailInNavigation: Boolean = true,
     val showVoicemailInOverflow: Boolean = false,
     val customNavigationItem: HomeNavigationItem? = null,
+    val contactRowTrailingAction: ContactRowTrailingAction? = null,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,7 +63,7 @@ internal fun HomeScreen(
     onOpenSettings: () -> Unit,
     onOpenAbout: () -> Unit,
     onAddFavorite: () -> Unit = {},
-    onOpenSettingsSubpage: (Int) -> Unit = {},
+    onOpenSettingsSubpage: (Int, String?) -> Unit = { _, _ -> },
     onOpenVoicemail: () -> Unit = {},
     configuration: HomeScreenConfiguration = HomeScreenConfiguration(),
 ) {
@@ -223,7 +225,11 @@ internal fun HomeScreen(
                         onAddFavorite = onAddFavorite,
                         onEditNumberBeforeCall = onOpenDialpad,
                     )
-                    HomeTab.CONTACTS -> ContactsScreen(onOpenHistory = onOpenHistory)
+                    HomeTab.CONTACTS -> ContactsScreen(
+                        onOpenHistory = onOpenHistory,
+                        contactRowTrailingAction = configuration.contactRowTrailingAction,
+                        onOpenSettingsSubpage = onOpenSettingsSubpage,
+                    )
                     HomeTab.VOICEMAIL -> VoicemailScreen()
                     HomeTab.CUSTOM -> configuration.customNavigationItem?.content(onOpenSettingsSubpage)
                 }

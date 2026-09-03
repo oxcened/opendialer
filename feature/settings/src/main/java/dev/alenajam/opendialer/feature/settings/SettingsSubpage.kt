@@ -26,7 +26,7 @@ data class SettingsSubpage(
     val description: String? = null,
     val subtitle: String? = null,
     val topBarTitle: (@Composable () -> Unit)? = null,
-    val content: @Composable ColumnScope.() -> Unit,
+    val content: @Composable ColumnScope.(payload: String?) -> Unit,
     val actions: @Composable RowScope.() -> Unit = {},
     val isScrollable: Boolean = true,
     val topContentPadding: Dp = 16.dp,
