@@ -193,27 +193,42 @@ fun AboutScreen(
             val fontName = stringResource(R.string.font_name)
             val fontAuthor = stringResource(R.string.font_author)
             val fontUri = stringResource(R.string.url_font)
-            if (fontName.isNotBlank() && fontAuthor.isNotBlank()) {
+            val iconDesigner = stringResource(R.string.icon_designer)
+            val iconDesignerUri = stringResource(R.string.url_icon_designer)
+            val hasFontCredit = fontName.isNotBlank() && fontAuthor.isNotBlank()
+            val hasIconCredit = iconDesigner.isNotBlank()
+            if (hasFontCredit || hasIconCredit) {
                 Text(
                     modifier = Modifier.padding(top = 4.dp),
                     text = stringResource(R.string.about_section_credits),
                     style = MaterialTheme.typography.titleMedium
                 )
-                if (fontUri.isBlank()) {
-                    AboutInfoCard(
-                        title = stringResource(R.string.typography_credit_title),
-                        description = stringResource(R.string.font_credit_format, fontName, fontAuthor),
-                        roundTop = true,
-                        roundBottom = true
-                    )
-                } else {
-                    AboutLinkCard(
-                        title = stringResource(R.string.typography_credit_title),
-                        description = stringResource(R.string.font_credit_format, fontName, fontAuthor),
-                        uri = fontUri,
-                        roundTop = true,
-                        roundBottom = true
-                    )
+                Column {
+                    if (hasFontCredit && fontUri.isBlank()) {
+                        AboutInfoCard(
+                            title = stringResource(R.string.typography_credit_title),
+                            description = stringResource(R.string.font_credit_format, fontName, fontAuthor),
+                            roundTop = true,
+                            roundBottom = !hasIconCredit
+                        )
+                    } else if (hasFontCredit) {
+                        AboutLinkCard(
+                            title = stringResource(R.string.typography_credit_title),
+                            description = stringResource(R.string.font_credit_format, fontName, fontAuthor),
+                            uri = fontUri,
+                            roundTop = true,
+                            roundBottom = !hasIconCredit
+                        )
+                    }
+                    if (hasIconCredit) {
+                        AboutLinkCard(
+                            title = stringResource(R.string.icon_credit_title),
+                            description = stringResource(R.string.icon_credit_format, iconDesigner),
+                            uri = iconDesignerUri,
+                            roundTop = !hasFontCredit,
+                            roundBottom = true
+                        )
+                    }
                 }
             }
         }
