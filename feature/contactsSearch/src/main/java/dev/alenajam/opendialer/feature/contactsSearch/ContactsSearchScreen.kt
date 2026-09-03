@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,8 +35,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -646,11 +645,16 @@ private fun Footer(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier.padding(bottom = 16.dp, start = 16.dp, end = 16.dp)
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.height(64.dp),
+            ) {
                 Box {
+                    val isOverflowEnabled = query.isNotBlank()
                     IconButton(
                         onClick = { overflowExpanded = true },
-                        enabled = query.isNotBlank()
+                        enabled = isOverflowEnabled,
+                        modifier = Modifier.alpha(if (isOverflowEnabled) 1f else 0.38f)
                     ) {
                         AppIcon(
                             icon = LocalAppIcons.current.more,
@@ -673,8 +677,8 @@ private fun Footer(
                     }
                 }
 
-                TextField(
-                    modifier = Modifier.weight(1f),
+                BasicTextField(
+                    modifier = Modifier.weight(1f).height(64.dp),
                     value = TextFieldValue(text = query, selection = selection),
                     onValueChange = { onQueryChange(it.text, it.selection) },
                     singleLine = true,
@@ -682,14 +686,14 @@ private fun Footer(
                         textAlign = TextAlign.Center,
                         fontSize = MaterialTheme.typography.headlineMedium.fontSize
                     ),
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        errorIndicatorColor = Color.Transparent
-                    )
+                    decorationBox = { innerTextField ->
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            innerTextField()
+                        }
+                    },
                 )
 
                 val isBackspaceEnabled = query.isNotEmpty()
