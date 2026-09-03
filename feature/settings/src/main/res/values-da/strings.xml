@@ -40,4 +40,6 @@
     <string name="issues_description" comment="Description of the issue-reporting link on the About screen.">Har du fundet en fejl eller fået en idé? Opret en sag på GitHub.</string>
     <string name="contact_developer" comment="Title of the developer email link on the About screen.">Kontakt</string>
     <string name="font_credit_format" comment="Font credit. %1$s is the font name and %2$s is the font author.">%1$s af %2$s</string>
+    <string name="icon_credit_title" comment="Title of the icon-design credit card on the About screen.">Ikondesign</string>
+    <string name="icon_credit_format" comment="Icon credit. %1$s is the icon designer.">Ikoner af %1$s</string>
 </resources>

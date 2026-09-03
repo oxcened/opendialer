@@ -58,4 +58,8 @@
     <string name="font_author" translatable="false"></string>
     <string name="url_font" translatable="false"></string>
     <string name="font_credit_format" comment="Font credit. %1$s is the font name and %2$s is the font author.">%1$s by %2$s</string>
+    <string name="icon_credit_title" comment="Title of the icon-design credit card on the About screen.">Icon design</string>
+    <string name="icon_designer" translatable="false"></string>
+    <string name="url_icon_designer" translatable="false"></string>
+    <string name="icon_credit_format" comment="Icon credit. %1$s is the icon designer.">Icons by %1$s</string>
 </resources>

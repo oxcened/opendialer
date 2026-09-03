@@ -40,4 +40,6 @@
     <string name="issues_description" comment="Description of the issue-reporting link on the About screen.">发现错误或有新想法？请在 GitHub 上提交问题。</string>
     <string name="contact_developer" comment="Title of the developer email link on the About screen.">联系方式</string>
     <string name="font_credit_format" comment="Font credit. %1$s is the font name and %2$s is the font author.">%1$s，作者：%2$s</string>
+    <string name="icon_credit_title" comment="Title of the icon-design credit card on the About screen.">图标设计</string>
+    <string name="icon_credit_format" comment="Icon credit. %1$s is the icon designer.">图标设计：%1$s</string>
 </resources>
