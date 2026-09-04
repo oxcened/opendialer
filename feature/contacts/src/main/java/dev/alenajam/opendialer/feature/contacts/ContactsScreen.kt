@@ -24,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,12 +41,9 @@ import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.data.contacts.DialerContactSummary
-import kotlinx.coroutines.launch
 
-data class ContactRowTrailingAction(
-    val settingsSubpageIndex: Int,
-    val onClick: suspend (DialerContactSummary) -> Unit,
-    val content: @Composable () -> Unit,
+data class ContactRowTrailingContent(
+    val content: @Composable (DialerContactSummary, (Int, String?) -> Unit) -> Unit,
 )
 
 @Composable
@@ -55,7 +51,7 @@ fun ContactsScreen(
     viewModel: ContactsViewModel = hiltViewModel(),
     searchQuery: String = "",
     @Suppress("UNUSED_PARAMETER") onOpenHistory: (callIds: List<Int>) -> Unit = {},
-    contactRowTrailingAction: ContactRowTrailingAction? = null,
+    contactRowTrailingContent: ContactRowTrailingContent? = null,
     onOpenSettingsSubpage: (Int, String?) -> Unit = { _, _ -> },
 ) {
     val requestPermissions =
@@ -69,7 +65,6 @@ fun ContactsScreen(
     val profileContact = viewModel.profileContact.collectAsStateWithLifecycle()
     val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
     val filteredContacts = if (searchQuery.isBlank()) {
         contacts.value
     } else {
@@ -157,13 +152,9 @@ fun ContactsScreen(
                             roundTop = item.isFirstInSection,
                             roundBottom = item.isLastInSection,
                             onOpenContact = { viewModel.openContact(item.contact.id) },
-                            trailingAction = contactRowTrailingAction?.let { action -> {
-                                coroutineScope.launch {
-                                    action.onClick(item.contact)
-                                    onOpenSettingsSubpage(action.settingsSubpageIndex, null)
-                                }
-                            } },
-                            trailingContent = contactRowTrailingAction?.content,
+                            trailingContent = contactRowTrailingContent?.let { trailingContent ->
+                                { trailingContent.content(item.contact, onOpenSettingsSubpage) }
+                            },
                         )
                     }
                 }
@@ -303,7 +294,6 @@ private fun ContactRow(
     roundTop: Boolean,
     roundBottom: Boolean,
     onOpenContact: () -> Unit,
-    trailingAction: (() -> Unit)? = null,
     trailingContent: (@Composable () -> Unit)? = null,
 ) {
     Surface(
@@ -339,11 +329,9 @@ private fun ContactRow(
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            if (trailingAction != null && trailingContent != null) {
+            trailingContent?.let { content ->
                 androidx.compose.foundation.layout.Spacer(modifier = Modifier.weight(1f))
-                IconButton(onClick = trailingAction) {
-                    trailingContent()
-                }
+                content()
             }
         }
     }
