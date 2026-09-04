@@ -3,6 +3,7 @@ package dev.alenajam.opendialer.feature.contacts
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -23,8 +26,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,10 +49,15 @@ import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.data.contacts.DialerContactSummary
 import kotlinx.coroutines.launch
 
-data class ContactRowTrailingAction(
-    val settingsSubpageIndex: Int,
+data class ContactRowOverflowAction(
+    val settingsSubpageIndex: Int? = null,
     val onClick: suspend (DialerContactSummary) -> Unit,
     val content: @Composable () -> Unit,
+)
+
+data class ContactRowOverflowMenu(
+    val trigger: @Composable (onClick: () -> Unit) -> Unit,
+    val actions: List<ContactRowOverflowAction>,
 )
 
 @Composable
@@ -55,7 +65,7 @@ fun ContactsScreen(
     viewModel: ContactsViewModel = hiltViewModel(),
     searchQuery: String = "",
     @Suppress("UNUSED_PARAMETER") onOpenHistory: (callIds: List<Int>) -> Unit = {},
-    contactRowTrailingAction: ContactRowTrailingAction? = null,
+    contactRowOverflowMenu: ContactRowOverflowMenu? = null,
     onOpenSettingsSubpage: (Int, String?) -> Unit = { _, _ -> },
 ) {
     val requestPermissions =
@@ -157,13 +167,15 @@ fun ContactsScreen(
                             roundTop = item.isFirstInSection,
                             roundBottom = item.isLastInSection,
                             onOpenContact = { viewModel.openContact(item.contact.id) },
-                            trailingAction = contactRowTrailingAction?.let { action -> {
+                            overflowMenu = contactRowOverflowMenu,
+                            onOverflowAction = { action ->
                                 coroutineScope.launch {
                                     action.onClick(item.contact)
-                                    onOpenSettingsSubpage(action.settingsSubpageIndex, null)
+                                    action.settingsSubpageIndex?.let { index ->
+                                        onOpenSettingsSubpage(index, null)
+                                    }
                                 }
-                            } },
-                            trailingContent = contactRowTrailingAction?.content,
+                            },
                         )
                     }
                 }
@@ -303,8 +315,8 @@ private fun ContactRow(
     roundTop: Boolean,
     roundBottom: Boolean,
     onOpenContact: () -> Unit,
-    trailingAction: (() -> Unit)? = null,
-    trailingContent: (@Composable () -> Unit)? = null,
+    overflowMenu: ContactRowOverflowMenu? = null,
+    onOverflowAction: (ContactRowOverflowAction) -> Unit = {},
 ) {
     Surface(
         onClick = onOpenContact,
@@ -339,10 +351,25 @@ private fun ContactRow(
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            if (trailingAction != null && trailingContent != null) {
+            overflowMenu?.takeIf { it.actions.isNotEmpty() }?.let { menu ->
                 androidx.compose.foundation.layout.Spacer(modifier = Modifier.weight(1f))
-                IconButton(onClick = trailingAction) {
-                    trailingContent()
+                var overflowExpanded by remember { mutableStateOf(false) }
+                Box {
+                    menu.trigger { overflowExpanded = true }
+                    DropdownMenu(
+                        expanded = overflowExpanded,
+                        onDismissRequest = { overflowExpanded = false },
+                    ) {
+                        menu.actions.forEach { action ->
+                            DropdownMenuItem(
+                                text = action.content,
+                                onClick = {
+                                    overflowExpanded = false
+                                    onOverflowAction(action)
+                                },
+                            )
+                        }
+                    }
                 }
             }
         }

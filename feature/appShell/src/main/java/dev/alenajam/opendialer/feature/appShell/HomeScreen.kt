@@ -31,7 +31,7 @@ import dev.alenajam.opendialer.core.common.ui.AppIcon
 import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.feature.calls.CallsScreen
 import dev.alenajam.opendialer.feature.contacts.ContactsScreen
-import dev.alenajam.opendialer.feature.contacts.ContactRowTrailingAction
+import dev.alenajam.opendialer.feature.contacts.ContactRowOverflowMenu
 import dev.alenajam.opendialer.feature.contactsSearch.ContactsTextSearchResults
 import dev.alenajam.opendialer.feature.voicemail.VoicemailScreen
 
@@ -52,7 +52,7 @@ data class HomeScreenConfiguration(
     val showVoicemailInNavigation: Boolean = true,
     val showVoicemailInOverflow: Boolean = false,
     val customNavigationItem: HomeNavigationItem? = null,
-    val contactRowTrailingAction: ContactRowTrailingAction? = null,
+    val contactRowOverflowMenu: ContactRowOverflowMenu? = null,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -227,7 +227,7 @@ internal fun HomeScreen(
                     )
                     HomeTab.CONTACTS -> ContactsScreen(
                         onOpenHistory = onOpenHistory,
-                        contactRowTrailingAction = configuration.contactRowTrailingAction,
+                        contactRowOverflowMenu = configuration.contactRowOverflowMenu,
                         onOpenSettingsSubpage = onOpenSettingsSubpage,
                     )
                     HomeTab.VOICEMAIL -> VoicemailScreen()
