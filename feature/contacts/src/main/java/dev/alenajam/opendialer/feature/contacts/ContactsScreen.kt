@@ -3,7 +3,6 @@ package dev.alenajam.opendialer.feature.contacts
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -24,10 +23,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,22 +41,9 @@ import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.data.contacts.DialerContactSummary
-import kotlinx.coroutines.launch
 
-data class ContactRowOverflowAction(
-    val settingsSubpageIndex: Int? = null,
-    val onClick: suspend (DialerContactSummary) -> Unit,
-    val content: @Composable () -> Unit,
-)
-
-data class ContactRowOverflowMenu(
-    val actions: List<ContactRowOverflowAction>,
-    val content: @Composable (
-        actions: List<ContactRowOverflowAction>,
-        expanded: Boolean,
-        onExpandedChange: (Boolean) -> Unit,
-        onActionClick: (ContactRowOverflowAction) -> Unit,
-    ) -> Unit,
+data class ContactRowTrailingContent(
+    val content: @Composable (DialerContactSummary, (Int, String?) -> Unit) -> Unit,
 )
 
 @Composable
@@ -68,7 +51,7 @@ fun ContactsScreen(
     viewModel: ContactsViewModel = hiltViewModel(),
     searchQuery: String = "",
     @Suppress("UNUSED_PARAMETER") onOpenHistory: (callIds: List<Int>) -> Unit = {},
-    contactRowOverflowMenu: ContactRowOverflowMenu? = null,
+    contactRowTrailingContent: ContactRowTrailingContent? = null,
     onOpenSettingsSubpage: (Int, String?) -> Unit = { _, _ -> },
 ) {
     val requestPermissions =
@@ -82,7 +65,6 @@ fun ContactsScreen(
     val profileContact = viewModel.profileContact.collectAsStateWithLifecycle()
     val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
     val filteredContacts = if (searchQuery.isBlank()) {
         contacts.value
     } else {
@@ -170,14 +152,8 @@ fun ContactsScreen(
                             roundTop = item.isFirstInSection,
                             roundBottom = item.isLastInSection,
                             onOpenContact = { viewModel.openContact(item.contact.id) },
-                            overflowMenu = contactRowOverflowMenu,
-                            onOverflowAction = { action ->
-                                coroutineScope.launch {
-                                    action.onClick(item.contact)
-                                    action.settingsSubpageIndex?.let { index ->
-                                        onOpenSettingsSubpage(index, null)
-                                    }
-                                }
+                            trailingContent = contactRowTrailingContent?.let { trailingContent ->
+                                { trailingContent.content(item.contact, onOpenSettingsSubpage) }
                             },
                         )
                     }
@@ -318,8 +294,7 @@ private fun ContactRow(
     roundTop: Boolean,
     roundBottom: Boolean,
     onOpenContact: () -> Unit,
-    overflowMenu: ContactRowOverflowMenu? = null,
-    onOverflowAction: (ContactRowOverflowAction) -> Unit = {},
+    trailingContent: (@Composable () -> Unit)? = null,
 ) {
     Surface(
         onClick = onOpenContact,
@@ -354,19 +329,9 @@ private fun ContactRow(
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            overflowMenu?.takeIf { it.actions.isNotEmpty() }?.let { menu ->
+            trailingContent?.let { content ->
                 androidx.compose.foundation.layout.Spacer(modifier = Modifier.weight(1f))
-                var overflowExpanded by remember { mutableStateOf(false) }
-                Box {
-                    menu.content(
-                        menu.actions,
-                        overflowExpanded,
-                        { overflowExpanded = it },
-                    ) { action ->
-                        overflowExpanded = false
-                        onOverflowAction(action)
-                    }
-                }
+                content()
             }
         }
     }
