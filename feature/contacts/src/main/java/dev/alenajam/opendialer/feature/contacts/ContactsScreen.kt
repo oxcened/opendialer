@@ -17,8 +17,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -56,8 +54,13 @@ data class ContactRowOverflowAction(
 )
 
 data class ContactRowOverflowMenu(
-    val trigger: @Composable (onClick: () -> Unit) -> Unit,
     val actions: List<ContactRowOverflowAction>,
+    val content: @Composable (
+        actions: List<ContactRowOverflowAction>,
+        expanded: Boolean,
+        onExpandedChange: (Boolean) -> Unit,
+        onActionClick: (ContactRowOverflowAction) -> Unit,
+    ) -> Unit,
 )
 
 @Composable
@@ -355,20 +358,13 @@ private fun ContactRow(
                 androidx.compose.foundation.layout.Spacer(modifier = Modifier.weight(1f))
                 var overflowExpanded by remember { mutableStateOf(false) }
                 Box {
-                    menu.trigger { overflowExpanded = true }
-                    DropdownMenu(
-                        expanded = overflowExpanded,
-                        onDismissRequest = { overflowExpanded = false },
-                    ) {
-                        menu.actions.forEach { action ->
-                            DropdownMenuItem(
-                                text = action.content,
-                                onClick = {
-                                    overflowExpanded = false
-                                    onOverflowAction(action)
-                                },
-                            )
-                        }
+                    menu.content(
+                        menu.actions,
+                        overflowExpanded,
+                        { overflowExpanded = it },
+                    ) { action ->
+                        overflowExpanded = false
+                        onOverflowAction(action)
                     }
                 }
             }
