@@ -59,8 +59,6 @@ dependencies {
     implementation(libs.guava.listenablefuture)
 
     implementation(libs.picasso)
-    implementation(libs.prettytime)
-
     implementation(libs.androidx.lifecycle.extensions)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)

@@ -2,6 +2,7 @@
 <resources>
     <string name="choose_sim_card" comment="Title of the dialog for selecting which SIM to use for an outgoing call.">Vælg SIM-kort til dette opkald</string>
     <string name="text_copied" comment="Toast confirming that text was copied to the clipboard.">Teksten er kopieret</string>
+    <string name="contacts_app_unavailable" comment="Toast shown when the device has no app that can create or edit contacts.">Der er ingen kontaktapp tilgængelig på denne enhed.</string>
     <string-array name="array_quick_responses" comment="Default text-message replies offered when declining an incoming call.">
         <item name="array_quick_responses0">Kan ikke tale nu. Hvad er der?</item>
         <item name="array_quick_responses1">Jeg ringer tilbage med det samme.</item>

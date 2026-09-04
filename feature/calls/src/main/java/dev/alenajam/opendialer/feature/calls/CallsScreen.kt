@@ -72,6 +72,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.alenajam.opendialer.core.common.ui.ContactAvatar
 import dev.alenajam.opendialer.core.common.ui.contactAvatarColorKey
 import dev.alenajam.opendialer.core.common.PermissionUtils
+import dev.alenajam.opendialer.core.common.formatRelativeTime
 import dev.alenajam.opendialer.core.common.telecom.CallAccount
 import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
 import dev.alenajam.opendialer.core.common.ui.CallAccountPicker
@@ -82,7 +83,6 @@ import dev.alenajam.opendialer.data.calls.CallType
 import dev.alenajam.opendialer.data.calls.ContactInfo
 import dev.alenajam.opendialer.data.calls.DialerCall
 import dev.alenajam.opendialer.data.contacts.DialerContact
-import org.ocpsoft.prettytime.PrettyTime
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Date
@@ -520,7 +520,7 @@ private fun CallRow(
     val resources = LocalResources.current
     val locale = LocalConfiguration.current.locales[0]
     val callDate = call.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-    val relativeTime = if (callDate == today) PrettyTime().format(call.date)
+    val relativeTime = if (callDate == today) formatRelativeTime(call.date)
     else formatCallLogTime(call.date, locale)
     LaunchedEffect(call.id) {
         refreshBlockStatus { blocked ->
