@@ -66,8 +66,6 @@ dependencies {
     implementation(libs.androidx.recyclerview)
 
     implementation(libs.picasso)
-    implementation(libs.prettytime)
-
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
