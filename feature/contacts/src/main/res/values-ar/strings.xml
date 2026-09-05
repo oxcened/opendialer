@@ -11,6 +11,7 @@
     <string name="search_contacts" comment="Search field hint or action for finding contacts.">البحث في جهات الاتصال</string>
     <string name="close_search" comment="Accessibility label for closing contact search.">إغلاق البحث</string>
     <string name="choose_contact" comment="Title of a screen or dialog where the user selects a contact.">اختر جهة اتصال</string>
+    <string name="fast_scroll_contacts" comment="Accessibility label for the draggable fast-scrolling control in contact lists.">تمرير سريع لجهات الاتصال</string>
     <string name="navigate_back" comment="Accessibility label for navigating to the previous screen.">رجوع</string>
     <string name="search" comment="Accessibility label for starting a search.">بحث</string>
     <string name="favorites" comment="Heading or navigation label for favorite contacts.">المفضلة</string>

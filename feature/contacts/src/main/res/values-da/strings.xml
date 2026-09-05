@@ -11,6 +11,7 @@
     <string name="search_contacts" comment="Search field hint or action for finding contacts.">Søg i kontakter</string>
     <string name="close_search" comment="Accessibility label for closing contact search.">Luk søgning</string>
     <string name="choose_contact" comment="Title of a screen or dialog where the user selects a contact.">Vælg en kontakt</string>
+    <string name="fast_scroll_contacts" comment="Accessibility label for the draggable fast-scrolling control in contact lists.">Hurtig rulning i kontakter</string>
     <string name="navigate_back" comment="Accessibility label for navigating to the previous screen.">Tilbage</string>
     <string name="search" comment="Accessibility label for starting a search.">Søg</string>
     <string name="favorites" comment="Heading or navigation label for favorite contacts.">Favoritter</string>

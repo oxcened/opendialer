@@ -11,6 +11,7 @@
     <string name="search_contacts" comment="Search field hint or action for finding contacts.">Caută contacte</string>
     <string name="close_search" comment="Accessibility label for closing contact search.">Închide căutarea</string>
     <string name="choose_contact" comment="Title of a screen or dialog where the user selects a contact.">Alege un contact</string>
+    <string name="fast_scroll_contacts" comment="Accessibility label for the draggable fast-scrolling control in contact lists.">Derulare rapidă prin contacte</string>
     <string name="navigate_back" comment="Accessibility label for navigating to the previous screen.">Înapoi</string>
     <string name="search" comment="Accessibility label for starting a search.">Caută</string>
     <string name="favorites" comment="Heading or navigation label for favorite contacts.">Favorite</string>
