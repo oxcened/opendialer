@@ -26,15 +26,15 @@ jobs:
           set -o pipefail
           gh release view "$RELEASE_TAG" --json name,tagName,url,body,assets | jq '
             .tagName as $tag
-            | ($tag | test("^v?[0-9]+\\.[0-9]+\\.0$")) as $is_major_or_minor
-            | (if $is_major_or_minor then "@everyone\n" else "" end) as $mention
+            | ($tag | test("^v?[0-9]+\\.0\\.0$")) as $is_major
+            | (if $is_major then "@everyone\n" else "" end) as $mention
             | (.name // $tag) as $release_name
             | (.body // "") as $notes
             | (.assets | map(select(.name | endswith(".apk"))) | first) as $apk
             | {
                 content: ($mention + "A new release of OpenDialer is available! Use the **Download APK** link below to install it."),
                 allowed_mentions: {
-                  parse: (if $is_major_or_minor then ["everyone"] else [] end)
+                  parse: (if $is_major then ["everyone"] else [] end)
                 },
                 embeds: [
                   ({
@@ -54,7 +54,14 @@ jobs:
                         value: ("[Download OpenDialer APK](" + $apk.url + ")"),
                         inline: false
                       }
-                    ] end))
+                    ] end)
+                    + [
+                      {
+                        name: "💜 Support development",
+                        value: "[Support development](https://ko-fi.com/monster-dialer)",
+                        inline: false
+                      }
+                    ])
                   }
                   + (if $notes == "" then {} else {description: $notes[0:4096]} end))
                 ]
