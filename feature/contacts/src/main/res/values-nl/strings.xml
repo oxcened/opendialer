@@ -11,6 +11,7 @@
     <string name="search_contacts" comment="Search field hint or action for finding contacts.">Contacten zoeken</string>
     <string name="close_search" comment="Accessibility label for closing contact search.">Zoeken sluiten</string>
     <string name="choose_contact" comment="Title of a screen or dialog where the user selects a contact.">Kies een contact</string>
+    <string name="fast_scroll_contacts" comment="Accessibility label for the draggable fast-scrolling control in contact lists.">Snel door contacten scrollen</string>
     <string name="navigate_back" comment="Accessibility label for navigating to the previous screen.">Terug</string>
     <string name="search" comment="Accessibility label for starting a search.">Zoeken</string>
     <string name="favorites" comment="Heading or navigation label for favorite contacts.">Favorieten</string>
