@@ -2,6 +2,7 @@ package dev.alenajam.opendialer.core.common
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -181,7 +182,7 @@ object CommonUtils {
         addExistingIntent.type = ContactsContract.Contacts.CONTENT_ITEM_TYPE
         addExistingIntent.putExtra(ContactsContract.Intents.Insert.PHONE, number)
         addExistingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        context.startActivity(addExistingIntent)
+        startContactActivity(context, addExistingIntent)
     }
 
     @JvmStatic
@@ -192,7 +193,15 @@ object CommonUtils {
             createContactIntent.putExtra(ContactsContract.Intents.Insert.PHONE, it)
         }
         if (context !is Activity) createContactIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        context.startActivity(createContactIntent)
+        startContactActivity(context, createContactIntent)
+    }
+
+    private fun startContactActivity(context: Context, intent: Intent) {
+        try {
+            context.startActivity(intent)
+        } catch (_: ActivityNotFoundException) {
+            Toast.makeText(context, R.string.contacts_app_unavailable, Toast.LENGTH_SHORT).show()
+        }
     }
 
     @JvmStatic

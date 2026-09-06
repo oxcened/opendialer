@@ -4,6 +4,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +15,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.background
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -24,15 +29,26 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.alenajam.opendialer.core.common.ui.AppIcon
@@ -42,12 +58,9 @@ import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.data.contacts.DialerContactSummary
-import kotlinx.coroutines.launch
 
-data class ContactRowTrailingAction(
-    val settingsSubpageIndex: Int,
-    val onClick: suspend (DialerContactSummary) -> Unit,
-    val content: @Composable () -> Unit,
+data class ContactRowTrailingContent(
+    val content: @Composable (DialerContactSummary, (Int, String?) -> Unit) -> Unit,
 )
 
 @Composable
@@ -55,7 +68,7 @@ fun ContactsScreen(
     viewModel: ContactsViewModel = hiltViewModel(),
     searchQuery: String = "",
     @Suppress("UNUSED_PARAMETER") onOpenHistory: (callIds: List<Int>) -> Unit = {},
-    contactRowTrailingAction: ContactRowTrailingAction? = null,
+    contactRowTrailingContent: ContactRowTrailingContent? = null,
     onOpenSettingsSubpage: (Int, String?) -> Unit = { _, _ -> },
 ) {
     val requestPermissions =
@@ -69,7 +82,6 @@ fun ContactsScreen(
     val profileContact = viewModel.profileContact.collectAsStateWithLifecycle()
     val hasPermission = viewModel.hasRuntimePermission.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
     val filteredContacts = if (searchQuery.isBlank()) {
         contacts.value
     } else {
@@ -89,6 +101,7 @@ fun ContactsScreen(
             favoritesLabel = favoritesLabel,
         )
     }
+    val listState = rememberLazyListState()
 
     Surface(modifier = Modifier.fillMaxSize()) {
         if (!hasPermission.value) {
@@ -112,9 +125,11 @@ fun ContactsScreen(
             return@Surface
         }
 
-        LazyColumn(
-            contentPadding = PaddingValues(bottom = 88.dp),
-        ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                state = listState,
+                contentPadding = PaddingValues(bottom = 88.dp),
+            ) {
             if (searchQuery.isBlank()) {
                 item(key = "new-contact") {
                     Button(
@@ -157,18 +172,64 @@ fun ContactsScreen(
                             roundTop = item.isFirstInSection,
                             roundBottom = item.isLastInSection,
                             onOpenContact = { viewModel.openContact(item.contact.id) },
-                            trailingAction = contactRowTrailingAction?.let { action -> {
-                                coroutineScope.launch {
-                                    action.onClick(item.contact)
-                                    onOpenSettingsSubpage(action.settingsSubpageIndex, null)
-                                }
-                            } },
-                            trailingContent = contactRowTrailingAction?.content,
+                            trailingContent = contactRowTrailingContent?.let { trailingContent ->
+                                { trailingContent.content(item.contact, onOpenSettingsSubpage) }
+                            },
                         )
                     }
                 }
             }
+            }
+            ContactFastScroller(
+                listState = listState,
+                contentDescription = stringResource(R.string.fast_scroll_contacts),
+                modifier = Modifier.align(Alignment.CenterEnd).padding(vertical = 8.dp),
+            )
         }
+    }
+}
+
+@Composable
+internal fun ContactFastScroller(
+    listState: LazyListState,
+    contentDescription: String,
+    modifier: Modifier = Modifier,
+) {
+    val layoutInfo = listState.layoutInfo
+    val visibleItemCount = layoutInfo.visibleItemsInfo.size
+    val totalItemCount = layoutInfo.totalItemsCount
+    if (totalItemCount <= 12 || totalItemCount <= visibleItemCount * 2) return
+
+    val position = (listState.firstVisibleItemIndex.toFloat() /
+        (totalItemCount - visibleItemCount).coerceAtLeast(1)).coerceIn(0f, 1f)
+    val scope = rememberCoroutineScope()
+    BoxWithConstraints(
+        modifier = modifier
+            .width(40.dp)
+            .fillMaxHeight()
+            .semantics { this.contentDescription = contentDescription }
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = { offset ->
+                        scope.launch { listState.requestScrollToItem((offset.y / size.height * (totalItemCount - visibleItemCount).coerceAtLeast(0)).roundToInt()) }
+                    },
+                    onDrag = { change, _ ->
+                        scope.launch { listState.requestScrollToItem((change.position.y / size.height * (totalItemCount - visibleItemCount).coerceAtLeast(0)).roundToInt()) }
+                    },
+                )
+            },
+    ) {
+        val thumbHeight = (maxHeight * (visibleItemCount.toFloat() / totalItemCount)).coerceIn(48.dp, maxHeight)
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(vertical = 8.dp)
+                .width(6.dp)
+                .height(thumbHeight)
+                .offset(y = (maxHeight - thumbHeight).coerceAtLeast(0.dp) * position)
+                .clip(RoundedCornerShape(4.dp))
+                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)),
+        )
     }
 }
 
@@ -303,7 +364,6 @@ private fun ContactRow(
     roundTop: Boolean,
     roundBottom: Boolean,
     onOpenContact: () -> Unit,
-    trailingAction: (() -> Unit)? = null,
     trailingContent: (@Composable () -> Unit)? = null,
 ) {
     Surface(
@@ -336,14 +396,14 @@ private fun ContactRow(
 
             Text(
                 text = contact.name,
+                modifier = Modifier.weight(1f),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
-            if (trailingAction != null && trailingContent != null) {
-                androidx.compose.foundation.layout.Spacer(modifier = Modifier.weight(1f))
-                IconButton(onClick = trailingAction) {
-                    trailingContent()
-                }
+            trailingContent?.let { content ->
+                content()
             }
         }
     }

@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -24,6 +25,15 @@ import dev.alenajam.opendialer.core.common.ui.AppIcon
 import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 
 val LocalSettingsSubpageNavigator = staticCompositionLocalOf<SettingsSubpageNavigator?> { null }
+val LocalSettingsRootNavigator = staticCompositionLocalOf<((Int, String?) -> Unit)?> { null }
+val LocalSettingsBackInterceptor = staticCompositionLocalOf<SettingsBackInterceptor?> { null }
+
+/** Lets subpage content consume a toolbar back action before navigation occurs. */
+class SettingsBackInterceptor internal constructor() {
+    var onNavigateBack: (() -> Boolean)? = null
+
+    fun consumesBackNavigation(): Boolean = onNavigateBack?.invoke() == true
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,10 +41,14 @@ fun SettingsSubpageScreen(
     page: SettingsSubpage,
     payload: String?,
     onNavigateBack: () -> Unit,
-    onNavigateToDestination: (Int, String?) -> Unit
+    onNavigateToDestination: (Int, String?) -> Unit,
+    onNavigateToSubpage: (Int, String?) -> Unit,
 ) {
+    val backInterceptor = remember { SettingsBackInterceptor() }
     CompositionLocalProvider(
-        LocalSettingsSubpageNavigator provides SettingsSubpageNavigator(onNavigateToDestination, onNavigateBack)
+        LocalSettingsSubpageNavigator provides SettingsSubpageNavigator(onNavigateToDestination, onNavigateBack),
+        LocalSettingsRootNavigator provides onNavigateToSubpage,
+        LocalSettingsBackInterceptor provides backInterceptor,
     ) {
         Scaffold(topBar = {
             TopAppBar(title = {
@@ -51,7 +65,9 @@ fun SettingsSubpageScreen(
                     }
                 }
             }, navigationIcon = {
-                IconButton(onClick = onNavigateBack) {
+                IconButton(onClick = {
+                    if (!backInterceptor.consumesBackNavigation()) onNavigateBack()
+                }) {
                     AppIcon(LocalAppIcons.current.arrowLeft, contentDescription = null)
                 }
             }, actions = page.actions)

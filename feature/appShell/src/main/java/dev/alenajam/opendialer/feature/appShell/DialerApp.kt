@@ -221,7 +221,10 @@ fun DialerApp(
                             onNavigateBack = { navController.popBackStack() },
                             onNavigateToDestination = { destinationIndex, payload ->
                                 navController.navigate(SettingsSubpageDestinationRoute(route.index, destinationIndex, payload))
-                            }
+                            },
+                            onNavigateToSubpage = { subpageIndex, payload ->
+                                navController.navigate(SettingsSubpageRoute(subpageIndex, payload))
+                            },
                         )
                     }
                 }

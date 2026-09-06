@@ -51,6 +51,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import dev.alenajam.opendialer.core.common.CommonUtils
+import dev.alenajam.opendialer.core.common.formatRelativeTime
 import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.core.common.functional.EventObserver
 import dev.alenajam.opendialer.core.common.telecom.CallAccount
@@ -65,7 +66,6 @@ import dev.alenajam.opendialer.data.calls.CallOption
 import dev.alenajam.opendialer.data.calls.ContactInfo
 import dev.alenajam.opendialer.data.calls.DetailCall
 import dev.alenajam.opendialer.data.calls.DialerCall
-import org.ocpsoft.prettytime.PrettyTime
 import java.util.Date
 
 @Composable
@@ -446,7 +446,7 @@ private fun CallRow(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 Text(
-                    text = PrettyTime().format(call.date),
+                    text = formatRelativeTime(call.date),
                     style = MaterialTheme.typography.bodyMedium,
                     color = subtitleColor,
                 )
