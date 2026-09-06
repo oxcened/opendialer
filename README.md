@@ -1,11 +1,5 @@
 # OpenDialer
 
-OpenDialer is an open-source Android phone app that provides a clean, modern calling experience. Manage contacts and recent calls, place and receive calls, and use an in-call interface built for everyday use.
-
-OpenDialer must be selected as the device's default phone app to make and receive calls.
-
-[Join our community on Discord](https://discord.gg/hKXzFFMTFN)
-
 [![Android CI](https://github.com/oxcened/opendialer/actions/workflows/android.yml/badge.svg?branch=main)](https://github.com/oxcened/opendialer/actions/workflows/android.yml)
 [![Latest release](https://img.shields.io/github/v/release/oxcened/opendialer?display_name=tag&sort=semver)](https://github.com/oxcened/opendialer/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/oxcened/opendialer/total)](https://github.com/oxcened/opendialer/releases)
@@ -15,6 +9,12 @@ OpenDialer must be selected as the device's default phone app to make and receiv
 [![Crowdin](https://badges.crowdin.net/opendialer/localized.svg)](https://crowdin.com/project/opendialer)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](./CONTRIBUTING.md)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
+
+OpenDialer is an open-source Android phone app that provides a clean, modern calling experience. Manage contacts and recent calls, place and receive calls, and use an in-call interface built for everyday use.
+
+OpenDialer must be selected as the device's default phone app to make and receive calls.
+
+[Join our community on Discord](https://discord.gg/hKXzFFMTFN)
 
 **Table of Contents**
 
