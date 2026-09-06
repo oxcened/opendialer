@@ -45,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -255,7 +256,11 @@ private fun TopBar(
                             )
                     )
                     Spacer(modifier = Modifier.size(8.dp))
-                    CallDetailTitle(call, isNumberBlocked)
+                    CallDetailTitle(
+                        call = call,
+                        isNumberBlocked = isNumberBlocked,
+                        modifier = Modifier.weight(1f),
+                    )
                 }
             }
         },
@@ -300,14 +305,19 @@ private fun TopBar(
 }
 
 @Composable
-private fun CallDetailTitle(call: DialerCall, isNumberBlocked: Boolean) {
+private fun CallDetailTitle(
+    call: DialerCall,
+    isNumberBlocked: Boolean,
+    modifier: Modifier = Modifier,
+) {
     val displayNumber = call.contactInfo.formattedNumber
         ?.takeIf { it.isNotBlank() }
         ?: call.contactInfo.number.orEmpty()
 
-    when {
-        call.isVoicemailNumber -> Text(stringResource(R.string.voicemail))
-        call.isAnonymous() -> Text(stringResource(R.string.anonymous))
+    Column(modifier = modifier) {
+        when {
+        call.isVoicemailNumber -> Text(stringResource(R.string.voicemail), maxLines = 1, overflow = TextOverflow.Ellipsis)
+        call.isAnonymous() -> Text(stringResource(R.string.anonymous), maxLines = 1, overflow = TextOverflow.Ellipsis)
         !call.contactInfo.name.isNullOrBlank() -> {
             val contact = call.contactInfo
             val phoneType = if (
@@ -322,7 +332,11 @@ private fun CallDetailTitle(call: DialerCall, isNumberBlocked: Boolean) {
             }
 
             Column {
-                Text(contact.name!!.trim().substringBefore(' '))
+                Text(
+                    text = contact.name!!.trim(),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
                 Text(
                     text = if (isNumberBlocked) stringResource(R.string.blocked) else stringResource(
                         R.string.call_detail_contact_subtitle,
@@ -331,22 +345,27 @@ private fun CallDetailTitle(call: DialerCall, isNumberBlocked: Boolean) {
                     ),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }
         else -> {
             if (isNumberBlocked) {
                 Column {
-                    Text(displayNumber)
+                    Text(displayNumber, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Text(
                         text = stringResource(R.string.blocked),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
             } else {
-                Text(displayNumber)
+                Text(displayNumber, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
+        }
         }
     }
 }
