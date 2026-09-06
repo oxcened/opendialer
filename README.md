@@ -6,13 +6,14 @@ OpenDialer must be selected as the device's default phone app to make and receiv
 
 [Join our community on Discord](https://discord.gg/hKXzFFMTFN)
 
-![Static Badge](https://img.shields.io/badge/24%2B-brightgreen?logo=android&label=API)
-[![Latest Version](https://img.shields.io/github/v/release/oxcened/opendialer)](https://github.com/oxcened/opendialer/releases)
-
-[![Repository License](https://img.shields.io/github/license/oxcened/opendialer)](./LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](./CONTRIBUTING.md)
-[![Build Workflow Status](https://img.shields.io/github/actions/workflow/status/oxcened/opendialer/android.yml)](https://github.com/oxcened/opendialer/actions)
+[![Android CI](https://github.com/oxcened/opendialer/actions/workflows/android.yml/badge.svg?branch=main)](https://github.com/oxcened/opendialer/actions/workflows/android.yml)
+[![Latest release](https://img.shields.io/github/v/release/oxcened/opendialer?display_name=tag&sort=semver)](https://github.com/oxcened/opendialer/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/oxcened/opendialer/total)](https://github.com/oxcened/opendialer/releases)
+[![License](https://img.shields.io/github/license/oxcened/opendialer)](./LICENSE)
+[![Android API](https://img.shields.io/badge/Android_API-24%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com/about/versions/nougat)
+[![Discord](https://img.shields.io/badge/Discord-Join_community-5865F2?logo=discord&logoColor=white)](https://discord.gg/hKXzFFMTFN)
 [![Crowdin](https://badges.crowdin.net/opendialer/localized.svg)](https://crowdin.com/project/opendialer)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](./CONTRIBUTING.md)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
 
 **Table of Contents**
