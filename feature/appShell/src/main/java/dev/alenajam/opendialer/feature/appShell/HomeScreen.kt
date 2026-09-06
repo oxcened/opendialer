@@ -3,14 +3,17 @@ package dev.alenajam.opendialer.feature.appShell
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -45,7 +48,7 @@ enum class HomeTab {
 data class HomeNavigationItem(
     val label: @Composable () -> Unit,
     val icon: @Composable (selected: Boolean) -> Unit,
-    val content: @Composable (onOpenSettingsSubpage: (Int, String?) -> Unit) -> Unit,
+    val content: @Composable (onOpenSettings: () -> Unit, onOpenSettingsSubpage: (Int, String?) -> Unit, onSetBackAction: (Boolean, () -> Unit) -> Unit) -> Unit,
 )
 
 data class HomeScreenConfiguration(
@@ -53,6 +56,10 @@ data class HomeScreenConfiguration(
     val showVoicemailInOverflow: Boolean = false,
     val customNavigationItem: HomeNavigationItem? = null,
     val contactRowTrailingContent: ContactRowTrailingContent? = null,
+    /** Gives custom screens such as a game-style profile a clean, full-viewport presentation. */
+    val hideSearchAndDialpadOnCustomTab: Boolean = false,
+    val customActionBar: (@Composable (onSelect: () -> Unit, onMenu: () -> Unit, onBack: () -> Unit, backEnabled: Boolean) -> Unit)? = null,
+    val customContextMenu: (@Composable (currentTab: HomeTab, onCalls: () -> Unit, onContacts: () -> Unit, onCustom: () -> Unit, onDismiss: () -> Unit) -> Unit)? = null,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,15 +76,19 @@ internal fun HomeScreen(
 ) {
     var currentTab by rememberSaveable { mutableStateOf(HomeTab.CALLS) }
     var searchQuery by remember { mutableStateOf("") }
+    var customContextMenuOpen by remember { mutableStateOf(false) }
+    var customBackEnabled by remember { mutableStateOf(false) }
+    var customBackAction by remember { mutableStateOf<() -> Unit>({}) }
     val isSearchActive = searchQuery.isNotEmpty()
 
     BackHandler(enabled = isSearchActive) {
         searchQuery = ""
     }
 
+    Box(modifier = Modifier.fillMaxSize()) {
     Scaffold(
         topBar = {
-            SearchBar(
+            if (!configuration.hideSearchAndDialpadOnCustomTab || currentTab != HomeTab.CUSTOM) SearchBar(
                 inputField = @Composable {
                     SearchBarDefaults.InputField(
                         query = searchQuery,
@@ -155,7 +166,21 @@ internal fun HomeScreen(
         },
         bottomBar = {
             val icons = LocalAppIcons.current
-            NavigationBar {
+            if (configuration.customActionBar != null) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .navigationBarsPadding()
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                ) {
+                    configuration.customActionBar.invoke(
+                        { onOpenDialpad("") },
+                        { if (customBackEnabled) customBackAction() else customContextMenuOpen = true },
+                        { customBackAction() },
+                        customBackEnabled,
+                    )
+                }
+            } else NavigationBar {
                 NavigationBarItem(
                     selected = currentTab == HomeTab.CALLS,
                     icon = {
@@ -205,16 +230,19 @@ internal fun HomeScreen(
             }
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { onOpenDialpad("") }) {
-                AppIcon(
-                    LocalAppIcons.current.dialpad,
-                    contentDescription = null,
-                    modifier = Modifier.size(24.dp)
-                )
+            if (!configuration.hideSearchAndDialpadOnCustomTab || currentTab != HomeTab.CUSTOM) {
+                FloatingActionButton(onClick = { onOpenDialpad("") }) {
+                    AppIcon(
+                        LocalAppIcons.current.dialpad,
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
         },
     ) { innerPadding ->
-        Surface(modifier = Modifier.padding(innerPadding)) {
+        Box(modifier = Modifier.padding(innerPadding)) {
+            Surface {
             if (searchQuery.isNotBlank()) {
                 ContactsTextSearchResults(query = searchQuery, onOpenHistory = onOpenHistory)
             } else {
@@ -231,9 +259,27 @@ internal fun HomeScreen(
                         onOpenSettingsSubpage = onOpenSettingsSubpage,
                     )
                     HomeTab.VOICEMAIL -> VoicemailScreen()
-                    HomeTab.CUSTOM -> configuration.customNavigationItem?.content(onOpenSettingsSubpage)
+                    HomeTab.CUSTOM -> configuration.customNavigationItem?.content(
+                        onOpenSettings,
+                        onOpenSettingsSubpage,
+                        { enabled, action ->
+                            customBackEnabled = enabled
+                            customBackAction = action
+                        },
+                    )
                 }
             }
+            }
         }
+    }
+    if (customContextMenuOpen) {
+        configuration.customContextMenu?.invoke(
+            currentTab,
+            { customContextMenuOpen = false; currentTab = HomeTab.CALLS },
+            { customContextMenuOpen = false; currentTab = HomeTab.CONTACTS },
+            { customContextMenuOpen = false; currentTab = HomeTab.CUSTOM },
+            { customContextMenuOpen = false },
+        )
+    }
     }
 }

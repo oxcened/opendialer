@@ -30,6 +30,8 @@ data class SettingsSubpage(
     val actions: @Composable RowScope.() -> Unit = {},
     val isScrollable: Boolean = true,
     val topContentPadding: Dp = 16.dp,
+    val showTopBar: Boolean = true,
+    val horizontalContentPadding: Dp = 16.dp,
     val visibleInSettings: Boolean = true,
     val destinations: List<SettingsSubpageDestination> = emptyList()
 )

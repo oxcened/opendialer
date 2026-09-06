@@ -73,6 +73,7 @@ fun AddFavoriteScreen(
 fun ContactPickerScreen(
     onNavigateBack: () -> Unit,
     onContactSelected: (DialerContactSummary) -> Unit,
+    excludedContactIds: Set<Int> = emptySet(),
     viewModel: ContactsViewModel = hiltViewModel()
 ) {
     val contacts by viewModel.contacts.collectAsStateWithLifecycle()
@@ -89,10 +90,11 @@ fun ContactPickerScreen(
             }
         }
 
-    val items: List<ContactListItem> = remember(contacts, isSearching, searchQuery) {
+    val items: List<ContactListItem> = remember(contacts, excludedContactIds, isSearching, searchQuery) {
+        val availableContacts = contacts.filterNot { it.id in excludedContactIds }
         val query = searchQuery.trim()
         if (isSearching && query.isNotEmpty()) {
-            return@remember contacts
+            return@remember availableContacts
                 .filter { contact ->
                     contact.name.contains(query, ignoreCase = true)
                 }
@@ -101,13 +103,13 @@ fun ContactPickerScreen(
         }
 
         buildList {
-            val favorites = contacts.filter { it.starred }.sortedBy { it.name }
+            val favorites = availableContacts.filter { it.starred }.sortedBy { it.name }
             if (favorites.isNotEmpty()) {
                 add(ContactListItem.Header(label = "", isFavorites = true))
                 addAll(favorites.map { ContactListItem.ContactItem(it) })
             }
 
-            contacts
+            availableContacts
                 .groupBy { it.name.firstOrNull()?.uppercaseChar() ?: '#' }
                 .toSortedMap()
                 .forEach { (char, contactsForChar) ->
