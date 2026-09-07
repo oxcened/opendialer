@@ -29,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.alenajam.opendialer.core.common.ui.AppIcon
 import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
@@ -58,6 +59,10 @@ data class HomeScreenConfiguration(
     val contactRowTrailingContent: ContactRowTrailingContent? = null,
     /** Gives custom screens such as a game-style profile a clean, full-viewport presentation. */
     val hideSearchAndDialpadOnCustomTab: Boolean = false,
+    /** Horizontal inset applied around a custom action bar. */
+    val customActionBarHorizontalPadding: Dp = 8.dp,
+    /** Vertical inset applied around a custom action bar. */
+    val customActionBarVerticalPadding: Dp = 4.dp,
     val customActionBar: (@Composable (onSelect: () -> Unit, onMenu: () -> Unit, onBack: () -> Unit, backEnabled: Boolean) -> Unit)? = null,
     val customContextMenu: (@Composable (currentTab: HomeTab, onCalls: () -> Unit, onContacts: () -> Unit, onCustom: () -> Unit, onDismiss: () -> Unit) -> Unit)? = null,
 )
@@ -171,7 +176,10 @@ internal fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .navigationBarsPadding()
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                        .padding(
+                            horizontal = configuration.customActionBarHorizontalPadding,
+                            vertical = configuration.customActionBarVerticalPadding,
+                        ),
                 ) {
                     configuration.customActionBar.invoke(
                         { onOpenDialpad("") },
