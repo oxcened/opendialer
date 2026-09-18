@@ -262,15 +262,11 @@ internal fun HomeScreen(
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             Surface {
-            if (searchQuery.isNotBlank()) {
+            if (searchActive || searchQuery.isNotBlank()) {
                 Column {
-                    configuration.customSearchBar?.invoke(
-                        searchActive,
-                        searchQuery,
-                        { searchQuery = it },
-                        { searchActive = true },
-                    )
-                    ContactsTextSearchResults(query = searchQuery, onOpenHistory = onOpenHistory)
+                    if (searchQuery.isNotBlank()) {
+                        ContactsTextSearchResults(query = searchQuery, onOpenHistory = onOpenHistory)
+                    }
                 }
             } else {
                 when (currentTab) {
