@@ -71,8 +71,8 @@ object SearchContactsDialpadData {
                         )
                     )
                 }
-            } while (cursor.moveToNext() && list.size < MAX_ENTRIES)
+            } while (cursor.moveToNext())
         }
-        return list
+        return SearchContactDeduplicator.deduplicate(list).take(MAX_ENTRIES)
     }
 }
