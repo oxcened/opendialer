@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
@@ -57,6 +58,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalResources
@@ -92,6 +94,10 @@ private enum class CallFilter(val labelRes: Int) {
     MISSED(R.string.filter_missed),
     CONTACTS(R.string.filter_contacts),
 }
+
+private val RetroCallLogInk = Color(0xFF202020)
+private val RetroCallLogOrange = Color(0xFFFFA23A)
+private val RetroCallLogPanel = Color(0xFFF8F8F8)
 
 @Composable
 fun CallsScreen(
@@ -308,14 +314,22 @@ private fun FilterChips(
         modifier = Modifier
             .fillMaxWidth()
             .horizontalScroll(rememberScrollState())
-            .padding(vertical = 4.dp)
+            .padding(vertical = 6.dp)
     ) {
         filters.forEach { filter ->
-            FilterChip(
-                selected = selectedFilter == filter,
+            Surface(
                 onClick = { onFilterSelected(filter) },
-            label = { Text(stringResource(filter.labelRes)) }
-            )
+                modifier = Modifier.border(2.dp, RetroCallLogInk, RectangleShape),
+                shape = RectangleShape,
+                color = if (selectedFilter == filter) RetroCallLogOrange else RetroCallLogPanel,
+            ) {
+                Text(
+                    text = stringResource(filter.labelRes),
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = RetroCallLogInk,
+                )
+            }
         }
     }
 }
@@ -335,8 +349,10 @@ private fun FavoritesSection(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(16.dp))
                 .clickable(onClick = onToggleExpand)
+                .border(2.dp, RetroCallLogInk, RectangleShape)
+                .background(RetroCallLogPanel, RectangleShape)
+                .padding(horizontal = 10.dp, vertical = 8.dp)
         ) {
             Text(
                 text = stringResource(R.string.favorites),
@@ -355,10 +371,10 @@ private fun FavoritesSection(
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f))
+                    .border(2.dp, RetroCallLogInk, RectangleShape)
+                    .background(RetroCallLogOrange, RectangleShape)
                     .clickable(onClick = onViewContactsClick)
-                    .padding(horizontal = 12.dp, vertical = 6.dp)
+                    .padding(horizontal = 10.dp, vertical = 6.dp)
             )
         }
 
@@ -551,18 +567,11 @@ private fun CallRow(
     val title = if (call.isVoicemailNumber) stringResource(R.string.filter_voicemail)
     else if (call.isAnonymous()) stringResource(id = R.string.anonymous)
     else call.contactInfo.name?.takeIf { it.isNotBlank() } ?: displayNumber
-    val cardShape = RoundedCornerShape(
-        topStart = if (roundTop) 20.dp else 2.dp,
-        topEnd = if (roundTop) 20.dp else 2.dp,
-        bottomStart = if (roundBottom) 20.dp else 2.dp,
-        bottomEnd = if (roundBottom) 20.dp else 2.dp,
-    )
-
     Box {
         Surface(
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 1.dp)
-                .clip(cardShape)
+                .padding(horizontal = 16.dp, vertical = 3.dp)
+                .border(3.dp, RetroCallLogInk, RectangleShape)
                 .combinedClickable(
                     onClick = onClick,
                     onLongClick = {
@@ -573,9 +582,9 @@ private fun CallRow(
                         }
                     }
                 ),
-            shape = cardShape,
-            color = MaterialTheme.colorScheme.surfaceContainerHigh,
-            shadowElevation = 0.5.dp,
+            shape = RectangleShape,
+            color = RetroCallLogPanel,
+            shadowElevation = 0.dp,
         ) {
         Column {
             Row(
@@ -798,14 +807,11 @@ private fun CallRowButton(
 ) {
     Surface(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surfaceContainer,
-        shape = RoundedCornerShape(
-            topStart = if (roundTop) 12.dp else 2.dp,
-            topEnd = if (roundTop) 12.dp else 2.dp,
-            bottomStart = if (roundBottom) 12.dp else 2.dp,
-            bottomEnd = if (roundBottom) 12.dp else 2.dp,
-        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(2.dp, RetroCallLogInk, RectangleShape),
+        color = RetroCallLogPanel,
+        shape = RectangleShape,
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),

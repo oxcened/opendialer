@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="copy_number" comment="Menu action that copies a phone number to the clipboard.">Copy number</string>
+    <string name="call" comment="Menu action that calls the selected phone number.">Call</string>
     <string name="create_new_contact" comment="Menu action that creates a contact from the selected phone number.">Create new contact</string>
     <string name="add_to_a_contact" comment="Menu action that adds the selected phone number to an existing contact.">Add to a contact</string>
     <string name="send_message" comment="Menu action that starts a text message to the selected phone number.">Send message</string>
@@ -16,6 +17,8 @@
     <string name="call_log_date_today" comment="Date-group heading for calls made or received today.">Today</string>
     <string name="call_log_date_yesterday" comment="Date-group heading for calls made or received yesterday.">Yesterday</string>
     <string name="call_log_type_time" comment="Call-log summary. %1$s is the call type and %2$s is the call time.">%1$s • %2$s</string>
+    <string name="favorite_phone_type_number" comment="Favorite contact summary. %1$s is the phone type and %2$s is the phone number.">%1$s • %2$s</string>
+    <string name="call_log_just_now" comment="Call-log time shown for calls less than one minute old.">Just now</string>
     <string name="call_log_call_count" comment="Number of calls grouped in a call-log row.">(%1$d)</string>
     <string name="filter_all" comment="Call-history filter that includes every call.">All</string>
     <string name="filter_missed" comment="Call-history filter that includes only missed calls.">Missed</string>

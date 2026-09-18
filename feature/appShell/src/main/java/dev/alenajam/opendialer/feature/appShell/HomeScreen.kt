@@ -2,6 +2,8 @@ package dev.alenajam.opendialer.feature.appShell
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -16,9 +18,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,6 +42,7 @@ import dev.alenajam.opendialer.feature.contactsSearch.ContactsTextSearchResults
 import dev.alenajam.opendialer.feature.voicemail.VoicemailScreen
 
 enum class HomeTab {
+    FAVORITES,
     CALLS,
     CONTACTS,
     VOICEMAIL,
@@ -56,15 +59,25 @@ data class HomeScreenConfiguration(
     val showVoicemailInNavigation: Boolean = true,
     val showVoicemailInOverflow: Boolean = false,
     val customNavigationItem: HomeNavigationItem? = null,
+    /** Optional full replacement for the standard Recents content. */
+    val customCallsContent: (@Composable (onOpenHistory: (List<Int>) -> Unit, onOpenContacts: () -> Unit, onAddFavorite: () -> Unit, onEditNumberBeforeCall: (String) -> Unit) -> Unit)? = null,
+    /** Optional content for the Favorites destination. */
+    val customFavoritesContent: (@Composable (onOpenContacts: () -> Unit, onAddFavorite: () -> Unit, onEditNumberBeforeCall: (String) -> Unit) -> Unit)? = null,
     val contactRowTrailingContent: ContactRowTrailingContent? = null,
     /** Gives custom screens such as a game-style profile a clean, full-viewport presentation. */
     val hideSearchAndDialpadOnCustomTab: Boolean = false,
+    /** Controls whether the standard floating dialpad action is shown. */
+    val showDialpadFab: Boolean = true,
     /** Horizontal inset applied around a custom action bar. */
     val customActionBarHorizontalPadding: Dp = 8.dp,
     /** Vertical inset applied around a custom action bar. */
     val customActionBarVerticalPadding: Dp = 4.dp,
-    val customActionBar: (@Composable (onSelect: () -> Unit, onMenu: () -> Unit, onBack: () -> Unit, backEnabled: Boolean) -> Unit)? = null,
-    val customContextMenu: (@Composable (currentTab: HomeTab, onCalls: () -> Unit, onContacts: () -> Unit, onCustom: () -> Unit, onDismiss: () -> Unit) -> Unit)? = null,
+    val customActionBar: (@Composable (onSelect: () -> Unit, onMenu: () -> Unit, onBack: () -> Unit, onSearch: () -> Unit, backEnabled: Boolean, currentTab: HomeTab, searchActive: Boolean, searchContent: @Composable () -> Unit) -> Unit)? = null,
+    val customContextMenu: (@Composable (currentTab: HomeTab, onFavorites: () -> Unit, onCalls: () -> Unit, onContacts: () -> Unit, onCustom: () -> Unit, onDismiss: () -> Unit) -> Unit)? = null,
+    /** Optional compact navigation shown above the home content. */
+    val customTopBar: (@Composable (currentTab: HomeTab, onFavorites: () -> Unit, onCalls: () -> Unit, onContacts: () -> Unit, onCustom: () -> Unit) -> Unit)? = null,
+    /** Optional replacement for the Material search field. */
+    val customSearchBar: (@Composable (isActive: Boolean, query: String, onQueryChanged: (String) -> Unit, onActivate: () -> Unit) -> Unit)? = null,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -81,93 +94,59 @@ internal fun HomeScreen(
 ) {
     var currentTab by rememberSaveable { mutableStateOf(HomeTab.CALLS) }
     var searchQuery by remember { mutableStateOf("") }
+    var searchActive by rememberSaveable { mutableStateOf(false) }
     var customContextMenuOpen by remember { mutableStateOf(false) }
     var customBackEnabled by remember { mutableStateOf(false) }
     var customBackAction by remember { mutableStateOf<() -> Unit>({}) }
-    val isSearchActive = searchQuery.isNotEmpty()
-
-    BackHandler(enabled = isSearchActive) {
+    BackHandler(enabled = searchActive) {
+        searchActive = false
         searchQuery = ""
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
     Scaffold(
         topBar = {
-            if (!configuration.hideSearchAndDialpadOnCustomTab || currentTab != HomeTab.CUSTOM) SearchBar(
-                inputField = @Composable {
-                    SearchBarDefaults.InputField(
-                        query = searchQuery,
-                        onQueryChange = { searchQuery = it },
-                        onSearch = {},
+            Column {
+                configuration.customTopBar?.invoke(
+                    currentTab,
+                    { currentTab = HomeTab.FAVORITES },
+                    { currentTab = HomeTab.CALLS },
+                    { currentTab = HomeTab.CONTACTS },
+                    { currentTab = HomeTab.CUSTOM },
+                )
+                if (configuration.customSearchBar != null && searchActive &&
+                    (!configuration.hideSearchAndDialpadOnCustomTab || currentTab != HomeTab.CUSTOM)
+                ) {
+                    configuration.customSearchBar.invoke(
+                        searchActive,
+                        searchQuery,
+                        { searchQuery = it },
+                        { searchActive = true },
+                    )
+                } else if (configuration.customSearchBar == null && (!configuration.hideSearchAndDialpadOnCustomTab || currentTab != HomeTab.CUSTOM)) {
+                    configuration.customSearchBar?.invoke(
+                        searchActive,
+                        searchQuery,
+                        { searchQuery = it },
+                        { searchActive = true },
+                    ) ?: SearchBar(
+                        inputField = @Composable {
+                            SearchBarDefaults.InputField(
+                                query = searchQuery,
+                                onQueryChange = { searchQuery = it },
+                                onSearch = {},
+                                expanded = false,
+                                onExpandedChange = {},
+                                placeholder = { Text(stringResource(R.string.search_contacts)) },
+                            )
+                        },
                         expanded = false,
                         onExpandedChange = {},
-                        placeholder = { Text(stringResource(R.string.search_contacts)) },
-                        leadingIcon = {
-                            IconButton(onClick = { if (isSearchActive) searchQuery = "" }) {
-                                AppIcon(
-                                    if (isSearchActive) {
-                                        LocalAppIcons.current.arrowLeft
-                                    } else {
-                                        LocalAppIcons.current.search
-                                    },
-                                    contentDescription = if (isSearchActive) {
-                                        stringResource(R.string.clear_search)
-                                    } else {
-                                        null
-                                    },
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
-                        },
-                        trailingIcon = {
-                            if (isSearchActive) {
-                                IconButton(onClick = { searchQuery = "" }) {
-                                    AppIcon(
-                                        LocalAppIcons.current.close,
-                                        contentDescription = stringResource(R.string.clear_search),
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                }
-                            } else {
-                                Box {
-                                    var expanded by remember { mutableStateOf(false) }
-                                    IconButton(onClick = { expanded = true }) {
-                                        AppIcon(LocalAppIcons.current.more, contentDescription = null)
-                                    }
-                                    DropdownMenu(
-                                        expanded = expanded,
-                                        onDismissRequest = { expanded = false },
-                                    ) {
-                                        if (configuration.showVoicemailInOverflow) {
-                                            DropdownMenuItem(
-                                                text = { Text(stringResource(R.string.voicemail)) },
-                                                onClick = {
-                                                    onOpenVoicemail()
-                                                    expanded = false
-                                                },
-                                            )
-                                        }
-                                        DropdownMenuItem(
-                                            text = { Text(stringResource(R.string.screen_settings_title)) },
-                                            onClick = onOpenSettings,
-                                        )
-                                        DropdownMenuItem(
-                                            text = { Text(stringResource(R.string.screen_about_title)) },
-                                            onClick = onOpenAbout,
-                                        )
-                                    }
-                                }
-                            }
-                        },
-                    )
-                },
-                expanded = false,
-                onExpandedChange = {},
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .statusBarsPadding()
-                    .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
-            ) {}
+                        windowInsets = if (configuration.customTopBar == null) SearchBarDefaults.windowInsets else WindowInsets(0, 0, 0, 0),
+                        modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
+                    ) {}
+                }
+            }
         },
         bottomBar = {
             val icons = LocalAppIcons.current
@@ -184,11 +163,41 @@ internal fun HomeScreen(
                     configuration.customActionBar.invoke(
                         { onOpenDialpad("") },
                         { if (customBackEnabled) customBackAction() else customContextMenuOpen = true },
-                        { customBackAction() },
-                        customBackEnabled,
+                        {
+                            if (searchActive) {
+                                searchActive = false
+                                searchQuery = ""
+                            } else {
+                                customBackAction()
+                            }
+                        },
+                        { searchActive = true },
+                        searchActive || customBackEnabled,
+                        currentTab,
+                        searchActive,
+                        {
+                            configuration.customSearchBar?.invoke(
+                                searchActive,
+                                searchQuery,
+                                { searchQuery = it },
+                                { searchActive = true },
+                            )
+                        },
                     )
                 }
             } else NavigationBar {
+                NavigationBarItem(
+                    selected = currentTab == HomeTab.FAVORITES,
+                    icon = {
+                        AppIcon(
+                            if (currentTab == HomeTab.FAVORITES) icons.favorite else icons.favorite,
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    },
+                    label = { Text(stringResource(R.string.favorites)) },
+                    onClick = { currentTab = HomeTab.FAVORITES },
+                )
                 NavigationBarItem(
                     selected = currentTab == HomeTab.CALLS,
                     icon = {
@@ -238,7 +247,9 @@ internal fun HomeScreen(
             }
         },
         floatingActionButton = {
-            if (!configuration.hideSearchAndDialpadOnCustomTab || currentTab != HomeTab.CUSTOM) {
+            if (configuration.showDialpadFab &&
+                (!configuration.hideSearchAndDialpadOnCustomTab || currentTab != HomeTab.CUSTOM)
+            ) {
                 FloatingActionButton(onClick = { onOpenDialpad("") }) {
                     AppIcon(
                         LocalAppIcons.current.dialpad,
@@ -252,10 +263,33 @@ internal fun HomeScreen(
         Box(modifier = Modifier.padding(innerPadding)) {
             Surface {
             if (searchQuery.isNotBlank()) {
-                ContactsTextSearchResults(query = searchQuery, onOpenHistory = onOpenHistory)
+                Column {
+                    configuration.customSearchBar?.invoke(
+                        searchActive,
+                        searchQuery,
+                        { searchQuery = it },
+                        { searchActive = true },
+                    )
+                    ContactsTextSearchResults(query = searchQuery, onOpenHistory = onOpenHistory)
+                }
             } else {
                 when (currentTab) {
-                    HomeTab.CALLS -> CallsScreen(
+                    HomeTab.FAVORITES -> configuration.customFavoritesContent?.invoke(
+                        { currentTab = HomeTab.CONTACTS },
+                        onAddFavorite,
+                        onOpenDialpad,
+                    ) ?: CallsScreen(
+                        onOpenHistory = onOpenHistory,
+                        onOpenContacts = { currentTab = HomeTab.CONTACTS },
+                        onAddFavorite = onAddFavorite,
+                        onEditNumberBeforeCall = onOpenDialpad,
+                    )
+                    HomeTab.CALLS -> configuration.customCallsContent?.invoke(
+                        onOpenHistory,
+                        { currentTab = HomeTab.CONTACTS },
+                        onAddFavorite,
+                        onOpenDialpad,
+                    ) ?: CallsScreen(
                         onOpenHistory = onOpenHistory,
                         onOpenContacts = { currentTab = HomeTab.CONTACTS },
                         onAddFavorite = onAddFavorite,
@@ -283,6 +317,7 @@ internal fun HomeScreen(
     if (customContextMenuOpen) {
         configuration.customContextMenu?.invoke(
             currentTab,
+            { customContextMenuOpen = false; currentTab = HomeTab.FAVORITES },
             { customContextMenuOpen = false; currentTab = HomeTab.CALLS },
             { customContextMenuOpen = false; currentTab = HomeTab.CONTACTS },
             { customContextMenuOpen = false; currentTab = HomeTab.CUSTOM },
