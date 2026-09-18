@@ -7,6 +7,7 @@
     <string name="message_contact" comment="Action that starts a text message to the selected contact.">Message</string>
     <string name="contact_history" comment="Action that opens the selected contact's call history.">History</string>
     <string name="new_contact" comment="Button that opens the system form for creating a contact.">New contact</string>
+    <string name="new_contact_short" comment="Compact command for creating a contact.">New</string>
     <string name="all_contacts" comment="Heading for the complete contact list.">All contacts</string>
     <string name="search_contacts" comment="Search field hint or action for finding contacts.">Search contacts</string>
     <string name="close_search" comment="Accessibility label for closing contact search.">Close search</string>

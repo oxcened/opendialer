@@ -63,21 +63,12 @@ fun SettingsScreen(
     }
     val canManageBlockedNumbers = BlockedNumberContract.canCurrentUserBlockNumbers(context)
     val appName = stringResource(R.string.app_name)
-    val displayOptionsTitle = stringResource(R.string.display_options)
-    val displayOptionsDescription = stringResource(R.string.display_options_description, appName)
     val quickResponsesTitle = stringResource(R.string.customize_quick_responses)
     val quickResponsesDescription = stringResource(R.string.customize_quick_responses_description)
     val manageBlockedNumbersTitle = stringResource(R.string.manageBlockedNumbers)
     val manageBlockedNumbersDescription = stringResource(R.string.manage_blocked_numbers_description)
     val extensionTitle = appName
     val dialerItems = buildList {
-        add(
-            SettingsListItem(
-                title = displayOptionsTitle,
-                description = displayOptionsDescription,
-                onClick = onOpenDisplayOptions
-            )
-        )
         add(
             SettingsListItem(
                 title = quickResponsesTitle,

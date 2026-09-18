@@ -63,6 +63,8 @@ data class HomeScreenConfiguration(
     val customCallsContent: (@Composable (onOpenHistory: (List<Int>) -> Unit, onOpenContacts: () -> Unit, onAddFavorite: () -> Unit, onEditNumberBeforeCall: (String) -> Unit) -> Unit)? = null,
     /** Optional content for the Favorites destination. */
     val customFavoritesContent: (@Composable (onOpenContacts: () -> Unit, onAddFavorite: () -> Unit, onEditNumberBeforeCall: (String) -> Unit) -> Unit)? = null,
+    /** Optional full replacement for the standard Contacts content. */
+    val customContactsContent: (@Composable (searchQuery: String, onOpenSettingsSubpage: (Int, String?) -> Unit) -> Unit)? = null,
     val contactRowTrailingContent: ContactRowTrailingContent? = null,
     /** Gives custom screens such as a game-style profile a clean, full-viewport presentation. */
     val hideSearchAndDialpadOnCustomTab: Boolean = false,
@@ -291,11 +293,13 @@ internal fun HomeScreen(
                         onAddFavorite = onAddFavorite,
                         onEditNumberBeforeCall = onOpenDialpad,
                     )
-                    HomeTab.CONTACTS -> ContactsScreen(
-                        onOpenHistory = onOpenHistory,
-                        contactRowTrailingContent = configuration.contactRowTrailingContent,
-                        onOpenSettingsSubpage = onOpenSettingsSubpage,
-                    )
+                    HomeTab.CONTACTS -> configuration.customContactsContent?.invoke(searchQuery, onOpenSettingsSubpage)
+                        ?: ContactsScreen(
+                            searchQuery = searchQuery,
+                            onOpenHistory = onOpenHistory,
+                            contactRowTrailingContent = configuration.contactRowTrailingContent,
+                            onOpenSettingsSubpage = onOpenSettingsSubpage,
+                        )
                     HomeTab.VOICEMAIL -> VoicemailScreen()
                     HomeTab.CUSTOM -> configuration.customNavigationItem?.content(
                         onOpenSettings,
