@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -23,6 +24,7 @@ fun ContactAvatar(
     name: String?,
     photoUri: String?,
     modifier: Modifier = Modifier,
+    shape: Shape = CircleShape,
     contentDescription: String? = null,
     colorKey: String = contactAvatarColorKey(name),
     fallbackIcon: IconSource = LocalAppIcons.current.person,
@@ -36,7 +38,7 @@ fun ContactAvatar(
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
-            .clip(CircleShape)
+            .clip(shape)
             .background(Color(colors.background))
     ) {
         if (avatarIcon != null) {

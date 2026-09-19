@@ -75,7 +75,13 @@ fun SettingsSubpageScreen(
             }
         }) { padding ->
             val contentModifier = Modifier
-                .padding(padding.copy(top = padding.calculateTopPadding() + page.topContentPadding, start = 16.dp, end = 16.dp))
+                .padding(
+                    padding.copy(
+                        top = padding.calculateTopPadding() + page.topContentPadding,
+                        start = page.contentHorizontalPadding,
+                        end = page.contentHorizontalPadding,
+                    ),
+                )
                 .fillMaxSize()
                 .let { modifier ->
                     if (page.isScrollable) modifier.verticalScroll(rememberScrollState()) else modifier
