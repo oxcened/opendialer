@@ -51,26 +51,28 @@ fun SettingsSubpageScreen(
         LocalSettingsBackInterceptor provides backInterceptor,
     ) {
         Scaffold(topBar = {
-            TopAppBar(title = {
-                page.topBarTitle?.invoke() ?: run {
-                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                        Text(page.title)
-                        page.subtitle?.let { subtitle ->
-                            Text(
-                                subtitle,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
+            if (page.showTopBar) {
+                TopAppBar(title = {
+                    page.topBarTitle?.invoke() ?: run {
+                        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                            Text(page.title)
+                            page.subtitle?.let { subtitle ->
+                                Text(
+                                    subtitle,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
                         }
                     }
-                }
-            }, navigationIcon = {
-                IconButton(onClick = {
-                    if (!backInterceptor.consumesBackNavigation()) onNavigateBack()
-                }) {
-                    AppIcon(LocalAppIcons.current.arrowLeft, contentDescription = null)
-                }
-            }, actions = page.actions)
+                }, navigationIcon = {
+                    IconButton(onClick = {
+                        if (!backInterceptor.consumesBackNavigation()) onNavigateBack()
+                    }) {
+                        AppIcon(LocalAppIcons.current.arrowLeft, contentDescription = null)
+                    }
+                }, actions = page.actions)
+            }
         }) { padding ->
             val contentModifier = Modifier
                 .padding(padding.copy(top = padding.calculateTopPadding() + page.topContentPadding, start = 16.dp, end = 16.dp))
