@@ -70,6 +70,17 @@ private data object VoicemailRoute
 @Serializable
 data object AddFavoriteRoute
 
+/** Navigation actions supplied to an application-owned home screen. */
+data class HomeScreenCallbacks(
+    val onOpenDialpad: (String) -> Unit,
+    val onOpenHistory: (List<Int>) -> Unit,
+    val onOpenSettings: () -> Unit,
+    val onOpenAbout: () -> Unit,
+    val onAddFavorite: () -> Unit,
+    val onOpenSettingsSubpage: (Int, String?) -> Unit,
+    val onOpenVoicemail: () -> Unit,
+)
+
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 fun DialerApp(
@@ -78,6 +89,7 @@ fun DialerApp(
     themeExtension: AppThemeExtension = AppThemeExtension(),
     settingsSubpages: List<SettingsSubpage> = emptyList(),
     homeScreenConfiguration: HomeScreenConfiguration = HomeScreenConfiguration(),
+    homeContent: (@Composable (HomeScreenCallbacks) -> Unit)? = null,
 ) {
     val navController = rememberNavController()
 
@@ -153,7 +165,7 @@ fun DialerApp(
             )
             NavHost(navController = navController, startDestination = HomeRoute) {
                 composable<HomeRoute> {
-                    HomeScreen(
+                    val callbacks = HomeScreenCallbacks(
                         onOpenDialpad = { number -> navController.navigate(ContactsSearchRoute(number)) },
                         onOpenHistory = { navController.navigate(CallDetailRoute(callIds = it)) },
                         onOpenSettings = { navController.navigate(SettingsRoute) },
@@ -161,6 +173,15 @@ fun DialerApp(
                         onAddFavorite = { navController.navigate(AddFavoriteRoute) },
                         onOpenSettingsSubpage = { index, payload -> navController.navigate(SettingsSubpageRoute(index, payload)) },
                         onOpenVoicemail = { navController.navigate(VoicemailRoute) },
+                    )
+                    homeContent?.invoke(callbacks) ?: HomeScreen(
+                        onOpenDialpad = callbacks.onOpenDialpad,
+                        onOpenHistory = callbacks.onOpenHistory,
+                        onOpenSettings = callbacks.onOpenSettings,
+                        onOpenAbout = callbacks.onOpenAbout,
+                        onAddFavorite = callbacks.onAddFavorite,
+                        onOpenSettingsSubpage = callbacks.onOpenSettingsSubpage,
+                        onOpenVoicemail = callbacks.onOpenVoicemail,
                         configuration = homeScreenConfiguration,
                     )
                 }
