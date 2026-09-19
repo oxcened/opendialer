@@ -11,7 +11,7 @@ data class SettingsSubpageDestination(
     val content: @Composable (payload: String?, onNavigateBack: () -> Unit) -> Unit
 )
 
-class SettingsSubpageNavigator internal constructor(
+class SettingsSubpageNavigator(
     private val navigateToDestination: (Int, String?) -> Unit,
     private val onNavigateBack: () -> Unit
 ) {
