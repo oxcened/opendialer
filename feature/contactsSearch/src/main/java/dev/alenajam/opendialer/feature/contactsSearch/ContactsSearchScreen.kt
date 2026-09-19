@@ -6,7 +6,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,11 +19,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -45,8 +42,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -55,6 +50,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -70,6 +66,8 @@ import dev.alenajam.opendialer.core.common.telecom.CallPlacementResult
 import dev.alenajam.opendialer.core.common.LocalCustomColorsScheme
 import dev.alenajam.opendialer.core.common.ui.CallAccountPicker
 import dev.alenajam.opendialer.core.common.ui.Dialpad
+import dev.alenajam.opendialer.core.common.ui.LocalDialpadFontFamily
+import dev.alenajam.opendialer.core.common.ui.PixelButton
 import dev.alenajam.opendialer.data.contactsSearch.DialerSearchContact
 
 @Composable
@@ -654,10 +652,10 @@ private fun Footer(
             ) {
                 Box {
                     val isOverflowEnabled = query.isNotBlank()
-                    IconButton(
+                    PixelButton(
                         onClick = { overflowExpanded = true },
                         enabled = isOverflowEnabled,
-                        modifier = Modifier.alpha(if (isOverflowEnabled) 1f else 0.38f)
+                        modifier = Modifier.size(48.dp),
                     ) {
                         AppIcon(
                             icon = LocalAppIcons.current.more,
@@ -687,7 +685,8 @@ private fun Footer(
                     singleLine = true,
                     textStyle = LocalTextStyle.current.copy(
                         textAlign = TextAlign.Center,
-                        fontSize = MaterialTheme.typography.headlineMedium.fontSize
+                        fontFamily = LocalDialpadFontFamily.current,
+                        fontSize = 22.sp
                     ),
                     decorationBox = { innerTextField ->
                         Box(
@@ -700,22 +699,15 @@ private fun Footer(
                 )
 
                 val isBackspaceEnabled = query.isNotEmpty()
-                Box(
-                    contentAlignment = Alignment.Center,
+                PixelButton(
                     modifier = Modifier
-                        .size(48.dp)
-                        .clip(CircleShape)
-                        .alpha(if (isBackspaceEnabled) 1f else 0.38f)
-                        .combinedClickable(
-                            enabled = isBackspaceEnabled,
-                            onClick = {
-                                val edit = deleteDialpadSelection(query, selection)
-                                onQueryChange(edit.text, edit.selection)
-                            },
-                            onLongClick = {
-                                onQueryChange("", TextRange.Zero)
-                            }
-                        )
+                        .size(48.dp),
+                    enabled = isBackspaceEnabled,
+                    onClick = {
+                        val edit = deleteDialpadSelection(query, selection)
+                        onQueryChange(edit.text, edit.selection)
+                    },
+                    onLongClick = { onQueryChange("", TextRange.Zero) },
                 ) {
                     AppIcon(
                         icon = LocalAppIcons.current.backspace,
@@ -731,27 +723,20 @@ private fun Footer(
                 onZeroLongClick = { handleButtonClick('+') }
             )
 
-            Button(
+            PixelButton(
                 onClick = onCall,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = LocalCustomColorsScheme.current.success,
-                    contentColor = Color.White
-                ),
+                containerColor = LocalCustomColorsScheme.current.success,
+                contentColor = Color.White,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .height(60.dp)
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    AppIcon(
-                        icon = icons.phone,
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Text(text = stringResource(R.string.dialpad_button_call_label))
-                }
+                Text(
+                    text = stringResource(R.string.dialpad_button_battle_label),
+                    fontFamily = LocalDialpadFontFamily.current,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(horizontal = 24.dp),
+                )
             }
         }
     }
