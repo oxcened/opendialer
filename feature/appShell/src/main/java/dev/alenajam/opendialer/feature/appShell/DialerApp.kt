@@ -38,6 +38,7 @@ import dev.alenajam.opendialer.core.common.MAIN_ACTIVITY_INTENT_DIAL_EXTRA_ADD_C
 import dev.alenajam.opendialer.core.common.getActivity
 import dev.alenajam.opendialer.core.common.ui.AppIcons
 import dev.alenajam.opendialer.core.common.ui.AppProviders
+import dev.alenajam.opendialer.core.common.ui.AppTheme
 import dev.alenajam.opendialer.core.common.ui.AppThemeExtension
 import dev.alenajam.opendialer.core.common.ui.DefaultAppIcons
 import dev.alenajam.opendialer.core.common.ui.AppIcon
@@ -93,10 +94,12 @@ fun DialerApp(
     settingsSubpages: List<SettingsSubpage> = emptyList(),
     homeScreenConfiguration: HomeScreenConfiguration = HomeScreenConfiguration(),
     homeContent: (@Composable (HomeScreenCallbacks) -> Unit)? = null,
+    forceLightTheme: Boolean = false,
 ) {
     val navController = rememberNavController()
 
     AppProviders(icons = icons, themeExtension = themeExtension) {
+        val content: @Composable () -> Unit = {
         val activity = LocalContext.current.getActivity()
         var isDefaultPhoneApp by remember(activity) {
             mutableStateOf(defaultPhoneManager.isDefaultDialer())
@@ -277,6 +280,12 @@ fun DialerApp(
                         }
                 }
             }
+        }
+        }
+        if (forceLightTheme) {
+            AppTheme(darkTheme = false, content = content)
+        } else {
+            content()
         }
     }
 }
