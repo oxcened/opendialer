@@ -9,6 +9,7 @@ import android.telecom.PhoneAccount
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -55,6 +56,8 @@ import dev.alenajam.opendialer.feature.settings.DisplayOptionsScreen
 import dev.alenajam.opendialer.feature.settings.AboutRoute
 import dev.alenajam.opendialer.feature.settings.AboutScreen
 import dev.alenajam.opendialer.feature.settings.SettingsSubpage
+import dev.alenajam.opendialer.feature.settings.LocalSettingsSubpageNavigator
+import dev.alenajam.opendialer.feature.settings.SettingsSubpageNavigator
 import dev.alenajam.opendialer.feature.settings.SettingsSubpageRoute
 import dev.alenajam.opendialer.feature.settings.SettingsSubpageDestinationRoute
 import dev.alenajam.opendialer.feature.settings.SettingsSubpageScreen
@@ -233,7 +236,24 @@ fun DialerApp(
                     settingsSubpages.getOrNull(route.subpageIndex)
                         ?.destinations
                         ?.getOrNull(route.destinationIndex)
-                        ?.content(route.payload) { navController.popBackStack() }
+                        ?.let { destination ->
+                            CompositionLocalProvider(
+                                LocalSettingsSubpageNavigator provides SettingsSubpageNavigator(
+                                    navigateToDestination = { destinationIndex, payload ->
+                                        navController.navigate(
+                                            SettingsSubpageDestinationRoute(
+                                                route.subpageIndex,
+                                                destinationIndex,
+                                                payload,
+                                            ),
+                                        )
+                                    },
+                                    onNavigateBack = { navController.popBackStack() },
+                                ),
+                            ) {
+                                destination.content(route.payload) { navController.popBackStack() }
+                            }
+                        }
                 }
             }
         }
