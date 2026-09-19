@@ -4,7 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.app.KeyguardManager
+import android.content.BroadcastReceiver
 import android.view.WindowManager
+import android.content.IntentFilter
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -18,6 +21,8 @@ import dev.alenajam.opendialer.core.common.ui.InCallUI
 import dev.alenajam.opendialer.feature.inCall.service.CallEvent
 import dev.alenajam.opendialer.feature.inCall.service.CallsHandler
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -31,6 +36,15 @@ class InCallActivity : ComponentActivity() {
 
     var visibility: Boolean = false
         private set
+
+    private val _isUiReady = MutableStateFlow(false)
+    val isUiReady = _isUiReady.asStateFlow()
+
+    private val userPresentReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == Intent.ACTION_USER_PRESENT) updateUiReady()
+        }
+    }
 
     companion object {
         fun start(context: Context) {
@@ -80,11 +94,31 @@ class InCallActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         visibility = true
+        val filter = IntentFilter(Intent.ACTION_USER_PRESENT)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(userPresentReceiver, filter, RECEIVER_NOT_EXPORTED)
+        } else {
+            @Suppress("DEPRECATION")
+            registerReceiver(userPresentReceiver, filter)
+        }
+        updateUiReady()
     }
 
     override fun onStop() {
         super.onStop()
         visibility = false
+        unregisterReceiver(userPresentReceiver)
+        updateUiReady()
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        updateUiReady()
+    }
+
+    private fun updateUiReady() {
+        _isUiReady.value = visibility &&
+            !getSystemService(KeyguardManager::class.java).isKeyguardLocked
     }
 
     override fun onDestroy() {

@@ -32,6 +32,7 @@ fun InCallDetails(
     modifier: Modifier = Modifier,
     showCallerImage: Boolean = true,
     useCompactCallerText: Boolean = false,
+    showCallerNumber: Boolean = true,
 ) {
     val icons = LocalAppIcons.current
     Column(
@@ -68,12 +69,17 @@ fun InCallDetails(
         )
 
         if (callerName.isNotBlank() && callerNumber.isNotBlank() && callerName != callerNumber) {
-            Text(
-                text = if (callerNumberLabel.isBlank()) {
+            val subtitle = if (showCallerNumber) {
+                if (callerNumberLabel.isBlank()) {
                     callerNumber
                 } else {
                     stringResource(R.string.caller_number_subtitle, callerNumberLabel, callerNumber)
-                },
+                }
+            } else {
+                callerNumberLabel
+            }
+            Text(
+                text = subtitle,
                 style = if (useCompactCallerText) {
                     MaterialTheme.typography.bodyMedium
                 } else {

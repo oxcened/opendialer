@@ -16,7 +16,7 @@
     <string name="open_contact" comment="Menu action that opens the selected person's contact details.">Open contact</string>
     <string name="call_log_date_today" comment="Date-group heading for calls made or received today.">Today</string>
     <string name="call_log_date_yesterday" comment="Date-group heading for calls made or received yesterday.">Yesterday</string>
-    <string name="call_log_type_time" comment="Call-log summary. %1$s is the call type and %2$s is the call time.">%1$s • %2$s</string>
+    <string name="call_log_type_time" comment="Call-log summary. %1$s is the call type and %2$s is the call time.">%1$s %2$s</string>
     <string name="favorite_phone_type_number" comment="Favorite contact summary. %1$s is the phone type and %2$s is the phone number.">%1$s • %2$s</string>
     <string name="call_log_just_now" comment="Call-log time shown for calls less than one minute old.">Just now</string>
     <string name="call_log_call_count" comment="Number of calls grouped in a call-log row.">(%1$d)</string>
