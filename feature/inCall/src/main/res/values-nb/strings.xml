@@ -16,8 +16,8 @@
     <string name="notification_missed_call_title" comment="Missed-call notification title. %1$s is the caller name or phone number.">Tapt anrop fra %1$s</string>
     <string name="notification_call_back" comment="Notification action that calls back a missed caller.">Ring tilbake</string>
     <string name="notification_message" comment="Notification action that starts a text message to the caller.">Melding</string>
-    <string name="action_answer" comment="Incoming-call button that answers the call.">Svar</string>
-    <string name="action_decline" comment="Incoming-call button that declines the call.">Avvis</string>
+    <string name="action_answer" comment="Incoming-call button that starts the fight.">Kjemp</string>
+    <string name="action_decline" comment="Incoming-call button that runs away.">Løp</string>
     <string name="action_end_call" comment="In-call button that ends the current call.">Avslutt samtale</string>
     <string name="action_message" comment="Incoming-call button that declines the call with a text response.">Melding</string>
     <string name="action_close" comment="Button that closes the finished-call screen.">Lukk</string>

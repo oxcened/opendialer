@@ -16,8 +16,8 @@
     <string name="notification_missed_call_title" comment="Missed-call notification title. %1$s is the caller name or phone number.">Gemiste oproep van %1$s</string>
     <string name="notification_call_back" comment="Notification action that calls back a missed caller.">Terugbellen</string>
     <string name="notification_message" comment="Notification action that starts a text message to the caller.">Bericht</string>
-    <string name="action_answer" comment="Incoming-call button that answers the call.">Beantwoorden</string>
-    <string name="action_decline" comment="Incoming-call button that declines the call.">Weigeren</string>
+    <string name="action_answer" comment="Incoming-call button that starts the fight.">Vechten</string>
+    <string name="action_decline" comment="Incoming-call button that runs away.">Rennen</string>
     <string name="action_end_call" comment="In-call button that ends the current call.">Gesprek beëindigen</string>
     <string name="action_message" comment="Incoming-call button that declines the call with a text response.">Bericht</string>
     <string name="action_close" comment="Button that closes the finished-call screen.">Sluiten</string>

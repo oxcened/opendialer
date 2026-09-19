@@ -16,8 +16,8 @@
     <string name="notification_missed_call_title" comment="Missed-call notification title. %1$s is the caller name or phone number.">Apel pierdut de la %1$s</string>
     <string name="notification_call_back" comment="Notification action that calls back a missed caller.">Sună înapoi</string>
     <string name="notification_message" comment="Notification action that starts a text message to the caller.">Mesaj</string>
-    <string name="action_answer" comment="Incoming-call button that answers the call.">Răspunde</string>
-    <string name="action_decline" comment="Incoming-call button that declines the call.">Respinge</string>
+    <string name="action_answer" comment="Incoming-call button that starts the fight.">Luptă</string>
+    <string name="action_decline" comment="Incoming-call button that runs away.">Fugi</string>
     <string name="action_end_call" comment="In-call button that ends the current call.">Încheie apelul</string>
     <string name="action_message" comment="Incoming-call button that declines the call with a text response.">Mesaj</string>
     <string name="action_close" comment="Button that closes the finished-call screen.">Închide</string>

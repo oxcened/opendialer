@@ -16,8 +16,8 @@
     <string name="notification_missed_call_title" comment="Missed-call notification title. %1$s is the caller name or phone number.">Missed call from %1$s</string>
     <string name="notification_call_back" comment="Notification action that calls back a missed caller.">Call back</string>
     <string name="notification_message" comment="Notification action that starts a text message to the caller.">Message</string>
-    <string name="action_answer" comment="Incoming-call button that answers the call.">Answer</string>
-    <string name="action_decline" comment="Incoming-call button that declines the call.">Decline</string>
+    <string name="action_answer" comment="Incoming-call button that starts the fight.">Fight</string>
+    <string name="action_decline" comment="Incoming-call button that runs away.">Run</string>
     <string name="action_end_call" comment="In-call button that ends the current call.">End call</string>
     <string name="action_message" comment="Incoming-call button that declines the call with a text response.">Message</string>
     <string name="action_close" comment="Button that closes the finished-call screen.">Close</string>
