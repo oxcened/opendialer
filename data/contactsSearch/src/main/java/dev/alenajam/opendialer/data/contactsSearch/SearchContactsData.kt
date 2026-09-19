@@ -57,6 +57,6 @@ object SearchContactsData {
                 )
             } while (cursor.moveToNext())
         }
-        return list
+        return SearchContactDeduplicator.deduplicate(list)
     }
 }
