@@ -61,6 +61,7 @@ import dev.alenajam.opendialer.feature.settings.SettingsSubpageDestinationRoute
 import dev.alenajam.opendialer.feature.settings.SettingsSubpageScreen
 import dev.alenajam.opendialer.feature.settings.LocalSettingsSubpageNavigator
 import dev.alenajam.opendialer.feature.settings.SettingsSubpageNavigator
+import dev.alenajam.opendialer.core.common.ui.AppTheme
 import dev.alenajam.opendialer.feature.voicemail.VoicemailScreen
 import kotlinx.serialization.Serializable
 
@@ -93,10 +94,12 @@ fun DialerApp(
     settingsSubpages: List<SettingsSubpage> = emptyList(),
     homeScreenConfiguration: HomeScreenConfiguration = HomeScreenConfiguration(),
     homeContent: (@Composable (HomeScreenCallbacks) -> Unit)? = null,
+    forceLightTheme: Boolean = false,
 ) {
     val navController = rememberNavController()
 
     AppProviders(icons = icons, themeExtension = themeExtension) {
+        val content: @Composable () -> Unit = {
         val activity = LocalContext.current.getActivity()
         var isDefaultPhoneApp by remember(activity) {
             mutableStateOf(defaultPhoneManager.isDefaultDialer())
@@ -254,10 +257,8 @@ fun DialerApp(
                 }
                 composable<SettingsSubpageDestinationRoute> { backStackEntry ->
                     val route = backStackEntry.toRoute<SettingsSubpageDestinationRoute>()
-                    settingsSubpages.getOrNull(route.subpageIndex)
-                        ?.destinations
-                        ?.getOrNull(route.destinationIndex)
-                        ?.let { destination ->
+                    settingsSubpages.getOrNull(route.subpageIndex)?.let { page ->
+                        page.destinations.getOrNull(route.destinationIndex)?.let { destination ->
                             CompositionLocalProvider(
                                 LocalSettingsSubpageNavigator provides SettingsSubpageNavigator(
                                     { destinationIndex, payload ->
@@ -275,8 +276,16 @@ fun DialerApp(
                                 destination.content(route.payload) { navController.popBackStack() }
                             }
                         }
+                    }
                 }
             }
+        }
+    }
+    }
+        if (forceLightTheme) {
+            AppTheme(darkTheme = false, content = content)
+        } else {
+            content()
         }
     }
 }
