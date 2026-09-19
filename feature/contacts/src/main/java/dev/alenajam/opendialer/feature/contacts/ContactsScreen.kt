@@ -3,7 +3,6 @@ package dev.alenajam.opendialer.feature.contacts
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,6 +19,10 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.background
+import androidx.compose.material.icons.Icons
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -35,7 +39,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -55,9 +58,6 @@ import dev.alenajam.opendialer.core.common.CommonUtils
 import dev.alenajam.opendialer.core.common.PermissionUtils
 import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.data.contacts.DialerContactSummary
-
-private val ContactListPaper = androidx.compose.ui.graphics.Color(0xFFF9F7FC)
-private val ContactListInk = androidx.compose.ui.graphics.Color(0xFF202020)
 
 data class ContactRowTrailingContent(
     val content: @Composable (DialerContactSummary, (Int, String?) -> Unit) -> Unit,
@@ -103,30 +103,24 @@ fun ContactsScreen(
     }
     val listState = rememberLazyListState()
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = ContactListPaper,
-    ) {
+    Surface(modifier = Modifier.fillMaxSize()) {
         if (!hasPermission.value) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(
                     8.dp,
                     alignment = Alignment.CenterVertically
                 ),
             ) {
-                RetroContactText(
+                Text(
                     text = stringResource(R.string.placeholder_contacts),
-                    size = 16.sp,
                     textAlign = TextAlign.Center,
                 )
-                RetroContactCommand(
-                    label = stringResource(R.string.turn_on),
-                    onClick = { requestPermissions.launch(input = PermissionUtils.contactsPermissions) },
-                )
+                Button(
+                    onClick = { requestPermissions.launch(input = PermissionUtils.contactsPermissions) }
+                ) {
+                    Text(text = stringResource(R.string.turn_on))
+                }
             }
             return@Surface
         }
@@ -134,20 +128,22 @@ fun ContactsScreen(
         Box(modifier = Modifier.fillMaxSize()) {
             LazyColumn(
                 state = listState,
-                contentPadding = PaddingValues(
-                    start = 2.dp,
-                    top = 12.dp,
-                    end = 2.dp,
-                    bottom = 96.dp,
-                ),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                contentPadding = PaddingValues(bottom = 88.dp),
             ) {
             if (searchQuery.isBlank()) {
                 item(key = "new-contact") {
-                    RetroContactCommand(
-                        label = stringResource(R.string.new_contact),
+                    Button(
                         onClick = { CommonUtils.createContact(context, null) },
-                    )
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                    ) {
+                        AppIcon(LocalAppIcons.current.personAddInContactsList, contentDescription = null)
+                        Text(
+                            text = stringResource(R.string.new_contact),
+                            modifier = Modifier.padding(start = 8.dp),
+                        )
+                    }
                 }
                 profileContact.value?.let { profile ->
                     item(key = "profile-contact") {
@@ -173,6 +169,8 @@ fun ContactsScreen(
                     is ContactsListEntry.Contact -> {
                         ContactRow(
                             contact = item.contact,
+                            roundTop = item.isFirstInSection,
+                            roundBottom = item.isLastInSection,
                             onOpenContact = { viewModel.openContact(item.contact.id) },
                             trailingContent = contactRowTrailingContent?.let { trailingContent ->
                                 { trailingContent.content(item.contact, onOpenSettingsSubpage) }
@@ -241,31 +239,48 @@ private fun ProfileContactCard(
     onOpenProfile: () -> Unit,
     onShareProfile: () -> Unit,
 ) {
-    Row(
+    Surface(
+        onClick = onOpenProfile,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onOpenProfile)
-            .padding(horizontal = 8.dp, vertical = 7.dp),
-        verticalAlignment = Alignment.CenterVertically,
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        shadowElevation = 0.5.dp,
     ) {
-        ContactAvatar(
-            name = contact.name,
-            photoUri = contact.image,
-            colorKey = contactAvatarColorKey(contact.name),
-            modifier = Modifier.size(42.dp),
-        )
-        Column(modifier = Modifier.weight(1f).padding(horizontal = 10.dp)) {
-            RetroContactText(stringResource(R.string.your_info), 13.sp, color = ContactListInk.copy(alpha = 0.75f))
-            RetroContactText(contact.name, 16.sp, maxLines = 1)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
+        ) {
+            ContactAvatar(
+                name = contact.name,
+                photoUri = contact.image,
+                colorKey = contactAvatarColorKey(contact.name),
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape),
+            )
+            Column {
+                Text(
+                    text = stringResource(R.string.your_info),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    text = contact.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+            androidx.compose.foundation.layout.Spacer(modifier = Modifier.weight(1f))
+            IconButton(onClick = onShareProfile) {
+                AppIcon(
+                    icon = LocalAppIcons.current.share,
+                    contentDescription = stringResource(R.string.share_contact),
+                )
+            }
         }
-        AppIcon(
-            icon = LocalAppIcons.current.share,
-            contentDescription = stringResource(R.string.share_contact),
-            modifier = Modifier
-                .size(24.dp)
-                .clickable(onClick = onShareProfile),
-            tint = ContactListInk,
-        )
     }
 }
 
@@ -324,92 +339,74 @@ private fun ContactSectionHeader(label: String, isFavorites: Boolean) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
         if (isFavorites) {
             AppIcon(
                 icon = LocalAppIcons.current.favorite,
                 contentDescription = null,
                 modifier = Modifier.size(16.dp),
-                tint = ContactListInk,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(8.dp))
         }
-        RetroContactText(label, 13.sp, color = ContactListInk.copy(alpha = 0.75f))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 
 @Composable
 private fun ContactRow(
     contact: DialerContactSummary,
+    roundTop: Boolean,
+    roundBottom: Boolean,
     onOpenContact: () -> Unit,
     trailingContent: (@Composable () -> Unit)? = null,
 ) {
-    Row(
+    Surface(
+        onClick = onOpenContact,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onOpenContact)
-            .padding(horizontal = 8.dp, vertical = 7.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        ContactAvatar(
-            name = contact.name,
-            photoUri = contact.image,
-            colorKey = contactAvatarColorKey(contact.name),
-            modifier = Modifier.size(42.dp),
-        )
-        RetroContactText(
-            text = contact.name,
-            size = 16.sp,
-            modifier = Modifier.weight(1f).padding(horizontal = 10.dp),
-            maxLines = 1,
-        )
-        trailingContent?.let { content -> content() }
-    }
-}
-
-@Composable
-private fun RetroContactCommand(
-    label: String,
-    onClick: () -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 2.dp),
-        horizontalArrangement = Arrangement.End,
-        verticalAlignment = Alignment.CenterVertically,
+            .padding(horizontal = 16.dp, vertical = 1.dp),
+        shape = RoundedCornerShape(
+            topStart = if (roundTop) 20.dp else 2.dp,
+            topEnd = if (roundTop) 20.dp else 2.dp,
+            bottomStart = if (roundBottom) 20.dp else 2.dp,
+            bottomEnd = if (roundBottom) 20.dp else 2.dp,
+        ),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        shadowElevation = 0.5.dp,
     ) {
         Row(
-            modifier = Modifier
-                .clickable(onClick = onClick)
-                .padding(start = 16.dp, top = 14.dp, end = 16.dp, bottom = 6.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(vertical = 10.dp, horizontal = 16.dp),
         ) {
-            RetroContactText(label, 18.sp)
+            ContactAvatar(
+                name = contact.name,
+                photoUri = contact.image,
+                colorKey = contactAvatarColorKey(contact.name),
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape),
+            )
+
+            Text(
+                text = contact.name,
+                modifier = Modifier.weight(1f),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            trailingContent?.let { content ->
+                content()
+            }
         }
     }
-}
-
-@Composable
-private fun RetroContactText(
-    text: String,
-    size: androidx.compose.ui.unit.TextUnit,
-    modifier: Modifier = Modifier,
-    maxLines: Int = Int.MAX_VALUE,
-    color: androidx.compose.ui.graphics.Color = ContactListInk,
-    textAlign: TextAlign? = null,
-) {
-    Text(
-        text = text.uppercase(),
-        modifier = modifier,
-        fontSize = size,
-        lineHeight = size * 1.15f,
-        color = color,
-        maxLines = maxLines,
-        overflow = TextOverflow.Ellipsis,
-        textAlign = textAlign,
-    )
 }
 
 val contactMock = DialerContactSummary(
@@ -424,6 +421,8 @@ val contactMock = DialerContactSummary(
 private fun ContactRowPreview() {
     ContactRow(
         contact = contactMock,
+        roundTop = true,
+        roundBottom = true,
         onOpenContact = {},
     )
 }

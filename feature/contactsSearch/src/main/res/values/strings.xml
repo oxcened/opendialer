@@ -7,7 +7,7 @@
     <string name="edit_number_before_call" comment="Menu action that lets the user edit a phone number before calling it.">Edit number before call</string>
     <string name="turn_on" comment="Button that opens settings to grant the permission required by the current screen.">Turn on</string>
     <string name="placeholder_search_permissions" comment="Empty-state message shown when phone permission is required for dialpad suggestions.">To see suggestions, turn on the phone permissions</string>
-    <string name="dialpad_button_battle_label" comment="Label for the dialpad action that starts a call.">FIGHT</string>
+    <string name="dialpad_button_call_label" comment="Accessibility label for the dialpad button that calls the entered number.">Call</string>
     <string name="dialpad_more_options" comment="Accessibility label for the dialpad overflow menu.">More dialpad options</string>
     <string name="add_2_second_pause" comment="Dialpad menu action that inserts a two-second pause into the phone number.">Add 2-sec pause</string>
     <string name="add_wait" comment="Dialpad menu action that inserts a wait-for-confirmation marker into the phone number.">Add wait</string>
