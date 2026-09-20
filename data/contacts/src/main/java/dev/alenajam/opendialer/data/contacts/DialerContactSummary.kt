@@ -8,7 +8,7 @@ class DialerContactSummary(
 ) {
     companion object {
         fun mapList(list: List<DialerContactSummaryEntity>): List<DialerContactSummary> =
-            list.map { contact ->
+            list.distinctBy { it.id }.map { contact ->
                 DialerContactSummary(
                     id = contact.id,
                     name = contact.name,
