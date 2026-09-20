@@ -7,15 +7,16 @@ project's authoritative changelog.
 
 ## Versioning
 
-`appVersionName` in [`gradle.properties`](../gradle.properties) is the single
-authoritative semantic version (`MAJOR.MINOR.PATCH`). Android's `versionCode`
-is derived as `MAJOR * 1,000,000 + MINOR * 1,000 + PATCH`, providing a
-monotonically increasing integer for normal semantic-version releases. Minor
-and patch values must each be 999 or less.
+`appVersionName` and `appVersionCode` in
+[`gradle.properties`](../gradle.properties) are managed independently.
+`appVersionName` is the semantic version (`MAJOR.MINOR.PATCH`) shown to users;
+`appVersionCode` is the positive integer Android uses for upgrade ordering.
+Choose and increment `appVersionCode` manually for every published build.
 
-Before a release, change only `appVersionName`, commit it to `main`, and let CI
-pass. The release tag must exactly match the version with a `v` prefix: for
-example, `appVersionName=0.4.0` requires `v0.4.0`.
+Before a release, update `appVersionName` and, when needed, `appVersionCode`,
+commit them to `main`, and let CI pass. The release tag must exactly match the
+version with a `v` prefix: for example, `appVersionName=0.4.0` requires
+`v0.4.0`.
 
 ## One-time GitHub configuration
 
@@ -48,8 +49,10 @@ commit; this does **not** publish a release:
 scripts/prepare-release.sh 0.4.0
 ```
 
-This updates `appVersionName`, commits `chore(release): prepare v0.4.0`, and
-pushes `main`. Wait for CI on that commit to pass.
+This updates `appVersionName`, preserves your manually selected
+`appVersionCode`, commits `chore(release): prepare v0.4.0`, and pushes `main`.
+If the release needs a new Android version code, edit `gradle.properties`
+before running the script. Wait for CI on that commit to pass.
 
 Then publish the already-prepared release by creating and pushing its
 `v0.4.0` tag. This tag triggers the public release workflow. The prompt
