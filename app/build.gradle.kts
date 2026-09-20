@@ -17,19 +17,13 @@ if (file("google-services.json").isFile) {
 
 val appVersionName = providers.gradleProperty("appVersionName").orNull
     ?: error("appVersionName must be set in gradle.properties")
-val semanticVersion = Regex("""(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)""")
-    .matchEntire(appVersionName)
-    ?: error("appVersionName must use MAJOR.MINOR.PATCH semantic versioning")
-val appVersionCode = semanticVersion.groupValues.drop(1).map(String::toLong).let { (major, minor, patch) ->
-    require(minor <= 999 && patch <= 999) {
-        "appVersionName minor and patch values must be at most 999"
-    }
-    val code = major * 1_000_000 + minor * 1_000 + patch
-    require(code in 1..Int.MAX_VALUE.toLong()) {
-        "appVersionName is too large to derive an Android versionCode"
-    }
-    code.toInt()
+require(Regex("""(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)""").matches(appVersionName)) {
+    "appVersionName must use MAJOR.MINOR.PATCH semantic versioning"
 }
+val appVersionCode = providers.gradleProperty("appVersionCode").orNull
+    ?.toIntOrNull()
+    ?.also { require(it > 0) { "appVersionCode must be a positive integer" } }
+    ?: error("appVersionCode must be set to a positive integer in gradle.properties")
 
 android {
     namespace = "dev.alenajam.opendialer"

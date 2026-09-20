@@ -9,7 +9,8 @@ Usage:
   scripts/prepare-release.sh VERSION --publish [--yes]
 
 Prepare updates appVersionName, creates the release-preparation commit, and
-pushes main. After CI passes, use --publish to create and push the vVERSION tag.
+pushes main. Update appVersionCode manually in gradle.properties when needed.
+After CI passes, use --publish to create and push the vVERSION tag.
 EOF
 }
 
@@ -39,6 +40,7 @@ cd "$root"
 [[ -z "$(git status --porcelain)" ]] || fail "Commit or stash changes before releasing."
 [[ -f gradle.properties ]] || fail "gradle.properties is missing."
 grep -q '^appVersionName=' gradle.properties || fail "appVersionName is missing from gradle.properties."
+grep -q '^appVersionCode=' gradle.properties || fail "appVersionCode is missing from gradle.properties."
 
 tag="v$version"
 
