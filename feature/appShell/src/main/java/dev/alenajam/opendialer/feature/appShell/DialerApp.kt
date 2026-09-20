@@ -94,6 +94,12 @@ fun DialerApp(
     settingsSubpages: List<SettingsSubpage> = emptyList(),
     homeScreenConfiguration: HomeScreenConfiguration = HomeScreenConfiguration(),
     homeContent: (@Composable (HomeScreenCallbacks) -> Unit)? = null,
+    dialSearchContent: (@Composable (
+        prefilledNumber: String,
+        onOpenHistory: (List<Int>) -> Unit,
+        onDialpadCallStarted: () -> Unit,
+        onNavigateBack: () -> Unit,
+    ) -> Unit)? = null,
     forceLightTheme: Boolean = false,
 ) {
     val navController = rememberNavController()
@@ -212,8 +218,14 @@ fun DialerApp(
                         }
                     }
                 }
-                composable<ContactsSearchRoute> {
-                    ContactsSearchScreen(
+                composable<ContactsSearchRoute> { backStackEntry ->
+                    val route = backStackEntry.toRoute<ContactsSearchRoute>()
+                    dialSearchContent?.invoke(
+                        route.prefilledNumber,
+                        { navController.navigate(CallDetailRoute(callIds = it)) },
+                        { navController.popBackStack() },
+                        { navController.popBackStack() },
+                    ) ?: ContactsSearchScreen(
                         onOpenHistory = { navController.navigate(CallDetailRoute(callIds = it)) },
                         onDialpadCallStarted = { navController.popBackStack() }
                     )
