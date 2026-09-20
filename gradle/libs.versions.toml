@@ -1,5 +1,5 @@
 [versions]
-agp = "9.3.2"
+agp = "9.3.3"
 kotlin = "2.2.10"
 hilt = "2.57.2"
 androidx-core = "1.12.0"
