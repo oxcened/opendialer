@@ -1,30 +1,21 @@
-package dev.alenajam.opendialer.feature.contactsSearch
+package dev.alenajam.opendialer.core.common.ui
 
 import android.content.Context
 import android.media.AudioManager
 import android.media.ToneGenerator
 import dev.alenajam.opendialer.core.common.CommonUtils
 
-internal class DialpadTonePlayer(
-    private val context: Context,
-) {
+class DialpadTonePlayer(private val context: Context) {
     private val toneGenerator = ToneGenerator(AudioManager.STREAM_DTMF, TONE_VOLUME)
 
     fun start(digit: Char) {
         if (!CommonUtils.isDmtfSettingEnabled(context)) return
-
-        digit.toTone()?.let { tone ->
-            toneGenerator.startTone(tone)
-        }
+        digit.toTone()?.let(toneGenerator::startTone)
     }
 
-    fun stop() {
-        toneGenerator.stopTone()
-    }
+    fun stop() = toneGenerator.stopTone()
 
-    fun release() {
-        toneGenerator.release()
-    }
+    fun release() = toneGenerator.release()
 
     private fun Char.toTone(): Int? = when (this) {
         '0' -> ToneGenerator.TONE_DTMF_0
@@ -42,7 +33,5 @@ internal class DialpadTonePlayer(
         else -> null
     }
 
-    private companion object {
-        const val TONE_VOLUME = 80
-    }
+    private companion object { const val TONE_VOLUME = 80 }
 }
