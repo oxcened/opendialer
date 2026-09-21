@@ -61,6 +61,7 @@ import dev.alenajam.opendialer.feature.settings.SettingsSubpageRoute
 import dev.alenajam.opendialer.feature.settings.SettingsSubpageDestinationRoute
 import dev.alenajam.opendialer.feature.settings.SettingsSubpageScreen
 import dev.alenajam.opendialer.feature.settings.LocalSettingsSubpageNavigator
+import dev.alenajam.opendialer.feature.settings.LocalSettingsRootNavigator
 import dev.alenajam.opendialer.feature.settings.SettingsSubpageNavigator
 import dev.alenajam.opendialer.feature.voicemail.VoicemailScreen
 import kotlinx.serialization.Serializable
@@ -302,7 +303,10 @@ fun DialerApp(
                                         )
                                     },
                                     { navController.popBackStack() },
-                                )
+                                ),
+                                LocalSettingsRootNavigator provides { pageId, payload ->
+                                    navController.navigate(SettingsSubpageRoute(pageId, payload))
+                                },
                             ) {
                                 destination.content(route.payload) { navController.popBackStack() }
                             }
