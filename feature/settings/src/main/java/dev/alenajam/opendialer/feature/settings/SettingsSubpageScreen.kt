@@ -25,7 +25,7 @@ import dev.alenajam.opendialer.core.common.ui.AppIcon
 import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 
 val LocalSettingsSubpageNavigator = staticCompositionLocalOf<SettingsSubpageNavigator?> { null }
-val LocalSettingsRootNavigator = staticCompositionLocalOf<((Int, String?) -> Unit)?> { null }
+val LocalSettingsRootNavigator = staticCompositionLocalOf<((String, String?) -> Unit)?> { null }
 val LocalSettingsBackInterceptor = staticCompositionLocalOf<SettingsBackInterceptor?> { null }
 
 /** Lets subpage content consume a toolbar back action before navigation occurs. */
@@ -41,8 +41,8 @@ fun SettingsSubpageScreen(
     page: SettingsSubpage,
     payload: String?,
     onNavigateBack: () -> Unit,
-    onNavigateToDestination: (Int, String?) -> Unit,
-    onNavigateToSubpage: (Int, String?) -> Unit,
+    onNavigateToDestination: (String, String?) -> Unit,
+    onNavigateToSubpage: (String, String?) -> Unit,
 ) {
     val backInterceptor = remember { SettingsBackInterceptor() }
     CompositionLocalProvider(

@@ -45,7 +45,7 @@ enum class HomeTab {
 data class HomeNavigationItem(
     val label: @Composable () -> Unit,
     val icon: @Composable (selected: Boolean) -> Unit,
-    val content: @Composable (onOpenSettingsSubpage: (Int, String?) -> Unit) -> Unit,
+    val content: @Composable (onOpenSettingsSubpage: (String, String?) -> Unit) -> Unit,
 )
 
 data class HomeScreenConfiguration(
@@ -63,7 +63,7 @@ internal fun HomeScreen(
     onOpenSettings: () -> Unit,
     onOpenAbout: () -> Unit,
     onAddFavorite: () -> Unit = {},
-    onOpenSettingsSubpage: (Int, String?) -> Unit = { _, _ -> },
+    onOpenSettingsSubpage: (String, String?) -> Unit = { _, _ -> },
     onOpenVoicemail: () -> Unit = {},
     configuration: HomeScreenConfiguration = HomeScreenConfiguration(),
 ) {
