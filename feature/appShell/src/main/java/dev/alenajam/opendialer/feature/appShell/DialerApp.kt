@@ -81,8 +81,15 @@ data class HomeScreenCallbacks(
     val onOpenSettings: () -> Unit,
     val onOpenAbout: () -> Unit,
     val onAddFavorite: () -> Unit,
-    val onOpenSettingsSubpage: (Int, String?) -> Unit,
+    val onOpenSettingsSubpage: (String, String?) -> Unit,
     val onOpenVoicemail: () -> Unit,
+)
+
+data class SettingsScreenCallbacks(
+    val onNavigateBack: () -> Unit,
+    val onOpenSubpage: (String, String?) -> Unit,
+    val onOpenQuickResponses: () -> Unit,
+    val onOpenDisplayOptions: () -> Unit,
 )
 
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
@@ -92,6 +99,7 @@ fun DialerApp(
     icons: AppIcons = DefaultAppIcons,
     themeExtension: AppThemeExtension = AppThemeExtension(),
     settingsSubpages: List<SettingsSubpage> = emptyList(),
+    settingsContent: (@Composable (SettingsScreenCallbacks) -> Unit)? = null,
     homeScreenConfiguration: HomeScreenConfiguration = HomeScreenConfiguration(),
     homeContent: (@Composable (HomeScreenCallbacks) -> Unit)? = null,
     dialSearchContent: (@Composable (
@@ -183,7 +191,7 @@ fun DialerApp(
                         onOpenSettings = { navController.navigate(SettingsRoute) },
                         onOpenAbout = { navController.navigate(AboutRoute) },
                         onAddFavorite = { navController.navigate(AddFavoriteRoute) },
-                        onOpenSettingsSubpage = { index, payload -> navController.navigate(SettingsSubpageRoute(index, payload)) },
+                        onOpenSettingsSubpage = { pageId, payload -> navController.navigate(SettingsSubpageRoute(pageId, payload)) },
                         onOpenVoicemail = { navController.navigate(VoicemailRoute) },
                     )
                     homeContent?.invoke(callbacks) ?: HomeScreen(
@@ -234,12 +242,21 @@ fun DialerApp(
                     CallDetailScreen(onNavigateBack = { navController.popBackStack() })
                 }
                 composable<SettingsRoute> {
-                    SettingsScreen(
+                    val onOpenSubpage = { pageId: String, payload: String? ->
+                        navController.navigate(SettingsSubpageRoute(pageId, payload))
+                    }
+                    val settingsCallbacks = SettingsScreenCallbacks(
                         onNavigateBack = { navController.popBackStack() },
+                        onOpenSubpage = onOpenSubpage,
                         onOpenQuickResponses = { navController.navigate(QuickResponsesRoute) },
                         onOpenDisplayOptions = { navController.navigate(DisplayOptionsRoute) },
+                    )
+                    settingsContent?.invoke(settingsCallbacks) ?: SettingsScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                        onOpenQuickResponses = settingsCallbacks.onOpenQuickResponses,
+                        onOpenDisplayOptions = settingsCallbacks.onOpenDisplayOptions,
                         subpages = settingsSubpages,
-                        onOpenSubpage = { index, payload -> navController.navigate(SettingsSubpageRoute(index, payload)) }
+                        onOpenSubpage = onOpenSubpage,
                     )
                 }
                 composable<AboutRoute> {
@@ -253,33 +270,33 @@ fun DialerApp(
                 }
                 composable<SettingsSubpageRoute> { backStackEntry ->
                     val route = backStackEntry.toRoute<SettingsSubpageRoute>()
-                    settingsSubpages.getOrNull(route.index)?.let { page ->
+                    settingsSubpages.firstOrNull { it.id == route.pageId }?.let { page ->
                         SettingsSubpageScreen(
                             page = page,
                             payload = route.payload,
                             onNavigateBack = { navController.popBackStack() },
-                            onNavigateToDestination = { destinationIndex, payload ->
-                                navController.navigate(SettingsSubpageDestinationRoute(route.index, destinationIndex, payload))
+                            onNavigateToDestination = { destinationId, payload ->
+                                navController.navigate(SettingsSubpageDestinationRoute(route.pageId, destinationId, payload))
                             },
-                            onNavigateToSubpage = { subpageIndex, payload ->
-                                navController.navigate(SettingsSubpageRoute(subpageIndex, payload))
+                            onNavigateToSubpage = { pageId, payload ->
+                                navController.navigate(SettingsSubpageRoute(pageId, payload))
                             },
                         )
                     }
                 }
                 composable<SettingsSubpageDestinationRoute> { backStackEntry ->
                     val route = backStackEntry.toRoute<SettingsSubpageDestinationRoute>()
-                    settingsSubpages.getOrNull(route.subpageIndex)
+                    settingsSubpages.firstOrNull { it.id == route.pageId }
                         ?.destinations
-                        ?.getOrNull(route.destinationIndex)
+                        ?.firstOrNull { it.id == route.destinationId }
                         ?.let { destination ->
                             CompositionLocalProvider(
                                 LocalSettingsSubpageNavigator provides SettingsSubpageNavigator(
-                                    { destinationIndex, payload ->
+                                    { destinationId, payload ->
                                         navController.navigate(
                                             SettingsSubpageDestinationRoute(
-                                                route.subpageIndex,
-                                                destinationIndex,
+                                                route.pageId,
+                                                destinationId,
                                                 payload,
                                             )
                                         )

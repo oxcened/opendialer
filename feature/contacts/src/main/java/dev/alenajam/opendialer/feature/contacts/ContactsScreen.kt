@@ -60,7 +60,7 @@ import dev.alenajam.opendialer.core.common.ui.LocalAppIcons
 import dev.alenajam.opendialer.data.contacts.DialerContactSummary
 
 data class ContactRowTrailingContent(
-    val content: @Composable (DialerContactSummary, (Int, String?) -> Unit) -> Unit,
+    val content: @Composable (DialerContactSummary, (String, String?) -> Unit) -> Unit,
 )
 
 @Composable
@@ -69,7 +69,7 @@ fun ContactsScreen(
     searchQuery: String = "",
     @Suppress("UNUSED_PARAMETER") onOpenHistory: (callIds: List<Int>) -> Unit = {},
     contactRowTrailingContent: ContactRowTrailingContent? = null,
-    onOpenSettingsSubpage: (Int, String?) -> Unit = { _, _ -> },
+    onOpenSettingsSubpage: (String, String?) -> Unit = { _, _ -> },
 ) {
     val requestPermissions =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->

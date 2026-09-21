@@ -55,7 +55,7 @@ fun SettingsScreen(
     onOpenQuickResponses: () -> Unit = {},
     onOpenDisplayOptions: () -> Unit = {},
     subpages: List<SettingsSubpage> = emptyList(),
-    onOpenSubpage: (Int, String?) -> Unit = { _, _ -> }
+    onOpenSubpage: (String, String?) -> Unit = { _, _ -> }
 ) {
     val context = LocalContext.current
     var updateChecksEnabled by remember {
@@ -109,9 +109,9 @@ fun SettingsScreen(
             )
         }
     }
-    val extensionItems = subpages.mapIndexedNotNull { index, page ->
-        if (!page.visibleInSettings) return@mapIndexedNotNull null
-        SettingsListItem(page.title, page.description) { onOpenSubpage(index, null) }
+    val extensionItems = subpages.mapNotNull { page ->
+        if (!page.visibleInSettings) return@mapNotNull null
+        SettingsListItem(page.title, page.description) { onOpenSubpage(page.id, null) }
     }
     Scaffold(
         topBar = {
