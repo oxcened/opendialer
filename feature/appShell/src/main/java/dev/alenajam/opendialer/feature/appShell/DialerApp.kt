@@ -109,6 +109,7 @@ fun DialerApp(
         onDialpadCallStarted: () -> Unit,
         onNavigateBack: () -> Unit,
     ) -> Unit)? = null,
+    callDetailContent: (@Composable (onNavigateBack: () -> Unit) -> Unit)? = null,
     forceLightTheme: Boolean = false,
 ) {
     val navController = rememberNavController()
@@ -240,7 +241,8 @@ fun DialerApp(
                     )
                 }
                 composable<CallDetailRoute> {
-                    CallDetailScreen(onNavigateBack = { navController.popBackStack() })
+                    callDetailContent?.invoke { navController.popBackStack() }
+                        ?: CallDetailScreen(onNavigateBack = { navController.popBackStack() })
                 }
                 composable<SettingsRoute> {
                     val onOpenSubpage = { pageId: String, payload: String? ->
