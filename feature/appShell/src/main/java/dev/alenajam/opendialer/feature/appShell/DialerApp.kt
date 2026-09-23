@@ -101,6 +101,7 @@ fun DialerApp(
     themeExtension: AppThemeExtension = AppThemeExtension(),
     settingsSubpages: List<SettingsSubpage> = emptyList(),
     settingsContent: (@Composable (SettingsScreenCallbacks) -> Unit)? = null,
+    aboutContent: (@Composable (onNavigateBack: () -> Unit) -> Unit)? = null,
     homeScreenConfiguration: HomeScreenConfiguration = HomeScreenConfiguration(),
     homeContent: (@Composable (HomeScreenCallbacks) -> Unit)? = null,
     dialSearchContent: (@Composable (
@@ -263,7 +264,8 @@ fun DialerApp(
                     )
                 }
                 composable<AboutRoute> {
-                    AboutScreen(onNavigateBack = { navController.popBackStack() })
+                    aboutContent?.invoke { navController.popBackStack() }
+                        ?: AboutScreen(onNavigateBack = { navController.popBackStack() })
                 }
                 composable<QuickResponsesRoute> {
                     QuickResponsesScreen(onNavigateBack = { navController.popBackStack() })
