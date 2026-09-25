@@ -39,7 +39,7 @@ dependencies {
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation("com.google.guava:guava:21.0")
+    implementation(libs.guava.core)
     implementation(libs.guava.listenablefuture)
 }
 
