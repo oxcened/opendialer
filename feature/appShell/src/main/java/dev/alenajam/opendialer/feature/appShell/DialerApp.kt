@@ -93,12 +93,22 @@ data class SettingsScreenCallbacks(
     val onOpenDisplayOptions: () -> Unit,
 )
 
+data class SetupScreenCallbacks(
+    val isDefaultPhoneApp: Boolean,
+    val hasFullScreenIntentAccess: Boolean,
+    val showDefaultPhoneRecovery: Boolean,
+    val onSetAsDefault: () -> Unit,
+    val onOpenAppInfo: () -> Unit,
+    val onEnableFullScreenIntent: () -> Unit,
+)
+
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 fun DialerApp(
     defaultPhoneManager: DefaultPhoneManager,
     icons: AppIcons = DefaultAppIcons,
     themeExtension: AppThemeExtension = AppThemeExtension(),
+    setupContent: (@Composable (SetupScreenCallbacks) -> Unit)? = null,
     settingsSubpages: List<SettingsSubpage> = emptyList(),
     settingsContent: (@Composable (SettingsScreenCallbacks) -> Unit)? = null,
     aboutContent: (@Composable (onNavigateBack: () -> Unit) -> Unit)? = null,
@@ -155,7 +165,7 @@ fun DialerApp(
         }
 
         if (!isDefaultPhoneApp || !hasFullScreenIntentAccess) {
-            SetupScreen(
+            val setupCallbacks = SetupScreenCallbacks(
                 isDefaultPhoneApp = isDefaultPhoneApp,
                 hasFullScreenIntentAccess = hasFullScreenIntentAccess,
                 showDefaultPhoneRecovery = defaultPhoneRequestWasDenied && !isDefaultPhoneApp,
@@ -182,6 +192,18 @@ fun DialerApp(
                     }
                 },
             )
+            if (setupContent != null) {
+                setupContent(setupCallbacks)
+            } else {
+                SetupScreen(
+                    isDefaultPhoneApp = setupCallbacks.isDefaultPhoneApp,
+                    hasFullScreenIntentAccess = setupCallbacks.hasFullScreenIntentAccess,
+                    showDefaultPhoneRecovery = setupCallbacks.showDefaultPhoneRecovery,
+                    onSetAsDefault = setupCallbacks.onSetAsDefault,
+                    onOpenAppInfo = setupCallbacks.onOpenAppInfo,
+                    onEnableFullScreenIntent = setupCallbacks.onEnableFullScreenIntent,
+                )
+            }
         } else {
             HandleDialIntent(
                 onOpenContactsSearch = { navController.navigate(ContactsSearchRoute(it)) }
